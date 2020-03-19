@@ -10,16 +10,16 @@
 <title>Ubuntu guide - John&#39;s Blog</title>
 
 
-    <meta name="description" content="记录一些常见问题备查  安装系统如果是从iso镜像制作启动盘，可以使用Rufus这个免费的小工具，烧录镜像可以用Etcher。 服务器搭建">
+    <meta name="description" content="安装首先下载ubuntu系统镜像，为了更快的下载速度可以使用清华的镜像，以19.04版本为例，下载地址为https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu-releases&#x2F;disco&#x2F;ubuntu-19.04-desktop-amd64.iso">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ubuntu guide">
 <meta property="og:url" content="http://john-ao.github.io/2018/11/19/Ubuntu-guide/index.html">
 <meta property="og:site_name" content="John&#39;s Blog">
-<meta property="og:description" content="记录一些常见问题备查  安装系统如果是从iso镜像制作启动盘，可以使用Rufus这个免费的小工具，烧录镜像可以用Etcher。 服务器搭建">
+<meta property="og:description" content="安装首先下载ubuntu系统镜像，为了更快的下载速度可以使用清华的镜像，以19.04版本为例，下载地址为https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu-releases&#x2F;disco&#x2F;ubuntu-19.04-desktop-amd64.iso">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://john-ao.github.io/images/og_image.png">
 <meta property="article:published_time" content="2018-11-19T05:17:18.000Z">
-<meta property="article:modified_time" content="2020-03-19T14:19:20.058Z">
+<meta property="article:modified_time" content="2020-03-19T14:43:43.130Z">
 <meta property="article:author" content="John Ao">
 <meta property="article:tag" content="guide">
 <meta name="twitter:card" content="summary">
@@ -130,7 +130,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    8 minutes read (About 1177 words)
+                    15 minutes read (About 2290 words)
                 </span>
                 
                 
@@ -143,18 +143,46 @@
             
         </h1>
         <div class="content">
-            <blockquote>
-<p>记录一些常见问题备查</p>
-</blockquote>
-<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><p>如果是从iso镜像制作启动盘，可以使用<a href="https://rufus.ie/en_IE.html">Rufus</a>这个免费的小工具，烧录镜像可以用<a href="https://www.balena.io/etcher/">Etcher</a>。</p>
-<h2 id="服务器搭建"><a href="#服务器搭建" class="headerlink" title="服务器搭建"></a>服务器搭建</h2><a id="more"></a>
-<h3 id="·ssr"><a href="#·ssr" class="headerlink" title="·ssr"></a>·ssr</h3><p>使用一键安装脚本</p>
+            <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>首先下载ubuntu系统镜像，为了更快的下载速度可以使用清华的镜像，以<code>19.04</code>版本为例，下载地址为<a href="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/disco/ubuntu-19.04-desktop-amd64.iso">https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/disco/ubuntu-19.04-desktop-amd64.iso</a></p>
+<a id="more"></a>
+
+<p>下载好之后，如果是用虚拟机，将iso加载到CD上即可安装，如果是在PC上安装，可以使用<a href="https://rufus.ie/en_IE.html">Rufus</a>这个免费的小工具制作u盘启动盘，烧录镜像也可以用<a href="https://www.balena.io/etcher/">Etcher</a>。</p>
+<h3 id="设置sudo免密码"><a href="#设置sudo免密码" class="headerlink" title="设置sudo免密码"></a>设置sudo免密码</h3><p>每次sudo都要输入密码，很是麻烦，修改配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo visudo</span><br></pre></td></tr></table></figure>
+<p>在文件尾加上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username ALL=(ALL:ALL) NOPASSWD:ALL</span><br></pre></td></tr></table></figure>
+<p>其中<code>username</code>是你的用户名。“加在文件尾”这一点很重要，因为后面的策略会覆盖前面的策略，如果加在前面就可能被覆盖掉而无效。</p>
+<h3 id="设置默认文本编辑器"><a href="#设置默认文本编辑器" class="headerlink" title="设置默认文本编辑器"></a>设置默认文本编辑器</h3><p>我个人比较偏向于使用简单易用的nano，想从nano改为vim或者从vim改为nano，可以用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --config editor</span><br></pre></td></tr></table></figure>
+
+<h3 id="更换apt源"><a href="#更换apt源" class="headerlink" title="更换apt源"></a>更换apt源</h3><p>这里我们同样使用清华的源，以<code>19.04</code>版本为例（其他版本<a href="[https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/)">见此</a>），编辑<code>/etc/apt/sources.list</code>文件，加入以下内容（为加快速度注释掉了deb-src，想用的话可以取消注释）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco main restricted universe multiverse</span><br><span class="line"><span class="comment">#deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-updates main restricted universe multiverse</span><br><span class="line"><span class="comment">#deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-updates main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-backports main restricted universe multiverse</span><br><span class="line"><span class="comment">#deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-backports main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-security main restricted universe multiverse</span><br><span class="line"><span class="comment">#deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-security main restricted universe multiverse</span></span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-proposed main restricted universe multiverse</span><br><span class="line"><span class="comment">#deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ disco-proposed main restricted universe multiverse</span></span><br></pre></td></tr></table></figure>
+<p>更换完之后对系统进行更新</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+<h3 id="更换pip-pip3源-选做"><a href="#更换pip-pip3源-选做" class="headerlink" title="更换pip/pip3源(选做)"></a>更换pip/pip3源(选做)</h3><p>在控制台执行以下命令设置清华源，如果用的是pip则将下面的pip3替换为pip</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 config <span class="built_in">set</span> global.index-url https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+<h3 id="设置服务器RSA密钥登录"><a href="#设置服务器RSA密钥登录" class="headerlink" title="设置服务器RSA密钥登录"></a>设置服务器RSA密钥登录</h3><p>如果使用的是服务器，设置弱密码存在较大风险，比较安全的做法是改用密钥登录并禁用密码登录。</p>
+<p>首先需要使用<code>PuTTYgen</code>之类的生成工具生成公钥/私钥对，生成好的公钥为如下的一串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-rsa AAAAB3...luwDMw&#x3D;&#x3D;</span><br></pre></td></tr></table></figure>
+<p>用用户名密码登录服务器后，创建文件夹<code>~/.ssh</code>，编辑文件<code>~/.ssh/authorized_keys</code>，将上面的公钥粘贴进去，保存文件。此时应该就可以正常使用了，可以退出并重新登录一次，验证密钥登录是否成功，如果不成功则需要检查一下是否是文件权限的问题，用chmod修改读取权限。</p>
+<p>验证成功之后，就可以禁用密码登录方式了。具体步骤是，编辑<code>/etc/ssh/sshd_config</code>文件，添加如下语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PasswordAuthentication no</span><br></pre></td></tr></table></figure>
+<p>保存文件，执行<code>sudo systemctl restart ssh</code>重启<code>sshd</code>服务，这样下次登录的时候就不能再用密码。<strong>再次提醒，一定要先验证可以用密钥登录，不然就再也无法登录了！</strong></p>
+<h1 id="美化"><a href="#美化" class="headerlink" title="美化"></a>美化</h1><p>本着实用为目的，这里只做一些基本的美化，最终效果如下图所示<br><img src="https://upload-images.jianshu.io/upload_images/13773588-0660872bc526d85e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="效果图"><br>首先我们需要安装tweak tools及拓展工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gnome-tweak-tool</span><br><span class="line">sudo apt-get install gnome-shell-extensions</span><br><span class="line">sudo apt-get install chrome-gnome-shell</span><br></pre></td></tr></table></figure>
+<p>安装Arc主题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install arc-theme</span><br></pre></td></tr></table></figure>
+<p>安装papirus图标</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install papirus-icon-theme</span><br></pre></td></tr></table></figure>
+<p>安装完成后，在软件中搜索tweaks，打开修改工具，我的配置如下，仅供参考<br><img src="https://upload-images.jianshu.io/upload_images/13773588-e881e2467836d78b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置"><br>如果想把dash放在屏幕下方居中的话，下载<a href="https://extensions.gnome.org/extension/307/dash-to-dock/">DashtoDock</a>这个拓展即可，查看自己的gnome版本号用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gnome-shell --version</span><br></pre></td></tr></table></figure>
+<h1 id="代理配置"><a href="#代理配置" class="headerlink" title="代理配置"></a>代理配置</h1><h2 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h2><h3 id="·ssr"><a href="#·ssr" class="headerlink" title="·ssr"></a>·ssr</h3><p>使用一键安装脚本</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;John-Ao&#x2F;ss-fly</span><br></pre></td></tr></table></figure>
 <p>安装使用<code>./ss-fly.sh -ssr</code>，开启bbr使用<code>./ss-fly.sh -bbr</code><br>如果发现ssr服务器无法使用，可以用<code>cat /var/log/shadowsocks.log</code>查看错误信息，有可能是端口号被占用，修改端口号即可。</p>
 <h3 id="·MTProxy"><a href="#·MTProxy" class="headerlink" title="·MTProxy"></a>·MTProxy</h3><p>获取并执行脚本文件<code>mt_proxy.sh</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;John-Ao&#x2F;scripts&#x2F;master&#x2F;mt_proxy.sh &amp;&amp; chmod +x mt_proxy.sh &amp;&amp; .&#x2F;mt_proxy.sh</span><br></pre></td></tr></table></figure>
 <p>按提示输入端口号、secret信息即可</p>
-<h2 id="polipo-socks5转http代理"><a href="#polipo-socks5转http代理" class="headerlink" title="polipo - socks5转http代理"></a><strong>polipo</strong> - socks5转http代理</h2><p>安装polipo：</p>
+<h3 id="polipo-socks5转http代理"><a href="#polipo-socks5转http代理" class="headerlink" title="polipo - socks5转http代理"></a><strong>polipo</strong> - socks5转http代理</h3><p>安装polipo：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install polipo</span><br></pre></td></tr></table></figure>
 <p>然后修改配置文件<code>/etc/polipo/config</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">socksParentProxy&#x3D;&quot;ip:port&quot;</span><br><span class="line">socksProxyType&#x3D;socks5</span><br><span class="line">proxyAddress&#x3D;&quot;0.0.0.0&quot;   #如果是ipv6的话填 &quot;::0&quot;</span><br><span class="line">proxyPort&#x3D;2160</span><br></pre></td></tr></table></figure>
@@ -162,11 +190,11 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo &#x2F;etc&#x2F;init.d&#x2F;polipo restart</span><br></pre></td></tr></table></figure>
 <p>可以通过curl测试代理是否成功</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --proxy http:&#x2F;&#x2F;127.0.0.1:2160 https:&#x2F;&#x2F;www.google.com</span><br></pre></td></tr></table></figure>
-<h2 id="设置定时任务"><a href="#设置定时任务" class="headerlink" title="设置定时任务"></a>设置定时任务</h2><p>有时ss服务器可能会出现不稳定的情况而莫名无法连接，此时可以使用crontab来设置定时重启，只需要修改<code>/etc/crontab</code>文件即可。</p>
-<h2 id="snap"><a href="#snap" class="headerlink" title="snap"></a>snap</h2><p><strong>1.配置snap代理</strong><br>snap是少数不走proxychains的命令行工具，只能手动配置http代理，运行下面的语句(注意将修改代理端口<code>2160</code>为实际使用端口)</p>
+<h3 id="设置定时任务"><a href="#设置定时任务" class="headerlink" title="设置定时任务"></a>设置定时任务</h3><p>有时ss服务器可能会出现不稳定的情况而莫名无法连接，此时可以使用crontab来设置定时重启，只需要修改<code>/etc/crontab</code>文件即可。</p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><h3 id="配置snap代理"><a href="#配置snap代理" class="headerlink" title="配置snap代理"></a>配置snap代理</h3><p>snap是少数不走proxychains的命令行工具，只能手动配置http代理，运行下面的语句(注意将修改代理端口<code>2160</code>为实际使用端口)</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo -e &#39;[Service]\nEnvironment&#x3D;&quot;http_proxy&#x3D;http:&#x2F;&#x2F;127.0.0.1:2160&#x2F;&quot;&#39; \</span><br><span class="line">      | sudo tee &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;snapd.service.d&#x2F;http-proxy.conf</span><br><span class="line">echo -e &#39;[Service]\nEnvironment&#x3D;&quot;https_proxy&#x3D;http:&#x2F;&#x2F;127.0.0.1:2160&#x2F;&quot;&#39; \</span><br><span class="line">      | sudo tee &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;snapd.service.d&#x2F;https-proxy.conf</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart snapd</span><br></pre></td></tr></table></figure>
-<p><strong>2.使用</strong></p>
-<h2 id="联网"><a href="#联网" class="headerlink" title="联网"></a>联网</h2><h3 id="electron-ssr-（推荐）"><a href="#electron-ssr-（推荐）" class="headerlink" title="electron-ssr （推荐）"></a>electron-ssr （推荐）</h3><p>如果想通过deb安装，可以下载<a href="https://github.com/erguotou520/electron-ssr/releases">electron-ssr</a>，<strong>建议使用0.2.3版本，0.2.4似乎无法使用</strong>。</p>
+
+<h3 id="electron-ssr-（推荐）"><a href="#electron-ssr-（推荐）" class="headerlink" title="electron-ssr （推荐）"></a>electron-ssr （推荐）</h3><p>如果想通过deb安装，可以下载<a href="https://github.com/erguotou520/electron-ssr/releases">electron-ssr</a>，<strong>建议使用0.2.3版本，0.2.4似乎无法使用</strong>。</p>
 <h3 id="proxychains-ssr"><a href="#proxychains-ssr" class="headerlink" title="proxychains+ssr"></a>proxychains+ssr</h3><p>首先安装ssr</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential</span><br><span class="line">wget https:&#x2F;&#x2F;github.com&#x2F;jedisct1&#x2F;libsodium&#x2F;releases&#x2F;download&#x2F;1.0.16&#x2F;libsodium-1.0.16.tar.gz</span><br><span class="line">tar -xvf libsodium-1.0.16.tar.gz</span><br><span class="line">cd libsodium-1.0.16</span><br><span class="line">.&#x2F;configure &amp;&amp; make -j3 &amp;&amp;sudo make install</span><br><span class="line">sudo ldconfig</span><br></pre></td></tr></table></figure>
 <p>获取<code>ssr.sh</code>脚本文件</p>
@@ -184,8 +212,28 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository -r ppa:hzwhuang&#x2F;ss-qt5</span><br></pre></td></tr></table></figure>
 <p>如果第一条语句出现找不到<code>apt_pkg</code>错误，可以尝试用下面的方法解决：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install python3-apt</span><br><span class="line"></span><br><span class="line">cd &#x2F;usr&#x2F;lib&#x2F;python3&#x2F;dist-packages</span><br><span class="line"></span><br><span class="line">sudo cp apt_pkg.cpython-35m-x86_64-linux-gnu.so  apt_pkg.cpython-36m-x86_64-linux-gnu.so</span><br></pre></td></tr></table></figure>
-<h2 id="更换apt源"><a href="#更换apt源" class="headerlink" title="更换apt源"></a>更换apt源</h2><p>在清华校内自然是使用<a href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/">tuna</a>最为方便，以18.04为例，修改<code>/etc/apt/sources.list:</code>文件如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic main restricted universe multiverse</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-updates main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-updates main restricted universe multiverse</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-backports main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-backports main restricted universe multiverse</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-security main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-security main restricted universe multiverse</span><br><span class="line"># 预发布软件源，不建议启用</span><br><span class="line"># deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-proposed main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; bionic-proposed main restricted universe multiverse</span><br></pre></td></tr></table></figure>
+<h1 id="软件配置"><a href="#软件配置" class="headerlink" title="软件配置"></a>软件配置</h1><h2 id="pyspark"><a href="#pyspark" class="headerlink" title="pyspark"></a>pyspark</h2><p>1.安装jdk</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openjdk-8-jdk</span><br></pre></td></tr></table></figure>
+<p>2.安装py4j</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install py4j</span><br></pre></td></tr></table></figure>
+<p>3.下载pyspark</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget <span class="string">"https://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz"</span></span><br><span class="line">tar xvf spark-2.4.3-bin-hadoop2.7.tgz</span><br></pre></td></tr></table></figure>
+<p>在<code>~/.bashrc</code>文件中添加pyspark的路径，其中xxx按上面下载的实际情况填写</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> SPARK_HOME=/xxx/spark-2.4.3-bin-hadoop2.7</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$&#123;SPARK_HOME&#125;</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<p>保存之后激活</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>4.设置及测试<br>现在输入<code>pyspark</code>就可以进入交互式spark环境，和python交互式环境类似，开头会有一堆log信息，将log的等级从INFO修改为WARN看起来会舒服很多，修改方法如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$&#123;SPARK_HOME&#125;</span></span><br><span class="line">cp conf/log4j.properties.template conf/log4j.properties</span><br><span class="line">nano conf/log4j.properties</span><br></pre></td></tr></table></figure>
+<p>把文件中的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootCategory=INFO, console</span><br></pre></td></tr></table></figure>
+<p>替换为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootCategory=WARN, console</span><br></pre></td></tr></table></figure>
+<p>如果想使用<code>ipython3</code>的话，需要设置环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PYSPARK_DRIVER_PYTHON=ipython3</span><br><span class="line"><span class="built_in">export</span> PYSPARK_PYTHON=python3</span><br></pre></td></tr></table></figure>
+<p>单次运行pyspark也可以用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PYSPARK_DRIVER_PYTHON=ipython3 pyspark</span><br></pre></td></tr></table></figure>
+<p>最后，我们可以运行一个计算Pi的程序来测试一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$&#123;SPARK_HOME&#125;</span>/bin/run-example SparkPi 10</span><br></pre></td></tr></table></figure>
 <h2 id="远程操作"><a href="#远程操作" class="headerlink" title="远程操作"></a>远程操作</h2><p>相比vnc、xdrp之类的老牌解决方案，<a href="www.teamviewer.com">TeamViewer</a>是一个更为方便的选择，它是一个免费的(限个人使用)多平台支持的远程控制软件，只需要在两台计算机上分别安装即可使用。</p>
 <h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><ul>
 <li>调试工具可以用<code>edb-debugger</code>，界面友善，简单易用</li>

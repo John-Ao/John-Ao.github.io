@@ -19,7 +19,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://john-ao.github.io/images/og_image.png">
 <meta property="article:published_time" content="2018-11-19T05:17:18.000Z">
-<meta property="article:modified_time" content="2020-03-21T11:44:23.556Z">
+<meta property="article:modified_time" content="2020-04-08T04:54:20.467Z">
 <meta property="article:author" content="John Ao">
 <meta property="article:tag" content="guide">
 <meta property="article:tag" content="ubuntu">
@@ -131,7 +131,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    15 minutes read (About 2290 words)
+                    15 minutes read (About 2265 words)
                 </span>
                 
                 
@@ -174,13 +174,13 @@
 <p>验证成功之后，就可以禁用密码登录方式了。具体步骤是，编辑<code>/etc/ssh/sshd_config</code>文件，添加如下语句</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PasswordAuthentication no</span><br></pre></td></tr></table></figure>
 <p>保存文件，执行<code>sudo systemctl restart ssh</code>重启<code>sshd</code>服务，这样下次登录的时候就不能再用密码。<strong>再次提醒，一定要先验证可以用密钥登录，不然就再也无法登录了！</strong></p>
-<h1 id="美化"><a href="#美化" class="headerlink" title="美化"></a>美化</h1><p>本着实用为目的，这里只做一些基本的美化，最终效果如下图所示<br><img src="https://upload-images.jianshu.io/upload_images/13773588-0660872bc526d85e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="效果图"><br>首先我们需要安装tweak tools及拓展工具</p>
+<h1 id="美化"><a href="#美化" class="headerlink" title="美化"></a>美化</h1><p>本着实用为目的，这里只做一些基本的美化，最终效果如下图所示<br><img src="https://imgur.com/JoBxZJC.jpg" alt="效果图"><br>首先我们需要安装tweak tools及拓展工具</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gnome-tweak-tool</span><br><span class="line">sudo apt-get install gnome-shell-extensions</span><br><span class="line">sudo apt-get install chrome-gnome-shell</span><br></pre></td></tr></table></figure>
 <p>安装Arc主题</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install arc-theme</span><br></pre></td></tr></table></figure>
 <p>安装papirus图标</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install papirus-icon-theme</span><br></pre></td></tr></table></figure>
-<p>安装完成后，在软件中搜索tweaks，打开修改工具，我的配置如下，仅供参考<br><img src="https://upload-images.jianshu.io/upload_images/13773588-e881e2467836d78b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置"><br>如果想把dash放在屏幕下方居中的话，下载<a href="https://extensions.gnome.org/extension/307/dash-to-dock/">DashtoDock</a>这个拓展即可，查看自己的gnome版本号用</p>
+<p>安装完成后，在软件中搜索tweaks，打开修改工具，我的配置如下，仅供参考<br><img src="https://imgur.com/wDHuzj7.jpg" alt="配置"><br>如果想把dash放在屏幕下方居中的话，下载<a href="https://extensions.gnome.org/extension/307/dash-to-dock/">DashtoDock</a>这个拓展即可，查看自己的gnome版本号用</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gnome-shell --version</span><br></pre></td></tr></table></figure>
 <h1 id="代理配置"><a href="#代理配置" class="headerlink" title="代理配置"></a>代理配置</h1><h2 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h2><h3 id="·ssr"><a href="#·ssr" class="headerlink" title="·ssr"></a>·ssr</h3><p>使用一键安装脚本</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;John-Ao&#x2F;ss-fly</span><br></pre></td></tr></table></figure>

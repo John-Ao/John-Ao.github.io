@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天空查看器</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- 控制面板 -->
+    <div id="control-panel">
+        <div id="panel-header">
+            <h1>天空查看器</h1>
+            <p>HiPS 全天巡天图像</p>
+        </div>
+
+        <!-- 数据源选择 -->
+        <div class="section">
+            <div class="section-title">底图数据源</div>
+            <select id="survey-select">
+
+                <!-- ── 可见光 ── -->
+                <optgroup label="── 可见光 ──">
+                    <option value="CDS/P/Mellinger/color" selected>Mellinger 彩色（全天）</option>
+                    <option value="CDS/P/DSS2/color">DSS2 彩色（全天，order 9）</option>
+                    <option value="CDS/P/DSS2/red">DSS2 红波段（全天，order 9）</option>
+                    <option value="CDS/P/DSS2/blue">DSS2 蓝波段（全天）</option>
+                    <option value="CDS/P/PanSTARRS/DR1/color-i-r-g">PanSTARRS 彩色 i-r-g（北天76%，order 11）</option>
+                    <option value="CDS/P/PanSTARRS/DR1/color-z-zg-g">PanSTARRS 彩色 z-zg-g（北天78%，order 11）</option>
+                    <option value="CDS/P/PanSTARRS/DR1/g">PanSTARRS g波段（order 11）</option>
+                    <option value="CDS/P/PanSTARRS/DR1/r">PanSTARRS r波段（order 11）</option>
+                    <option value="CDS/P/PanSTARRS/DR1/i">PanSTARRS i波段（order 11）</option>
+                    <option value="CDS/P/SDSS9/color">SDSS9 彩色（北天，order 9）</option>
+                    <option value="CDS/P/SDSS9/g">SDSS9 g波段</option>
+                    <option value="CDS/P/SDSS9/r">SDSS9 r波段</option>
+                    <option value="CDS/P/SDSS9/i">SDSS9 i波段</option>
+                </optgroup>
+
+                <!-- ── Hα 窄带 ── -->
+                <optgroup label="── Hα 窄带 ──">
+                    <option value="CDS/P/Finkbeiner">Finkbeiner Hα 合成（全天，order 3）</option>
+                    <option value="CDS/P/SHASSA/H">SHASSA Hα 发射（南天，order 4）</option>
+                    <option value="simg.de/P/NSNS/DR0_2/halpha">NSNS Hα（北天，order 6）</option>
+                    <option value="simg.de/P/NSNS/DR0_2/oiii">NSNS [OIII]（北天）</option>
+                    <option value="simg.de/P/NSNS/DR0_2/sii">NSNS [SII]（北天）</option>
+                    <option value="simg.de/P/NSNS/DR0_2/rgb8">NSNS OHS 彩色合成（北天）</option>
+                </optgroup>
+
+                <!-- ── 近红外 ── -->
+                <optgroup label="── 近红外（NIR）──">
+                    <option value="CDS/P/2MASS/color">2MASS 彩色 JHK（全天，order 9）</option>
+                    <option value="CDS/P/2MASS/J">2MASS J 1.2μm（全天）</option>
+                    <option value="CDS/P/2MASS/H">2MASS H 1.6μm（全天）</option>
+                    <option value="CDS/P/2MASS/K">2MASS K 2.2μm（全天）</option>
+                    <option value="CDS/P/allWISE/color">allWISE 彩色（全天，order 8）</option>
+                </optgroup>
+
+                <!-- ── 中红外 ── -->
+                <optgroup label="── 中红外（MIR）──">
+                    <option value="CDS/P/unWISE/color-W2-W1W2-W1">unWISE 彩色 W1/W2（全天，order 8）</option>
+                    <option value="CDS/P/unWISE/W1">unWISE W1 3.4μm（全天）</option>
+                    <option value="CDS/P/unWISE/W2">unWISE W2 4.6μm（全天）</option>
+                    <option value="CDS/P/SPITZER/MIPS1">Spitzer MIPS 24μm（全天，order 8）</option>
+                </optgroup>
+
+                <!-- ── 远红外 ── -->
+                <optgroup label="── 远红外（FIR）──">
+                    <option value="CDS/P/AKARI/FIS/Color">AKARI FIS 彩色（全天，order 5）</option>
+                    <option value="ESAVO/P/AKARI/color">AKARI 彩色 65/90/140μm（全天，order 7）</option>
+                    <option value="CDS/P/IRIS/color">IRAS IRIS 彩色（全天，order 3）</option>
+                </optgroup>
+
+                <!-- ── 微波/射电 ── -->
+                <optgroup label="── 微波 / 射电 ──">
+                    <option value="CDS/P/PLANCK/R3/CMB">Planck CMB 温度涨落（全天，order 3）</option>
+                    <option value="CDS/P/ACT-PLANCK/DR4DR6/Color_CMB">ACT-Planck CMB 彩色（全天，order 4）</option>
+                    <option value="CDS/P/ACT-PLANCK/DR4DR6/Color_MW">ACT-Planck 银河系微波（全天，order 4）</option>
+                    <option value="CDS/P/HI4PI/NHI">HI4PI HI 柱密度（全天，order 3）</option>
+                    <option value="CDS/P/Haslam408/v2">Haslam 408MHz 射电连续谱（全天，order 3）</option>
+                </optgroup>
+
+                <!-- ── 紫外 ── -->
+                <optgroup label="── 紫外（UV）──">
+                    <option value="CDS/P/GALEXGR6_7/color">GALEX GR6+7 彩色 FUV/NUV（79%，order 9）</option>
+                    <option value="CDS/P/GALEXGR6_7/NUV">GALEX NUV 0.23μm（79%，order 9）</option>
+                    <option value="CDS/P/GALEXGR6_7/FUV">GALEX FUV 0.15μm（67%，order 9）</option>
+                </optgroup>
+
+                <!-- ── X 射线 ── -->
+                <optgroup label="── X 射线 ──">
+                    <option value="CDS/P/RASS">ROSAT 全天 X 射线（全天，order 4）</option>
+                </optgroup>
+
+                <!-- ── γ 射线 ── -->
+                <optgroup label="── γ 射线 ──">
+                    <option value="CDS/P/Fermi/color">Fermi LAT 彩色（全天，order 3）</option>
+                    <option value="CDS/P/Fermi/3">Fermi 300MeV–1GeV（全天）</option>
+                    <option value="CDS/P/Fermi/4">Fermi 1–3GeV（全天）</option>
+                    <option value="CDS/P/Fermi/5">Fermi 3–300GeV（全天）</option>
+                </optgroup>
+
+            </select>
+        </div>
+
+        <!-- 语言切换 -->
+        <div id="lang-toggle">
+            <button class="lang-btn active" data-lang="zh">中文</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+
+        <!-- 星座显示 -->
+        <div class="section">
+            <div class="section-title">星座</div>
+
+            <div id="sky-culture-toggle"
+                style="display:flex; margin:0 16px 10px; border:1px solid #2a3050; border-radius:6px; overflow:hidden;">
+                <button class="lang-btn mode-btn active" data-mode="modern">现代</button>
+                <button class="lang-btn mode-btn" data-mode="chinese">古代</button>
+            </div>
+
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-lines" checked>
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">星座连线</span>
+            </label>
+
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-const-names" checked>
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">星座名称</span>
+            </label>
+
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-const-art">
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">星座图画</span>
+            </label>
+
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-const-star-names">
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">星座恒星名</span>
+            </label>
+        </div>
+
+        <!-- 恒星 -->
+        <div class="section">
+            <div class="section-title">恒星</div>
+
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-star-names">
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">显示星名</span>
+            </label>
+
+            <!-- 星等滑块，与显示星名同组 -->
+            <div id="mag-section" style="opacity:0.4; margin-top:8px;">
+                <div id="mag-display">
+                    <span class="mag-label">星等阈值</span>
+                    <span id="mag-value-badge">2.0</span>
+                </div>
+                <div class="slider-track">
+                    <input type="range" id="mag-slider" min="0" max="6" step="0.5" value="2.0" style="--fill: 33.3%">
+                </div>
+                <div class="slider-labels">
+                    <span>0</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网格 -->
+        <div class="section">
+            <div class="section-title">坐标网格</div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-grid">
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">显示坐标网格</span>
+            </label>
+        </div>
+
+        <!-- 深空天体 -->
+        <div class="section">
+            <div class="section-title">深空天体</div>
+
+            <label class="toggle-row">
+                <input type="checkbox" id="toggle-ngc-markers">
+                <span class="toggle-switch"></span>
+                <span class="toggle-label">NGC 位置标注</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 可拖拽分隔条 -->
+    <div id="panel-resizer"></div>
+
+    <!-- 收起/展开按钮 -->
+    <div id="panel-toggle" title="收起/展开面板">&#8249;</div>
+
+    <!-- Aladin Lite 容器 -->
+    <div id="aladin-lite-div"></div>
+
+    <!-- 加载遮罩 -->
+    <div id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div id="loading-text">正在加载天图数据…</div>
+    </div>
+
+    <!-- Aladin Lite v3 -->
+    <script type="text/javascript" src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js"
+        charset="utf-8"
+        onerror="document.getElementById('loading-text').textContent='Aladin Lite 加载失败，请检查网络连接'"></script>
+
+    <!-- 功能模块 -->
+    <script src="js/constellations.js"></script>
+    <script src="js/stars.js"></script>
+    <script src="js/ngc.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>

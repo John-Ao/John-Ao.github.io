@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Wave Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    gap: 0;
+  }
+  .panel {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 16px;
+    padding: 28px 36px;
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #a0c4ff;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: -8px;
+  }
+
+  /* Row labels */
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .row-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a8fa6;
+  }
+
+  /* Wave type buttons + output mode buttons */
+  .btn-group {
+    display: flex;
+    gap: 10px;
+  }
+  .btn-wave, .btn-mode {
+    flex: 1;
+    padding: 10px 0;
+    border: 1.5px solid #0f3460;
+    border-radius: 8px;
+    background: #0f3460;
+    color: #a0b8cc;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .btn-wave:hover, .btn-mode:hover { background: #1a4a7a; border-color: #3a7fc1; color: #e0e0e0; }
+  .btn-wave.active, .btn-mode.active {
+    background: #3a7fc1;
+    border-color: #5aafff;
+    color: #ffffff;
+    box-shadow: 0 0 12px #3a7fc155;
+  }
+
+  /* Slider + input rows */
+  .ctrl-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ctrl-row input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: #0f3460;
+    outline: none;
+    cursor: pointer;
+  }
+  .ctrl-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #3a7fc1;
+    border: 2px solid #5aafff;
+    box-shadow: 0 0 6px #3a7fc188;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ctrl-row input[type=range]::-webkit-slider-thumb:hover { background: #5aafff; }
+  .ctrl-row input[type=number] {
+    width: 80px;
+    padding: 5px 8px;
+    background: #0a1628;
+    border: 1.5px solid #0f3460;
+    border-radius: 6px;
+    color: #c8ddf0;
+    font-size: 0.88rem;
+    text-align: right;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .ctrl-row input[type=number]:focus { border-color: #3a7fc1; }
+  .unit {
+    font-size: 0.8rem;
+    color: #5a7a96;
+    min-width: 28px;
+  }
+  .disabled-ctrl { opacity: 0.35; pointer-events: none; }
+
+  /* Canvas */
+  canvas {
+    width: 100%;
+    border-radius: 10px;
+    background: #0a1628;
+    border: 1px solid #0f3460;
+    display: block;
+  }
+  #wave-canvas  { height: 160px; }
+  #spec-canvas  { height: 130px; }
+
+</style>
+</head>
+<body>
+<div class="panel">
+  <h1>Wave Generator</h1>
+
+  <!-- Row 1: Wave type -->
+  <div class="row">
+    <span class="row-label">Waveform</span>
+    <div class="btn-group">
+      <button class="btn-wave active" data-wave="sine">Sine</button>
+      <button class="btn-wave" data-wave="sawtooth">Sawtooth</button>
+      <button class="btn-wave" data-wave="square">Square</button>
+    </div>
+  </div>
+
+  <!-- Row 2: Peak position / Duty cycle -->
+  <div class="row" id="row-param">
+    <span class="row-label" id="param-label">Peak Position / Duty Cycle</span>
+    <div class="ctrl-row disabled-ctrl" id="param-ctrl">
+      <input type="range" id="param-slider" min="0" max="100" step="0.5" value="50">
+      <input type="number" id="param-input" min="0" max="100" step="1" value="50">
+      <span class="unit">%</span>
+    </div>
+  </div>
+
+  <!-- Row 3: Frequency (log scale) -->
+  <div class="row">
+    <span class="row-label">Frequency</span>
+    <div class="ctrl-row">
+      <input type="range" id="freq-slider" min="0" max="100" step="0.1" value="16.56">
+      <input type="number" id="freq-input" min="200" max="20000" step="1" value="440">
+      <span class="unit">Hz</span>
+    </div>
+  </div>
+
+  <!-- Row 4: Canvas -->
+  <div class="row">
+    <span class="row-label">Waveform Preview (1 cycle)</span>
+    <canvas id="wave-canvas"></canvas>
+  </div>
+
+  <!-- Row 4b: Frequency Spectrum -->
+  <div class="row">
+    <span class="row-label">Frequency Spectrum (FFT)</span>
+    <canvas id="spec-canvas"></canvas>
+  </div>
+
+  <!-- Row 5: Output mode -->
+  <div class="row">
+    <span class="row-label">Output</span>
+    <div class="btn-group">
+      <button class="btn-mode active" data-mode="off">关</button>
+      <button class="btn-mode" data-mode="continuous">连续输出</button>
+      <button class="btn-mode" data-mode="interval">间隔输出</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────
+  const state = {
+    waveType: 'sine',
+    param: 0.5,
+    freq: 440,
+    mode: 'off',   // 'off' | 'continuous' | 'interval'
+  };
+
+  // ── Audio ──────────────────────────────────────────────────────────────
+  let audioCtx = null;
+  let oscillator = null;
+  let gainNode = null;
+
+  const FREQ_MIN = 200, FREQ_MAX = 20000;
+  const LOG_RATIO = Math.log(FREQ_MAX / FREQ_MIN);
+
+  const GAIN_PEAK    = 0.4;
+  const FADE_TIME    = 0.03;  // 30 ms fade in/out
+  const INTERVAL_ON  = 1.0;   // 1 s output
+  const INTERVAL_OFF = 1.0;   // 1 s silence
+
+  let intervalTimer    = null;
+  let nextCycleTime    = 0;   // next AudioContext time to start an "on" burst
+
+  function freqToSlider(f) { return 100 * Math.log(f / FREQ_MIN) / LOG_RATIO; }
+  function sliderToFreq(s) { return FREQ_MIN * Math.exp(LOG_RATIO * s / 100); }
+
+  // Sample one period at t ∈ [0, 1)
+  function getSample(waveType, param, t) {
+    if (waveType === 'sine') return Math.sin(2 * Math.PI * t);
+    if (waveType === 'square') {
+      const D = Math.max(0.001, Math.min(0.999, param));
+      return t < D ? 1 : -1;
+    }
+    if (waveType === 'sawtooth') {
+      const P = Math.max(0.001, Math.min(0.999, param));
+      return t < P ? -1 + 2 * t / P : 1 - 2 * (t - P) / (1 - P);
+    }
+    return 0;
+  }
+
+  // ── DFT (cached by waveType + param) ───────────────────────────────────
+  const DFT_N = 512;
+  const DFT_H = DFT_N / 2;
+  let dftCache = null; // { waveType, param, real, imag, mags }
+
+  function computeDFT(waveType, param) {
+    const samples = new Float32Array(DFT_N);
+    for (let i = 0; i < DFT_N; i++) samples[i] = getSample(waveType, param, i / DFT_N);
+
+    const real = new Float32Array(DFT_H + 1);
+    const imag = new Float32Array(DFT_H + 1);
+    const mags = new Float32Array(DFT_H + 1);
+
+    for (let k = 1; k <= DFT_H; k++) {
+      let re = 0, im = 0;
+      const step = 2 * Math.PI * k / DFT_N;
+      for (let n = 0; n < DFT_N; n++) {
+        re += samples[n] * Math.cos(step * n);
+        im += samples[n] * Math.sin(step * n);
+      }
+      real[k] = (2 / DFT_N) * re;
+      imag[k] = -(2 / DFT_N) * im; // PeriodicWave uses -imag·sin
+      mags[k] = Math.sqrt(re * re + im * im) * (2 / DFT_N);
+    }
+    return { waveType, param, real, imag, mags };
+  }
+
+  function getDFT() {
+    if (!dftCache || dftCache.waveType !== state.waveType || dftCache.param !== state.param) {
+      dftCache = computeDFT(state.waveType, state.param);
+    }
+    return dftCache;
+  }
+
+  function buildPeriodicWave(ctx) {
+    const { real, imag } = getDFT();
+    return ctx.createPeriodicWave(real, imag, { disableNormalization: false });
+  }
+
+  function applyWaveform() {
+    if (!oscillator) return;
+    if (state.waveType === 'sine') {
+      oscillator.type = 'sine';
+    } else {
+      oscillator.setPeriodicWave(buildPeriodicWave(audioCtx));
+    }
+    oscillator.frequency.setTargetAtTime(state.freq, audioCtx.currentTime, 0.01);
+  }
+
+  // ── Interval scheduler ────────────────────────────────────────────────
+  function scheduleIntervalGain() {
+    if (!audioCtx || state.mode !== 'interval') return;
+    const now = audioCtx.currentTime;
+    // Keep scheduling 2 s ahead
+    while (nextCycleTime < now + 2.0) {
+      if (nextCycleTime < now + FADE_TIME) nextCycleTime = now + FADE_TIME;
+      const tOn  = nextCycleTime;
+      const tOff = tOn + INTERVAL_ON;
+      // Fade in
+      gainNode.gain.setValueAtTime(0, tOn - FADE_TIME);
+      gainNode.gain.linearRampToValueAtTime(GAIN_PEAK, tOn);
+      // Fade out
+      gainNode.gain.setValueAtTime(GAIN_PEAK, tOff - FADE_TIME);
+      gainNode.gain.linearRampToValueAtTime(0, tOff);
+      gainNode.gain.setValueAtTime(0, tOff);
+
+      nextCycleTime = tOff + INTERVAL_OFF;
+    }
+  }
+
+  function startIntervalScheduler() {
+    // Caller must set nextCycleTime before calling
+    scheduleIntervalGain();
+    intervalTimer = setInterval(scheduleIntervalGain, 200);
+  }
+
+  function stopIntervalScheduler() {
+    clearInterval(intervalTimer);
+    intervalTimer = null;
+  }
+
+  // ── Audio lifecycle ───────────────────────────────────────────────────
+  function startAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.connect(audioCtx.destination);
+    oscillator = audioCtx.createOscillator();
+    oscillator.frequency.value = state.freq;
+    oscillator.connect(gainNode);
+    applyWaveform();
+    oscillator.start();
+  }
+
+  function stopAudio() {
+    stopIntervalScheduler();
+    if (oscillator) { oscillator.stop(); oscillator.disconnect(); oscillator = null; }
+    if (gainNode)   { gainNode.disconnect(); gainNode = null; }
+    if (audioCtx)   { audioCtx.close(); audioCtx = null; }
+  }
+
+  // ── Mode switching ────────────────────────────────────────────────────
+  function setMode(newMode) {
+    const prev = state.mode;
+    if (newMode === prev) return;
+    state.mode = newMode;
+
+    if (prev === 'off') {
+      // Start audio engine, then apply mode
+      startAudio();
+      if (newMode === 'continuous') {
+        gainNode.gain.linearRampToValueAtTime(GAIN_PEAK, audioCtx.currentTime + FADE_TIME);
+      } else {
+        nextCycleTime = audioCtx.currentTime + FADE_TIME;
+        startIntervalScheduler();
+      }
+    } else if (newMode === 'off') {
+      // Fade out then shut down; capture refs so a rapid re-click doesn't double-stop
+      if (prev === 'interval') stopIntervalScheduler();
+      const now = audioCtx.currentTime;
+      const cur = gainNode.gain.value;
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(cur, now);
+      gainNode.gain.linearRampToValueAtTime(0, now + FADE_TIME);
+      const [_ctx, _osc, _gain] = [audioCtx, oscillator, gainNode];
+      setTimeout(() => {
+        if (_osc)  { _osc.stop(); _osc.disconnect(); }
+        if (_gain) { _gain.disconnect(); }
+        if (_ctx)  { _ctx.close(); }
+        if (oscillator === _osc)  oscillator = null;
+        if (gainNode   === _gain) gainNode   = null;
+        if (audioCtx   === _ctx)  audioCtx   = null;
+      }, FADE_TIME * 1000 + 20);
+    } else if (prev === 'continuous' && newMode === 'interval') {
+      const now = audioCtx.currentTime;
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+      gainNode.gain.linearRampToValueAtTime(0, now + FADE_TIME);
+      gainNode.gain.setValueAtTime(0, now + FADE_TIME);
+      nextCycleTime = now + FADE_TIME + INTERVAL_OFF;
+      startIntervalScheduler();
+    } else if (prev === 'interval' && newMode === 'continuous') {
+      stopIntervalScheduler();
+      const now = audioCtx.currentTime;
+      const cur = gainNode.gain.value;
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(cur, now);
+      gainNode.gain.linearRampToValueAtTime(GAIN_PEAK, now + FADE_TIME);
+    }
+
+    // Update button highlight
+    document.querySelectorAll('.btn-mode').forEach(b =>
+      b.classList.toggle('active', b.dataset.mode === newMode));
+  }
+
+  // ── Waveform canvas ────────────────────────────────────────────────────
+  const canvas = document.getElementById('wave-canvas');
+  const ctx2d  = canvas.getContext('2d');
+
+  function drawWave() {
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.clientWidth, H = canvas.clientHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx2d.scale(dpr, dpr);
+    ctx2d.clearRect(0, 0, W, H);
+
+    ctx2d.strokeStyle = '#1a3050'; ctx2d.lineWidth = 1;
+    ctx2d.beginPath(); ctx2d.moveTo(0, H / 2); ctx2d.lineTo(W, H / 2); ctx2d.stroke();
+
+    ctx2d.strokeStyle = '#162840';
+    ctx2d.setLineDash([4, 4]);
+    for (const x of [W * 0.25, W * 0.5, W * 0.75]) {
+      ctx2d.beginPath(); ctx2d.moveTo(x, 0); ctx2d.lineTo(x, H); ctx2d.stroke();
+    }
+    ctx2d.setLineDash([]);
+
+    const amp = H / 2 - 12;
+    ctx2d.strokeStyle = '#5aafff'; ctx2d.lineWidth = 2.5;
+    ctx2d.shadowColor = '#3a7fc1'; ctx2d.shadowBlur = 8;
+    ctx2d.beginPath();
+    const steps = W * 2;
+    for (let px = 0; px <= steps; px++) {
+      const t = px / steps;
+      const cx = (px / steps) * W;
+      const cy = H / 2 - getSample(state.waveType, state.param, t) * amp;
+      px === 0 ? ctx2d.moveTo(cx, cy) : ctx2d.lineTo(cx, cy);
+    }
+    ctx2d.stroke();
+    ctx2d.shadowBlur = 0;
+  }
+
+  // ── Spectrum canvas ────────────────────────────────────────────────────
+  const specCanvas = document.getElementById('spec-canvas');
+  const ctx2s      = specCanvas.getContext('2d');
+
+  const SPEC_NUM = 20; // harmonics shown
+
+  function drawSpectrum() {
+    const dpr = window.devicePixelRatio || 1;
+    const W = specCanvas.clientWidth, H = specCanvas.clientHeight;
+    specCanvas.width = W * dpr; specCanvas.height = H * dpr;
+    ctx2s.scale(dpr, dpr);
+    ctx2s.clearRect(0, 0, W, H);
+
+    const padL = 6, padR = 6, padT = 8, padB = 20;
+    const pW = W - padL - padR;
+    const pH = H - padT - padB;
+    const baseline = padT + pH;
+
+    const { mags } = getDFT();
+
+    // Normalize to tallest bar among displayed harmonics
+    let maxMag = 0;
+    for (let k = 1; k <= SPEC_NUM; k++) if (mags[k] > maxMag) maxMag = mags[k];
+    if (maxMag < 1e-9) maxMag = 1;
+
+    const slotW = pW / SPEC_NUM;
+    const barW  = Math.max(2, slotW * 0.55);
+
+    // Horizontal guide lines at 25 / 50 / 75 / 100 %
+    ctx2s.strokeStyle = '#162840'; ctx2s.lineWidth = 1; ctx2s.setLineDash([3, 3]);
+    for (const frac of [0.25, 0.5, 0.75, 1]) {
+      const y = baseline - frac * pH;
+      ctx2s.beginPath(); ctx2s.moveTo(padL, y); ctx2s.lineTo(W - padR, y); ctx2s.stroke();
+    }
+    ctx2s.setLineDash([]);
+
+    // Baseline
+    ctx2s.strokeStyle = '#1e3a55'; ctx2s.lineWidth = 1;
+    ctx2s.beginPath(); ctx2s.moveTo(padL, baseline); ctx2s.lineTo(W - padR, baseline); ctx2s.stroke();
+
+    // Bars + index labels
+    for (let k = 1; k <= SPEC_NUM; k++) {
+      const cx   = padL + (k - 0.5) * slotW;
+      const barH = (mags[k] / maxMag) * pH;
+      const y    = baseline - barH;
+
+      // Color: bright blue for k=1, fade and shift toward cyan for higher harmonics
+      const t     = (k - 1) / (SPEC_NUM - 1);
+      const alpha = Math.max(0.15, 1 - t * 0.75);
+      const cr    = Math.round(58  + t * 30);
+      const cg    = Math.round(175 + t * 40);
+
+      // Gradient-filled bar
+      if (barH > 0.5) {
+        const grad = ctx2s.createLinearGradient(0, y, 0, baseline);
+        grad.addColorStop(0, `rgba(${cr},${cg},255,${alpha})`);
+        grad.addColorStop(1, `rgba(${cr},${cg},255,${alpha * 0.2})`);
+        ctx2s.fillStyle = grad;
+        ctx2s.fillRect(cx - barW / 2, y, barW, barH);
+
+        // Bright cap line at top of bar
+        ctx2s.strokeStyle = `rgba(${cr},${cg},255,${Math.min(1, alpha + 0.3)})`;
+        ctx2s.lineWidth = 1.5;
+        ctx2s.beginPath();
+        ctx2s.moveTo(cx - barW / 2, y); ctx2s.lineTo(cx + barW / 2, y);
+        ctx2s.stroke();
+      }
+
+      // Index label below baseline
+      ctx2s.fillStyle = k === 1 ? '#a0c4ff' : '#3a5a72';
+      ctx2s.font = `${9}px system-ui, sans-serif`;
+      ctx2s.textAlign = 'center';
+      ctx2s.fillText(String(k), cx, H - 4);
+    }
+  }
+
+  function drawAll() { drawWave(); drawSpectrum(); }
+
+  // ── UI Elements ────────────────────────────────────────────────────────
+  const paramLabel  = document.getElementById('param-label');
+  const paramCtrl   = document.getElementById('param-ctrl');
+  const paramSlider = document.getElementById('param-slider');
+  const paramInput  = document.getElementById('param-input');
+  const freqSlider  = document.getElementById('freq-slider');
+  const freqInput   = document.getElementById('freq-input');
+
+  function updateParamUI() {
+    paramCtrl.classList.toggle('disabled-ctrl', state.waveType === 'sine');
+    paramLabel.textContent =
+      state.waveType === 'square'   ? 'Duty Cycle' :
+      state.waveType === 'sawtooth' ? 'Peak Position' :
+                                      'Peak Position / Duty Cycle';
+  }
+
+  function setParam(val) {
+    const pct = Math.max(0, Math.min(100, val));
+    state.param = pct / 100;
+    paramSlider.value = pct;
+    paramInput.value  = Math.round(pct * 10) / 10;
+    drawAll();
+    if (state.mode !== 'off') applyWaveform();
+  }
+
+  function setFreq(f) {
+    f = Math.max(FREQ_MIN, Math.min(FREQ_MAX, f));
+    state.freq = f;
+    freqSlider.value = freqToSlider(f);
+    freqInput.value  = Math.round(f);
+    if (state.mode !== 'off' && oscillator) {
+      oscillator.frequency.setTargetAtTime(f, audioCtx.currentTime, 0.01);
+    }
+  }
+
+  document.querySelectorAll('.btn-wave').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn-wave').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.waveType = btn.dataset.wave;
+      updateParamUI();
+      drawAll();
+      if (state.mode !== 'off') applyWaveform();
+    });
+  });
+
+  document.querySelectorAll('.btn-mode').forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  });
+
+  paramSlider.addEventListener('input',  () => setParam(parseFloat(paramSlider.value)));
+  paramInput.addEventListener('input',   () => { const v = parseFloat(paramInput.value); if (!isNaN(v)) setParam(v); });
+  paramInput.addEventListener('change',  () => setParam(parseFloat(paramInput.value) || 50));
+
+  freqSlider.addEventListener('input',   () => setFreq(sliderToFreq(parseFloat(freqSlider.value))));
+  freqInput.addEventListener('input',    () => { const v = parseFloat(freqInput.value); if (!isNaN(v)) setFreq(v); });
+  freqInput.addEventListener('change',   () => setFreq(parseFloat(freqInput.value) || 440));
+
+  // ── Init ───────────────────────────────────────────────────────────────
+  freqSlider.value = freqToSlider(440);
+  updateParamUI();
+  drawAll();
+
+  window.addEventListener('resize', drawAll);
+</script>
+</body>
+</html>

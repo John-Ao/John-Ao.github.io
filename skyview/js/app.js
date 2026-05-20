@@ -54,13 +54,13 @@
             cooFrame: 'ICRSd',
         });
 
-        // 初始化恒星数据
+        // 初始化恒星数据（返回 hipIndex 供 Constellations 查坐标）
         loadingText.textContent = '正在加载恒星数据…';
-        await Stars.init(aladin);
+        const hipIndex = await Stars.init(aladin);
 
         // 初始化星座模块
         loadingText.textContent = '正在加载星座数据…';
-        await Constellations.init(aladin);
+        await Constellations.init(aladin, hipIndex);
 
         // 初始化 NGC 模块
         loadingText.textContent = '正在加载深空天体数据…';

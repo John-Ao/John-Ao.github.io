@@ -1,11 +1,14 @@
 /**
  * 星座功能模块：连线、星座名称、星座图画
  * 支持现代（IAU 88星座）和古代（中国星官）两种模式。
+ * constellation_lines.json / chinese_constellation_lines.json 的 segments
+ * 现在存储 HIP 整数数组，绘线时从 hipIndex 查坐标。
  * 恒星名标注统一由 Stars 模块管理。
  */
 
 const Constellations = (() => {
     let _aladin      = null;
+    let _hipIndex    = null;   // Map<hip, star>，由 Stars.init() 返回
     let linesOverlay = null;
     let namesOverlay = null;
     let artCatalog   = null;
@@ -31,8 +34,9 @@ const Constellations = (() => {
 
     // ── 初始化 ─────────────────────────────────────────────────────────────
 
-    async function init(aladinInstance) {
-        _aladin = aladinInstance;
+    async function init(aladinInstance, hipIndex) {
+        _aladin   = aladinInstance;
+        _hipIndex = hipIndex;
 
         // 并行加载所有数据
         const [ml, mn, art, cl, cn] = await Promise.all([
@@ -70,7 +74,7 @@ const Constellations = (() => {
         _buildLinesOverlay();
         _buildNamesOverlay();
         _registerHoverHandlers();
-        _updateConstStarCoords();
+        _updateConstStarHips();
     }
 
     // ── 模式切换 ──────────────────────────────────────────────────────────
@@ -79,10 +83,9 @@ const Constellations = (() => {
         if (mode === currentMode) return;
         currentMode = mode;
 
-        // 重建连线和名称
         _rebuildLines();
         _rebuildNames();
-        _updateConstStarCoords();
+        _updateConstStarHips();
 
         // 艺术图只在现代模式有效
         if (currentMode === 'chinese' && wantVisible.art && artCatalog) {
@@ -91,7 +94,6 @@ const Constellations = (() => {
         }
     }
 
-    // 获取当前模式数据
     function _lines() { return currentMode === 'modern' ? modernLines : chineseLines; }
     function _names() { return currentMode === 'modern' ? modernNames : chineseNames; }
 
@@ -104,19 +106,18 @@ const Constellations = (() => {
 
     function setStarsData(data) {}
 
-    // ── 更新连线恒星坐标集（传给 Stars 模块）─────────────────────────────
+    // ── 将连线恒星 HIP Set 传给 Stars 模块 ───────────────────────────────
 
-    function _updateConstStarCoords() {
-        const coordSet = new Set();
+    function _updateConstStarHips() {
+        const hipSet = new Set();
         for (const c of _lines()) {
             for (const seg of c.segments) {
-                for (const pt of seg) {
-                    coordSet.add(`${Math.round(pt[0]*100)},${Math.round(pt[1]*100)}`);
+                for (const hip of seg) {
+                    hipSet.add(hip);
                 }
             }
         }
-        Stars.setConstStarCoords(coordSet);
-        // 通知 Stars 模块当前模式的星名数据
+        Stars.setConstStarHips(hipSet);
         Stars.setChineseStarMode(currentMode === 'chinese');
     }
 
@@ -132,8 +133,15 @@ const Constellations = (() => {
         for (const c of _lines()) {
             conPolylines[c.id] = [];
             for (const seg of c.segments) {
-                if (seg.length >= 2) {
-                    const poly = A.polyline(seg, { opacity: 0.8 });
+                // seg は HIP 整数の配列 → RA/Dec 座標列に変換
+                const coords = seg
+                    .map(hip => {
+                        const s = _hipIndex.get(hip);
+                        return s ? [s.ra, s.dec] : null;
+                    })
+                    .filter(Boolean);
+                if (coords.length >= 2) {
+                    const poly = A.polyline(coords, { opacity: 0.8 });
                     poly.isInStroke = () => false;
                     linesOverlay.add(poly);
                     conPolylines[c.id].push(poly);
@@ -143,7 +151,6 @@ const Constellations = (() => {
     }
 
     function _rebuildLines() {
-        // 清空旧线条
         linesOverlay.removeAll();
         for (const k of Object.keys(conPolylines)) delete conPolylines[k];
         if (hoveredId) { hoveredId = null; }
@@ -151,13 +158,12 @@ const Constellations = (() => {
         if (!wantVisible.lines) linesOverlay.hide();
     }
 
-    // ── 星座名称（渲染层 graphicOverlay + hover 检测层 hoverCatalog）──────
+    // ── 星座名称（渲染层） ────────────────────────────────────────────────
 
     function _buildNamesOverlay() {
         namesOverlay = A.graphicOverlay({ name: 'constellation-names-render' });
         _aladin.addOverlay(namesOverlay);
 
-        const view     = _aladin.view;
         const origDraw = namesOverlay.draw.bind(namesOverlay);
         namesOverlay.draw = function(ctx) {
             origDraw(ctx);
@@ -251,7 +257,7 @@ const Constellations = (() => {
         _aladin.on('mouseMove', pos => {
             if (!wantVisible.lines || !wantVisible.names) return;
             if (!pos || pos.ra == null) return;
-            const fov      = _aladin.getFov()[0];
+            const fov       = _aladin.getFov()[0];
             const threshDeg = 48 / (_aladin.view.width / fov);
             const dec0 = pos.dec * DEG;
             let nearest = null, nearestDist = threshDeg;
@@ -285,7 +291,7 @@ const Constellations = (() => {
 
     function showArt(on) {
         wantVisible.art = on;
-        if (currentMode === 'chinese') return;  // 古代模式无图画
+        if (currentMode === 'chinese') return;
         if (on && !artCatalog) {
             _buildArtCatalog();
         } else if (artCatalog) {

@@ -1,5 +1,5 @@
 /**
- * 恒星星名显示模块（统一）
+ * 恒星星名显示模块
  *
  * 显示条件（满足其一即显示）：
  *   (是星座连线恒星 && showConstStarNames) || (showStarNames && mag <= magThreshold)
@@ -9,8 +9,8 @@
  */
 
 const Stars = (() => {
-    let allStars      = [];    // stars.json（现代恒星名）
-    let chineseStars  = [];    // chinese_star_names.json（古代恒星名）
+    let allStars      = [];    // stars.json 全部恒星
+    let chineseStars  = [];    // chinese_star_names.json（古代星名，带 hip）
     let catalog       = null;
     let _aladin       = null;
 
@@ -18,12 +18,15 @@ const Stars = (() => {
     let showStarNames      = false;
     let magThreshold       = 2.0;
     let currentLang        = 'zh';
-    let chineseMode        = false;   // 是否使用古代模式
+    let chineseMode        = false;
 
-    // 连线恒星坐标集（由 Constellations 设置，随模式切换更新）
-    let constStarCoords = new Set();
-    // 古代模式：连线恒星的 HIP->名字 快查表
-    let chineseStarMap  = new Map();  // key = "ra,dec" -> {zh, en}
+    // 连线恒星 HIP Set（由 Constellations 设置）
+    let constHips = new Set();
+
+    // HIP -> star 快查表（现代模式）
+    let hipIndex = new Map();
+    // HIP -> {zh, en, ra, dec} 快查表（古代模式）
+    let chineseHipIndex = new Map();
 
     // ── 初始化 ─────────────────────────────────────────────────────────────
 
@@ -35,9 +38,11 @@ const Stars = (() => {
             fetch('data/chinese_star_names.json').then(r => r.json()),
         ]);
 
-        // 建立古代星名坐标快查表
+        for (const s of allStars) {
+            if (s.hip) hipIndex.set(s.hip, s);
+        }
         for (const s of chineseStars) {
-            chineseStarMap.set(`${Math.round(s.ra*100)},${Math.round(s.dec*100)}`, s);
+            if (s.hip) chineseHipIndex.set(s.hip, s);
         }
 
         catalog = A.catalog({
@@ -64,13 +69,14 @@ const Stars = (() => {
         catalog.isShowing = false;
         catalog.reportChange();
 
-        return allStars;
+        // 返回 hipIndex 供 Constellations 使用（查连线恒星坐标）
+        return hipIndex;
     }
 
     // ── 外部设置接口 ───────────────────────────────────────────────────────
 
-    function setConstStarCoords(coordSet) {
-        constStarCoords = coordSet;
+    function setConstStarHips(hipSet) {
+        constHips = hipSet;
         _refresh();
     }
 
@@ -109,27 +115,24 @@ const Stars = (() => {
 
         if (anyVisible) {
             if (chineseMode) {
-                // 古代模式：使用 chinese_star_names.json
-                // 连线恒星名：从 chineseStarMap 查坐标键
-                const seen = new Set();
+                // 古代模式：连线恒星从 chineseHipIndex 取名，其余从 allStars 取
+                const seenHips = new Set();
                 if (showConstStarNames) {
-                    for (const [key, s] of chineseStarMap) {
-                        if (!constStarCoords.has(key)) continue;
+                    for (const hip of constHips) {
+                        const s = chineseHipIndex.get(hip);
+                        if (!s) continue;
                         const label = currentLang === 'zh'
                             ? (s.zh || s.en || '') : (s.en || s.zh || '');
                         if (!label) continue;
                         sources.push(A.source(s.ra, s.dec, { label }));
-                        seen.add(key);
+                        seenHips.add(hip);
                     }
                 }
-                // 星等阈值恒星：在古代模式下仍用 allStars，但排除已显示的连线恒星
                 if (showStarNames) {
                     for (const s of allStars) {
                         if (s.mag > magThreshold) continue;
-                        const key = `${Math.round(s.ra*100)},${Math.round(s.dec*100)}`;
-                        if (seen.has(key)) continue;
-                        // 优先显示古代名，没有则用现代名
-                        const chStar = chineseStarMap.get(key);
+                        if (s.hip && seenHips.has(s.hip)) continue;
+                        const chStar = s.hip ? chineseHipIndex.get(s.hip) : null;
                         let label;
                         if (chStar) {
                             label = currentLang === 'zh'
@@ -144,18 +147,17 @@ const Stars = (() => {
                     }
                 }
             } else {
-                // 现代模式：使用 allStars
-                sources = allStars.flatMap(s => {
-                    const key = `${Math.round(s.ra*100)},${Math.round(s.dec*100)}`;
-                    const isConst = constStarCoords.has(key);
+                // 现代模式：直接用 HIP Set 判断是否连线恒星
+                for (const s of allStars) {
+                    const isConst = s.hip && constHips.has(s.hip);
                     const show = (isConst && showConstStarNames) ||
                                  (showStarNames && s.mag <= magThreshold);
-                    if (!show) return [];
+                    if (!show) continue;
                     const label = currentLang === 'zh'
                         ? (s.zh || s.name || '') : (s.name || s.zh || '');
-                    if (!label) return [];
-                    return [A.source(s.ra, s.dec, { label })];
-                });
+                    if (!label) continue;
+                    sources.push(A.source(s.ra, s.dec, { label }));
+                }
             }
         }
 
@@ -168,7 +170,7 @@ const Stars = (() => {
 
     return {
         init,
-        setConstStarCoords,
+        setConstStarHips,
         setChineseStarMode,
         setLang,
         setShowConstStarNames,

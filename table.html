@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 13px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* ── Toolbar ── */
+        #toolbar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            background: #217346;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+            flex-shrink: 0;
+        }
+
+        #toolbar .sep {
+            width: 1px;
+            height: 22px;
+            background: rgba(255, 255, 255, .3);
+            margin: 0 4px;
+        }
+
+        #toolbar button {
+            padding: 3px 10px;
+            border: 1px solid rgba(255, 255, 255, .4);
+            border-radius: 3px;
+            background: rgba(255, 255, 255, .15);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background .15s;
+        }
+
+        #toolbar button:hover {
+            background: rgba(255, 255, 255, .3);
+        }
+
+        #toolbar button:active {
+            background: rgba(255, 255, 255, .45);
+        }
+
+        #cell-ref {
+            padding: 3px 8px;
+            border: 1px solid rgba(255, 255, 255, .4);
+            border-radius: 3px;
+            background: rgba(0, 0, 0, .2);
+            color: #fff;
+            font-size: 12px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        #formula-bar {
+            flex: 1;
+            padding: 3px 8px;
+            border: 1px solid rgba(255, 255, 255, .4);
+            border-radius: 3px;
+            background: #fff;
+            font-size: 12px;
+            outline: none;
+            color: #111;
+        }
+
+        /* ── Table wrapper ── */
+        #table-wrap {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+        }
+
+        /* ── Grid ── */
+        #grid {
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        #grid th,
+        #grid td {
+            border: 1px solid #d0d0d0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+        }
+
+        /* Corner */
+        #grid .corner {
+            background: #e8e8e8;
+            min-width: 40px;
+            width: 40px;
+            height: 24px;
+            border: 1px solid #b0b0b0;
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 5;
+        }
+
+        /* Col headers */
+        #grid .ch {
+            background: #e8e8e8;
+            text-align: center;
+            font-weight: 600;
+            color: #444;
+            min-width: 80px;
+            width: 80px;
+            height: 24px;
+            padding: 0 4px;
+            cursor: pointer;
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            border: 1px solid #b0b0b0;
+            transition: background .1s;
+        }
+
+        #grid .ch:hover {
+            background: #d8e4f8;
+        }
+
+        #grid .ch.sel-header {
+            background: #2d7dd2;
+            color: #fff;
+        }
+
+        /* Row headers */
+        #grid .rh {
+            background: #e8e8e8;
+            text-align: center;
+            font-weight: 600;
+            color: #444;
+            min-width: 40px;
+            width: 40px;
+            height: 22px;
+            padding: 0 4px;
+            cursor: pointer;
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            border: 1px solid #b0b0b0;
+            transition: background .1s;
+        }
+
+        #grid .rh:hover {
+            background: #d8e4f8;
+        }
+
+        #grid .rh.sel-header {
+            background: #2d7dd2;
+            color: #fff;
+        }
+
+        /* Data cells */
+        #grid td.cell {
+            height: 22px;
+            padding: 2px 4px;
+            cursor: cell;
+            background: #fff;
+            color: #111;
+            font-size: 13px;
+            min-width: 80px;
+            width: 80px;
+        }
+
+        #grid td.cell:hover {
+            background: #f5f8ff;
+        }
+
+        #grid td.cell.selected {
+            background: #c5daff !important;
+            outline: none;
+        }
+
+        #grid td.cell.anchor {
+            background: #fff !important;
+            outline: 2px solid #1a73e8;
+            outline-offset: -2px;
+            z-index: 1;
+        }
+
+        /* selection range border */
+        #grid td.cell.sel-top {
+            border-top: 2px solid #1a73e8 !important;
+        }
+
+        #grid td.cell.sel-bottom {
+            border-bottom: 2px solid #1a73e8 !important;
+        }
+
+        #grid td.cell.sel-left {
+            border-left: 2px solid #1a73e8 !important;
+        }
+
+        #grid td.cell.sel-right {
+            border-right: 2px solid #1a73e8 !important;
+        }
+
+        /* Inline editor */
+        #cell-editor {
+            position: fixed;
+            display: none;
+            border: 2px solid #1a73e8;
+            outline: none;
+            padding: 1px 3px;
+            font: 13px 'Segoe UI', system-ui, sans-serif;
+            background: #fff;
+            color: #111;
+            resize: none;
+            overflow: hidden;
+            z-index: 100;
+            min-height: 22px;
+            white-space: pre;
+        }
+
+        /* Fill-range mode: orange border signals "all selected cells will be filled" */
+        #cell-editor.fill-mode {
+            border-color: #e8710a;
+        }
+
+        /* Column resize handle */
+        .resize-handle {
+            position: absolute;
+            top: 0;
+            right: -3px;
+            width: 6px;
+            height: 100%;
+            cursor: col-resize;
+            z-index: 4;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: #333;
+            color: #fff;
+            padding: 7px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s, transform .25s;
+            z-index: 999;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Context menu */
+        #ctx-menu {
+            position: fixed;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 2px 4px 12px rgba(0, 0, 0, .2);
+            z-index: 200;
+            display: none;
+            min-width: 160px;
+            padding: 4px 0;
+        }
+
+        #ctx-menu .item {
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #222;
+        }
+
+        #ctx-menu .item:hover {
+            background: #e8f0fe;
+        }
+
+        #ctx-menu .sep {
+            border-top: 1px solid #eee;
+            margin: 4px 0;
+        }
+
+        /* ── Status bar ── */
+        #status-bar {
+            flex-shrink: 0;
+            height: 22px;
+            line-height: 22px;
+            padding: 0 12px;
+            background: #e8e8e8;
+            border-top: 1px solid #c0c0c0;
+            font-size: 12px;
+            color: #444;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: .01em;
+        }
+
+        #status-bar b {
+            color: #1a5c9e;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Toolbar -->
+    <div id="toolbar">
+        <span id="cell-ref">A1</span>
+        <input id="formula-bar" type="text" autocomplete="off" spellcheck="false" placeholder="输入内容…">
+        <div class="sep"></div>
+        <button onclick="insertRow(false)">插入行↑</button>
+        <button onclick="insertRow(true)">插入行↓</button>
+        <button onclick="deleteRows()">删除行</button>
+        <div class="sep"></div>
+        <button onclick="insertCol(false)">插入列←</button>
+        <button onclick="insertCol(true)">插入列→</button>
+        <button onclick="deleteCols()">删除列</button>
+        <div class="sep"></div>
+        <button onclick="clearSel()">清空</button>
+        <div class="sep"></div>
+        <button onclick="autoFitCols()" title="按各列最长文本自动调整列宽">自适应宽度</button>
+        <div class="sep"></div>
+        <button onclick="smartFill()" title="根据种子格规律自动填充选区">智能填充</button>
+        <div class="sep"></div>
+        <button onclick="sortRows(true)" title="以选中列为键，对选中行整体升序排序">排序行↑</button>
+        <button onclick="sortRows(false)" title="以选中列为键，对选中行整体降序排序">排序行↓</button>
+        <button onclick="sortCols(true)" title="以选中行为键，对选中列整体升序排序">排序列↑</button>
+        <button onclick="sortCols(false)" title="以选中行为键，对选中列整体降序排序">排序列↓</button>
+        <div class="sep"></div>
+        <button onclick="transpose()" title="将选中区域行列互换">转置</button>
+    </div>
+
+    <div id="table-wrap">
+        <table id="grid">
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+
+    <div id="status-bar">就绪</div>
+
+    <textarea id="cell-editor" rows="1" spellcheck="false"></textarea>
+
+    <div id="toast"></div>
+    <div id="ctx-menu">
+        <div class="item" onclick="ctxCopy()">复制 (Ctrl+C)</div>
+        <div class="item" onclick="ctxCut()">剪切 (Ctrl+X)</div>
+        <div class="item" onclick="ctxPaste()">粘贴 (Ctrl+V)</div>
+        <div class="sep"></div>
+        <div class="item" onclick="insertRow(false)">在上方插入行</div>
+        <div class="item" onclick="insertRow(true)">在下方插入行</div>
+        <div class="item" onclick="deleteRows()">删除行</div>
+        <div class="sep"></div>
+        <div class="item" onclick="insertCol(false)">在左侧插入列</div>
+        <div class="item" onclick="insertCol(true)">在右侧插入列</div>
+        <div class="item" onclick="deleteCols()">删除列</div>
+        <div class="sep"></div>
+        <div class="item" onclick="clearSel()">清空内容</div>
+        <div class="item" onclick="smartFill()">智能填充</div>
+        <div class="sep"></div>
+        <div class="item" onclick="sortRows(true)">排序行↑（按选中列升序）</div>
+        <div class="item" onclick="sortRows(false)">排序行↓（按选中列降序）</div>
+        <div class="item" onclick="sortCols(true)">排序列↑（按选中行升序）</div>
+        <div class="item" onclick="sortCols(false)">排序列↓（按选中行降序）</div>
+        <div class="sep"></div>
+        <div class="item" onclick="transpose()">转置</div>
+    </div>
+
+    <script>
+        // ─────────────────────────────────────────────
+        //  Config & State
+        // ─────────────────────────────────────────────
+        const INIT_ROWS = 30;
+        const INIT_COLS = 26;
+
+        let data = [];          // data[r][c] = string
+        let colWidths = [];     // pixels
+        let rowHeights = [];    // pixels
+
+        // Selection: normalised range (r0<=r1, c0<=c1)
+        let sel = { r0: 0, c0: 0, r1: 0, c1: 0, anchor_r: 0, anchor_c: 0 };
+        let isDragging = false;
+
+        // Editing
+        let editCell = null;      // {r, c}  — the cell currently being typed in
+        let editFillRange = null; // {r0,r1,c0,c1} — original range to fill on commit; null = single-cell mode
+        const editor = document.getElementById('cell-editor');
+        const formulaBar = document.getElementById('formula-bar');
+
+        // ─────────────────────────────────────────────
+        //  Init
+        // ─────────────────────────────────────────────
+        function initData() {
+            for (let r = 0; r < INIT_ROWS; r++) {
+                data.push(Array(INIT_COLS).fill(''));
+                rowHeights.push(22);
+            }
+            for (let c = 0; c < INIT_COLS; c++) colWidths.push(80);
+        }
+
+        function colLabel(c) {
+            let s = '';
+            c++;
+            while (c > 0) { s = String.fromCharCode(64 + (c % 26 || 26)) + s; c = Math.floor((c - 1) / 26); }
+            return s;
+        }
+
+        function buildTable() {
+            const tbody = document.getElementById('tbody');
+            tbody.innerHTML = '';
+
+            // Header row
+            const hrow = document.createElement('tr');
+            const corner = document.createElement('th');
+            corner.className = 'corner';
+            corner.textContent = '◢';
+            corner.title = '全选';
+            corner.onclick = () => selectAll();
+            hrow.appendChild(corner);
+
+            for (let c = 0; c < data[0].length; c++) {
+                const th = document.createElement('th');
+                th.className = 'ch';
+                th.dataset.c = c;
+                th.textContent = colLabel(c);
+                th.style.width = colWidths[c] + 'px';
+                th.onclick = (e) => selectCol(c, e);
+                // resize handle
+                const rh = document.createElement('div');
+                rh.className = 'resize-handle';
+                rh.addEventListener('mousedown', (e) => startColResize(e, c));
+                th.appendChild(rh);
+                hrow.appendChild(th);
+            }
+            tbody.appendChild(hrow);
+
+            // Data rows
+            for (let r = 0; r < data.length; r++) {
+                const tr = document.createElement('tr');
+                const rh = document.createElement('td');
+                rh.className = 'rh';
+                rh.dataset.r = r;
+                rh.textContent = r + 1;
+                rh.onclick = (e) => selectRow(r, e);
+                tr.appendChild(rh);
+
+                for (let c = 0; c < data[r].length; c++) {
+                    const td = document.createElement('td');
+                    td.className = 'cell';
+                    td.dataset.r = r;
+                    td.dataset.c = c;
+                    td.style.width = colWidths[c] + 'px';
+                    td.style.maxWidth = colWidths[c] + 'px';
+                    td.textContent = data[r][c];
+                    td.addEventListener('mousedown', onCellMouseDown);
+                    td.addEventListener('dblclick', onCellDblClick);
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            }
+
+            applySelStyles();
+        }
+
+        // ─────────────────────────────────────────────
+        //  Selection
+        // ─────────────────────────────────────────────
+        function normSel() {
+            return {
+                r0: Math.min(sel.r0, sel.r1), r1: Math.max(sel.r0, sel.r1),
+                c0: Math.min(sel.c0, sel.c1), c1: Math.max(sel.c0, sel.c1),
+            };
+        }
+
+        function setSelection(r0, c0, r1, c1, anchor_r, anchor_c) {
+            sel.r0 = r0; sel.c0 = c0;
+            sel.r1 = (r1 !== undefined) ? r1 : r0;
+            sel.c1 = (c1 !== undefined) ? c1 : c0;
+            sel.anchor_r = (anchor_r !== undefined) ? anchor_r : r0;
+            sel.anchor_c = (anchor_c !== undefined) ? anchor_c : c0;
+            applySelStyles();
+            updateFormulaBar();
+            updateCellRef();
+        }
+
+        function applySelStyles() {
+            // Remove old
+            document.querySelectorAll('.cell').forEach(td => {
+                td.classList.remove('selected', 'anchor', 'sel-top', 'sel-bottom', 'sel-left', 'sel-right');
+            });
+            document.querySelectorAll('.ch').forEach(th => th.classList.remove('sel-header'));
+            document.querySelectorAll('.rh').forEach(td => td.classList.remove('sel-header'));
+
+            const { r0, r1, c0, c1 } = normSel();
+
+            for (let r = r0; r <= r1; r++) {
+                for (let c = c0; c <= c1; c++) {
+                    const td = getCell(r, c);
+                    if (!td) continue;
+                    if (r === sel.anchor_r && c === sel.anchor_c) {
+                        td.classList.add('anchor');
+                    } else {
+                        td.classList.add('selected');
+                    }
+                    if (r === r0) td.classList.add('sel-top');
+                    if (r === r1) td.classList.add('sel-bottom');
+                    if (c === c0) td.classList.add('sel-left');
+                    if (c === c1) td.classList.add('sel-right');
+                }
+                // row header
+                const rh = document.querySelector(`.rh[data-r="${r}"]`);
+                if (rh) rh.classList.add('sel-header');
+            }
+            for (let c = c0; c <= c1; c++) {
+                const ch = document.querySelector(`.ch[data-c="${c}"]`);
+                if (ch) ch.classList.add('sel-header');
+            }
+            updateStatusBar();
+        }
+
+        function getCell(r, c) {
+            return document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+        }
+
+        function selectAll() {
+            setSelection(0, 0, data.length - 1, data[0].length - 1, 0, 0);
+        }
+
+        function selectRow(r, e) {
+            if (e && e.shiftKey) {
+                setSelection(sel.anchor_r, 0, r, data[0].length - 1, sel.anchor_r, 0);
+            } else {
+                setSelection(r, 0, r, data[0].length - 1, r, 0);
+            }
+        }
+
+        function selectCol(c, e) {
+            if (e && e.shiftKey) {
+                setSelection(0, sel.anchor_c, data.length - 1, c, 0, sel.anchor_c);
+            } else {
+                setSelection(0, c, data.length - 1, c, 0, c);
+            }
+        }
+
+        function updateCellRef() {
+            const { r0, r1, c0, c1 } = normSel();
+            const txt = r0 === r1 && c0 === c1
+                ? colLabel(c0) + (r0 + 1)
+                : colLabel(c0) + (r0 + 1) + ':' + colLabel(c1) + (r1 + 1);
+            document.getElementById('cell-ref').textContent = txt;
+        }
+
+        function updateFormulaBar() {
+            if (editCell) return;
+            formulaBar.value = data[sel.anchor_r]?.[sel.anchor_c] ?? '';
+        }
+
+        // ─────────────────────────────────────────────
+        //  Mouse: cell selection
+        // ─────────────────────────────────────────────
+        function onCellMouseDown(e) {
+            if (e.button === 2) return; // context menu handled separately
+            if (editCell) commitEdit();
+
+            const r = +this.dataset.r, c = +this.dataset.c;
+            if (e.shiftKey) {
+                sel.r1 = r; sel.c1 = c;
+                applySelStyles(); updateCellRef();
+            } else {
+                setSelection(r, c, r, c, r, c);
+                isDragging = true;
+            }
+            e.preventDefault();
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const el = document.elementFromPoint(e.clientX, e.clientY);
+            if (el && el.classList.contains('cell')) {
+                const r = +el.dataset.r, c = +el.dataset.c;
+                if (r !== sel.r1 || c !== sel.c1) {
+                    sel.r1 = r; sel.c1 = c;
+                    applySelStyles(); updateCellRef();
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => { isDragging = false; });
+
+        // ─────────────────────────────────────────────
+        //  Editing
+        // ─────────────────────────────────────────────
+        function onCellDblClick() {
+            const r = +this.dataset.r, c = +this.dataset.c;
+            startEdit(r, c, null);
+        }
+
+        function startEdit(r, c, initialChar, fillRange = false) {
+            if (editCell) commitEdit();
+
+            // Capture the current selection BEFORE collapsing it, so we know which cells to fill.
+            const { r0, r1, c0, c1 } = normSel();
+            editFillRange = (fillRange && (r0 !== r1 || c0 !== c1))
+                ? { r0, r1, c0, c1 } : null;
+
+            editCell = { r, c };
+
+            if (!editFillRange) {
+                // Normal single-cell edit: collapse the selection to just this cell.
+                setSelection(r, c, r, c, r, c);
+            }
+            // In range-fill mode the selection stays highlighted so the user can see what will be filled.
+
+            const td = getCell(r, c);
+            if (!td) return;
+            const rect = td.getBoundingClientRect();
+
+            editor.style.display = 'block';
+            editor.style.left = rect.left + 'px';
+            editor.style.top = rect.top + 'px';
+            editor.style.width = Math.max(colWidths[c], 80) + 'px';
+            editor.style.minHeight = rowHeights[r] + 'px';
+            editor.value = (initialChar !== null) ? initialChar : (data[r][c] || '');
+            editor.classList.toggle('fill-mode', !!editFillRange);
+            editor.focus();
+            if (initialChar !== null) {
+                editor.selectionStart = editor.selectionEnd = editor.value.length;
+            } else {
+                editor.select();
+            }
+            formulaBar.value = editor.value;
+
+            editor.oninput = () => { formulaBar.value = editor.value; autoResizeEditor(); };
+        }
+
+        function autoResizeEditor() {
+            editor.style.height = 'auto';
+            editor.style.height = Math.max(rowHeights[editCell?.r ?? 0], editor.scrollHeight + 2) + 'px';
+        }
+
+        function commitEdit(moveDir) {
+            if (!editCell) return;
+            const { r, c } = editCell;
+            const val = editor.value;
+            const fRange = editFillRange;   // capture before clearing
+
+            // Tear down editor
+            editor.style.display = 'none';
+            editor.classList.remove('fill-mode');
+            editor.value = '';
+            editCell = null;
+            editFillRange = null;
+
+            if (fRange) {
+                // ── Range-fill mode: write val to every cell in the saved range ──
+                const { r0, r1, c0, c1 } = fRange;
+                for (let fr = r0; fr <= r1; fr++)
+                    for (let fc = c0; fc <= c1; fc++) {
+                        data[fr][fc] = val;
+                        const td = getCell(fr, fc);
+                        if (td) td.textContent = val;
+                    }
+                // Restore the original range selection (anchor = the cell that was typed in)
+                setSelection(r0, c0, r1, c1, r, c);
+                return;
+            }
+
+            // ── Single-cell mode (original behaviour) ──
+            data[r][c] = val;
+            const td = getCell(r, c);
+            if (td) td.textContent = val;
+
+            if (moveDir) {
+                const nr = r + (moveDir === 'down' ? 1 : moveDir === 'up' ? -1 : 0);
+                const nc = c + (moveDir === 'right' ? 1 : moveDir === 'left' ? -1 : 0);
+                if (nr >= 0 && nr < data.length && nc >= 0 && nc < data[0].length) {
+                    setSelection(nr, nc, nr, nc, nr, nc);
+                } else {
+                    setSelection(r, c, r, c, r, c);
+                }
+            } else {
+                setSelection(r, c, r, c, r, c);
+            }
+        }
+
+        function cancelEdit() {
+            if (!editCell) return;
+            const { r, c } = editCell;
+            const fRange = editFillRange;
+            editor.style.display = 'none';
+            editor.classList.remove('fill-mode');
+            editor.value = '';
+            editCell = null;
+            editFillRange = null;
+            // Restore original range (if fill mode) or collapse to anchor
+            if (fRange) {
+                setSelection(fRange.r0, fRange.c0, fRange.r1, fRange.c1, r, c);
+            } else {
+                setSelection(r, c, r, c, r, c);
+            }
+        }
+
+        // Formula bar editing
+        formulaBar.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { commitFormulaBar(); e.preventDefault(); }
+            if (e.key === 'Escape') { updateFormulaBar(); formulaBar.blur(); }
+        });
+        formulaBar.addEventListener('input', () => {
+            if (editCell) { editor.value = formulaBar.value; autoResizeEditor(); }
+        });
+        formulaBar.addEventListener('focus', () => {
+            if (!editCell) startEdit(sel.anchor_r, sel.anchor_c, null, true);
+        });
+        function commitFormulaBar() {
+            if (editCell) {
+                editor.value = formulaBar.value;
+                commitEdit('down');
+            }
+        }
+
+        // ─────────────────────────────────────────────
+        //  Keyboard navigation
+        // ─────────────────────────────────────────────
+        document.addEventListener('keydown', (e) => {
+            // Editor shortcuts
+            if (editCell) {
+                if (e.key === 'Escape') { cancelEdit(); e.preventDefault(); return; }
+                if (e.key === 'Tab') { commitEdit(e.shiftKey ? 'left' : 'right'); e.preventDefault(); return; }
+                if (e.key === 'Enter' && !e.shiftKey) { commitEdit('down'); e.preventDefault(); return; }
+                return; // other keys go to editor textarea
+            }
+
+            // Not editing
+            const { r0, r1, c0, c1 } = normSel();
+
+            if (e.key === 'Enter') { startEdit(sel.anchor_r, sel.anchor_c, null, true); e.preventDefault(); return; }
+            if (e.key === 'F2') { startEdit(sel.anchor_r, sel.anchor_c, null, true); e.preventDefault(); return; }
+            if (e.key === 'Delete' || e.key === 'Backspace') { clearSel(); e.preventDefault(); return; }
+            if (e.key === 'Tab') {
+                const nc = sel.anchor_c + (e.shiftKey ? -1 : 1);
+                if (nc >= 0 && nc < data[0].length) setSelection(sel.anchor_r, nc);
+                e.preventDefault(); return;
+            }
+
+            const arrows = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+            if (arrows[e.key]) {
+                const [dr, dc] = arrows[e.key];
+                const nr = Math.max(0, Math.min(data.length - 1, sel.anchor_r + dr));
+                const nc = Math.max(0, Math.min(data[0].length - 1, sel.anchor_c + dc));
+                if (e.shiftKey) {
+                    sel.r1 = nr; sel.c1 = nc;
+                    applySelStyles(); updateCellRef();
+                } else {
+                    setSelection(nr, nc);
+                }
+                scrollCellIntoView(nr, nc);
+                e.preventDefault(); return;
+            }
+
+            if ((e.ctrlKey || e.metaKey)) {
+                if (e.key === 'a' || e.key === 'A') { selectAll(); e.preventDefault(); return; }
+                if (e.key === 'c' || e.key === 'C') { doCopy(); e.preventDefault(); return; }
+                if (e.key === 'x' || e.key === 'X') { doCut(); e.preventDefault(); return; }
+                if (e.key === 'z' || e.key === 'Z') { /* TODO: undo */ return; }
+            }
+
+            // Printable char → start typing (fill-range mode if multi-cell selection)
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                startEdit(sel.anchor_r, sel.anchor_c, e.key, true);
+                e.preventDefault();
+            }
+        });
+
+        function scrollCellIntoView(r, c) {
+            const td = getCell(r, c);
+            if (td) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
+
+        // ─────────────────────────────────────────────
+        //  Copy / Cut / Paste
+        // ─────────────────────────────────────────────
+        function getSelData() {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = [];
+            for (let r = r0; r <= r1; r++) {
+                const row = [];
+                for (let c = c0; c <= c1; c++) row.push(data[r][c] || '');
+                rows.push(row);
+            }
+            return rows;
+        }
+
+        function buildTSV(rows) {
+            return rows.map(r => r.join('\t')).join('\n');
+        }
+
+        function buildHTML(rows) {
+            const tdStyle = 'border:1px solid #d0d0d0;padding:3px 6px;font-family:Segoe UI,sans-serif;font-size:13px;';
+            let html = '<table style="border-collapse:collapse;">';
+            for (const row of rows) {
+                html += '<tr>';
+                for (const cell of row) {
+                    const escaped = (cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    html += `<td style="${tdStyle}">${escaped}</td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</table>';
+            return `<html><body><!--StartFragment-->${html}<!--EndFragment--></body></html>`;
+        }
+
+        async function doCopy(cut = false) {
+            if (editCell) return;
+            const rows = getSelData();
+            const tsv = buildTSV(rows);
+            const html = buildHTML(rows);
+
+            try {
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        'text/html': new Blob([html], { type: 'text/html' }),
+                        'text/plain': new Blob([tsv], { type: 'text/plain' }),
+                    })
+                ]);
+                toast(cut ? '已剪切' : `已复制 ${rows.length}×${rows[0].length} 单元格`);
+            } catch {
+                // fallback: execCommand
+                const ta = document.createElement('textarea');
+                ta.value = tsv;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                toast(cut ? '已剪切（纯文本）' : '已复制（纯文本）');
+            }
+
+            if (cut) clearSel();
+        }
+
+        function doCut() { doCopy(true); }
+
+        // Paste
+        document.addEventListener('paste', async (e) => {
+            if (editCell) return; // let browser handle paste inside editor
+            e.preventDefault();
+
+            const cd = e.clipboardData;
+            const htmlRaw = cd.getData('text/html');
+            const textRaw = cd.getData('text/plain');
+
+            let rows = null;
+
+            // 1. Try HTML table
+            if (htmlRaw) {
+                rows = parseHTMLTable(htmlRaw);
+            }
+
+            // 2. Try tab/newline text
+            if (!rows && textRaw && (textRaw.includes('\t') || textRaw.includes('\n'))) {
+                rows = parseTabText(textRaw);
+            }
+
+            // 3. Plain single value
+            if (!rows) {
+                if (textRaw) {
+                    rows = [[textRaw]];
+                } else {
+                    return;
+                }
+            }
+
+            pasteRows(rows);
+        });
+
+        function parseHTMLTable(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            const table = div.querySelector('table');
+            if (!table) return null;
+            const rows = [];
+            table.querySelectorAll('tr').forEach(tr => {
+                const row = [];
+                tr.querySelectorAll('td,th').forEach(cell => {
+                    row.push(cell.innerText.trim());
+                });
+                if (row.length) rows.push(row);
+            });
+            return rows.length ? rows : null;
+        }
+
+        function parseTabText(text) {
+            // Normalize line endings
+            const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trimEnd().split('\n');
+            return lines.map(line => line.split('\t'));
+        }
+
+        function pasteRows(rows) {
+            if (!rows || !rows.length) return;
+            const r0 = Math.min(sel.r0, sel.r1);
+            const c0 = Math.min(sel.c0, sel.c1);
+
+            // Expand data if needed
+            const neededRows = r0 + rows.length;
+            const neededCols = c0 + Math.max(...rows.map(r => r.length));
+            while (data.length < neededRows) { data.push(Array(data[0].length).fill('')); rowHeights.push(22); }
+            for (let r = 0; r < data.length; r++) {
+                while (data[r].length < neededCols) data[r].push('');
+            }
+            while (colWidths.length < neededCols) colWidths.push(80);
+
+            for (let ri = 0; ri < rows.length; ri++) {
+                for (let ci = 0; ci < rows[ri].length; ci++) {
+                    data[r0 + ri][c0 + ci] = rows[ri][ci];
+                }
+            }
+
+            buildTable();
+            const r1 = r0 + rows.length - 1;
+            const c1 = c0 + Math.max(...rows.map(r => r.length)) - 1;
+            setSelection(r0, c0, r1, c1, r0, c0);
+            toast(`已粘贴 ${rows.length}×${rows[0].length} 单元格`);
+        }
+
+        // ─────────────────────────────────────────────
+        //  Row / Col operations
+        // ─────────────────────────────────────────────
+        function insertRow(below) {
+            const r = below ? Math.max(sel.r0, sel.r1) + 1 : Math.min(sel.r0, sel.r1);
+            const count = Math.abs(sel.r1 - sel.r0) + 1;
+            for (let i = 0; i < count; i++) {
+                data.splice(r + (below ? i : 0), 0, Array(data[0].length).fill(''));
+                rowHeights.splice(r + (below ? i : 0), 0, 22);
+            }
+            buildTable();
+            const nr = below ? r : r;
+            setSelection(nr, sel.c0, nr + count - 1, sel.c1, nr, sel.c0);
+        }
+
+        function deleteRows() {
+            const { r0, r1 } = normSel();
+            if (data.length <= 1) return;
+            data.splice(r0, r1 - r0 + 1);
+            rowHeights.splice(r0, r1 - r0 + 1);
+            if (!data.length) { data.push(Array(data[0]?.length || INIT_COLS).fill('')); rowHeights.push(22); }
+            buildTable();
+            setSelection(Math.min(r0, data.length - 1), sel.c0);
+        }
+
+        function insertCol(right) {
+            const c = right ? Math.max(sel.c0, sel.c1) + 1 : Math.min(sel.c0, sel.c1);
+            const count = Math.abs(sel.c1 - sel.c0) + 1;
+            for (let i = 0; i < count; i++) {
+                for (let r = 0; r < data.length; r++) data[r].splice(c + (right ? i : 0), 0, '');
+                colWidths.splice(c + (right ? i : 0), 0, 80);
+            }
+            buildTable();
+            setSelection(sel.r0, c, sel.r1, c + count - 1, sel.r0, c);
+        }
+
+        function deleteCols() {
+            const { c0, c1 } = normSel();
+            if (data[0].length <= 1) return;
+            for (let r = 0; r < data.length; r++) data[r].splice(c0, c1 - c0 + 1);
+            colWidths.splice(c0, c1 - c0 + 1);
+            buildTable();
+            setSelection(sel.r0, Math.min(c0, data[0].length - 1));
+        }
+
+        function clearSel() {
+            const { r0, r1, c0, c1 } = normSel();
+            for (let r = r0; r <= r1; r++)
+                for (let c = c0; c <= c1; c++) {
+                    data[r][c] = '';
+                    const td = getCell(r, c);
+                    if (td) td.textContent = '';
+                }
+            updateFormulaBar();
+            updateStatusBar();
+        }
+
+        // ─────────────────────────────────────────────
+        //  Column resize
+        // ─────────────────────────────────────────────
+        let resizeState = null;
+
+        function startColResize(e, c) {
+            e.stopPropagation();
+            resizeState = { c, startX: e.clientX, startW: colWidths[c] };
+            document.addEventListener('mousemove', onColResize);
+            document.addEventListener('mouseup', endColResize);
+            e.preventDefault();
+        }
+        function onColResize(e) {
+            if (!resizeState) return;
+            const dx = e.clientX - resizeState.startX;
+            const newW = Math.max(30, resizeState.startW + dx);
+            colWidths[resizeState.c] = newW;
+            // Update live
+            document.querySelectorAll(`.ch[data-c="${resizeState.c}"]`).forEach(el => {
+                el.style.width = newW + 'px';
+            });
+            document.querySelectorAll(`.cell[data-c="${resizeState.c}"]`).forEach(el => {
+                el.style.width = newW + 'px'; el.style.maxWidth = newW + 'px';
+            });
+        }
+        function endColResize() {
+            resizeState = null;
+            document.removeEventListener('mousemove', onColResize);
+            document.removeEventListener('mouseup', endColResize);
+        }
+
+        // ─────────────────────────────────────────────
+        //  Context menu
+        // ─────────────────────────────────────────────
+        const ctxMenu = document.getElementById('ctx-menu');
+
+        document.getElementById('table-wrap').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const td = e.target.closest('.cell');
+            if (td) {
+                const r = +td.dataset.r, c = +td.dataset.c;
+                const { r0, r1, c0, c1 } = normSel();
+                if (r < r0 || r > r1 || c < c0 || c > c1) setSelection(r, c);
+            }
+            ctxMenu.style.display = 'block';
+            ctxMenu.style.left = Math.min(e.clientX, innerWidth - 180) + 'px';
+            ctxMenu.style.top = Math.min(e.clientY, innerHeight - 280) + 'px';
+        });
+
+        document.addEventListener('click', () => { ctxMenu.style.display = 'none'; });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') ctxMenu.style.display = 'none'; }, true);
+
+        function ctxCopy() { ctxMenu.style.display = 'none'; doCopy(); }
+        function ctxCut() { ctxMenu.style.display = 'none'; doCut(); }
+        function ctxPaste() {
+            ctxMenu.style.display = 'none';
+            navigator.clipboard.readText().then(text => {
+                if (!text) return;
+                const rows = (text.includes('\t') || text.includes('\n')) ? parseTabText(text) : [[text]];
+                pasteRows(rows);
+            }).catch(() => toast('无法读取剪贴板'));
+        }
+
+        // ─────────────────────────────────────────────
+        //  Toast
+        // ─────────────────────────────────────────────
+        let toastTimer;
+        function toast(msg) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+        }
+
+        // ─────────────────────────────────────────────
+        //  Click outside deselects editor
+        // ─────────────────────────────────────────────
+        document.addEventListener('mousedown', (e) => {
+            if (editCell && e.target !== editor && e.target !== formulaBar) {
+                commitEdit();
+            }
+            if (!e.target.closest('#ctx-menu')) ctxMenu.style.display = 'none';
+        });
+
+        // Keep editor positioned on scroll
+        document.getElementById('table-wrap').addEventListener('scroll', () => {
+            if (editCell) {
+                const td = getCell(editCell.r, editCell.c);
+                if (td) {
+                    const rect = td.getBoundingClientRect();
+                    editor.style.left = rect.left + 'px';
+                    editor.style.top = rect.top + 'px';
+                }
+            }
+        });
+
+        // ─────────────────────────────────────────────
+        //  Auto-fit column widths
+        // ─────────────────────────────────────────────
+        function updateStatusBar() {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = r1 - r0 + 1;
+            const cols = c1 - c0 + 1;
+            const total = rows * cols;
+
+            // Collect non-empty values and classify as numeric / text
+            const nums = [];
+            let textCount = 0;
+            for (let r = r0; r <= r1; r++) {
+                for (let c = c0; c <= c1; c++) {
+                    const v = (data[r]?.[c] ?? '').trim();
+                    if (v === '') continue;
+                    const n = Number(v);
+                    if (!isNaN(n)) { nums.push(n); } else { textCount++; }
+                }
+            }
+
+            const items = nums.length + textCount;
+            const sb = document.getElementById('status-bar');
+
+            if (items === 0) {
+                sb.innerHTML = `已选择 <b>${rows}</b> 行 <b>${cols}</b> 列 共 <b>${total}</b> 格，包含 <b>0</b> 项`;
+                return;
+            }
+
+            let numPart = `，<b>0</b> 项数值`;
+            if (nums.length > 0) {
+                const min = Math.min(...nums);
+                const max = Math.max(...nums);
+                const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+                const sorted = [...nums].sort((a, b) => a - b);
+                const mid = Math.floor(sorted.length / 2);
+                const median = sorted.length % 2 === 1
+                    ? sorted[mid]
+                    : (sorted[mid - 1] + sorted[mid]) / 2;
+                numPart = `，<b>${nums.length}</b> 项数值`
+                    + `（最小 <b>${fmtN(min)}</b>`
+                    + ` | 最大 <b>${fmtN(max)}</b>`
+                    + ` | 平均 <b>${fmtN(avg)}</b>`
+                    + ` | 中位数 <b>${fmtN(median)}</b>）`;
+            }
+
+            sb.innerHTML = `已选择 <b>${rows}</b> 行 <b>${cols}</b> 列 共 <b>${total}</b> 格，`
+                + `包含 <b>${items}</b> 项，其中 <b>${textCount}</b> 项文本` + numPart;
+        }
+
+        /** Format a number: integers stay whole; decimals rounded to ≤6 sig-figs, trailing zeros stripped */
+        function fmtN(n) {
+            if (!isFinite(n)) return '—';
+            if (Number.isInteger(n)) return n.toString();
+            return parseFloat(n.toPrecision(6)).toString();
+        }
+
+        // ─── Sort helpers ────────────────────────────────────────────────────────────
+
+        /**
+         * Compare two cell values for sorting.
+         * Rules: numeric < text (both coerced); empty cells always sort last.
+         * Returns negative / 0 / positive (ascending sense).
+         */
+        function sortCompare(va, vb) {
+            const sa = (va ?? '').trim();
+            const sb = (vb ?? '').trim();
+            // Empty always to the end
+            if (sa === '' && sb === '') return 0;
+            if (sa === '') return 1;
+            if (sb === '') return -1;
+            const na = Number(sa), nb = Number(sb);
+            const bothNum = !isNaN(na) && !isNaN(nb);
+            if (bothNum) return na - nb;
+            // Mixed or both text: locale-aware, numeric collation for embedded numbers
+            return sa.localeCompare(sb, 'zh-CN', { numeric: true, sensitivity: 'base' });
+        }
+
+        /**
+         * Sort selected rows (r0..r1) as whole units.
+         * Sort key = lexicographic comparison of columns c0..c1 (left column = primary key).
+         * Rows outside the selection, and columns outside the selection, are not touched —
+         * but each sorted row moves as a whole (all its columns travel with it).
+         */
+        function sortRows(asc) {
+            const { r0, r1, c0, c1 } = normSel();
+            if (r1 <= r0) { toast('请先选择至少 2 行'); return; }
+
+            // Work with index permutation so no data is clobbered mid-sort
+            const idxs = Array.from({ length: r1 - r0 + 1 }, (_, i) => r0 + i);
+            idxs.sort((ia, ib) => {
+                for (let c = c0; c <= c1; c++) {
+                    const cmp = sortCompare(data[ia][c], data[ib][c]);
+                    if (cmp !== 0) return asc ? cmp : -cmp;
+                }
+                return 0;
+            });
+
+            // Apply permutation (entire rows move, including columns outside the selection)
+            const rowSnap = idxs.map(i => [...data[i]]);
+            const heightSnap = idxs.map(i => rowHeights[i]);
+            for (let i = 0; i < idxs.length; i++) {
+                data[r0 + i] = rowSnap[i];
+                rowHeights[r0 + i] = heightSnap[i];
+            }
+
+            buildTable();
+            setSelection(r0, c0, r1, c1, r0, c0);
+            const keyDesc = c0 === c1 ? colLabel(c0) : `${colLabel(c0)}~${colLabel(c1)}`;
+            toast(`第 ${r0 + 1}~${r1 + 1} 行已按 ${keyDesc} 列${asc ? '升序' : '降序'}排列`);
+        }
+
+        /**
+         * Sort selected columns (c0..c1) as whole units.
+         * Sort key = lexicographic comparison of rows r0..r1 (top row = primary key).
+         * Each sorted column moves as a whole (all its rows travel with it),
+         * and colWidths follow the column.
+         */
+        function sortCols(asc) {
+            const { r0, r1, c0, c1 } = normSel();
+            if (c1 <= c0) { toast('请先选择至少 2 列'); return; }
+
+            const idxs = Array.from({ length: c1 - c0 + 1 }, (_, i) => c0 + i);
+            idxs.sort((ca, cb) => {
+                for (let r = r0; r <= r1; r++) {
+                    const cmp = sortCompare(data[r][ca], data[r][cb]);
+                    if (cmp !== 0) return asc ? cmp : -cmp;
+                }
+                return 0;
+            });
+
+            // Apply permutation: reorder every row's cells in c0..c1 range
+            const widthSnap = idxs.map(c => colWidths[c]);
+            for (let i = 0; i < idxs.length; i++) colWidths[c0 + i] = widthSnap[i];
+
+            for (let r = 0; r < data.length; r++) {
+                const cellSnap = idxs.map(c => data[r][c]);
+                for (let i = 0; i < idxs.length; i++) data[r][c0 + i] = cellSnap[i];
+            }
+
+            buildTable();
+            setSelection(r0, c0, r1, c1, r0, c0);
+            const keyDesc = r0 === r1 ? `第 ${r0 + 1}` : `第 ${r0 + 1}~${r1 + 1}`;
+            toast(`${colLabel(c0)}~${colLabel(c1)} 列已按 ${keyDesc} 行${asc ? '升序' : '降序'}排列`);
+        }
+
+        // ─── Smart Fill ──────────────────────────────────────────────────────────────
+
+        /**
+         * Try to parse a cell value as  [prefix][digits][suffix].
+         * Returns {prefix, num, suffix} or null if the format doesn't match
+         * (pure text, empty, or multiple digit-runs like "A1B2").
+         */
+        function parseSeed(val) {
+            const m = (val ?? '').match(/^([^0-9]*)(\d+)([^0-9]*)$/);
+            return m ? { prefix: m[1], num: parseInt(m[2], 10), suffix: m[3] } : null;
+        }
+
+        /**
+         * Build the k-th value in an arithmetic sequence.
+         * If parsed is null (no number found), returns seedVal unchanged for every k.
+         */
+        function fillValue(seedVal, parsed, k, step) {
+            if (!parsed) return seedVal;
+            return parsed.prefix + String(parsed.num + k * step) + parsed.suffix;
+        }
+
+        /**
+         * Derive the arithmetic step from two seed values.
+         * Returns 0 (no-increment) when either seed can't be parsed or their
+         * prefix/suffix templates don't match.
+         */
+        function inferStep(val0, val1) {
+            const p0 = parseSeed(val0), p1 = parseSeed(val1);
+            if (!p0 || !p1) return 0;
+            if (p0.prefix !== p1.prefix || p0.suffix !== p1.suffix) return 0;
+            return p1.num - p0.num;
+        }
+
+        /**
+         * Fill the entire selection row-by-row (reading order) starting from seedVal
+         * at position k=0.  Positions k=1,2,… get seedVal's number incremented by step.
+         */
+        function fillRowByRow(r0, r1, c0, c1, seedVal, step) {
+            const cols = c1 - c0 + 1;
+            const parsed = parseSeed(seedVal);
+            let k = 0;
+            for (let r = r0; r <= r1; r++)
+                for (let c = c0; c <= c1; c++, k++)
+                    data[r][c] = fillValue(seedVal, parsed, k, step);
+        }
+
+        function smartFill() {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = r1 - r0 + 1, cols = c1 - c0 + 1;
+
+            if (rows * cols < 2) { toast('请选择至少 2 个格'); return; }
+
+            // ── helpers scoped to this call ──────────────────────────────────────
+            const cell = (dr, dc) => (data[r0 + dr]?.[c0 + dc] ?? '').trim();
+            const has = (dr, dc) => cell(dr, dc) !== '';
+
+            // Count total filled cells and per-row / per-column fill counts
+            let total = 0;
+            const rCnt = new Array(rows).fill(0);   // rCnt[dr] = # filled in that row
+            const cCnt = new Array(cols).fill(0);   // cCnt[dc] = # filled in that col
+            for (let dr = 0; dr < rows; dr++)
+                for (let dc = 0; dc < cols; dc++)
+                    if (has(dr, dc)) { total++; rCnt[dr]++; cCnt[dc]++; }
+
+            if (total === 0) { toast('选区内没有内容可用作种子'); return; }
+
+            // ── Mode A — single top-left seed ────────────────────────────────────
+            if (total === 1 && has(0, 0)) {
+                fillRowByRow(r0, r1, c0, c1, cell(0, 0), 1);
+                done('单种子，步长 +1'); return;
+            }
+
+            // ── Mode A2 — two seeds in first two cells, width > 2 ────────────────
+            if (total === 2 && cols > 2 && has(0, 0) && has(0, 1)) {
+                const step = inferStep(cell(0, 0), cell(0, 1));
+                fillRowByRow(r0, r1, c0, c1, cell(0, 0), step);
+                done(`双种子，步长 ${step >= 0 ? '+' : ''}${step}`); return;
+            }
+
+            // ── Mode B — entire first row filled, rest empty ──────────────────────
+            if (rCnt[0] === cols && total === cols && rows >= 2) {
+                for (let dc = 0; dc < cols; dc++) {
+                    const sv = cell(0, dc), pv = parseSeed(sv);
+                    for (let dr = 1; dr < rows; dr++)
+                        data[r0 + dr][c0 + dc] = fillValue(sv, pv, dr, 1);
+                }
+                done('行种子，各列步长 +1'); return;
+            }
+
+            // ── Mode D — first two rows filled, rest empty ────────────────────────
+            if (rows >= 3 && rCnt[0] === cols && rCnt[1] === cols && total === 2 * cols) {
+                for (let dc = 0; dc < cols; dc++) {
+                    const sv = cell(0, dc), pv = parseSeed(sv);
+                    const step = inferStep(sv, cell(1, dc));
+                    for (let dr = 2; dr < rows; dr++)
+                        data[r0 + dr][c0 + dc] = fillValue(sv, pv, dr, step);
+                }
+                done('双行种子，各列等差'); return;
+            }
+
+            // ── Mode C — entire first column filled, rest empty ───────────────────
+            if (cCnt[0] === rows && total === rows && cols >= 2) {
+                for (let dr = 0; dr < rows; dr++) {
+                    const sv = cell(dr, 0), pv = parseSeed(sv);
+                    for (let dc = 1; dc < cols; dc++)
+                        data[r0 + dr][c0 + dc] = fillValue(sv, pv, dc, 1);
+                }
+                done('列种子，各行步长 +1'); return;
+            }
+
+            // ── Mode E — first two columns filled, rest empty ─────────────────────
+            if (cols >= 3 && cCnt[0] === rows && cCnt[1] === rows && total === 2 * rows) {
+                for (let dr = 0; dr < rows; dr++) {
+                    const sv = cell(dr, 0), pv = parseSeed(sv);
+                    const step = inferStep(sv, cell(dr, 1));
+                    for (let dc = 2; dc < cols; dc++)
+                        data[r0 + dr][c0 + dc] = fillValue(sv, pv, dc, step);
+                }
+                done('双列种子，各行等差'); return;
+            }
+
+            toast('无法识别填充模式：需满足单/双种子、首行或首列全填满之一');
+
+            function done(desc) {
+                buildTable();
+                setSelection(r0, c0, r1, c1, r0, c0);
+                toast(`智能填充完成（${desc}）`);
+            }
+        }
+
+        function transpose() {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = r1 - r0 + 1, cols = c1 - c0 + 1;
+
+            if (rows * cols < 2) { toast('请选择至少 2 个格'); return; }
+
+            // 1. Snapshot the selection before any writes
+            const snap = Array.from({ length: rows }, (_, dr) =>
+                Array.from({ length: cols }, (_, dc) => data[r0 + dr]?.[c0 + dc] ?? '')
+            );
+
+            // 2. Expand the grid if the transposed region exceeds current dimensions
+            //    Transposed footprint: rows (r0 .. r0+cols-1) × cols (c0 .. c0+rows-1)
+            const needRows = r0 + cols, needCols = c0 + rows;
+            while (data.length < needRows) { data.push(Array(data[0].length).fill('')); rowHeights.push(22); }
+            for (let r = 0; r < data.length; r++)
+                while (data[r].length < needCols) data[r].push('');
+            while (colWidths.length < needCols) colWidths.push(80);
+
+            // 3. Clear the original selection
+            for (let r = r0; r <= r1; r++)
+                for (let c = c0; c <= c1; c++)
+                    data[r][c] = '';
+
+            // 4. Write transposed: original [dr][dc] → transposed [dc][dr]
+            for (let dr = 0; dr < rows; dr++)
+                for (let dc = 0; dc < cols; dc++)
+                    data[r0 + dc][c0 + dr] = snap[dr][dc];
+
+            buildTable();
+            setSelection(r0, c0, r0 + cols - 1, c0 + rows - 1, r0, c0);
+            toast(`已转置：${rows}×${cols} → ${cols}×${rows}`);
+        }
+
+        function autoFitCols() {
+            // Use an offscreen canvas for fast, accurate text measurement
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            // Must match the CSS fonts exactly
+            const CELL_FONT = '13px "Segoe UI", system-ui, sans-serif';
+            const HEAD_FONT = '600 13px "Segoe UI", system-ui, sans-serif';
+            const H_PAD = 16;   // horizontal padding + borders (mirrors td padding:2px 4px × 2 + borders)
+            const MIN_W = 30;   // hard minimum
+
+            for (let c = 0; c < data[0].length; c++) {
+                // Start from header label width
+                ctx.font = HEAD_FONT;
+                let maxW = ctx.measureText(colLabel(c)).width;
+
+                ctx.font = CELL_FONT;
+                for (let r = 0; r < data.length; r++) {
+                    const val = data[r][c];
+                    if (!val) continue;
+                    // Support multi-line cell values — take the widest line
+                    const lines = val.split('\n');
+                    for (const line of lines) {
+                        const w = ctx.measureText(line).width;
+                        if (w > maxW) maxW = w;
+                    }
+                }
+
+                colWidths[c] = Math.max(MIN_W, Math.ceil(maxW) + H_PAD);
+            }
+
+            buildTable();
+            applySelStyles();
+            toast('已自适应列宽');
+        }
+
+        // ─────────────────────────────────────────────
+        //  Boot
+        // ─────────────────────────────────────────────
+        initData();
+        buildTable();
+        setSelection(0, 0);
+        document.getElementById('table-wrap').focus();
+
+        // Focus trap for keyboard events
+        document.getElementById('table-wrap').setAttribute('tabindex', '0');
+    </script>
+</body>
+
+</html>

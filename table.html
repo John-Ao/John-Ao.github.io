@@ -352,6 +352,8 @@
         <button onclick="sortCols(false)" title="以选中行为键，对选中列整体降序排序">排序列↓</button>
         <div class="sep"></div>
         <button onclick="transpose()" title="将选中区域行列互换">转置</button>
+        <button onclick="flipHorizontal()" title="将选中区域左右镜像翻转">水平翻转</button>
+        <button onclick="flipVertical()" title="将选中区域上下镜像翻转">垂直翻转</button>
     </div>
 
     <div id="table-wrap">
@@ -387,6 +389,8 @@
         <div class="item" onclick="sortCols(false)">排序列↓（按选中行降序）</div>
         <div class="sep"></div>
         <div class="item" onclick="transpose()">转置</div>
+        <div class="item" onclick="flipHorizontal()">水平翻转（左右镜像）</div>
+        <div class="item" onclick="flipVertical()">垂直翻转（上下镜像）</div>
     </div>
 
     <script>
@@ -1406,6 +1410,50 @@
             buildTable();
             setSelection(r0, c0, r0 + cols - 1, c0 + rows - 1, r0, c0);
             toast(`已转置：${rows}×${cols} → ${cols}×${rows}`);
+        }
+
+        function flipHorizontal() {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = r1 - r0 + 1, cols = c1 - c0 + 1;
+
+            if (rows * cols < 2) { toast('请选择至少 2 个格'); return; }
+
+            // Reverse columns within each row of the selection
+            for (let r = r0; r <= r1; r++) {
+                let lo = c0, hi = c1;
+                while (lo < hi) {
+                    const tmp = data[r][lo];
+                    data[r][lo] = data[r][hi];
+                    data[r][hi] = tmp;
+                    lo++; hi--;
+                }
+            }
+
+            buildTable();
+            setSelection(r0, c0, r1, c1, r0, c0);
+            toast(`已水平翻转：${rows}×${cols}`);
+        }
+
+        function flipVertical() {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = r1 - r0 + 1, cols = c1 - c0 + 1;
+
+            if (rows * cols < 2) { toast('请选择至少 2 个格'); return; }
+
+            // Reverse rows within each column of the selection
+            let lo = r0, hi = r1;
+            while (lo < hi) {
+                for (let c = c0; c <= c1; c++) {
+                    const tmp = data[lo][c];
+                    data[lo][c] = data[hi][c];
+                    data[hi][c] = tmp;
+                }
+                lo++; hi--;
+            }
+
+            buildTable();
+            setSelection(r0, c0, r1, c1, r0, c0);
+            toast(`已垂直翻转：${rows}×${cols}`);
         }
 
         function autoFitCols() {

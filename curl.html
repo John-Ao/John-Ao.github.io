@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>cURL → Python</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #ebebeb;
+            color: #1a1a1a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 10px 16px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        header .title {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .panels {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel+.panel {
+            border-left: 1px solid #e0e0e0;
+        }
+
+        /* ── toolbar ── */
+        .toolbar {
+            padding: 5px 12px;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .toolbar-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #999;
+        }
+
+        .btn {
+            font-size: 11px;
+            padding: 2px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #f9fafb;
+            color: #374151;
+            cursor: pointer;
+            line-height: 20px;
+            transition: background .1s, border-color .1s, color .1s;
+        }
+
+        .btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .btn:active {
+            background: #e5e7eb;
+        }
+
+        .btn.ok {
+            color: #16a34a;
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+
+        /* ── editor container ── */
+        .editor-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* shared code font — applied as a class to all layers */
+        .cm {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            tab-size: 4;
+        }
+
+        /* highlight layer (behind textarea) */
+        .hl-layer {
+            position: absolute;
+            inset: 0;
+            padding: 14px;
+            margin: 0;
+            border: none;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            overflow: hidden;
+            /* scroll driven by textarea; synced via JS */
+            pointer-events: none;
+            z-index: 1;
+            color: #1a1a1a;
+            background: transparent;
+        }
+
+        /* input textarea — transparent text, caret only */
+        textarea.src {
+            position: absolute;
+            inset: 0;
+            padding: 14px;
+            margin: 0;
+            border: none;
+            outline: none;
+            resize: none;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            overflow: auto;
+            z-index: 2;
+            background: transparent;
+            color: transparent;
+            caret-color: #374151;
+        }
+
+        textarea.src::placeholder {
+            color: #c0c5cf;
+        }
+
+        /* output pre */
+        .out-layer {
+            position: absolute;
+            inset: 0;
+            padding: 14px;
+            margin: 0;
+            border: none;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            overflow: auto;
+            z-index: 1;
+            color: #1a1a1a;
+            background: #fff;
+            cursor: default;
+            user-select: text;
+        }
+
+        .out-layer.error {
+            color: #b91c1c;
+        }
+
+        /* ── syntax tokens ── */
+        .t-curl {
+            color: #0550ae;
+            font-weight: 700;
+        }
+
+        /* curl */
+        .t-flag {
+            color: #6f42c1;
+        }
+
+        /* -H --data-raw … */
+        .t-str {
+            color: #800000;
+        }
+
+        /* 'string' */
+        .t-url {
+            color: #0550ae;
+        }
+
+        /* https://… */
+        .t-kw {
+            color: #cf222e;
+        }
+
+        /* import … */
+        .t-bi {
+            color: #0550ae;
+            font-weight: 500;
+        }
+
+        /* True False None */
+        .t-num {
+            color: #0550ae;
+        }
+
+        /* 42 3.14 */
+        .t-fn {
+            color: #8250df;
+        }
+
+        /* requests.get( */
+        .t-cmt {
+            color: #6e7781;
+            font-style: italic;
+        }
+
+        /* # comment */
+    </style>
+</head>
+
+<body>
+    <div class="panels">
+        <div class="panel">
+            <div class="toolbar">
+                <span class="toolbar-label">curl</span>
+                <button class="btn" id="btn-clear">清空</button>
+            </div>
+            <div class="editor-wrap">
+                <pre class="hl-layer cm" id="curl-hl" aria-hidden="true"></pre>
+                <textarea id="input" class="src cm" spellcheck="false"
+                    placeholder="curl 'https://example.com/api' \&#10;  -H 'content-type: application/json' \&#10;  -d '{&quot;key&quot;: &quot;value&quot;}'"></textarea>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="toolbar">
+                <span class="toolbar-label">python · requests</span>
+                <button class="btn" id="btn-copy">复制</button>
+            </div>
+            <div class="editor-wrap">
+                <pre class="out-layer cm" id="output"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Tokenizer ─────────────────────────────────────────────────────────────────
+        function tokenize(cmd) {
+            cmd = cmd.trim().replace(/\\\r?\n[ \t]*/g, ' ');
+            const tokens = [];
+            let i = 0, len = cmd.length;
+            while (i < len) {
+                while (i < len && /\s/.test(cmd[i])) i++;
+                if (i >= len) break;
+                let tok = '';
+                while (i < len && !/\s/.test(cmd[i])) {
+                    if (cmd[i] === "'") {
+                        i++;
+                        while (i < len && cmd[i] !== "'") tok += cmd[i++];
+                        if (i < len) i++;
+                    } else if (cmd[i] === '"') {
+                        i++;
+                        while (i < len && cmd[i] !== '"') {
+                            if (cmd[i] === '\\' && i + 1 < len) { i++; tok += cmd[i++]; }
+                            else tok += cmd[i++];
+                        }
+                        if (i < len) i++;
+                    } else if (cmd[i] === '\\' && i + 1 < len) {
+                        i++; tok += cmd[i++];
+                    } else {
+                        tok += cmd[i++];
+                    }
+                }
+                tokens.push(tok);
+            }
+            return tokens;
+        }
+
+        // ── Parser ────────────────────────────────────────────────────────────────────
+        function parseCurl(cmd) {
+            const tokens = tokenize(cmd);
+            if (!tokens.length || tokens[0].toLowerCase() !== 'curl')
+                throw new Error('不是 curl 命令');
+
+            let url = null, method = null;
+            const headers = [], cookies = [];
+            let data = null, dataType = null;
+            let user = null;
+
+            const FLAG_VAL = new Set([
+                '-X', '--request',
+                '-H', '--header',
+                '-d', '--data', '--data-raw', '--data-ascii', '--data-binary', '--data-urlencode',
+                '--json',
+                '-u', '--user',
+                '-b', '--cookie',
+                '-A', '--user-agent',
+                '-e', '--referer',
+                '-o', '--output',
+                '--connect-timeout', '--max-time', '-m',
+                '--proxy', '-x',
+                '--cacert', '--cert', '--key',
+            ]);
+
+            let i = 1;
+            const next = () => tokens[++i];
+
+            while (i < tokens.length) {
+                const t = tokens[i];
+
+                if (t === '-X' || t === '--request') { method = next(); }
+                else if (t === '-H' || t === '--header') {
+                    const h = parseHeader(next());
+                    if (h[0].toLowerCase() === 'cookie') cookies.push(...parseCookies(h[1]));
+                    else headers.push(h);
+                }
+                else if (t === '-A' || t === '--user-agent') { headers.push(['user-agent', next()]); }
+                else if (t === '-e' || t === '--referer') { headers.push(['referer', next()]); }
+                else if (t === '-u' || t === '--user') { user = next(); }
+                else if (t === '-b' || t === '--cookie') { cookies.push(...parseCookies(next())); }
+                else if (t === '--json') { data = next(); dataType = 'json'; }
+                else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-ascii') {
+                    data = next(); dataType = 'form';
+                }
+                else if (t === '--data-binary') { data = next(); dataType = 'binary'; }
+                else if (t === '--data-urlencode') { data = next(); dataType = 'urlencode'; }
+                else if (t === '-G' || t === '--get') { method = 'GET'; }
+                else if (t === '--compressed' || t === '-L' || t === '--location' ||
+                    t === '-s' || t === '--silent' || t === '-S' || t === '--show-error' ||
+                    t === '-v' || t === '--verbose' || t === '-i' || t === '--include' ||
+                    t === '-k' || t === '--insecure' || t === '-f' || t === '--fail' ||
+                    t === '--http1.1' || t === '--http2' || t === '-I' || t === '--head') { /* skip */ }
+                else if (FLAG_VAL.has(t)) { next(); }
+                else if (!t.startsWith('-') && url === null) { url = t; }
+                else if (t.startsWith('-') && t.length > 2 && !t.startsWith('--')) {
+                    if (t.includes('G')) method = 'GET';
+                }
+                i++;
+            }
+
+            if (!url) throw new Error('未找到 URL');
+
+            if (!method) method = data ? 'POST' : 'GET';
+            method = method.toLowerCase();
+
+            let baseUrl = url, params = [];
+            try {
+                const u = new URL(url);
+                baseUrl = u.origin + u.pathname;
+                u.searchParams.forEach((v, k) => params.push([k, v]));
+            } catch (_) { }
+
+            const ctHeader = headers.find(([k]) => k.toLowerCase() === 'content-type');
+            const ct = ctHeader ? ctHeader[1].toLowerCase() : '';
+
+            let bodyData = null, bodyJson = null, bodyRaw = null;
+            if (data) {
+                const trimmed = data.trim();
+                const looksLikeJson = trimmed.startsWith('{') || trimmed.startsWith('[');
+
+                if (dataType === 'json' || ct.includes('application/json')) {
+                    try { bodyJson = JSON.parse(data); } catch (_) { bodyRaw = data; }
+                } else if (ct.includes('application/x-www-form-urlencoded')) {
+                    bodyData = parseFormData(data);
+                } else if (looksLikeJson) {
+                    // --data-raw with JSON body but no explicit Content-Type
+                    try { bodyJson = JSON.parse(data); } catch (_) { bodyRaw = data; }
+                } else if (dataType === 'binary') {
+                    bodyRaw = data;
+                } else if (dataType === 'form' || dataType === 'urlencode') {
+                    bodyData = parseFormData(data);
+                } else {
+                    bodyData = parseFormData(data);
+                }
+            }
+
+            return { method, baseUrl, params, headers, cookies, bodyData, bodyJson, bodyRaw, user };
+        }
+
+        function parseHeader(s) {
+            const idx = s.indexOf(':');
+            if (idx < 0) return [s, ''];
+            return [s.slice(0, idx).trim(), s.slice(idx + 1).trim()];
+        }
+
+        function parseCookies(s) {
+            return s.split(';').map(p => p.trim()).filter(Boolean).map(p => {
+                const eq = p.indexOf('=');
+                if (eq < 0) return [p, ''];
+                return [p.slice(0, eq).trim(), p.slice(eq + 1).trim()];
+            });
+        }
+
+        function parseFormData(s) {
+            return s.split('&').map(p => {
+                const eq = p.indexOf('=');
+                if (eq < 0) return [safeDecodeURI(p), ''];
+                return [safeDecodeURI(p.slice(0, eq)), safeDecodeURI(p.slice(eq + 1))];
+            });
+        }
+
+        function safeDecodeURI(s) {
+            try { return decodeURIComponent(s); } catch (_) { return s; }
+        }
+
+        // ── Python codegen ────────────────────────────────────────────────────────────
+        function toPython(p) {
+            const { method, baseUrl, params, headers, cookies, bodyData, bodyJson, bodyRaw, user } = p;
+            const lines = ['import requests', ''];
+
+            if (user) lines.push(`# auth: ${user}`);
+
+            lines.push(`response = requests.${method}(`);
+            lines.push(`    '${pyStr(baseUrl)}',`);
+
+            if (params.length) lines.push(...dictArg('params', params));
+            if (headers.length) lines.push(...dictArg('headers', headers));
+            if (cookies && cookies.length) lines.push(...dictArg('cookies', cookies));
+
+            if (bodyData && bodyData.length)
+                lines.push(...dictArg('data', bodyData));
+            else if (bodyJson !== null)
+                lines.push(...jsonArg('json', bodyJson));
+            else if (bodyRaw != null)
+                lines.push(`    data='${pyStr(bodyRaw)}',`);
+
+            lines.push(')');
+            return lines.join('\n');
+        }
+
+        function dictArg(name, pairs) {
+            const lines = [`    ${name}={`];
+            for (const [k, v] of pairs)
+                lines.push(`        '${pyStr(k)}': '${pyStr(v)}',`);
+            lines.push('    },');
+            return lines;
+        }
+
+        function jsonArg(name, obj) {
+            const py = jsonToPy(obj, 4);
+            if (!py.includes('\n')) return [`    ${name}=${py.trimStart()},`];
+            return [`    ${name}=${py.trimStart().replace(/,$/, '')},`];
+        }
+
+        function jsonToPy(val, indent) {
+            const pad = ' '.repeat(indent), pad2 = ' '.repeat(indent + 4);
+            if (val === null) return 'None';
+            if (val === true) return 'True';
+            if (val === false) return 'False';
+            if (typeof val === 'number') return String(val);
+            if (typeof val === 'string') return `'${pyStr(val)}'`;
+            if (Array.isArray(val)) {
+                if (!val.length) return '[]';
+                return `[\n${val.map(v => pad2 + jsonToPy(v, indent + 4)).join(',\n')},\n${pad}]`;
+            }
+            if (typeof val === 'object') {
+                const keys = Object.keys(val);
+                if (!keys.length) return '{}';
+                return `{\n${keys.map(k => `${pad2}'${pyStr(k)}': ${jsonToPy(val[k], indent + 4)}`).join(',\n')},\n${pad}}`;
+            }
+            return JSON.stringify(val);
+        }
+
+        function pyStr(s) {
+            return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        // ── HTML escape ───────────────────────────────────────────────────────────────
+        function escHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // ── Curl highlighter ──────────────────────────────────────────────────────────
+        function highlightCurl(text) {
+            let html = '', i = 0;
+            const len = text.length;
+            let firstWord = true;
+
+            while (i < len) {
+                const ch = text[i];
+
+                if (ch === '\n') { html += '\n'; i++; continue; }
+
+                // backslash line continuation
+                if (ch === '\\' && i + 1 < len && text[i + 1] === '\n') {
+                    html += '<span style="color:#aaa">\\</span>\n'; i += 2; continue;
+                }
+
+                // non-newline whitespace
+                if (/[^\S\n]/.test(ch)) { html += ch; i++; continue; }
+
+                // single-quoted string
+                if (ch === "'") {
+                    let s = "'"; i++;
+                    while (i < len && text[i] !== "'") s += text[i++];
+                    if (i < len) { s += "'"; i++; }
+                    html += `<span class="t-str">${escHtml(s)}</span>`;
+                    firstWord = false; continue;
+                }
+
+                // double-quoted string
+                if (ch === '"') {
+                    let s = '"'; i++;
+                    while (i < len && text[i] !== '"') {
+                        if (text[i] === '\\' && i + 1 < len) s += text[i++];
+                        s += text[i++];
+                    }
+                    if (i < len) { s += '"'; i++; }
+                    html += `<span class="t-str">${escHtml(s)}</span>`;
+                    firstWord = false; continue;
+                }
+
+                // word
+                let word = '';
+                while (i < len && text[i] !== "'" && text[i] !== '"' && !/\s/.test(text[i])) word += text[i++];
+                if (!word) { html += escHtml(ch); i++; continue; }
+
+                if (firstWord && word.toLowerCase() === 'curl') {
+                    html += `<span class="t-curl">${escHtml(word)}</span>`;
+                } else if (word.startsWith('-')) {
+                    html += `<span class="t-flag">${escHtml(word)}</span>`;
+                } else if (/^https?:\/\//i.test(word)) {
+                    html += `<span class="t-url">${escHtml(word)}</span>`;
+                } else {
+                    html += escHtml(word);
+                }
+                firstWord = false;
+            }
+            return html;
+        }
+
+        // ── Python highlighter ────────────────────────────────────────────────────────
+        const PY_KW = new Set(['import', 'from', 'as', 'def', 'class', 'return', 'if', 'else',
+            'elif', 'for', 'while', 'in', 'not', 'and', 'or', 'pass', 'with', 'try', 'except',
+            'finally', 'raise', 'lambda', 'yield']);
+        const PY_BI = new Set(['True', 'False', 'None']);
+
+        function highlightPython(code) {
+            return code.split('\n').map(hlPyLine).join('\n');
+        }
+
+        function hlPyLine(line) {
+            if (!line) return '';
+            if (line.trimStart().startsWith('#'))
+                return `<span class="t-cmt">${escHtml(line)}</span>`;
+
+            let html = '', i = 0;
+            const len = line.length;
+
+            while (i < len) {
+                const ch = line[i];
+
+                if (/\s/.test(ch)) { html += ch; i++; continue; }
+
+                // inline comment
+                if (ch === '#') {
+                    html += `<span class="t-cmt">${escHtml(line.slice(i))}</span>`; break;
+                }
+
+                // string
+                if (ch === "'" || ch === '"') {
+                    const q = ch; let s = q; i++;
+                    while (i < len && line[i] !== q) {
+                        if (line[i] === '\\' && i + 1 < len) s += line[i++];
+                        s += line[i++];
+                    }
+                    if (i < len) { s += q; i++; }
+                    html += `<span class="t-str">${escHtml(s)}</span>`;
+                    continue;
+                }
+
+                // number (integers and simple floats)
+                if (/\d/.test(ch)) {
+                    let s = '';
+                    while (i < len && /[\d.]/.test(line[i])) s += line[i++];
+                    html += `<span class="t-num">${escHtml(s)}</span>`;
+                    continue;
+                }
+
+                // identifier / keyword / builtin / function
+                if (/[a-zA-Z_]/.test(ch)) {
+                    let s = '';
+                    while (i < len && /\w/.test(line[i])) s += line[i++];
+                    // look-ahead: followed by ( or . → treat as function/module
+                    let j = i;
+                    while (j < len && line[j] === ' ') j++;
+                    const after = line[j];
+                    if (PY_KW.has(s)) html += `<span class="t-kw">${escHtml(s)}</span>`;
+                    else if (PY_BI.has(s)) html += `<span class="t-bi">${escHtml(s)}</span>`;
+                    else if (after === '(' || after === '.') html += `<span class="t-fn">${escHtml(s)}</span>`;
+                    else html += escHtml(s);
+                    continue;
+                }
+
+                html += escHtml(ch); i++;
+            }
+            return html;
+        }
+
+        // ── Live wiring ───────────────────────────────────────────────────────────────
+        const inputEl = document.getElementById('input');
+        const curlHl = document.getElementById('curl-hl');
+        const outputEl = document.getElementById('output');
+        const btnClear = document.getElementById('btn-clear');
+        const btnCopy = document.getElementById('btn-copy');
+
+        let lastCode = '';
+
+        function syncCurlHl() {
+            curlHl.innerHTML = highlightCurl(inputEl.value);
+            curlHl.scrollTop = inputEl.scrollTop;
+            curlHl.scrollLeft = inputEl.scrollLeft;
+        }
+
+        function convert() {
+            syncCurlHl();
+            const src = inputEl.value.trim();
+            if (!src) {
+                outputEl.innerHTML = '';
+                outputEl.className = 'out-layer cm';
+                lastCode = ''; return;
+            }
+            try {
+                const parsed = parseCurl(src);
+                lastCode = toPython(parsed);
+                outputEl.innerHTML = highlightPython(lastCode);
+                outputEl.className = 'out-layer cm';
+            } catch (e) {
+                lastCode = '';
+                outputEl.textContent = '# ' + e.message;
+                outputEl.className = 'out-layer cm error';
+            }
+        }
+
+        inputEl.addEventListener('input', convert);
+        inputEl.addEventListener('paste', () => setTimeout(convert, 0));
+        inputEl.addEventListener('scroll', () => {
+            curlHl.scrollTop = inputEl.scrollTop;
+            curlHl.scrollLeft = inputEl.scrollLeft;
+        });
+
+        btnClear.addEventListener('click', () => {
+            inputEl.value = '';
+            convert();
+            inputEl.focus();
+        });
+
+        btnCopy.addEventListener('click', () => {
+            if (!lastCode) return;
+            navigator.clipboard.writeText(lastCode).then(() => {
+                btnCopy.textContent = '已复制 ✓';
+                btnCopy.classList.add('ok');
+                setTimeout(() => {
+                    btnCopy.textContent = '复制';
+                    btnCopy.classList.remove('ok');
+                }, 2000);
+            }).catch(() => {
+                // fallback: select all text in output
+                const range = document.createRange();
+                range.selectNodeContents(outputEl);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            });
+        });
+    </script>
+</body>
+
+</html>

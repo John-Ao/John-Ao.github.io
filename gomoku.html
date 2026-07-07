@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>五子棋</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #faf7f2;
+            font-family: -apple-system, "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+            color: #2b2b2b;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        body.horiz {
+            flex-direction: row;
+        }
+
+        /* 宽屏：棋盘左，按钮栏右 */
+        body.vert {
+            flex-direction: column;
+        }
+
+        /* 窄屏：棋盘上，按钮栏下 */
+        #bar {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.horiz #bar {
+            flex-direction: column;
+        }
+
+        body.vert #bar {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        button:hover {
+            border-color: #888;
+        }
+
+        button:disabled {
+            opacity: .4;
+            cursor: default;
+        }
+
+        #wrap {
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+            background: #e6b873;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bar">
+        <button id="undo">悔棋</button>
+        <button id="share">分享</button>
+        <button id="reset">重开</button>
+    </div>
+    <div id="wrap"><canvas id="c"></canvas></div>
+    <script>
+        const SIZE = 15;
+        const COLS = "ABCDEFGHIJKLMNO".split("");
+        let moves = [];   // [{col, row, color}]
+        let winner = null;
+        let winLine = null; // [{col,row},...] 五连胜子
+
+        // ---------- URL / history ----------
+        function parseMoves() {
+            const s = new URLSearchParams(location.search).get("moves") || "";
+            moves = [];
+            if (!s) return;
+            s.split(",").filter(Boolean).forEach((m, i) => {
+                const col = COLS.indexOf(m[0]);
+                const row = parseInt(m.slice(1), 10) - 1;
+                if (col >= 0 && row >= 0 && row < SIZE) {
+                    moves.push({ col, row, color: i % 2 === 0 ? "black" : "white" });
+                }
+            });
+        }
+        function movesToParam() {
+            return moves.map(m => COLS[m.col] + (m.row + 1)).join(",");
+        }
+        function pushState() {
+            const u = location.pathname + (moves.length ? "?moves=" + movesToParam() : "");
+            history.pushState({ n: moves.length }, "", u);
+        }
+        function replaceState() {
+            const u = location.pathname + (moves.length ? "?moves=" + movesToParam() : "");
+            history.replaceState({ n: moves.length }, "", u);
+        }
+
+        // ---------- drawing ----------
+        const canvas = document.getElementById("c");
+        const ctx = canvas.getContext("2d");
+        let W = 0, pad = 0, cell = 0;
+
+        function resize() {
+            const vw = window.innerWidth, vh = window.innerHeight;
+            const horiz = vw >= vh;
+            document.body.classList.toggle("horiz", horiz);
+            document.body.classList.toggle("vert", !horiz);
+
+            const bar = document.getElementById("bar");
+            // 宽屏：栏在右侧占宽度；窄屏：栏在下方占高度
+            const barFootprint = horiz ? (bar.offsetWidth + 14) : (bar.offsetHeight + 14);
+            const avail = horiz
+                ? Math.min(vw - barFootprint - 28, vh - 28)
+                : Math.min(vh - barFootprint - 28, vw - 28);
+            W = Math.max(280, Math.floor(avail));
+            pad = Math.round(W * 0.045);
+            cell = (W - pad * 2) / (SIZE - 1);
+            canvas.width = W;
+            canvas.height = W;
+            draw();
+        }
+
+        function draw() {
+            ctx.fillStyle = "#e6b873";
+            ctx.fillRect(0, 0, W, W);
+
+            // grid
+            ctx.strokeStyle = "#5b4632";
+            ctx.lineWidth = 1;
+            for (let i = 0; i < SIZE; i++) {
+                ctx.beginPath();
+                ctx.moveTo(pad, pad + i * cell);
+                ctx.lineTo(pad + (SIZE - 1) * cell, pad + i * cell);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(pad + i * cell, pad);
+                ctx.lineTo(pad + i * cell, pad + (SIZE - 1) * cell);
+                ctx.stroke();
+            }
+
+            // star points
+            ctx.fillStyle = "#5b4632";
+            [[3, 3], [3, 11], [11, 3], [11, 11], [7, 7]].forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(pad + x * cell, pad + y * cell, Math.max(2, cell * 0.07), 0, 2 * Math.PI);
+                ctx.fill();
+            });
+
+            // labels
+            ctx.fillStyle = "#6b5640";
+            ctx.font = Math.max(9, cell * 0.34) + "px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            for (let i = 0; i < SIZE; i++) {
+                ctx.fillText(COLS[i], pad + i * cell, pad / 2);
+                ctx.fillText(COLS[i], pad + i * cell, W - pad / 2);
+                ctx.fillText(i + 1, pad / 2, pad + i * cell);
+                ctx.fillText(i + 1, W - pad / 2, pad + i * cell);
+            }
+
+            // pieces
+            const r = cell * 0.44;
+
+            moves.forEach((m, i) => {
+                const x = pad + m.col * cell, y = pad + m.row * cell;
+                const isLast = i === moves.length - 1;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, 2 * Math.PI);
+                ctx.fillStyle = m.color === "black" ? "#000" : "#fff";
+                ctx.fill();
+                ctx.lineWidth = isLast ? 3 : 1.5;
+                ctx.strokeStyle = isLast ? "#06c8d4" : "#000";
+                ctx.stroke();
+                ctx.fillStyle = m.color === "black" ? "#fff" : "#000";
+                ctx.font = Math.max(8, cell * 0.32) + "px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(i + 1, x, y);
+            });
+
+            // 胜利连线：顶层绿色胶囊框圈住5子
+            if (winLine && winLine.length >= 5) {
+                const a = winLine[0], b = winLine[winLine.length - 1];
+                const x1 = pad + a.col * cell, y1 = pad + a.row * cell;
+                const x2 = pad + b.col * cell, y2 = pad + b.row * cell;
+                const radius = r + Math.max(3, cell * 0.12); // 半圆半径，略大于棋子
+                // 沿首->尾方向构造胶囊：两个端点圆 + 中间矩形
+                const dx = x2 - x1, dy = y2 - y1;
+                const len = Math.hypot(dx, dy) || 1;
+                const nx = -dy / len, ny = dx / len; // 法向单位向量
+
+                ctx.beginPath();
+                // 矩形四角
+                ctx.moveTo(x1 + nx * radius, y1 + ny * radius);
+                ctx.lineTo(x2 + nx * radius, y2 + ny * radius);
+                // b 端半圆（在 b 外侧，沿逆时针从 n 到 -n）
+                ctx.arc(x2, y2, radius, Math.atan2(ny, nx), Math.atan2(-ny, -nx), true);
+                ctx.lineTo(x1 - nx * radius, y1 - ny * radius);
+                // a 端半圆（在 a 外侧，沿逆时针从 -n 到 n）
+                ctx.arc(x1, y1, radius, Math.atan2(-ny, -nx), Math.atan2(ny, nx), true);
+                ctx.closePath();
+                ctx.strokeStyle = "#39ff14";
+                ctx.lineWidth = Math.max(3, cell * 0.1);
+                ctx.stroke();
+            }
+
+            document.getElementById("undo").disabled = moves.length === 0;
+        }
+
+        // ---------- rules ----------
+        function checkWin(last) {
+            const m = moves[last];
+            if (!m) return;
+            const dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+            for (const [dx, dy] of dirs) {
+                const line = [{ col: m.col, row: m.row }];
+                for (let s = -1; s <= 1; s += 2) {
+                    for (let k = 1; k < 5; k++) {
+                        const nc = m.col + dx * k * s, nr = m.row + dy * k * s;
+                        if (moves.some((mm, idx) => idx !== last && mm.col === nc && mm.row === nr && mm.color === m.color)) {
+                            line.push({ col: nc, row: nr });
+                        } else break;
+                    }
+                }
+                if (line.length >= 5) {
+                    winner = m.color;
+                    // 排序保证连线方向连续（按棋盘阅读顺序）
+                    line.sort((a, b) => a.col - b.col || a.row - b.row);
+                    winLine = line;
+                    return;
+                }
+            }
+        }
+
+        // ---------- interaction ----------
+        canvas.addEventListener("click", e => {
+            if (winner) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (W / rect.width);
+            const y = (e.clientY - rect.top) * (W / rect.height);
+            const col = Math.round((x - pad) / cell);
+            const row = Math.round((y - pad) / cell);
+            if (col < 0 || col >= SIZE || row < 0 || row >= SIZE) return;
+            if (moves.some(m => m.col === col && m.row === row)) return;
+            moves.push({ col, row, color: moves.length % 2 === 0 ? "black" : "white" });
+            winner = null;
+            winLine = null;
+            checkWin(moves.length - 1);
+            pushState();
+            draw();
+        });
+
+        document.getElementById("undo").addEventListener("click", () => {
+            if (moves.length === 0) return;
+            moves.pop();
+            winner = null;
+            winLine = null;
+            if (moves.length) checkWin(moves.length - 1);
+            pushState();
+            draw();
+        });
+
+        document.getElementById("share").addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(location.href);
+                alert("棋局链接已复制到剪贴板");
+            } catch (e) {
+                prompt("复制此链接分享棋局：", location.href);
+            }
+        });
+
+        document.getElementById("reset").addEventListener("click", () => {
+            moves = [];
+            winner = null;
+            winLine = null;
+            pushState();
+            draw();
+        });
+
+        window.addEventListener("popstate", () => {
+            parseMoves();
+            winner = null;
+            winLine = null;
+            if (moves.length) checkWin(moves.length - 1);
+            draw();
+        });
+
+        window.addEventListener("resize", resize);
+
+        // ---------- init ----------
+        parseMoves();
+        if (moves.length) checkWin(moves.length - 1);
+        resize();
+        replaceState();
+    </script>
+</body>
+
+</html>

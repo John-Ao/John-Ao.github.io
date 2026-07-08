@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>黑白棋 · Othello</title>
+  <style>
+    :root {
+      --bg: #f4f4ef;
+      --panel: #ffffff;
+      --board: #2e7d32;
+      --board-edge: #1b5e20;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --accent: #1b5e20;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
+    }
+
+    /* 布局：横屏左右排，竖屏面板在上；棋盘+面板作为整体居中 */
+    .layout {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    @media (orientation: portrait) {
+      .layout {
+        flex-direction: column-reverse;
+      }
+    }
+
+    /* 棋盘：JS 用 ResizeObserver 设正方形像素尺寸 */
+    .board {
+      flex: 0 0 auto;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      gap: 2px;
+      padding: 2px;
+      background: var(--board-edge);
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .cell {
+      position: relative;
+      background: var(--board);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 600px;
+      cursor: default;
+      overflow: hidden;
+    }
+
+    .cell.legal {
+      cursor: pointer;
+    }
+
+    .cell.legal::after {
+      content: '';
+      position: absolute;
+      inset: 35%;
+      border-radius: 50%;
+      border: 2px solid rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.14);
+      }
+    }
+
+    .cell.legal:hover::after {
+      border-color: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.07);
+    }
+
+    /* 棋子：width% + aspect-ratio，避免百分比高度不解析 */
+    .piece {
+      width: 82%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      transform: rotateY(0deg);
+      pointer-events: none;
+    }
+
+    .piece.black {
+      background-color: #000;
+      background-image: radial-gradient(circle at 35% 30%, #5a5a5a, #000 70%);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    .piece.white {
+      background-color: #fff;
+      background-image: radial-gradient(circle at 35% 30%, #fff, #c8c8c8 75%);
+      border: 1px solid #a8a8a8;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+    }
+
+    .piece.placing {
+      animation: place 0.22s ease-out;
+    }
+
+    @keyframes place {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    /* 面板：横屏纵向单列收窄，竖屏横向一行 */
+    .panel {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      min-width: 116px;
+    }
+
+    @media (orientation: portrait) {
+      .panel {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 0;
+        gap: 14px;
+      }
+    }
+
+    .score {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--panel);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .score.active {
+      box-shadow: 0 0 0 2px var(--accent), 0 2px 8px rgba(0, 0, 0, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .disc-mini {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .disc-mini.black {
+      background-color: #000;
+      background-image: radial-gradient(circle at 35% 30%, #555, #000 70%);
+    }
+
+    .disc-mini.white {
+      background-color: #fff;
+      background-image: radial-gradient(circle at 35% 30%, #fff, #cfcfcf 75%);
+      border: 1px solid #b0b0b0;
+    }
+
+    .score .num {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      font-size: 18px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    #status {
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    @media (orientation: portrait) {
+      .btn-row {
+        flex-direction: row;
+        width: auto;
+      }
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 15px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--board-edge);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    button.primary {
+      background: var(--board-edge);
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+    <div class="board" id="board"></div>
+    <aside class="panel">
+      <div class="score" id="scoreB"><span class="disc-mini black"></span><span class="num" id="numB">2</span></div>
+      <div id="status">黑方回合</div>
+      <div class="score" id="scoreW"><span class="num" id="numW">2</span><span class="disc-mini white"></span></div>
+      <div class="btn-row">
+        <button id="undoBtn">悔棋</button>
+        <button id="restartBtn" class="primary">重开</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      const SIZE = 8;
+      const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+      const boardEl = document.getElementById('board');
+      const panelEl = document.querySelector('.panel');
+      const numB = document.getElementById('numB');
+      const numW = document.getElementById('numW');
+      const statusEl = document.getElementById('status');
+      const scoreB = document.getElementById('scoreB');
+      const scoreW = document.getElementById('scoreW');
+      const undoBtn = document.getElementById('undoBtn');
+      const restartBtn = document.getElementById('restartBtn');
+
+      let state = { board: newBoard(), turn: 'B', over: false };
+      let moves = [];
+      let cells = [];
+      let animating = false;
+      // 'B'/'W' -> CSS 类名
+      const clsOf = p => p === 'B' ? 'black' : 'white';
+
+      function newBoard() {
+        const b = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+        b[3][3] = 'W'; b[4][4] = 'W';
+        b[3][4] = 'B'; b[4][3] = 'B';
+        return b;
+      }
+      const opp = p => p === 'B' ? 'W' : 'B';
+
+      function getFlips(b, r, c, p) {
+        if (b[r][c]) return [];
+        const flips = [];
+        for (const [dr, dc] of DIRS) {
+          const line = [];
+          let nr = r + dr, nc = c + dc;
+          while (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && b[nr][nc] === opp(p)) {
+            line.push([nr, nc]); nr += dr; nc += dc;
+          }
+          if (line.length && nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && b[nr][nc] === p) {
+            flips.push(...line);
+          }
+        }
+        return flips;
+      }
+      function legalMoves(b, p) {
+        const res = [];
+        for (let r = 0; r < SIZE; r++)
+          for (let c = 0; c < SIZE; c++)
+            if (!b[r][c] && getFlips(b, r, c, p).length) res.push([r, c]);
+        return res;
+      }
+
+      function buildState(moveList) {
+        const b = newBoard();
+        let p = 'B';
+        for (const [r, c] of moveList) {
+          const flips = getFlips(b, r, c, p);
+          if (!flips.length) break;
+          b[r][c] = p;
+          for (const [fr, fc] of flips) b[fr][fc] = p;
+          p = opp(p);
+          if (!legalMoves(b, p).length) {
+            p = opp(p);
+            if (!legalMoves(b, p).length) break;
+          }
+        }
+        let over = false;
+        if (!legalMoves(b, p).length) {
+          p = opp(p);
+          if (!legalMoves(b, p).length) over = true;
+        }
+        return { board: b, turn: p, over };
+      }
+
+      function moveToStr([r, c]) { return String.fromCharCode(97 + c) + (r + 1); }
+      function buildHash(list) { return list.map(moveToStr).join(''); }
+      function parseHash() {
+        const h = location.hash.slice(1).replace(/[^a-h1-8]/g, '');
+        const list = [];
+        for (let i = 0; i + 1 < h.length; i += 2) {
+          const c = h.charCodeAt(i) - 97;
+          const r = parseInt(h[i + 1], 10) - 1;
+          if (r >= 0 && r < SIZE && c >= 0 && c < SIZE) list.push([r, c]);
+          else break;
+        }
+        return list;
+      }
+      function pushUrl() { history.pushState({ n: moves.length }, '', '#' + buildHash(moves)); }
+      function replaceUrl() { history.replaceState({ n: moves.length }, '', '#' + buildHash(moves)); }
+
+      function buildBoard() {
+        boardEl.innerHTML = '';
+        cells = [];
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.r = r; cell.dataset.c = c;
+            cell.addEventListener('click', onCellClick);
+            boardEl.appendChild(cell);
+            cells.push(cell);
+          }
+        }
+      }
+
+      function pieceAt(r, c) { return cells[r * SIZE + c].querySelector('.piece'); }
+
+      function syncPieces() {
+        for (let r = 0; r < SIZE; r++) {
+          for (let c = 0; c < SIZE; c++) {
+            const cell = cells[r * SIZE + c];
+            const cur = state.board[r][c];
+            let p = cell.querySelector('.piece');
+            if (cur) {
+              if (!p) { p = document.createElement('div'); cell.appendChild(p); }
+              p.className = 'piece ' + clsOf(cur);
+              p.style.transform = ''; p.style.transition = '';
+            } else if (p) {
+              p.remove();
+            }
+          }
+        }
+      }
+
+      function flipPiece(piece, toClass, delay) {
+        setTimeout(() => {
+          piece.style.transition = 'transform 0.2s ease-in';
+          piece.style.transform = 'rotateY(90deg)';
+          setTimeout(() => {
+            piece.className = 'piece ' + toClass;
+            piece.style.transition = 'transform 0.2s ease-out';
+            piece.style.transform = 'rotateY(0deg)';
+            updateCounts();
+          }, 200);
+        }, delay);
+      }
+
+      function countPieces() {
+        let b = 0, w = 0;
+        for (let r = 0; r < SIZE; r++)
+          for (let c = 0; c < SIZE; c++) {
+            if (state.board[r][c] === 'B') b++;
+            else if (state.board[r][c] === 'W') w++;
+          }
+        return [b, w];
+      }
+      function updateCounts() {
+        const [b, w] = countPieces();
+        numB.textContent = b; numW.textContent = w;
+      }
+
+      function updateLegalMarkers() {
+        cells.forEach(cell => cell.classList.remove('legal'));
+        if (state.over) return;
+        for (const [r, c] of legalMoves(state.board, state.turn)) cells[r * SIZE + c].classList.add('legal');
+      }
+
+      function updateStatus() {
+        scoreB.classList.toggle('active', !state.over && state.turn === 'B');
+        scoreW.classList.toggle('active', !state.over && state.turn === 'W');
+        if (state.over) {
+          const [b, w] = countPieces();
+          if (b > w) statusEl.textContent = '黑方胜 ' + b + ' : ' + w;
+          else if (w > b) statusEl.textContent = '白方胜 ' + w + ' : ' + b;
+          else statusEl.textContent = '平局 ' + b + ' : ' + w;
+        } else {
+          statusEl.textContent = (state.turn === 'B' ? '黑方' : '白方') + '回合';
+        }
+        undoBtn.disabled = moves.length === 0 || animating;
+      }
+
+      function refreshInfo() { updateCounts(); updateLegalMarkers(); updateStatus(); }
+
+      function onCellClick(e) {
+        if (animating || state.over) return;
+        const r = +e.currentTarget.dataset.r;
+        const c = +e.currentTarget.dataset.c;
+        const p = state.turn;
+        const flips = getFlips(state.board, r, c, p);
+        if (!flips.length) return;
+        makeMove(r, c, p, flips);
+      }
+
+      function makeMove(r, c, p, flips) {
+        animating = true;
+        state.board[r][c] = p;
+        for (const [fr, fc] of flips) state.board[fr][fc] = p;
+        state.turn = opp(p);
+        if (!legalMoves(state.board, state.turn).length) {
+          state.turn = opp(p);
+          if (!legalMoves(state.board, state.turn).length) state.over = true;
+        }
+        moves.push([r, c]);
+        pushUrl();
+
+        const cell = cells[r * SIZE + c];
+        let piece = cell.querySelector('.piece');
+        if (!piece) { piece = document.createElement('div'); cell.appendChild(piece); }
+        piece.className = 'piece ' + clsOf(p) + ' placing';
+        piece.style.transform = ''; piece.style.transition = '';
+
+        cells.forEach(cl => cl.classList.remove('legal'));
+        flips.forEach((f, i) => {
+          const fp = pieceAt(f[0], f[1]);
+          if (fp) flipPiece(fp, clsOf(p), 120 + i * 70);
+        });
+
+        const total = 120 + flips.length * 70 + 420;
+        setTimeout(() => { animating = false; refreshInfo(); }, total);
+        updateCounts(); updateStatus();
+      }
+
+      function undo() {
+        if (animating || moves.length === 0) return;
+        history.back();
+      }
+      function restart() {
+        if (animating) return;
+        moves = [];
+        state = { board: newBoard(), turn: 'B', over: false };
+        replaceUrl();
+        syncPieces();
+        refreshInfo();
+      }
+      function onPopState() {
+        moves = parseHash();
+        state = buildState(moves);
+        syncPieces();
+        refreshInfo();
+      }
+
+      // 棋盘自适应正方形：视口扣除 padding 与面板尺寸后取较小者
+      function fitBoard() {
+        const pad = 32, gap = 16;
+        const portrait = window.innerHeight > window.innerWidth;
+        let availW, availH;
+        if (portrait) {
+          availW = window.innerWidth - pad;
+          availH = window.innerHeight - pad - panelEl.offsetHeight - gap;
+        } else {
+          availW = window.innerWidth - pad - panelEl.offsetWidth - gap;
+          availH = window.innerHeight - pad;
+        }
+        const s = Math.max(0, Math.min(availW, availH));
+        boardEl.style.width = s + 'px';
+        boardEl.style.height = s + 'px';
+      }
+
+      buildBoard();
+      moves = parseHash();
+      state = buildState(moves);
+      replaceUrl();
+      syncPieces();
+      refreshInfo();
+      fitBoard();
+      if (window.ResizeObserver) new ResizeObserver(fitBoard).observe(panelEl);
+      window.addEventListener('resize', fitBoard);
+
+      undoBtn.addEventListener('click', undo);
+      restartBtn.addEventListener('click', restart);
+      window.addEventListener('popstate', onPopState);
+    })();
+  </script>
+</body>
+
+</html>

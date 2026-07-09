@@ -218,6 +218,27 @@
             border-right: 2px solid #1a73e8 !important;
         }
 
+        /* Join source region: orange perimeter box, persists throughout join mode */
+        #grid td.cell.join-src {
+            background: #fff4e6 !important;
+        }
+
+        #grid td.cell.join-top {
+            border-top: 2px solid #e8710a !important;
+        }
+
+        #grid td.cell.join-bottom {
+            border-bottom: 2px solid #e8710a !important;
+        }
+
+        #grid td.cell.join-left {
+            border-left: 2px solid #e8710a !important;
+        }
+
+        #grid td.cell.join-right {
+            border-right: 2px solid #e8710a !important;
+        }
+
         /* Inline editor */
         #cell-editor {
             position: fixed;
@@ -302,6 +323,98 @@
             margin: 4px 0;
         }
 
+        /* ── Join floating panel ── */
+        #join-panel {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background: #fff;
+            border: 1px solid #e8710a;
+            border-radius: 6px;
+            box-shadow: 2px 4px 16px rgba(0, 0, 0, .25);
+            padding: 10px 12px;
+            width: 240px;
+            z-index: 300;
+            display: none;
+            font-size: 12px;
+            color: #222;
+        }
+
+        #join-panel.active {
+            display: block;
+        }
+
+        #join-panel .jp-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #b5650a;
+            margin-bottom: 4px;
+        }
+
+        #join-panel .jp-src {
+            color: #666;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        #join-panel .jp-field {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        #join-panel .jp-field label {
+            white-space: nowrap;
+            color: #444;
+        }
+
+        #join-default {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 3px 6px;
+            font-size: 12px;
+            outline: none;
+            color: #111;
+            background: #fff;
+        }
+
+        #join-default:focus {
+            border-color: #e8710a;
+        }
+
+        #join-panel .jp-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        #join-panel .jp-actions button {
+            padding: 3px 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: #f5f5f5;
+            cursor: pointer;
+            font-size: 12px;
+            color: #222;
+            transition: background .15s;
+        }
+
+        #join-panel .jp-actions button:hover {
+            background: #e8e8e8;
+        }
+
+        #join-panel .jp-actions .jp-ok {
+            background: #e8710a;
+            color: #fff;
+            border-color: #c75a00;
+        }
+
+        #join-panel .jp-actions .jp-ok:hover {
+            background: #d96400;
+        }
+
         /* ── Status bar ── */
         #status-bar {
             flex-shrink: 0;
@@ -354,6 +467,8 @@
         <button onclick="transpose()" title="将选中区域行列互换">转置</button>
         <button onclick="flipHorizontal()" title="将选中区域左右镜像翻转">水平翻转</button>
         <button onclick="flipVertical()" title="将选中区域上下镜像翻转">垂直翻转</button>
+        <div class="sep"></div>
+        <button onclick="startJoin()" title="以选中区域为查找表(第一列为键)，将后续列按目标区域第一列的键值匹配填入其右侧">Join</button>
     </div>
 
     <div id="table-wrap">
@@ -367,6 +482,20 @@
     <textarea id="cell-editor" rows="1" spellcheck="false"></textarea>
 
     <div id="toast"></div>
+
+    <!-- Join floating panel -->
+    <div id="join-panel">
+        <div class="jp-title">选定 Join 目标</div>
+        <div class="jp-src" id="join-src-info"></div>
+        <div class="jp-field">
+            <label>默认值</label>
+            <input id="join-default" type="text" autocomplete="off" spellcheck="false" placeholder="未匹配时填充">
+        </div>
+        <div class="jp-actions">
+            <button class="jp-ok" onclick="confirmJoin()">确认</button>
+            <button onclick="cancelJoin()">取消</button>
+        </div>
+    </div>
     <div id="ctx-menu">
         <div class="item" onclick="ctxCopy()">复制 (Ctrl+C)</div>
         <div class="item" onclick="ctxCut()">剪切 (Ctrl+X)</div>
@@ -391,6 +520,8 @@
         <div class="item" onclick="transpose()">转置</div>
         <div class="item" onclick="flipHorizontal()">水平翻转（左右镜像）</div>
         <div class="item" onclick="flipVertical()">垂直翻转（上下镜像）</div>
+        <div class="sep"></div>
+        <div class="item" onclick="ctxJoin()">Join（按键值匹配填充）</div>
     </div>
 
     <script>
@@ -413,6 +544,11 @@
         let editFillRange = null; // {r0,r1,c0,c1} — original range to fill on commit; null = single-cell mode
         const editor = document.getElementById('cell-editor');
         const formulaBar = document.getElementById('formula-bar');
+
+        // Join mode
+        let joinSource = null;    // {r0,r1,c0,c1} — A×B lookup table (first col = key), captured when join starts
+        const joinPanel = document.getElementById('join-panel');
+        const joinDefaultInput = document.getElementById('join-default');
 
         // ─────────────────────────────────────────────
         //  Init
@@ -543,6 +679,32 @@
                 if (ch) ch.classList.add('sel-header');
             }
             updateStatusBar();
+            applyJoinSourceStyles();
+        }
+
+        /**
+         * Paint (or clear) the orange perimeter box around the captured Join source.
+         * Independent of the normal selection so it survives target selection changes.
+         * Called from applySelStyles (which runs on every selection change) and after
+         * buildTable, so the box stays visible until join ends.
+         */
+        function applyJoinSourceStyles() {
+            document.querySelectorAll('.cell').forEach(td => {
+                td.classList.remove('join-src', 'join-top', 'join-bottom', 'join-left', 'join-right');
+            });
+            if (!joinSource) return;
+            const { r0, r1, c0, c1 } = joinSource;
+            for (let r = r0; r <= r1; r++) {
+                for (let c = c0; c <= c1; c++) {
+                    const td = getCell(r, c);
+                    if (!td) continue;
+                    td.classList.add('join-src');
+                    if (r === r0) td.classList.add('join-top');
+                    if (r === r1) td.classList.add('join-bottom');
+                    if (c === c0) td.classList.add('join-left');
+                    if (c === c1) td.classList.add('join-right');
+                }
+            }
         }
 
         function getCell(r, c) {
@@ -1050,15 +1212,21 @@
                 if (r < r0 || r > r1 || c < c0 || c > c1) setSelection(r, c);
             }
             ctxMenu.style.display = 'block';
-            ctxMenu.style.left = Math.min(e.clientX, innerWidth - 180) + 'px';
-            ctxMenu.style.top = Math.min(e.clientY, innerHeight - 280) + 'px';
+            // Measure actual rendered size, then clamp so the menu never overflows the viewport.
+            const w = ctxMenu.offsetWidth;
+            const h = ctxMenu.offsetHeight;
+            ctxMenu.style.left = Math.max(0, Math.min(e.clientX, innerWidth - w - 4)) + 'px';
+            ctxMenu.style.top = Math.max(0, Math.min(e.clientY, innerHeight - h - 4)) + 'px';
         });
 
         document.addEventListener('click', () => { ctxMenu.style.display = 'none'; });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') ctxMenu.style.display = 'none'; }, true);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { ctxMenu.style.display = 'none'; cancelJoin(); }
+        }, true);
 
         function ctxCopy() { ctxMenu.style.display = 'none'; doCopy(); }
         function ctxCut() { ctxMenu.style.display = 'none'; doCut(); }
+        function ctxJoin() { ctxMenu.style.display = 'none'; startJoin(); }
         function ctxPaste() {
             ctxMenu.style.display = 'none';
             navigator.clipboard.readText().then(text => {
@@ -1135,14 +1303,16 @@
             if (nums.length > 0) {
                 const min = Math.min(...nums);
                 const max = Math.max(...nums);
-                const avg = nums.reduce((a, b) => a + b, 0) / nums.length;
+                const sum = nums.reduce((a, b) => a + b, 0);
+                const avg = sum / nums.length;
                 const sorted = [...nums].sort((a, b) => a - b);
                 const mid = Math.floor(sorted.length / 2);
                 const median = sorted.length % 2 === 1
                     ? sorted[mid]
                     : (sorted[mid - 1] + sorted[mid]) / 2;
                 numPart = `，<b>${nums.length}</b> 项数值`
-                    + `（最小 <b>${fmtN(min)}</b>`
+                    + `（求和 <b>${fmtN(sum)}</b>`
+                    + ` | 最小 <b>${fmtN(min)}</b>`
                     + ` | 最大 <b>${fmtN(max)}</b>`
                     + ` | 平均 <b>${fmtN(avg)}</b>`
                     + ` | 中位数 <b>${fmtN(median)}</b>）`;
@@ -1454,6 +1624,86 @@
             buildTable();
             setSelection(r0, c0, r1, c1, r0, c0);
             toast(`已垂直翻转：${rows}×${cols}`);
+        }
+
+        // ─────────────────────────────────────────────
+        //  Join  (VLOOKUP-style)
+        //  Source A×B: first column is the key, the remaining B-1 columns are values
+        //  Target C×D: first column holds keys to look up in the source
+        //  Result: the B-1 value columns are written to the B-1 cells immediately
+        //          to the right of C×D; unmatched rows get the default value.
+        // ─────────────────────────────────────────────
+        function startJoin() {
+            if (editCell) commitEdit();
+            const { r0, r1, c0, c1 } = normSel();
+            const B = c1 - c0 + 1;
+            if (B < 2) { toast('Join 源区域至少需要 2 列（第一列为键）'); return; }
+            joinSource = { r0, r1, c0, c1 };
+            const A = r1 - r0 + 1;
+            document.getElementById('join-src-info').textContent =
+                `源 ${colLabel(c0)}${r0 + 1}:${colLabel(c1)}${r1 + 1}  (${A}×${B}，键列 ${colLabel(c0)})`;
+            joinDefaultInput.value = '';
+            joinPanel.classList.add('active');
+            applyJoinSourceStyles();
+            toast('已选定 Join 源，请再选定目标区域后点【确认】');
+        }
+
+        function cancelJoin() {
+            if (!joinSource && !joinPanel.classList.contains('active')) return;
+            joinSource = null;
+            joinPanel.classList.remove('active');
+            applyJoinSourceStyles();
+        }
+
+        function confirmJoin() {
+            if (!joinSource) { toast('请先选定 Join 源区域'); return; }
+            const src = joinSource;
+            const B = src.c1 - src.c0 + 1;
+            const valueCols = B - 1;   // columns to write out
+
+            // Target = current selection (C×D)
+            const { r0, r1, c0, c1 } = normSel();
+            const defaultValue = joinDefaultInput.value;
+
+            // Snapshot the source into a key → values[] map (first match wins).
+            // Trimming keys makes lookups robust to incidental whitespace.
+            const index = new Map();
+            for (let r = src.r0; r <= src.r1; r++) {
+                const key = (data[r]?.[src.c0] ?? '').trim();
+                if (key === '' || index.has(key)) continue;
+                const vals = [];
+                for (let i = 1; i < B; i++) vals.push(data[r]?.[src.c0 + i] ?? '');
+                index.set(key, vals);
+            }
+
+            // Target write region: B-1 columns immediately to the right of C×D.
+            const targetStart = c1 + 1;
+            const needCols = targetStart + valueCols;
+            while (colWidths.length < needCols) colWidths.push(80);
+            for (let r = 0; r < data.length; r++)
+                while (data[r].length < needCols) data[r].push('');
+
+            let matched = 0, unmatched = 0;
+            for (let r = r0; r <= r1; r++) {
+                const key = (data[r]?.[c0] ?? '').trim();
+                const vals = index.get(key);
+                if (vals) {
+                    for (let i = 0; i < valueCols; i++) data[r][targetStart + i] = vals[i];
+                    matched++;
+                } else {
+                    for (let i = 0; i < valueCols; i++) data[r][targetStart + i] = defaultValue;
+                    unmatched++;
+                }
+            }
+
+            buildTable();
+            setSelection(r0, c0, r1, targetStart + valueCols - 1, r0, c0);
+
+            // Exit join mode
+            joinSource = null;
+            joinPanel.classList.remove('active');
+
+            toast(`Join 完成：${matched} 行匹配，${unmatched} 行未匹配（按默认值填充）`);
         }
 
         function autoFitCols() {

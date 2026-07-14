@@ -222,6 +222,14 @@
             background: #f5f8ff;
         }
 
+        /* Faint tint for the full row/column containing the selection block.
+       Lighter than the block's #c5daff; block cells keep their own fill
+       because .selected/.anchor use !important. */
+        #grid td.cell.row-hl,
+        #grid td.cell.col-hl {
+            background: #eaf2fd;
+        }
+
         #grid td.cell.selected {
             background: #c5daff !important;
             outline: none;
@@ -718,7 +726,7 @@
         function applySelStyles() {
             // Remove old
             document.querySelectorAll('.cell').forEach(td => {
-                td.classList.remove('selected', 'anchor', 'sel-top', 'sel-bottom', 'sel-left', 'sel-right');
+                td.classList.remove('selected', 'anchor', 'sel-top', 'sel-bottom', 'sel-left', 'sel-right', 'row-hl', 'col-hl');
             });
             document.querySelectorAll('.ch').forEach(th => th.classList.remove('sel-header'));
             document.querySelectorAll('.rh').forEach(td => td.classList.remove('sel-header'));
@@ -746,6 +754,23 @@
             for (let c = c0; c <= c1; c++) {
                 const ch = document.querySelector(`.ch[data-c="${c}"]`);
                 if (ch) ch.classList.add('sel-header');
+            }
+
+            // Faint tint on the full rows and full columns spanning the block.
+            // Block cells keep their own (stronger) fill via !important; cells that
+            // are already row-hl aren't also tagged col-hl (keeps it single-class).
+            const colCount = data[0].length;
+            for (let r = r0; r <= r1; r++) {
+                for (let c = 0; c < colCount; c++) {
+                    const td = getCell(r, c);
+                    if (td) td.classList.add('row-hl');
+                }
+            }
+            for (let c = c0; c <= c1; c++) {
+                for (let r = 0; r < data.length; r++) {
+                    const td = getCell(r, c);
+                    if (td && !td.classList.contains('row-hl')) td.classList.add('col-hl');
+                }
             }
             updateStatusBar();
             applyJoinSourceStyles();
@@ -1018,6 +1043,13 @@
 
             const arrows = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
             if (arrows[e.key]) {
+                // Alt+方向键：把选中块所在的整行(↑↓)或整列(←→)顺方向平移一格
+                if (e.altKey && !e.ctrlKey && !e.metaKey) {
+                    const [dr, dc] = arrows[e.key];
+                    if (dr !== 0) moveRows(dr > 0 ? 'down' : 'up');
+                    else moveCols(dc > 0 ? 'right' : 'left');
+                    e.preventDefault(); return;
+                }
                 const [dr, dc] = arrows[e.key];
                 const nr = Math.max(0, Math.min(data.length - 1, sel.anchor_r + dr));
                 const nc = Math.max(0, Math.min(data[0].length - 1, sel.anchor_c + dc));
@@ -1260,6 +1292,67 @@
             pushHistory();
             updateFormulaBar();
             updateStatusBar();
+        }
+
+        /**
+         * Move the selected row block up/down by one row.  Entire rows move — every
+         * column travels with its row — and rowHeights follow.  The selection moves
+         * with the block; anchor stays at the same relative position.
+         */
+        function moveRows(dir) {
+            const { r0, r1, c0, c1 } = normSel();
+            if (dir === 'up') {
+                if (r0 === 0) { toast('已在最顶部'); return; }
+                const savedRow = data[r0 - 1], savedH = rowHeights[r0 - 1];
+                for (let r = r0 - 1; r < r1; r++) { data[r] = data[r + 1]; rowHeights[r] = rowHeights[r + 1]; }
+                data[r1] = savedRow; rowHeights[r1] = savedH;
+                setSelection(r0 - 1, c0, r1 - 1, c1, sel.anchor_r - 1, sel.anchor_c);
+            } else {
+                if (r1 === data.length - 1) { toast('已在最底部'); return; }
+                const savedRow = data[r1 + 1], savedH = rowHeights[r1 + 1];
+                for (let r = r1 + 1; r > r0; r--) { data[r] = data[r - 1]; rowHeights[r] = rowHeights[r - 1]; }
+                data[r0] = savedRow; rowHeights[r0] = savedH;
+                setSelection(r0 + 1, c0, r1 + 1, c1, sel.anchor_r + 1, sel.anchor_c);
+            }
+            buildTable();
+            pushHistory();
+        }
+
+        /**
+         * Move the selected column block left/right by one column.  Entire columns
+         * move — every row's cell in the block travels together — and colWidths
+         * follow.  The selection moves with the block.
+         */
+        function moveCols(dir) {
+            const { r0, r1, c0, c1 } = normSel();
+            const rows = data.length;
+            if (dir === 'left') {
+                if (c0 === 0) { toast('已在最左侧'); return; }
+                const savedW = colWidths[c0 - 1];
+                const savedCells = new Array(rows);
+                for (let r = 0; r < rows; r++) savedCells[r] = data[r][c0 - 1];
+                for (let c = c0 - 1; c < c1; c++) {
+                    colWidths[c] = colWidths[c + 1];
+                    for (let r = 0; r < rows; r++) data[r][c] = data[r][c + 1];
+                }
+                colWidths[c1] = savedW;
+                for (let r = 0; r < rows; r++) data[r][c1] = savedCells[r];
+                setSelection(r0, c0 - 1, r1, c1 - 1, sel.anchor_r, sel.anchor_c - 1);
+            } else {
+                if (c1 === data[0].length - 1) { toast('已在最右侧'); return; }
+                const savedW = colWidths[c1 + 1];
+                const savedCells = new Array(rows);
+                for (let r = 0; r < rows; r++) savedCells[r] = data[r][c1 + 1];
+                for (let c = c1 + 1; c > c0; c--) {
+                    colWidths[c] = colWidths[c - 1];
+                    for (let r = 0; r < rows; r++) data[r][c] = data[r][c - 1];
+                }
+                colWidths[c0] = savedW;
+                for (let r = 0; r < rows; r++) data[r][c0] = savedCells[r];
+                setSelection(r0, c0 + 1, r1, c1 + 1, sel.anchor_r, sel.anchor_c + 1);
+            }
+            buildTable();
+            pushHistory();
         }
 
         // ─────────────────────────────────────────────

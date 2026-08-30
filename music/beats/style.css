@@ -1,0 +1,189 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+body {
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f5f6f8;
+  color: #2b2f36;
+  min-height: 100vh;
+}
+
+#app { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+/* ---------- 顶部控件 ---------- */
+#controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+  background: #fff; border: 1px solid #e2e5ea; border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 14px;
+}
+.ctl { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #4a5058; }
+.ctl input[type=number] {
+  width: 64px; padding: 5px 6px; font-size: 14px;
+  border: 1px solid #c9ced6; border-radius: 6px; background: #fff; color: #2b2f36;
+}
+
+.btn {
+  padding: 7px 14px; font-size: 14px; border: 1px solid #c9ced6;
+  border-radius: 6px; background: #fff; color: #2b2f36; cursor: pointer;
+}
+.btn:hover { background: #f0f2f5; }
+.btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+.btn.primary:hover { background: #1d4ed8; }
+.btn.playing { background: #dc2626; border-color: #dc2626; color: #fff; }
+.btn.toggle-btn.active { background: #d97706; border-color: #d97706; color: #fff; }
+
+/* 节拍器开关 */
+.toggle { cursor: pointer; user-select: none; }
+.toggle input { display: none; }
+.toggle-track {
+  width: 38px; height: 20px; border-radius: 10px; background: #c9ced6;
+  position: relative; transition: background .15s; flex: none;
+}
+.toggle-thumb {
+  position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+  border-radius: 50%; background: #fff; transition: left .15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+.toggle input:checked + .toggle-track { background: #2563eb; }
+.toggle input:checked + .toggle-track .toggle-thumb { left: 20px; }
+
+/* 节奏型下拉 */
+.dropdown { position: relative; }
+.dropdown-panel {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
+  background: #fff; border: 1px solid #d4d8de; border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.12); padding: 6px; min-width: 180px;
+  max-height: 260px; overflow-y: auto;
+}
+.dropdown.open .dropdown-panel { display: block; }
+.dropdown-panel label {
+  display: flex; align-items: center; gap: 8px; padding: 5px 8px;
+  font-size: 14px; border-radius: 5px; cursor: pointer; white-space: nowrap;
+}
+.dropdown-panel label .pat-glyph { flex: none; }
+.dropdown-panel label:hover { background: #f0f2f5; }
+.dropdown-panel input { accent-color: #2563eb; }
+
+/* ---------- 五线谱区 ---------- */
+#staffSection {
+  background: #fff; border: 1px solid #e2e5ea; border-radius: 10px;
+  padding: 12px 14px 8px; margin-bottom: 14px; position: relative;
+}
+#loopBar {
+  display: flex; gap: 24px; align-items: center; margin-bottom: 6px;
+  font-size: 14px; color: #4a5058;
+}
+.loop { display: flex; align-items: center; gap: 8px; flex: 1; }
+.loop input[type=range] { flex: 1; accent-color: #2563eb; }
+.loop span { min-width: 20px; text-align: center; font-weight: 600; color: #2563eb; }
+
+#staffWrap { overflow-x: auto; }
+#staffWrap svg { display: block; margin: 0 auto; }
+
+#hint { font-size: 12px; color: #8a919b; padding: 6px 2px 4px; }
+
+/* 五线谱 SVG 内部样式 */
+.staff-line { stroke: #9aa1ab; stroke-width: 1; }
+.barline { stroke: #5b6470; stroke-width: 1.2; }
+.barline-final { stroke: #5b6470; stroke-width: 2.4; }
+.timesig { font: 700 22px Georgia, serif; fill: #2b2f36; cursor: pointer; }
+.timesig-box { cursor: pointer; }
+.timesig-box:hover .timesig { fill: #2563eb; }
+
+/* 注意：不能在此设置 .notehead 的 fill —— CSS 会覆盖空心符头的 fill="#fff" 属性 */
+.stem { stroke: #2b2f36; stroke-width: 1.4; }
+.flag { fill: none; stroke: #2b2f36; stroke-width: 1.6; }
+.rest { fill: #2b2f36; }
+.tie { fill: #2b2f36; stroke: none; }
+.beams { pointer-events: none; }
+.beam { stroke: #2b2f36; stroke-width: 4.2; }
+.tuplet-num { font: 700 12px Georgia, serif; fill: #6b7280; }
+.tuplet-bracket { stroke: #6b7280; stroke-width: 1; fill: none; }
+
+.measure-box { fill: transparent; cursor: pointer; }
+.measure-box.editing { fill: #dbeafe; }
+.measure-box:hover { fill: #eef4ff; }
+.edit-cursor { stroke: #2563eb; stroke-width: 2.5; }
+
+.notegrp, .notegrp * { pointer-events: none; }
+.note-hit { fill: transparent; cursor: pointer; pointer-events: all; }
+.tiemode .note-hit:hover + .notegrp, .tiemode .notegrp:hover { fill: #f59e0b; }
+.tiemode .notegrp.tied { fill: #b45309; }
+
+.playline { stroke: #dc2626; stroke-width: 2; pointer-events: none; }
+.notegrp.highlight .notehead, .notegrp.highlight .stem, .notegrp.highlight .flag { stroke: #dc2626; fill: #dc2626; }
+.notegrp.highlight { fill: #dc2626; }
+.notegrp { fill: #2b2f36; }
+.notegrp.restgrp { fill: #6b7280; }
+
+/* 悬浮键盘 */
+#keypad {
+  position: fixed; z-index: 50;
+  background: #fff; border: 1px solid #c9ced6; border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18); padding: 10px;
+  display: flex; gap: 6px; align-items: flex-end;
+}
+#keypad .kp-key {
+  width: 44px; height: 52px; border: 1px solid #c9ced6; border-radius: 8px;
+  background: #fafbfc; cursor: pointer; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+#keypad .kp-key:hover { background: #e8effc; border-color: #2563eb; }
+#keypad .kp-key:active { background: #dbeafe; }
+#keypad .kp-key .kp-digit {
+  position: absolute; top: 2px; right: 4px; font-size: 10px; color: #8a919b;
+}
+#keypad .kp-fn { height: 36px; align-self: center; font-size: 16px; color: #4a5058; }
+
+/* 拍号弹窗 */
+#timeSigPanel {
+  position: absolute; z-index: 40; background: #fff;
+  border: 1px solid #d4d8de; border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.14); padding: 6px;
+}
+#timeSigPanel button {
+  display: block; width: 100%; padding: 6px 18px; font-size: 15px;
+  border: none; background: none; border-radius: 6px; cursor: pointer;
+  font-family: Georgia, serif; font-weight: 700; color: #2b2f36;
+}
+#timeSigPanel button:hover { background: #e8effc; color: #2563eb; }
+
+/* ---------- 练习区 ---------- */
+#practiceSection {
+  background: #fff; border: 1px solid #e2e5ea; border-radius: 10px;
+  padding: 12px 14px;
+}
+#practiceHead {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 14px; color: #4a5058; margin-bottom: 6px;
+}
+#practiceStats { font-size: 13px; color: #6b7280; }
+#practiceWrap { overflow-x: auto; }
+#practiceWrap svg { display: block; }
+.prac-row-line { stroke: #c9ced6; stroke-width: 1; }
+.prac-meas { stroke: #8f98a3; stroke-width: 2; }
+.prac-beat { stroke: #ccd2da; stroke-width: 1; }
+.prac-ref .prac-x { stroke: #2563eb; stroke-width: 2; }
+.prac-x { stroke: #64748b; stroke-width: 2; }
+.prac-x.early { stroke: #0284c7; }
+.prac-x.late { stroke: #dc2626; }
+.prac-label { font: 12px sans-serif; fill: #8a919b; }
+.prac-dev { font: 12px sans-serif; fill: #6b7280; }
+.prac-sweep { stroke: #dc2626; stroke-width: 1.6; }
+.prac-hit { fill: transparent; cursor: pointer; }
+
+/* ---------- 校准浮层 ---------- */
+#calibOverlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(245,246,248,.6); backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+}
+.calib-box {
+  background: #fff; border: 1px solid #d4d8de; border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.2); padding: 28px 40px; text-align: center;
+}
+.calib-box h3 { font-size: 18px; margin-bottom: 8px; }
+.calib-box p { font-size: 14px; color: #6b7280; }
+.calib-nums { margin: 16px 0; font-size: 15px; color: #4a5058; display: grid; gap: 6px; }
+.calib-nums b { color: #2563eb; font-size: 20px; }
+.calib-tip { font-size: 12px; }

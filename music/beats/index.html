@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>节拍练习器</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <!-- 顶部控件栏 -->
+    <div id="controls">
+      <label class="ctl">小节数
+        <input type="number" id="measureCount" min="1" max="64" value="8">
+      </label>
+
+      <div class="ctl dropdown" id="patternDrop">
+        <button type="button" id="patternBtn">节奏型 ▾</button>
+        <div class="dropdown-panel" id="patternPanel"></div>
+      </div>
+
+      <button type="button" id="randomBtn" class="btn">随机生成</button>
+
+      <label class="ctl">BPM
+        <input type="number" id="bpm" min="30" max="300" value="90">
+      </label>
+
+      <label class="ctl toggle">
+        <span>节拍器</span>
+        <input type="checkbox" id="metToggle">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+
+      <label class="ctl toggle">
+        <span>示范</span>
+        <input type="checkbox" id="demoToggle" checked>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+
+      <button type="button" id="playBtn" class="btn primary">播放</button>
+
+      <label class="ctl">延时(ms)
+        <input type="number" id="latency" min="-500" max="500" value="0" step="1">
+      </label>
+      <button type="button" id="calibBtn" class="btn">校准</button>
+
+      <button type="button" id="tieBtn" class="btn toggle-btn">编辑延音</button>
+    </div>
+
+    <!-- 中部：五线谱区 -->
+    <div id="staffSection">
+      <div id="loopBar">
+        <label class="loop">开始
+          <input type="range" id="loopStart" min="1" max="8" value="1">
+          <span id="loopStartVal">1</span>
+        </label>
+        <label class="loop">结束
+          <input type="range" id="loopEnd" min="1" max="8" value="8">
+          <span id="loopEndVal">8</span>
+        </label>
+      </div>
+      <div id="staffWrap"></div>
+
+      <!-- 悬浮音符键盘 -->
+      <div id="keypad" hidden></div>
+
+      <!-- 拍号选择弹窗 -->
+      <div id="timeSigPanel" hidden></div>
+
+      <div id="hint">点击小节开始编辑：数字键 1-8 输入 n/8 音符，9 输入八分三连音，0 输入四分三连音，` 输入十六分音符；回车或点击空白结束</div>
+    </div>
+
+    <!-- 下部：练习区 -->
+    <div id="practiceSection">
+      <div id="practiceHead">
+        <span>练习区</span>
+        <span id="practiceStats"></span>
+      </div>
+      <div id="practiceWrap"></div>
+    </div>
+
+  </div>
+
+  <!-- 校准浮层 -->
+  <div id="calibOverlay" hidden>
+    <div class="calib-box">
+      <h3>延时校准</h3>
+      <p>跟着节拍器点击屏幕或按任意键打拍子</p>
+      <div class="calib-nums">
+        <div>平均延时：<b id="calibAvg">--</b> ms</div>
+        <div>采样数：<b id="calibCount">0</b></div>
+      </div>
+      <p class="calib-tip">回车 确认并填入 · Esc 取消</p>
+    </div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/staff.js"></script>
+  <script src="js/practice.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

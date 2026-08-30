@@ -621,8 +621,8 @@ window.Staff = (function () {
     showKeypad();
   }
 
-  // 插入音符（含跨小节自动切分 + 延音线）
-  function insertNote(d) {
+  // 插入音符（含跨小节自动切分 + 延音线）；isRest 时插入休止符（不跨小节）
+  function insertNote(d, isRest) {
     if (!edit) return;
     const st = state();
     const ms = MusicUtil.measureSixteenths(st.timeSig);
@@ -631,6 +631,15 @@ window.Staff = (function () {
     let arr = st.measures[m];
     let used = arr.reduce((s, e) => s + e.d, 0);
     let rem = ms - used;
+
+    if (isRest) {
+      if (d > rem) return; // 休止符放不下，忽略
+      arr.push({ k: 'r', d });
+      if (d === rem) advanceEdit(m + 1);
+      else { render(); showKeypad(); }
+      if (onEditChange) onEditChange();
+      return;
+    }
 
     if (d <= rem) {
       st.measures[m].push({ k: 'n', d });
@@ -689,6 +698,23 @@ window.Staff = (function () {
     if (onEditChange) onEditChange();
   }
 
+  // 为当前小节最后一个音符/休止符附点（时值 ×1.5）
+  function dotLast() {
+    if (!edit) return;
+    const st = state();
+    const arr = st.measures[edit.mIdx] || [];
+    const last = arr[arr.length - 1];
+    if (!last || last.k === 't') return; // 无元素或三连音不可附点
+    const nd = last.d * 3 / 2;
+    if (!Number.isInteger(nd) || MusicUtil.isDotted(last.d)) return; // 非整数时值或已附点
+    const ms = MusicUtil.measureSixteenths(st.timeSig);
+    const used = arr.reduce((s, e) => s + e.d, 0);
+    if (used - last.d + nd > ms) return; // 附点后超小节容量，忽略
+    last.d = nd;
+    render(); showKeypad();
+    if (onEditChange) onEditChange();
+  }
+
   function moveEdit(dir) {
     if (!edit) return;
     const st = state();
@@ -701,10 +727,17 @@ window.Staff = (function () {
 
   function handleKey(e) {
     if (!edit) return false;
+    // Shift+数字/` = 对应时值的休止符
+    if (e.shiftKey) {
+      if (e.key >= '1' && e.key <= '8') { insertNote(parseInt(e.key) * 2, true); return true; }
+      if (e.key === '`' || e.key === '~') { insertNote(1, true); return true; }
+      return false;
+    }
     if (e.key >= '1' && e.key <= '8') { insertNote(parseInt(e.key) * 2); return true; }
     if (e.key === '9') { insertTriplet(4); return true; }
     if (e.key === '0') { insertTriplet(8); return true; }
     if (e.key === '`') { insertNote(1); return true; }
+    if (e.key === '.') { dotLast(); return true; }
     if (e.key === 'Backspace') { backspace(); return true; }
     if (e.key === 'ArrowLeft') { moveEdit(-1); return true; }
     if (e.key === 'ArrowRight') { moveEdit(1); return true; }
@@ -726,11 +759,13 @@ window.Staff = (function () {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'kp-key kp-fn'; b.textContent = label;
       b.addEventListener('click', (ev) => { ev.stopPropagation(); fn(); });
-      keypad.appendChild(b);
+      return b;
     };
-    mkFn('←', () => moveEdit(-1));
-    mkFn('→', () => moveEdit(1));
-    mkFn('⌫', backspace);
+    const noteRow = document.createElement('div');
+    noteRow.className = 'kp-row';
+    noteRow.appendChild(mkFn('←', () => moveEdit(-1)));
+    noteRow.appendChild(mkFn('→', () => moveEdit(1)));
+    noteRow.appendChild(mkFn('⌫', backspace));
     for (const k of KP_KEYS) {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'kp-key';
@@ -753,8 +788,35 @@ window.Staff = (function () {
         else if (k.dur === -2) insertTriplet(4);
         else insertNote(k.dur);
       });
-      keypad.appendChild(b);
+      noteRow.appendChild(b);
     }
+    keypad.appendChild(noteRow);
+    // 休止符行（Shift+数字/`）
+    const restRow = document.createElement('div');
+    restRow.className = 'kp-row';
+    const restLabel = document.createElement('span');
+    restLabel.className = 'kp-rowlabel'; restLabel.textContent = '休';
+    restRow.appendChild(restLabel);
+    for (const k of KP_KEYS) {
+      if (k.dur < 0) continue; // 三连音无休止形态
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'kp-key';
+      const svgEl = renderPattern([{ r: k.dur }], true);
+      const vb = svgEl.viewBox.baseVal;
+      const h = 46, w = vb.width * h / vb.height;
+      svgEl.setAttribute('width', w);
+      svgEl.setAttribute('height', h);
+      b.appendChild(svgEl);
+      const dspan = document.createElement('span');
+      dspan.className = 'kp-digit'; dspan.textContent = k.key;
+      b.appendChild(dspan);
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        insertNote(k.dur, true);
+      });
+      restRow.appendChild(b);
+    }
+    keypad.appendChild(restRow);
   }
 
   function showKeypad() {

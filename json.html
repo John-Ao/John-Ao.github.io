@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Editor</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-soft: #f7f8fa;
+            --bg-hover: #eef0f4;
+            --border: #e1e4e8;
+            --text: #24292e;
+            --text-soft: #6a737d;
+            --accent: #0366d6;
+            --accent-soft: #e7f0ff;
+            --err: #d73a49;
+            --err-soft: #ffeef0;
+            --key: #0550ae;
+            --str: #0a7d31;
+            --num: #b35900;
+            --bool: #8250df;
+            --null: #6a737d;
+            --punct: #6a737d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-soft);
+            flex-shrink: 0;
+        }
+
+        .toolbar .title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 8px;
+            color: var(--text);
+        }
+
+        .nav {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            overflow-x: auto;
+            padding: 2px 4px;
+            min-width: 0;
+            font-size: 13px;
+        }
+
+        .nav .crumb {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-soft);
+            white-space: nowrap;
+            background: transparent;
+            border: none;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .nav .crumb.root {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav .crumb:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        .nav .sep {
+            color: var(--text-soft);
+            user-select: none;
+        }
+
+        .btn {
+            padding: 5px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background .12s, border-color .12s;
+            flex-shrink: 0;
+        }
+
+        .btn:hover {
+            background: var(--bg-hover);
+            border-color: #d0d7de;
+        }
+
+        .btn:active {
+            background: var(--bg-soft);
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .btn.primary:hover {
+            background: #0256c0;
+            border-color: #0256c0;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .editor-wrap {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg);
+        }
+
+        .gutter {
+            flex-shrink: 0;
+            padding: 12px 8px 12px 12px;
+            text-align: right;
+            background: var(--bg-soft);
+            color: var(--text-soft);
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            user-select: none;
+            overflow: hidden;
+            border-right: 1px solid var(--border);
+            min-width: 48px;
+        }
+
+        .gutter .ln {
+            display: block;
+        }
+
+        .editor-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .editor-input,
+        .editor-view {
+            position: absolute;
+            inset: 0;
+            margin: 0;
+            padding: 12px 16px;
+            border: 0;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre;
+            word-wrap: normal;
+            overflow: auto;
+            tab-size: 2;
+        }
+
+        .editor-input {
+            color: transparent;
+            caret-color: var(--text);
+            background: transparent;
+            resize: none;
+            outline: none;
+            z-index: 2;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .editor-input::selection {
+            background: rgba(3, 102, 214, .18);
+        }
+
+        .editor-view {
+            color: var(--text);
+            pointer-events: none;
+            z-index: 1;
+            white-space: pre;
+        }
+
+        .editor-view .k {
+            color: var(--key);
+        }
+
+        .editor-view .s {
+            color: var(--str);
+        }
+
+        .editor-view .n {
+            color: var(--num);
+        }
+
+        .editor-view .b {
+            color: var(--bool);
+        }
+
+        .editor-view .nl {
+            color: var(--null);
+        }
+
+        .editor-view .p {
+            color: var(--punct);
+        }
+
+        .editor-view .err {
+            background: var(--err-soft);
+            text-decoration: underline wavy var(--err);
+            text-underline-offset: 2px;
+            text-decoration-thickness: 1px;
+        }
+
+        .status {
+            flex-shrink: 0;
+            padding: 4px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-soft);
+            font-size: 12px;
+            color: var(--text-soft);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            min-height: 24px;
+        }
+
+        .status .ok {
+            color: #1a7f37;
+        }
+
+        .status .partial {
+            color: #9a6700;
+        }
+
+        .status .bad {
+            color: var(--err);
+        }
+
+        .status .pos {
+            margin-left: auto;
+        }
+
+        .menu {
+            position: fixed;
+            z-index: 100;
+            min-width: 150px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+            padding: 4px;
+            display: none;
+            font-size: 13px;
+        }
+
+        .menu .item {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .menu .item:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .menu .item.disabled {
+            color: #bbb;
+            cursor: not-allowed;
+        }
+
+        .menu .item.disabled:hover {
+            background: transparent;
+            color: #bbb;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #24292e;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            opacity: 0;
+            transition: opacity .2s, transform .2s;
+            pointer-events: none;
+            z-index: 200;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .errtip {
+            position: fixed;
+            z-index: 300;
+            max-width: 360px;
+            background: #24292e;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+            font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+            pointer-events: none;
+            display: none;
+            word-break: break-word;
+        }
+
+        .errtip::after {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: 14px;
+            border: 5px solid transparent;
+            border-top: none;
+            border-bottom-color: #24292e;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toolbar">
+        <span class="title">JSON</span>
+        <nav class="nav" id="nav"></nav>
+        <button class="btn" id="btnClear" title="清空">清空</button>
+        <button class="btn primary" id="btnFormat" title="格式化 (Ctrl+Alt+L)">格式化</button>
+        <button class="btn" id="btnOpen" title="打开 (Ctrl+O)">打开</button>
+        <button class="btn" id="btnSave" title="保存 (Ctrl+S)">保存</button>
+    </div>
+    <div class="main">
+        <div class="editor-wrap" id="wrap">
+            <div class="gutter" id="gutter"></div>
+            <div class="editor-area">
+                <pre class="editor-view" id="view"></pre>
+                <textarea class="editor-input" id="input" spellcheck="false" autofocus></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="status" id="status">
+        <span id="statusMsg" class="ok">就绪</span>
+        <span class="pos" id="cursorPos">行 1, 列 1</span>
+    </div>
+    <div class="menu" id="menu">
+        <div class="item" id="mCopySel">复制选择器</div>
+        <div class="item" id="mFormat">格式化</div>
+        <div class="item" id="mClear">清空</div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div class="errtip" id="errtip"></div>
+
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id);
+            const input = $("input"), view = $("view"), gutter = $("gutter"),
+                nav = $("nav"), statusMsg = $("statusMsg"), cursorPos = $("cursorPos"),
+                menu = $("menu"), toast = $("toast"), wrap = $("wrap"),
+                errtip = $("errtip");
+
+            function escapeHtml(s) {
+                return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            // ---- syntax highlight ----
+            // parseError: optional { pos, msg } from JSON.parse — used to mark a token.
+            function highlight(text, parseError) {
+                const out = [];
+                let i = 0, n = text.length;
+                const markers = []; // { start, end, msg }
+
+                function markErr(start, end, msg) { markers.push({ start, end, msg }); }
+                // wrap a token span; if it covers the parseError position, mark it as error.
+                function span(cls, start, end, html, forceErr, errMsg) {
+                    let errCls = "";
+                    if (forceErr) { errCls = " err"; markErr(start, end, errMsg); }
+                    else if (parseError && parseError.pos != null
+                        && parseError.pos >= start && parseError.pos < end) {
+                        errCls = " err"; markErr(start, end, parseError.msg);
+                    }
+                    return `<span class="${cls}${errCls}">${html}</span>`;
+                }
+
+                function ws() {
+                    const start = i;
+                    let s = "";
+                    while (i < n && (text[i] === " " || text[i] === "\t" || text[i] === "\n" || text[i] === "\r")) {
+                        s += text[i]; i++;
+                    }
+                    return escapeHtml(s);
+                }
+                function string() {
+                    const start = i;
+                    let s = text[i]; i++; // open quote
+                    while (i < n) {
+                        const c = text[i];
+                        if (c === "\\") { s += c; if (i + 1 < n) { s += text[i + 1]; i += 2; } else { i++; } continue; }
+                        if (c === '"') { s += c; i++; return span("s", start, i, escapeHtml(s), false); }
+                        s += c; i++;
+                    }
+                    return span("s", start, i, escapeHtml(s), true, "未闭合的字符串");
+                }
+                function number() {
+                    const start = i;
+                    let s = "";
+                    if (text[i] === "-") { s += text[i++]; }
+                    while (i < n && /[0-9]/.test(text[i])) s += text[i++];
+                    if (text[i] === ".") { s += text[i++]; while (i < n && /[0-9]/.test(text[i])) s += text[i++]; }
+                    if (text[i] === "e" || text[i] === "E") {
+                        s += text[i++];
+                        if (text[i] === "+" || text[i] === "-") s += text[i++];
+                        while (i < n && /[0-9]/.test(text[i])) s += text[i++];
+                    }
+                    return span("n", start, i, escapeHtml(s), false);
+                }
+                function literal() {
+                    const start = i;
+                    let s = "";
+                    while (i < n && /[a-z]/.test(text[i])) s += text[i++];
+                    if (s === "true" || s === "false") return span("b", start, i, s, false);
+                    if (s === "null") return span("nl", start, i, s, false);
+                    return span("nl", start, i, s, true, "非法字面量: " + s);
+                }
+
+                while (i < n) {
+                    const c = text[i];
+                    if (c === " " || c === "\t" || c === "\n" || c === "\r") { out.push(ws()); continue; }
+                    if (c === '"') { out.push(string()); continue; }
+                    if (c === "-" || (c >= "0" && c <= "9")) { out.push(number()); continue; }
+                    if (c >= "a" && c <= "z") { out.push(literal()); continue; }
+                    if (c === "{" || c === "[" || c === "}" || c === "]" || c === "," || c === ":") {
+                        out.push(span("p", i, i + 1, escapeHtml(c), false)); i++; continue;
+                    }
+                    out.push(span("p", i, i + 1, escapeHtml(c), true, "非法字符: " + c)); i++;
+                }
+
+                // parseError at end-of-input (pos === n): mark trailing nothing — attach to last char.
+                if (parseError && parseError.pos != null && parseError.pos >= n && n > 0) {
+                    markErr(n - 1, n, parseError.msg);
+                }
+                return { html: out.join(""), markers };
+            }
+
+            // Parse normally first. Recovery only repairs the boundaries; syntax errors
+            // inside a document still fail. Keep source offsets for navigation before format.
+            let parseCache = null;
+            function parseDocument(text) {
+                if (parseCache && parseCache.source === text) return parseCache;
+                let result;
+                try {
+                    result = { ok: true, obj: JSON.parse(text), text, offset: 0 };
+                } catch (error) {
+                    result = recoverFragment(text) || { ok: false, msg: error.message, pos: parseErrPos(error, text) };
+                }
+                return (parseCache = { ...result, source: text });
+            }
+
+            function recoverFragment(source) {
+                const first = source.search(/\S/);
+                if (first < 0) return null;
+                const incomplete = Symbol("incomplete");
+                function attempt(start, prefix) {
+                    const text = prefix + source.slice(start);
+                    let i = 0, kept = 0;
+                    const ws = () => { while (i < text.length && /[ \t\r\n]/.test(text[i])) i++; };
+                    function string() {
+                        const begin = i++;
+                        while (i < text.length) {
+                            if (text[i] === "\\") { i += 2; continue; }
+                            if (text[i++] === '"') {
+                                JSON.parse(text.slice(begin, i));
+                                return;
+                            }
+                        }
+                        throw incomplete;
+                    }
+                    function value(depth = 0) {
+                        if (depth > 256) throw new Error("嵌套过深");
+                        ws();
+                        const begin = i, c = text[i];
+                        if (i >= text.length) throw incomplete;
+                        if (c === "{" || c === "[") {
+                            const object = c === "{", close = object ? "}" : "]";
+                            i++;
+                            let out = c, end = i, count = 0;
+                            while (true) {
+                                ws();
+                                if (i >= text.length) return out + close;
+                                if (text[i] === close) {
+                                    // A comma before an existing closer is an interior error.
+                                    i++;
+                                    return out + text.slice(end, i);
+                                }
+                                const separator = end;
+                                if (count) {
+                                    if (text[i] !== ",") throw new Error("缺少逗号");
+                                    i++; ws();
+                                    if (i >= text.length) return out + close;
+                                    if (text[i] === close) throw new Error("尾随逗号");
+                                }
+                                try {
+                                    if (object) {
+                                        if (text[i] !== '"') throw new Error("缺少属性名");
+                                        string(); ws();
+                                        if (i >= text.length) throw incomplete;
+                                        if (text[i++] !== ":") throw new Error("缺少冒号");
+                                        ws();
+                                    }
+                                    const valueStart = i;
+                                    const child = value(depth + 1);
+                                    out += text.slice(separator, valueStart) + child;
+                                    end = i;
+                                    count++;
+                                } catch (e) {
+                                    if (e !== incomplete) throw e;
+                                    return out + close;
+                                }
+                            }
+                        }
+                        if (c === '"') string();
+                        else {
+                            while (i < text.length && !/[ \t\r\n,}\]]/.test(text[i])) i++;
+                            const token = text.slice(begin, i);
+                            try { JSON.parse(token); }
+                            catch (e) {
+                                if (i === text.length && (/^(?:t(?:r(?:u)?)?|f(?:a(?:l(?:s)?)?)?|n(?:u(?:l)?)?)$/.test(token)
+                                    || /^-?(?:\d+)?(?:\.\d*)?(?:[eE][+-]?)?$/.test(token))) throw incomplete;
+                                throw e;
+                            }
+                        }
+                        kept++;
+                        return text.slice(begin, i);
+                    }
+                    try {
+                        const repaired = value();
+                        ws();
+                        // Missing outer ancestors cannot be named; retain the local fragment.
+                        if (i < text.length && !/^[}\]\s]+$/.test(text.slice(i))) return null;
+                        const obj = JSON.parse(repaired);
+                        if (!kept && !/[}\]]/.test(text.slice(prefix.length, i))) return null;
+                        return { ok: true, partial: true, obj, text: repaired, offset: prefix.length - start };
+                    } catch (e) { return null; }
+                }
+                function at(start) {
+                    const tail = source.slice(start);
+                    const member = /^"(?:[^"\\]|\\.)*"\s*:/.test(tail);
+                    // Infer missing opening brackets from unmatched closing brackets.
+                    const stack = [];
+                    let opening = "", quoted = false;
+                    for (let i = 0; i < tail.length; i++) {
+                        const c = tail[i];
+                        if (quoted && c === "\\") { i++; continue; }
+                        if (c === '"') { quoted = !quoted; continue; }
+                        if (quoted) continue;
+                        if (c === "{" || c === "[") stack.push(c);
+                        else if (c === "}" || c === "]") {
+                            if (stack.length) stack.pop();
+                            else opening = (c === "}" ? "{" : "[") + opening;
+                        }
+                    }
+                    const prefixes = [...new Set(member ? [opening || "{", "{", "[{"] : [opening, "", "["])];
+                    for (const prefix of prefixes) {
+                        const result = attempt(start, prefix);
+                        if (result) return result;
+                    }
+                    return null;
+                }
+                const direct = at(first);
+                if (direct) return direct;
+                // If the beginning is a container, failures inside it are not truncation.
+                if (source[first] === "{" || source[first] === "["
+                    || /^"(?:[^"\\]|\\.)*"\s*:/.test(source.slice(first))) return null;
+                // A cut may land inside a string or token. Look for the next boundary in
+                // both possible string states; cap retries on large malformed inputs.
+                const candidates = new Set();
+                for (const inside of [false, true]) {
+                    let quoted = inside;
+                    for (let i = first; i < source.length; i++) {
+                        if (quoted && source[i] === "\\") { i++; continue; }
+                        if (source[i] === '"') quoted = !quoted;
+                        else if (!quoted && source[i] === ",") {
+                            let j = i + 1;
+                            while (j < source.length && /\s/.test(source[j])) j++;
+                            candidates.add(j);
+                            if (candidates.size >= 32) break;
+                        }
+                    }
+                }
+                for (const start of [...candidates].sort((a, b) => a - b)) {
+                    const result = at(start);
+                    if (result) return result;
+                }
+                return null;
+            }
+
+            function lint() {
+                if (input.value.trim() === "") {
+                    setStatus(true, "空");
+                    return { ok: true, obj: null };
+                }
+                const result = parseDocument(input.value);
+                if (result.partial) {
+                    statusMsg.textContent = "⚠ JSON 片段：已恢复可识别内容；格式化将补齐括号并丢弃不完整边缘，路径相对于恢复后的片段";
+                    statusMsg.className = "partial";
+                } else setStatus(result.ok, result.ok ? "JSON 合法" : result.msg);
+                return result;
+            }
+            function parseErrPos(e, text) {
+                // V8: "Unexpected token X in JSON at position N"
+                const m = /position (\d+)/.exec(e.message);
+                if (m) return parseInt(m[1], 10);
+                // Firefox: "JSON.parse: expected ... at line L column C"
+                const m2 = /line (\d+) column (\d+)/.exec(e.message);
+                if (m2) {
+                    const line = parseInt(m2[1], 10), col = parseInt(m2[2], 10);
+                    let idx = 0;
+                    for (let l = 1; l < line; l++) {
+                        const nl = text.indexOf("\n", idx);
+                        if (nl < 0) break;
+                        idx = nl + 1;
+                    }
+                    return idx + col - 1;
+                }
+                return null;
+            }
+            function setStatus(ok, msg, pos) {
+                statusMsg.textContent = (ok ? "✓ " : "✗ ") + msg;
+                statusMsg.className = ok ? "ok" : "bad";
+            }
+
+            // ---- render ----
+            let errorMarkers = []; // [{start, end, msg}]
+            function render() {
+                const text = input.value;
+                const lintRes = lint();
+                const parseError = (!lintRes.ok && lintRes.pos != null)
+                    ? { pos: lintRes.pos, msg: lintRes.msg } : null;
+                const { html, markers } = highlight(text, parseError);
+                errorMarkers = markers;
+                view.innerHTML = html + "\n";
+                renderGutter(text);
+                updateNav();
+            }
+            function renderGutter(text) {
+                const lines = text.split("\n").length || 1;
+                let html = "";
+                for (let l = 1; l <= lines; l++) html += `<span class="ln">${l}</span>`;
+                gutter.innerHTML = html;
+            }
+
+            // ---- sync scroll ----
+            input.addEventListener("scroll", () => {
+                view.scrollTop = input.scrollTop;
+                view.scrollLeft = input.scrollLeft;
+                gutter.scrollTop = input.scrollTop;
+                hideErrtip();
+            });
+
+            // ---- error tooltip on hover ----
+            let charWidth = 0, lineHeight = 0, padLeft = 16, padTop = 12;
+            function measureMetrics() {
+                const probe = document.createElement("span");
+                probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:13px;line-height:1.6;';
+                probe.textContent = "MMMMMMMMMM";
+                document.body.appendChild(probe);
+                charWidth = probe.getBoundingClientRect().width / 10;
+                lineHeight = 13 * 1.6;
+                document.body.removeChild(probe);
+            }
+            measureMetrics();
+
+            function mouseToIndex(clientX, clientY) {
+                const r = input.getBoundingClientRect();
+                const x = clientX - r.left + input.scrollLeft - padLeft;
+                const y = clientY - r.top + input.scrollTop - padTop;
+                if (charWidth <= 0) return -1;
+                const col = Math.floor(x / charWidth);
+                const line = Math.floor(y / lineHeight);
+                if (line < 0) return -1;
+                // map (line, col) to absolute index
+                const text = input.value;
+                let idx = 0, l = 0;
+                while (l < line && idx < text.length) {
+                    const nl = text.indexOf("\n", idx);
+                    if (nl < 0) return -1;
+                    idx = nl + 1; l++;
+                }
+                // clamp col to line length
+                const nextNl = text.indexOf("\n", idx);
+                const lineEnd = nextNl < 0 ? text.length : nextNl;
+                return Math.min(idx + Math.max(0, col), lineEnd);
+            }
+
+            function findMarker(idx) {
+                for (const m of errorMarkers) {
+                    if (idx >= m.start && idx < m.end) return m;
+                }
+                return null;
+            }
+
+            function showErrtip(clientX, clientY, msg) {
+                errtip.textContent = msg;
+                errtip.style.display = "block";
+                let x = clientX + 12, y = clientY + 16;
+                const r = errtip.getBoundingClientRect();
+                if (x + r.width > window.innerWidth - 4) x = clientX - r.width - 12;
+                if (x < 4) x = 4;
+                if (y + r.height > window.innerHeight - 4) y = clientY - r.height - 8;
+                errtip.style.left = x + "px";
+                errtip.style.top = y + "px";
+            }
+            function hideErrtip() { errtip.style.display = "none"; }
+
+            input.addEventListener("mousemove", (e) => {
+                const idx = mouseToIndex(e.clientX, e.clientY);
+                const m = idx >= 0 ? findMarker(idx) : null;
+                if (m) showErrtip(e.clientX, e.clientY, m.msg);
+                else hideErrtip();
+            });
+            input.addEventListener("mouseleave", hideErrtip);
+
+            // ---- cursor pos ----
+            function updateCursor() {
+                const val = input.value;
+                const pos = input.selectionStart;
+                const before = val.slice(0, pos);
+                const line = before.split("\n").length;
+                const col = pos - (before.lastIndexOf("\n") + 1) + 1;
+                cursorPos.textContent = `行 ${line}, 列 ${col}`;
+            }
+            input.addEventListener("keyup", () => { updateCursor(); updateNav(); });
+            input.addEventListener("click", () => { updateCursor(); updateNav(); });
+            input.addEventListener("input", () => { render(); updateCursor(); updateNav(); });
+
+            // ---- auto-indent on newline + auto-close pairs ----
+            const PAIRS = { "(": ")", "[": "]", "{": "}", '"': '"' };
+            const CLOSE = ")]}\"";
+            input.addEventListener("keydown", (e) => {
+                const s = input.selectionStart, en = input.selectionEnd;
+                const val = input.value;
+
+                // Enter: auto-indent
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    let lineStart = val.lastIndexOf("\n", s - 1) + 1;
+                    const linePrefix = val.slice(lineStart, s);
+                    const indentMatch = linePrefix.match(/^[ \t]*/);
+                    let indent = indentMatch ? indentMatch[0] : "";
+                    let closePad = "";
+                    // extra indent if the line (after indent) opens a bracket and has nothing after cursor
+                    const afterIndent = linePrefix.slice(indent.length);
+                    const trimmedAfter = afterIndent.trim();
+                    const lastOpen = trimmedAfter ? trimmedAfter.trimEnd().slice(-1) : "";
+                    if (lastOpen === "{" || lastOpen === "[" || lastOpen === "(") {
+                        indent += "  ";
+                        // if the matching closer sits right after cursor, pad it onto new line
+                    }
+                    // if the char right after cursor is a closer that pairs with lastOpen, put it on its own line after
+                    const insert = "\n" + indent;
+                    insertAt(s, en, insert);
+                    input.selectionStart = input.selectionEnd = s + insert.length;
+                    render(); updateCursor(); updateNav();
+                    return;
+                }
+
+                // Tab: insert two spaces
+                if (e.key === "Tab") {
+                    e.preventDefault();
+                    if (e.shiftKey) {
+                        // outdent
+                        const lineStart = val.lastIndexOf("\n", s - 1) + 1;
+                        if (val.slice(lineStart, lineStart + 2) === "  ") {
+                            input.setRangeText("", lineStart, lineStart + 2, "end");
+                        }
+                    } else {
+                        insertAt(s, en, "  ");
+                        input.selectionStart = input.selectionEnd = s + 2;
+                    }
+                    render(); updateCursor(); updateNav();
+                    return;
+                }
+
+                // Auto-close pairs when there is no selection
+                if (en === s && PAIRS[e.key]) {
+                    // for quote: skip over if next char is a matching quote (to allow closing)
+                    if (e.key === '"' && val[s] === '"') {
+                        e.preventDefault();
+                        input.selectionStart = input.selectionEnd = s + 1;
+                        return;
+                    }
+                    // don't auto-pair quote if we're inside a string and char before is non-whitespace/punct? keep simple: only pair quote when context looks like a value/key start
+                    e.preventDefault();
+                    const open = e.key, close = PAIRS[e.key];
+                    insertAt(s, en, open + close);
+                    input.selectionStart = input.selectionEnd = s + 1;
+                    render(); updateCursor(); updateNav();
+                    return;
+                }
+
+                // Skip over matching closer if typing it while caret sits before an identical closer
+                if (en === s && CLOSE.includes(e.key) && val[s] === e.key) {
+                    e.preventDefault();
+                    input.selectionStart = input.selectionEnd = s + 1;
+                    return;
+                }
+
+                // Backspace: delete paired brackets when empty pair
+                if (e.key === "Backspace" && en === s && s > 0) {
+                    const prev = val[s - 1], next = val[s];
+                    if (PAIRS[prev] && next === PAIRS[prev]) {
+                        e.preventDefault();
+                        input.setRangeText("", s - 1, s + 1, "end");
+                        render(); updateCursor(); updateNav();
+                        return;
+                    }
+                }
+            });
+
+            function insertAt(start, end, text) {
+                input.setRangeText(text, start, end, "end");
+            }
+
+            // ---- format ----
+            function format() {
+                const text = input.value;
+                if (text.trim() === "") { showToast("内容为空"); return; }
+                try {
+                    const parsed = parseDocument(text);
+                    if (!parsed.ok) throw new Error(parsed.msg);
+                    input.value = JSON.stringify(parsed.obj, null, 2);
+                    render();
+                    updateCursor();
+                    showToast(parsed.partial ? "已格式化恢复的片段（缺失内容无法还原）" : "已格式化");
+                } catch (e) {
+                    setStatus(false, e.message);
+                    showToast("格式化失败: " + e.message);
+                }
+            }
+            function clearAll() {
+                input.value = "";
+                render();
+                input.focus();
+            }
+            $("btnFormat").addEventListener("click", format);
+            $("btnClear").addEventListener("click", clearAll);
+            $("btnOpen").addEventListener("click", openFile);
+            $("btnSave").addEventListener("click", saveFile);
+
+            // ---- open / save ----
+            let fileInput = null;
+            function openFile() {
+                if (!fileInput) {
+                    fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = ".json,application/json,text/plain";
+                    fileInput.addEventListener("change", () => {
+                        const f = fileInput.files && fileInput.files[0];
+                        if (!f) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            input.value = String(reader.result || "");
+                            lastFileName = f.name;
+                            render(); updateCursor(); updateNav();
+                            showToast("已打开: " + f.name);
+                        };
+                        reader.onerror = () => showToast("读取失败");
+                        reader.readAsText(f);
+                        fileInput.value = ""; // allow re-opening same file
+                    });
+                }
+                fileInput.click();
+            }
+            function saveFile() {
+                const text = input.value;
+                let name = "data.json";
+                // best-effort: keep existing name across saves within session
+                if (lastFileName) name = lastFileName;
+                const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url; a.download = name;
+                document.body.appendChild(a); a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 0);
+                showToast("已保存: " + name);
+            }
+            let lastFileName = "";
+
+            // ---- shortcuts: Ctrl+Alt+L / Ctrl+O / Ctrl+S ----
+            document.addEventListener("keydown", (e) => {
+                const mod = e.ctrlKey || e.metaKey;
+                if (mod && e.altKey && (e.key === "l" || e.key === "L")) {
+                    e.preventDefault();
+                    format();
+                    return;
+                }
+                if (mod && !e.altKey && (e.key === "o" || e.key === "O")) {
+                    e.preventDefault();
+                    openFile();
+                    return;
+                }
+                if (mod && !e.altKey && (e.key === "s" || e.key === "S")) {
+                    e.preventDefault();
+                    saveFile();
+                    return;
+                }
+            });
+
+            // ---- nav (breadcrumb path to cursor, mirrors selector format) ----
+            function updateNav() {
+                nav.innerHTML = "";
+                const root = document.createElement("button");
+                root.className = "crumb root";
+                root.textContent = "$";
+                root.addEventListener("click", () => { input.focus(); input.setSelectionRange(0, 0); updateCursor(); updateNav(); });
+                nav.appendChild(root);
+
+                const parsed = parseDocument(input.value);
+                if (!parsed.ok) {
+                    const hint = document.createElement("span");
+                    hint.className = "crumb"; hint.style.cursor = "default"; hint.style.color = "var(--text-soft)";
+                    hint.textContent = "(JSON 不合法)";
+                    nav.appendChild(hint);
+                    return;
+                }
+
+                const pos = input.selectionStart;
+                const path = scanForPos(parsed.text, Math.max(0, Math.min(parsed.text.length, pos + parsed.offset))) || [];
+                // render each segment as a crumb; click jumps to that segment's value start
+                let prefix = [];
+                path.forEach((seg, idx) => {
+                    const sep = document.createElement("span"); sep.className = "sep"; sep.textContent = "›"; nav.appendChild(sep);
+                    const b = document.createElement("button");
+                    b.className = "crumb";
+                    b.textContent = seg.type === "key" ? seg.value : "[" + seg.value + "]";
+                    const targetPrefix = prefix.slice();
+                    b.addEventListener("click", () => {
+                        const start = Math.max(0, Math.min(input.value.length,
+                            findSegmentStart(parsed.text, targetPrefix.concat(seg)) - parsed.offset));
+                        if (start >= 0) {
+                            input.focus();
+                            input.setSelectionRange(start, start);
+                            updateCursor();
+                            updateNav();
+                        }
+                    });
+                    nav.appendChild(b);
+                    prefix.push(seg);
+                });
+            }
+
+            // find the start offset of the value identified by `path` in the raw text.
+            function findSegmentStart(text, path) {
+                const len = text.length;
+                let i = 0, depth = 0;
+                function skipWS() { while (i < len && /\s/.test(text[i])) i++; }
+                function readString() {
+                    i++; let s = "";
+                    while (i < len) {
+                        const c = text[i];
+                        if (c === "\\") { s += text[i] + (text[i + 1] || ""); i += 2; continue; }
+                        if (c === '"') { i++; return JSON.parse('"' + s + '"'); }
+                        s += c; i++;
+                    }
+                    return s;
+                }
+                function descend(remaining) {
+                    skipWS();
+                    if (i >= len || remaining.length === 0) return i;
+                    const c = text[i];
+                    if (c === "{") {
+                        i++; skipWS();
+                        while (i < len && text[i] !== "}") {
+                            if (text[i] !== '"') { i++; continue; }
+                            const key = readString();
+                            skipWS();
+                            if (text[i] === ":") i++;
+                            skipWS();
+                            if (remaining[0] && remaining[0].type === "key" && remaining[0].value === key) {
+                                const rest = remaining.slice(1);
+                                if (rest.length === 0) return i;
+                                return descend(rest);
+                            }
+                            skipValue();
+                            skipWS();
+                            if (text[i] === ",") { i++; skipWS(); }
+                        }
+                        return i;
+                    } else if (c === "[") {
+                        i++; skipWS();
+                        let idx = 0;
+                        while (i < len && text[i] !== "]") {
+                            if (remaining[0] && remaining[0].type === "index" && remaining[0].value === idx) {
+                                const rest = remaining.slice(1);
+                                if (rest.length === 0) return i;
+                                return descend(rest);
+                            }
+                            skipValue();
+                            skipWS();
+                            if (text[i] === ",") { i++; idx++; skipWS(); }
+                        }
+                        return i;
+                    }
+                    return i;
+                }
+                function skipValue() {
+                    skipWS();
+                    if (i >= len) return;
+                    const c = text[i];
+                    if (c === "{") { let d = 0; do { if (text[i] === '"') { readString(); continue; } if (text[i] === "{") d++; else if (text[i] === "}") d--; i++; } while (d > 0 && i < len); return; }
+                    if (c === "[") { let d = 0; do { if (text[i] === '"') { readString(); continue; } if (text[i] === "[") d++; else if (text[i] === "]") d--; i++; } while (d > 0 && i < len); return; }
+                    if (c === '"') { readString(); return; }
+                    while (i < len && !/[\s,\}\]]/.test(text[i])) i++;
+                }
+                return descend(path);
+            }
+
+            // ---- right-click menu: copy selector ----
+            let menuRange = null; // {start, end} for selector resolution context
+            input.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                menuRange = { start: input.selectionStart, end: input.selectionEnd };
+                // adjust position to click point
+                menu.style.display = "block";
+                let x = e.clientX, y = e.clientY;
+                const r = menu.getBoundingClientRect();
+                if (x + r.width > window.innerWidth) x = window.innerWidth - r.width - 4;
+                if (y + r.height > window.innerHeight) y = window.innerHeight - r.height - 4;
+                menu.style.left = x + "px";
+                menu.style.top = y + "px";
+            });
+            document.addEventListener("click", (e) => {
+                if (!menu.contains(e.target)) menu.style.display = "none";
+            });
+            document.addEventListener("scroll", () => menu.style.display = "none", true);
+
+            $("mCopySel").addEventListener("click", () => {
+                menu.style.display = "none";
+                const sel = computeSelector();
+                if (sel == null) { showToast("无法计算选择器 (JSON 不合法)"); return; }
+                copyText(sel);
+                showToast("已复制: " + sel);
+            });
+            $("mFormat").addEventListener("click", () => { menu.style.display = "none"; format(); });
+            $("mClear").addEventListener("click", () => { menu.style.display = "none"; clearAll(); });
+
+            // compute selector for current cursor position
+            function computeSelector() {
+                const parsed = parseDocument(input.value);
+                if (!parsed.ok) return null;
+                const pos = (menuRange && menuRange.start != null) ? menuRange.start : input.selectionStart;
+                const path = scanForPos(parsed.text, Math.max(0, Math.min(parsed.text.length, pos + parsed.offset)));
+                if (path == null) return "";
+                let s = "";
+                for (const seg of path) {
+                    if (seg.type === "key") s += `[${JSON.stringify(seg.value)}]`;
+                    else s += `[${seg.value}]`;
+                }
+                return s || "$";
+            }
+
+            // Walk the raw text with a state machine to determine the path of the
+            // value (or key) the cursor is currently on/inside.
+            function pathAtPos(text, pos) {
+                const len = text.length;
+                let i = 0;
+                const stack = []; // {type:'obj'|'arr', keys:[], index}
+                const path = [];
+                let pendingKey = null; // string key waiting for its value
+
+                function skipWS() {
+                    while (i < len && /\s/.test(text[i])) i++;
+                }
+                function readString() {
+                    // assumes text[i] === '"'
+                    i++; let s = "";
+                    while (i < len) {
+                        const c = text[i];
+                        if (c === "\\") { s += text[i] + (text[i + 1] || ""); i += 2; continue; }
+                        if (c === '"') { i++; return JSON.parse('"' + s + '"'); }
+                        s += c; i++;
+                    }
+                    return s;
+                }
+
+                function parseValue() {
+                    skipWS();
+                    if (i >= len) return;
+                    const c = text[i];
+                    const valueStart = i;
+                    let isCur = false;
+                    if (c === "{") {
+                        const key = pendingKey; pendingKey = null;
+                        const idx = stack.length ? (stack[stack.length - 1].type === "arr" ? stack[stack.length - 1].index : null) : null;
+                        stack.push({ type: "obj", index: 0 });
+                        // build path at this point
+                        const here = currentPath(key, idx);
+                        if (pos >= valueStart && pos < closeBraceRange(text, i, "{", "}")) { return here; }
+                        i++; // skip {
+                        parseMembers();
+                        skipWS();
+                        if (text[i] === "}") i++;
+                        stack.pop();
+                        return;
+                    } else if (c === "[") {
+                        const key = pendingKey; pendingKey = null;
+                        const idx = stack.length ? (stack[stack.length - 1].type === "arr" ? stack[stack.length - 1].index : null) : null;
+                        stack.push({ type: "arr", index: 0 });
+                        const here = currentPath(key, idx);
+                        if (pos >= valueStart && pos < closeBraceRange(text, i, "[", "]")) { return here; }
+                        i++; // skip [
+                        parseElements();
+                        skipWS();
+                        if (text[i] === "]") i++;
+                        stack.pop();
+                        return;
+                    } else if (c === '"') {
+                        const key = pendingKey; pendingKey = null;
+                        const idx = arrIndex();
+                        const s = readString();
+                        const valueEnd = i;
+                        if (pos >= valueStart && pos <= valueEnd) {
+                            return currentPath(key, idx);
+                        }
+                        return;
+                    } else if (c === "-" || (c >= "0" && c <= "9")) {
+                        const key = pendingKey; pendingKey = null;
+                        const idx = arrIndex();
+                        let s = "";
+                        if (text[i] === "-") s += text[i++];
+                        while (i < len && /[0-9.eE+\-]/.test(text[i])) s += text[i++];
+                        if (pos >= valueStart && pos <= i) return currentPath(key, idx);
+                        return;
+                    } else if (c >= "a" && c <= "z") {
+                        const key = pendingKey; pendingKey = null;
+                        const idx = arrIndex();
+                        let s = "";
+                        while (i < len && /[a-z]/.test(text[i])) s += text[i++];
+                        if (pos >= valueStart && pos <= i) return currentPath(key, idx);
+                        return;
+                    } else {
+                        i++;
+                    }
+                }
+                function arrIndex() {
+                    if (stack.length && stack[stack.length - 1].type === "arr") {
+                        return stack[stack.length - 1].index;
+                    }
+                    return null;
+                }
+                function currentPath(key, idx) {
+                    const p = [];
+                    for (const f of stack) {
+                        if (f.type === "arr") p.push({ type: "index", value: f.index });
+                        else p.push({ type: "key", value: f.curKey });
+                    }
+                    // leaf segment
+                    if (key != null) p.push({ type: "key", value: key });
+                    else if (idx != null) p.push({ type: "index", value: idx });
+                    return p;
+                }
+                // We need curKey on obj frames; rebuild logic below
+                function parseMembers() {
+                    while (true) {
+                        skipWS();
+                        if (text[i] === "}") return;
+                        if (text[i] !== '"') { i++; continue; }
+                        const key = readString();
+                        if (stack.length) stack[stack.length - 1].curKey = key;
+                        // mark the key's own range
+                        skipWS();
+                        if (text[i] === ":") i++;
+                        skipWS();
+                        parseValue();
+                        // check if cursor is on the key token itself: approximate by checking
+                        // against the key range handled below via a re-scan approach — skip here.
+                        skipWS();
+                        if (text[i] === ",") { i++; if (stack.length && stack[stack.length - 1].type === "arr") stack[stack.length - 1].index++; continue; }
+                        if (text[i] === "}") return;
+                    }
+                }
+                function parseElements() {
+                    while (true) {
+                        skipWS();
+                        if (text[i] === "]") return;
+                        parseValue();
+                        skipWS();
+                        if (text[i] === ",") { i++; if (stack.length) stack[stack.length - 1].index++; continue; }
+                        if (text[i] === "]") return;
+                    }
+                }
+
+                // For key-cursor detection, do a separate lightweight scan: find the
+                // nearest key token covering pos.
+                const keyPath = keyAtPos(text, pos);
+                // The value scan returns a path via a sentinel; simplest: run value scan,
+                // but we need its return. Rewrite to use a found-flag.
+                // Instead, do a combined scan:
+                return scanForPos(text, pos);
+            }
+
+            // Combined scanner: returns the path segments for whatever token (key or
+            // value) contains `pos`.
+            function scanForPos(text, pos) {
+                const len = text.length;
+                let i = 0;
+                const stack = []; // frames
+                let result = null;
+
+                function newFrame(open) {
+                    return { type: open === "{" ? "obj" : "arr", index: 0, curKey: null };
+                }
+                function currentPath() {
+                    const p = [];
+                    for (const f of stack) {
+                        if (f.type === "arr") p.push({ type: "index", value: f.index });
+                        else p.push({ type: "key", value: f.curKey });
+                    }
+                    return p;
+                }
+                function skipWS() { while (i < len && /\s/.test(text[i])) i++; }
+                function readString() {
+                    const start = i;
+                    i++; let s = "";
+                    while (i < len) {
+                        const c = text[i];
+                        if (c === "\\") { s += text[i] + (text[i + 1] || ""); i += 2; continue; }
+                        if (c === '"') { i++; return { value: JSON.parse(text.slice(start, i)), start, end: i }; }
+                        s += c; i++;
+                    }
+                    return { value: JSON.parse(text.slice(start, i)), start, end: i };
+                }
+
+                function parseValue() {
+                    skipWS();
+                    if (i >= len) return;
+                    const c = text[i];
+                    const start = i;
+                    let leaf = null;
+                    // determine leaf for this value based on parent context
+                    const parent = stack.length ? stack[stack.length - 1] : null;
+                    if (parent && parent.type === "arr") leaf = { type: "index", value: parent.index };
+                    else if (parent && parent.type === "obj") leaf = { type: "key", value: parent.curKey };
+
+                    if (c === "{") {
+                        if (pos === start) { result = currentPath(leaf); return; }
+                        stack.push(newFrame("{"));
+                        i++;
+                        parseMembers();
+                        skipWS();
+                        if (text[i] === "}") i++;
+                        stack.pop();
+                        // if pos is exactly on the closing brace, treat as belonging to this value
+                        if (result == null && pos >= start && pos <= i) result = currentPath(leaf);
+                        return;
+                    } else if (c === "[") {
+                        if (pos === start) { result = currentPath(leaf); return; }
+                        stack.push(newFrame("["));
+                        i++;
+                        parseElements();
+                        skipWS();
+                        if (text[i] === "]") i++;
+                        stack.pop();
+                        if (result == null && pos >= start && pos <= i) result = currentPath(leaf);
+                        return;
+                    } else if (c === '"') {
+                        const r = readString();
+                        if (pos >= r.start && pos <= r.end) result = currentPath(leaf);
+                        return;
+                    } else if (c === "-" || (c >= "0" && c <= "9")) {
+                        if (text[i] === "-") i++;
+                        while (i < len && /[0-9.eE+\-]/.test(text[i])) i++;
+                        if (pos >= start && pos <= i) result = currentPath(leaf);
+                        return;
+                    } else if (c >= "a" && c <= "z") {
+                        while (i < len && /[a-z]/.test(text[i])) i++;
+                        if (pos >= start && pos <= i) result = currentPath(leaf);
+                        return;
+                    } else {
+                        i++;
+                    }
+                }
+                function parseMembers() {
+                    while (true) {
+                        skipWS();
+                        if (i >= len || text[i] === "}") return;
+                        if (text[i] !== '"') { i++; continue; }
+                        const r = readString();
+                        if (stack.length) stack[stack.length - 1].curKey = r.value;
+                        // cursor on the key token itself
+                        if (pos >= r.start && pos <= r.end) {
+                            // path: parent frames + this key (as a key leaf)
+                            result = currentPath({ type: "key", value: r.value });
+                            return;
+                        }
+                        skipWS();
+                        if (text[i] === ":") i++;
+                        skipWS();
+                        parseValue();
+                        if (result != null) return;
+                        skipWS();
+                        if (text[i] === ",") { i++; continue; }
+                        if (text[i] === "}") return;
+                    }
+                }
+                function parseElements() {
+                    while (true) {
+                        skipWS();
+                        if (i >= len || text[i] === "]") return;
+                        parseValue();
+                        if (result != null) return;
+                        skipWS();
+                        if (text[i] === ",") { i++; if (stack.length) stack[stack.length - 1].index++; continue; }
+                        if (text[i] === "]") return;
+                    }
+                }
+
+                skipWS();
+                if (text[i] === "{") {
+                    stack.push(newFrame("{")); i++; parseMembers();
+                    skipWS(); if (text[i] === "}") i++; stack.pop();
+                } else if (text[i] === "[") {
+                    stack.push(newFrame("[")); i++; parseElements();
+                    skipWS(); if (text[i] === "]") i++; stack.pop();
+                } else {
+                    parseValue();
+                }
+                return result || [];
+            }
+
+            function keyAtPos() { return null; } // unused placeholder
+
+            // find matching close brace range — used only as bound in earlier fn; keep simple
+            function closeBraceRange(text, start, open, close) {
+                let depth = 0, i = start;
+                for (; i < text.length; i++) {
+                    const c = text[i];
+                    if (c === '"') { // skip string
+                        i++; while (i < text.length) {
+                            if (text[i] === "\\") { i += 2; continue; }
+                            if (text[i] === '"') break;
+                            i++;
+                        }
+                        continue;
+                    }
+                    if (c === open) depth++;
+                    else if (c === close) { depth--; if (depth === 0) return i + 1; }
+                }
+                return i;
+            }
+
+            // ---- clipboard ----
+            function copyText(t) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(t).catch(() => fallbackCopy(t));
+                } else fallbackCopy(t);
+            }
+            function fallbackCopy(t) {
+                const ta = document.createElement("textarea");
+                ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+                document.body.appendChild(ta); ta.select();
+                try { document.execCommand("copy"); } catch (e) { }
+                document.body.removeChild(ta);
+            }
+            let toastTimer = null;
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add("show");
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+            }
+
+            // ---- init ----
+            input.value = "";
+            render();
+            updateCursor();
+        })();
+    </script>
+</body>
+
+</html>

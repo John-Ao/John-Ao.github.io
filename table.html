@@ -126,17 +126,39 @@
 
         /* ── Grid ── */
         #grid {
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             table-layout: fixed;
         }
 
         #grid th,
         #grid td {
-            border: 1px solid #d0d0d0;
+            /* Draw each shared edge once with separate table borders. */
+            border: 0;
+            border-right: 1px solid #d0d0d0;
+            border-bottom: 1px solid #d0d0d0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             position: relative;
+        }
+
+        /* Fixed row geometry keeps virtual scroll offsets independent of selection borders. */
+        #grid td.cell,
+        #grid td.rh {
+            height: 26px;
+            line-height: 18px;
+            padding: 0 4px;
+        }
+
+        #grid .virtual-spacer td {
+            border: 0;
+            padding: 0;
+            line-height: 0;
+        }
+
+        #table-wrap {
+            overflow-anchor: none;
         }
 
         /* Corner */
@@ -145,7 +167,9 @@
             min-width: 40px;
             width: 40px;
             height: 24px;
-            border: 1px solid #b0b0b0;
+            border-color: #b0b0b0;
+            border-top: 1px solid #b0b0b0;
+            border-left: 1px solid #b0b0b0;
             position: sticky;
             top: 0;
             left: 0;
@@ -166,7 +190,8 @@
             position: sticky;
             top: 0;
             z-index: 3;
-            border: 1px solid #b0b0b0;
+            border-color: #b0b0b0;
+            border-top: 1px solid #b0b0b0;
             transition: background .1s;
         }
 
@@ -193,7 +218,8 @@
             position: sticky;
             left: 0;
             z-index: 2;
-            border: 1px solid #b0b0b0;
+            border-color: #b0b0b0;
+            border-left: 1px solid #b0b0b0;
             transition: background .1s;
         }
 
@@ -208,8 +234,8 @@
 
         /* Data cells */
         #grid td.cell {
-            height: 22px;
-            padding: 2px 4px;
+            height: 26px;
+            padding: 0 4px;
             cursor: cell;
             background: #fff;
             color: #111;
@@ -645,9 +671,63 @@
             return s;
         }
 
+        const ROW_HEIGHT = 26;
+        const HEADER_HEIGHT = 24;
+        const OVERSCAN = 8;
+        const tableWrap = document.getElementById('table-wrap');
+        const visibleCells = new Map();
+        let renderedStart = -1, renderedEnd = -1, scrollFrame = 0;
+
+        function visibleRowRange() {
+            const count = Math.ceil((tableWrap.clientHeight || 600) / ROW_HEIGHT) + 2 * OVERSCAN;
+            const start = Math.min(Math.max(0, data.length - count),
+                Math.max(0, Math.floor(tableWrap.scrollTop / ROW_HEIGHT) - OVERSCAN));
+            return [start, Math.min(data.length, start + count)];
+        }
+
+        function appendSpacer(parent, height) {
+            if (!height) return;
+            const tr = document.createElement('tr');
+            tr.className = 'virtual-spacer';
+            tr.setAttribute('aria-hidden', 'true');
+            const td = document.createElement('td');
+            td.colSpan = data[0].length + 1;
+            td.style.height = height + 'px';
+            tr.appendChild(td);
+            parent.appendChild(tr);
+        }
+
+        function refreshViewport() {
+            scrollFrame = 0;
+            const [start, end] = visibleRowRange();
+            if (start !== renderedStart || end !== renderedEnd) buildTable();
+            positionEditor();
+        }
+        function scheduleViewport() {
+            if (!scrollFrame) scrollFrame = requestAnimationFrame(refreshViewport);
+        }
+        tableWrap.addEventListener('scroll', scheduleViewport, { passive: true });
+        new ResizeObserver(scheduleViewport).observe(tableWrap);
+        for (const [type, handler] of [['mousedown', onCellMouseDown], ['dblclick', onCellDblClick]]) {
+            tableWrap.addEventListener(type, e => {
+                const td = e.target.closest('.cell');
+                if (td) handler.call(td, e);
+            });
+        }
+
+        function updateGridWidth() {
+            document.getElementById('grid').style.width =
+                (40 + colWidths.reduce((sum, width) => sum + width, 0)) + 'px';
+        }
+
         function buildTable() {
+            updateGridWidth();
             const tbody = document.getElementById('tbody');
-            tbody.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            visibleCells.clear();
+            const [start, end] = visibleRowRange();
+            renderedStart = start;
+            renderedEnd = end;
 
             // Header row
             const hrow = document.createElement('tr');
@@ -664,6 +744,7 @@
                 th.dataset.c = c;
                 th.textContent = colLabel(c);
                 th.style.width = colWidths[c] + 'px';
+                th.style.minWidth = colWidths[c] + 'px';
                 th.onclick = (e) => selectCol(c, e);
                 // resize handle
                 const rh = document.createElement('div');
@@ -672,10 +753,11 @@
                 th.appendChild(rh);
                 hrow.appendChild(th);
             }
-            tbody.appendChild(hrow);
+            fragment.appendChild(hrow);
+            appendSpacer(fragment, start * ROW_HEIGHT);
 
             // Data rows
-            for (let r = 0; r < data.length; r++) {
+            for (let r = start; r < end; r++) {
                 const tr = document.createElement('tr');
                 const rh = document.createElement('td');
                 rh.className = 'rh';
@@ -692,14 +774,15 @@
                     td.style.width = colWidths[c] + 'px';
                     td.style.maxWidth = colWidths[c] + 'px';
                     td.textContent = data[r][c];
-                    td.addEventListener('mousedown', onCellMouseDown);
-                    td.addEventListener('dblclick', onCellDblClick);
+                    visibleCells.set(r + ':' + c, td);
                     tr.appendChild(td);
                 }
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             }
 
-            applySelStyles();
+            appendSpacer(fragment, (data.length - end) * ROW_HEIGHT);
+            tbody.replaceChildren(fragment);
+            applySelStyles(false);
         }
 
         // ─────────────────────────────────────────────
@@ -723,86 +806,50 @@
             updateCellRef();
         }
 
-        function applySelStyles() {
-            // Remove old
-            document.querySelectorAll('.cell').forEach(td => {
-                td.classList.remove('selected', 'anchor', 'sel-top', 'sel-bottom', 'sel-left', 'sel-right', 'row-hl', 'col-hl');
-            });
-            document.querySelectorAll('.ch').forEach(th => th.classList.remove('sel-header'));
-            document.querySelectorAll('.rh').forEach(td => td.classList.remove('sel-header'));
-
+        function applySelStyles(updateStats = true) {
             const { r0, r1, c0, c1 } = normSel();
-
-            for (let r = r0; r <= r1; r++) {
-                for (let c = c0; c <= c1; c++) {
-                    const td = getCell(r, c);
-                    if (!td) continue;
-                    if (r === sel.anchor_r && c === sel.anchor_c) {
-                        td.classList.add('anchor');
-                    } else {
-                        td.classList.add('selected');
-                    }
-                    if (r === r0) td.classList.add('sel-top');
-                    if (r === r1) td.classList.add('sel-bottom');
-                    if (c === c0) td.classList.add('sel-left');
-                    if (c === c1) td.classList.add('sel-right');
+            for (const td of visibleCells.values()) {
+                const r = +td.dataset.r, c = +td.dataset.c;
+                const inRow = r >= r0 && r <= r1, inCol = c >= c0 && c <= c1;
+                const classes = ['cell'];
+                if (inRow) classes.push('row-hl');
+                else if (inCol) classes.push('col-hl');
+                if (inRow && inCol) {
+                    classes.push(r === sel.anchor_r && c === sel.anchor_c ? 'anchor' : 'selected');
+                    if (r === r0) classes.push('sel-top');
+                    if (r === r1) classes.push('sel-bottom');
+                    if (c === c0) classes.push('sel-left');
+                    if (c === c1) classes.push('sel-right');
                 }
-                // row header
-                const rh = document.querySelector(`.rh[data-r="${r}"]`);
-                if (rh) rh.classList.add('sel-header');
+                const name = classes.join(' ');
+                if (td.className !== name) td.className = name;
             }
-            for (let c = c0; c <= c1; c++) {
-                const ch = document.querySelector(`.ch[data-c="${c}"]`);
-                if (ch) ch.classList.add('sel-header');
-            }
-
-            // Faint tint on the full rows and full columns spanning the block.
-            // Block cells keep their own (stronger) fill via !important; cells that
-            // are already row-hl aren't also tagged col-hl (keeps it single-class).
-            const colCount = data[0].length;
-            for (let r = r0; r <= r1; r++) {
-                for (let c = 0; c < colCount; c++) {
-                    const td = getCell(r, c);
-                    if (td) td.classList.add('row-hl');
-                }
-            }
-            for (let c = c0; c <= c1; c++) {
-                for (let r = 0; r < data.length; r++) {
-                    const td = getCell(r, c);
-                    if (td && !td.classList.contains('row-hl')) td.classList.add('col-hl');
-                }
-            }
-            updateStatusBar();
+            document.querySelectorAll('.rh').forEach(td =>
+                td.classList.toggle('sel-header', +td.dataset.r >= r0 && +td.dataset.r <= r1));
+            document.querySelectorAll('.ch').forEach(th =>
+                th.classList.toggle('sel-header', +th.dataset.c >= c0 && +th.dataset.c <= c1));
+            if (updateStats) updateStatusBar();
             applyJoinSourceStyles();
         }
 
-        /**
-         * Paint (or clear) the orange perimeter box around the captured Join source.
-         * Independent of the normal selection so it survives target selection changes.
-         * Called from applySelStyles (which runs on every selection change) and after
-         * buildTable, so the box stays visible until join ends.
-         */
         function applyJoinSourceStyles() {
-            document.querySelectorAll('.cell').forEach(td => {
+            for (const td of visibleCells.values()) {
                 td.classList.remove('join-src', 'join-top', 'join-bottom', 'join-left', 'join-right');
-            });
-            if (!joinSource) return;
-            const { r0, r1, c0, c1 } = joinSource;
-            for (let r = r0; r <= r1; r++) {
-                for (let c = c0; c <= c1; c++) {
-                    const td = getCell(r, c);
-                    if (!td) continue;
-                    td.classList.add('join-src');
-                    if (r === r0) td.classList.add('join-top');
-                    if (r === r1) td.classList.add('join-bottom');
-                    if (c === c0) td.classList.add('join-left');
-                    if (c === c1) td.classList.add('join-right');
-                }
+                if (!joinSource) continue;
+                const { r0, r1, c0, c1 } = joinSource;
+                const r = +td.dataset.r, c = +td.dataset.c;
+                if (r < r0 || r > r1 || c < c0 || c > c1) continue;
+                td.classList.add('join-src');
+                if (r === r0) td.classList.add('join-top');
+                if (r === r1) td.classList.add('join-bottom');
+                if (c === c0) td.classList.add('join-left');
+                if (c === c1) td.classList.add('join-right');
             }
         }
 
+        // Offscreen cells intentionally have no DOM node; their values remain in data.
         function getCell(r, c) {
-            return document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+            return visibleCells.get(r + ':' + c) || null;
         }
 
         function selectAll() {
@@ -886,6 +933,7 @@
             editFillRange = (fillRange && (r0 !== r1 || c0 !== c1))
                 ? { r0, r1, c0, c1 } : null;
 
+            scrollCellIntoView(r, c);
             editCell = { r, c };
 
             if (!editFillRange) {
@@ -960,6 +1008,7 @@
                 const nc = c + (moveDir === 'right' ? 1 : moveDir === 'left' ? -1 : 0);
                 if (nr >= 0 && nr < data.length && nc >= 0 && nc < data[0].length) {
                     setSelection(nr, nc, nr, nc, nr, nc);
+                    scrollCellIntoView(nr, nc);
                 } else {
                     setSelection(r, c, r, c, r, c);
                 }
@@ -1037,7 +1086,10 @@
             if (e.key === 'Delete' || e.key === 'Backspace') { clearSel(); e.preventDefault(); return; }
             if (e.key === 'Tab') {
                 const nc = sel.anchor_c + (e.shiftKey ? -1 : 1);
-                if (nc >= 0 && nc < data[0].length) setSelection(sel.anchor_r, nc);
+                if (nc >= 0 && nc < data[0].length) {
+                    setSelection(sel.anchor_r, nc);
+                    scrollCellIntoView(sel.anchor_r, nc);
+                }
                 e.preventDefault(); return;
             }
 
@@ -1082,8 +1134,17 @@
         });
 
         function scrollCellIntoView(r, c) {
+            const top = r * ROW_HEIGHT;
+            if (top < tableWrap.scrollTop) tableWrap.scrollTop = top;
+            else if (top + ROW_HEIGHT + HEADER_HEIGHT > tableWrap.scrollTop + tableWrap.clientHeight)
+                tableWrap.scrollTop = top + ROW_HEIGHT + HEADER_HEIGHT - tableWrap.clientHeight;
+            refreshViewport();
             const td = getCell(r, c);
-            if (td) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            if (td) {
+                const rect = td.getBoundingClientRect(), wrap = tableWrap.getBoundingClientRect();
+                if (rect.left < wrap.left + 40) tableWrap.scrollLeft -= wrap.left + 40 - rect.left;
+                else if (rect.right > wrap.right) tableWrap.scrollLeft += rect.right - wrap.right;
+            }
         }
 
         // ─────────────────────────────────────────────
@@ -1211,7 +1272,7 @@
 
             // Expand data if needed
             const neededRows = r0 + rows.length;
-            const neededCols = c0 + Math.max(...rows.map(r => r.length));
+            const neededCols = c0 + rows.reduce((max, row) => Math.max(max, row.length), 0);
             while (data.length < neededRows) { data.push(Array(data[0].length).fill('')); rowHeights.push(22); }
             for (let r = 0; r < data.length; r++) {
                 while (data[r].length < neededCols) data[r].push('');
@@ -1226,7 +1287,7 @@
 
             buildTable();
             const r1 = r0 + rows.length - 1;
-            const c1 = c0 + Math.max(...rows.map(r => r.length)) - 1;
+            const c1 = c0 + rows.reduce((max, row) => Math.max(max, row.length), 0) - 1;
             setSelection(r0, c0, r1, c1, r0, c0);
             pushHistory();
             toast(`已粘贴 ${rows.length}×${rows[0].length} 单元格`);
@@ -1372,12 +1433,15 @@
             const dx = e.clientX - resizeState.startX;
             const newW = Math.max(30, resizeState.startW + dx);
             colWidths[resizeState.c] = newW;
+            updateGridWidth();
             // Update live
             document.querySelectorAll(`.ch[data-c="${resizeState.c}"]`).forEach(el => {
                 el.style.width = newW + 'px';
+                el.style.minWidth = newW + 'px';
             });
             document.querySelectorAll(`.cell[data-c="${resizeState.c}"]`).forEach(el => {
-                el.style.width = newW + 'px'; el.style.maxWidth = newW + 'px';
+                el.style.width = newW + 'px';
+                el.style.minWidth = newW + 'px'; el.style.maxWidth = newW + 'px';
             });
         }
         function endColResize() {
@@ -1447,17 +1511,19 @@
             if (!e.target.closest('#ctx-menu')) ctxMenu.style.display = 'none';
         });
 
-        // Keep editor positioned on scroll
-        document.getElementById('table-wrap').addEventListener('scroll', () => {
-            if (editCell) {
-                const td = getCell(editCell.r, editCell.c);
-                if (td) {
-                    const rect = td.getBoundingClientRect();
-                    editor.style.left = rect.left + 'px';
-                    editor.style.top = rect.top + 'px';
-                }
+        // Hide an offscreen editor without committing or losing its draft.
+        function positionEditor() {
+            if (!editCell) return;
+            const td = getCell(editCell.r, editCell.c);
+            const rect = td?.getBoundingClientRect();
+            const wrap = tableWrap.getBoundingClientRect();
+            const visible = rect && rect.bottom > wrap.top + HEADER_HEIGHT && rect.top < wrap.bottom;
+            editor.style.display = visible ? 'block' : 'none';
+            if (visible) {
+                editor.style.left = rect.left + 'px';
+                editor.style.top = rect.top + 'px';
             }
-        });
+        }
 
         // ─────────────────────────────────────────────
         //  Auto-fit column widths
@@ -1470,13 +1536,13 @@
 
             // Collect non-empty values and classify as numeric / text
             const nums = [];
-            let textCount = 0;
+            let textCount = 0, min = Infinity, max = -Infinity, sum = 0;
             for (let r = r0; r <= r1; r++) {
                 for (let c = c0; c <= c1; c++) {
                     const v = (data[r]?.[c] ?? '').trim();
                     if (v === '') continue;
                     const n = Number(v);
-                    if (!isNaN(n)) { nums.push(n); } else { textCount++; }
+                    if (!isNaN(n)) { nums.push(n); min = Math.min(min, n); max = Math.max(max, n); sum += n; } else { textCount++; }
                 }
             }
 
@@ -1490,11 +1556,8 @@
 
             let numPart = `，<b>0</b> 项数值`;
             if (nums.length > 0) {
-                const min = Math.min(...nums);
-                const max = Math.max(...nums);
-                const sum = nums.reduce((a, b) => a + b, 0);
                 const avg = sum / nums.length;
-                const sorted = [...nums].sort((a, b) => a - b);
+                const sorted = nums.sort((a, b) => a - b);
                 const mid = Math.floor(sorted.length / 2);
                 const median = sorted.length % 2 === 1
                     ? sorted[mid]
@@ -2098,7 +2161,7 @@
         /** Replace the whole grid with the given array-of-arrays. */
         function loadData(rows) {
             if (!rows || !rows.length) { toast('文件为空'); return; }
-            const cols = Math.max(...rows.map(r => r.length), 1);
+            const cols = rows.reduce((max, row) => Math.max(max, row.length), 1);
             data = rows.map(r => {
                 const row = r.map(v => (v == null ? '' : String(v)));
                 while (row.length < cols) row.push('');

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>QR Studio · 二维码生成器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+            color: #222;
+        }
+
+        main {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        textarea {
+            display: block;
+            width: 100%;
+            min-height: 160px;
+            padding: 12px;
+            resize: vertical;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font: inherit;
+            line-height: 1.6;
+        }
+
+        .meta {
+            margin-top: 8px;
+            color: #666;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .settings {
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        .settings label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        #level {
+            display: block;
+            width: 100%;
+            margin: 12px 0 4px;
+            accent-color: #555;
+        }
+
+        .levels {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        button {
+            padding: 8px 14px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        textarea:focus-visible,
+        button:focus-visible {
+            outline: 2px solid #555;
+            outline-offset: 2px;
+        }
+
+        #status {
+            display: none;
+            margin: 12px 0 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        #status.error {
+            display: block;
+            color: #b13b32;
+        }
+
+        .qr-box {
+            width: 240px;
+            max-width: 100%;
+            aspect-ratio: 1;
+            margin: 24px auto 0;
+            display: grid;
+            place-items: center;
+        }
+
+        #placeholder {
+            width: 100%;
+            height: 100%;
+            border: 1px dashed #ddd;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <textarea id="content" aria-label="文本或网址" placeholder="输入文本或网址" spellcheck="false"
+            aria-describedby="count status"></textarea>
+        <div id="count" class="meta"></div>
+        <div class="settings">
+            <label for="level"><span>纠错等级</span><output id="level-value" for="level">M · 约 15%</output></label>
+            <input id="level" type="range" min="0" max="3" step="1" value="1" aria-valuetext="M，约 15% 纠错能力">
+            <div class="levels" aria-hidden="true"><span>L</span><span>M</span><span>Q</span><span>H</span></div>
+        </div>
+        <div class="actions">
+            <button id="clear">清空</button>
+            <button id="download" disabled>下载 PNG</button>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+        <div class="qr-box" aria-label="二维码预览">
+            <div id="placeholder" aria-hidden="true"></div>
+            <canvas id="qr" hidden aria-label="生成的二维码" role="img"></canvas>
+        </div>
+    </main>
+    <script>
+        const input = document.getElementById('content');
+        const status = document.getElementById('status');
+        const level = document.getElementById('level');
+        const levelValue = document.getElementById('level-value');
+        const count = document.getElementById('count');
+        // Version 40, one UTF-8 byte-mode segment; capacity depends on error correction.
+        const levels = [
+            { name: 'L', percent: 7, capacity: 2953 },
+            { name: 'M', percent: 15, capacity: 2331 },
+            { name: 'Q', percent: 25, capacity: 1663 },
+            { name: 'H', percent: 30, capacity: 1273 }
+        ];
+        const segmenter = typeof Intl.Segmenter === 'function'
+            ? new Intl.Segmenter('zh', { granularity: 'grapheme' }) : null;
+        const download = document.getElementById('download');
+        const canvas = document.getElementById('qr');
+        const placeholder = document.getElementById('placeholder');
+        const encoder = new TextEncoder();
+        let ready = false;
+        let loadFailed = false;
+        let timer;
+        let composing = false;
+        function message(text, error = false) {
+            status.textContent = text;
+            status.classList.toggle('error', error);
+        }
+        function resetPreview() {
+            canvas.hidden = true;
+            placeholder.hidden = false;
+            download.disabled = true;
+        }
+        function update() {
+            clearTimeout(timer);
+            resetPreview();
+            const setting = levels[Number(level.value)];
+            const bytes = encoder.encode(input.value).length;
+            const characters = segmenter ? Array.from(segmenter.segment(input.value)).length : Array.from(input.value).length;
+            count.textContent = `${characters} 字符 · ${bytes} / ${setting.capacity} 字节（上限；中文通常占 3 字节）`;
+            levelValue.textContent = `${setting.name} · 约 ${setting.percent}%`;
+            level.setAttribute('aria-valuetext', `${setting.name}，约 ${setting.percent}% 纠错能力`);
+            input.setAttribute('aria-invalid', String(bytes > setting.capacity));
+            if (bytes > setting.capacity) {
+                message(`超出当前等级的最大文本长度 ${setting.capacity} 字节，请缩短内容或降低纠错等级。`, true);
+                return;
+            }
+            if (!ready) {
+                message(loadFailed ? '二维码组件加载失败，请检查网络后刷新页面。' : '正在加载二维码组件…', true);
+                return;
+            }
+            message('');
+            if (!input.value || composing) return;
+            timer = setTimeout(renderQR, 200);
+        }
+        function renderQR() {
+            const value = input.value;
+            const setting = levels[Number(level.value)];
+            try {
+                const code = qrcode(0, setting.name);
+                code.addData(value, 'Byte');
+                code.make();
+                const modules = code.getModuleCount();
+                const margin = 4;
+                const scale = Math.max(6, Math.ceil(1024 / (modules + margin * 2)));
+                canvas.width = canvas.height = (modules + margin * 2) * scale;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < modules; row++) {
+                    for (let col = 0; col < modules; col++) {
+                        if (code.isDark(row, col)) ctx.fillRect((col + margin) * scale, (row + margin) * scale, scale, scale);
+                    }
+                }
+                canvas.hidden = false;
+                placeholder.hidden = true;
+                download.disabled = false;
+                message('二维码已生成，可扫码查看或下载保存。');
+            } catch (error) {
+                resetPreview();
+                message('生成失败，请缩短内容后重试。', true);
+            }
+        }
+        input.addEventListener('input', update);
+        input.addEventListener('compositionstart', () => { composing = true; clearTimeout(timer); resetPreview(); });
+        input.addEventListener('compositionend', () => { composing = false; update(); });
+        level.addEventListener('input', update);
+        document.getElementById('clear').addEventListener('click', () => {
+            input.value = '';
+            input.dispatchEvent(new Event('input'));
+            input.focus();
+        });
+        download.addEventListener('click', () => {
+            if (download.disabled) return;
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        });
+        const library = document.createElement('script');
+        library.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+        library.onload = () => {
+            qrcode.stringToBytes = text => Array.from(encoder.encode(text));
+            ready = true;
+            update();
+        };
+        library.onerror = () => {
+            loadFailed = true;
+            update();
+        };
+        update();
+        document.head.appendChild(library);
+    </script>
+</body>
+
+</html>

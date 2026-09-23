@@ -1,0 +1,28 @@
+{
+  "format": "john-ao-database-v1",
+  "generatedAt": "2026-09-23T14:59:36Z",
+  "tables": [
+    {
+      "name": "roll_number",
+      "file": "tables/af75759711edf915cc4bbb7e.bin",
+      "bytes": 4130131,
+      "salt": "4IwEZKM9ImVuXrBAYFP0rw==",
+      "nonce": "0wevMo6YvDBGWa2D",
+      "kdf": {
+        "name": "argon2id",
+        "version": 19,
+        "memoryKiB": 65536,
+        "passes": 50,
+        "parallelism": 1,
+        "keyBytes": 32
+      },
+      "encrypted": true
+    },
+    {
+      "name": "test",
+      "file": "tables/9f86d081884c7d659a2feaa0.tsv",
+      "bytes": 208,
+      "encrypted": false
+    }
+  ]
+}

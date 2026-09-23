@@ -1,0 +1,7 @@
+{
+  "tables": {
+    "test": {
+      "encrypted": false
+    }
+  }
+}

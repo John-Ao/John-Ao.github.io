@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>点格棋 · Dots & Boxes</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<header class="toolbar">
+<section class="dashboard" aria-label="对局状态"><div class="player blue" id="blue"><i></i><span>蓝方</span><strong id="score1">0</strong></div><div class="status"><strong id="turn" aria-live="polite">蓝方落子</strong><span>剩余 <b id="remaining">25</b> 格</span></div><div class="player orange" id="orange"><i></i><span>橙方</span><strong id="score2">0</strong></div></section>
+<div class="controls"><div class="dimensions"><label>行 <input id="rows" type="number" min="1" max="12" value="5"></label><span>×</span><label>列 <input id="cols" type="number" min="1" max="12" value="5"></label><button id="resize">应用</button></div><div class="actions"><button id="undo">↶ 悔棋</button><button id="restart">重来</button><button id="analysis" aria-pressed="false">AI 分析</button></div></div>
+<div id="analysisInfo" aria-live="polite" title="胜率后的 *：胜负已证明；次数前的 ✓：分差也已精确">双人对弈</div>
+</header>
+<section id="arena" aria-label="棋盘"><svg id="board" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="点格棋棋盘"></svg></section>
+<div id="notice" role="status"></div>
+</main><script src="game.js"></script><script src="ai-worker.js"></script><script src="app.js"></script></body></html>

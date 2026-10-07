@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf7f2">
+<title>国际象棋</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <div id="wrap"><div id="board" aria-label="国际象棋棋盘"></div><svg id="arrows" viewBox="0 0 800 800" aria-hidden="true"></svg></div>
+  <aside>
+    <h1>国际象棋</h1><p id="status" role="status"></p>
+    <div id="bar"><button id="undo">悔棋</button><button id="share">分享</button><button id="reset">重开</button><button id="analysis" aria-pressed="false" title="Stockfish 本地持续分析">AI 分析</button><button id="flip" aria-pressed="false">翻转棋盘</button></div>
+    <div id="wdl" hidden title="基于引擎对弈统计的胜／和／负估计，不代表对特定人类对手的实际胜率">
+      <div id="wdl-track" role="img" aria-label="等待胜率分析"><span id="wdl-white"></span><span id="wdl-draw"></span><span id="wdl-black"></span></div>
+      <div id="wdl-labels"><span>白胜 <b id="white-prob">—</b></span><span>和棋 <b id="draw-prob">—</b></span><span>黑胜 <b id="black-prob">—</b></span></div>
+    </div>
+    <p id="hint">点击棋子，再选择落点</p>
+  </aside>
+</main>
+<dialog id="promotion" aria-labelledby="promotion-title"><h2 id="promotion-title">选择升变棋子</h2><div id="promotion-options"></div><button id="cancel-promotion">取消</button></dialog>
+<div id="notice" role="status" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>四子棋 · Connect Four</title>
+    <style>
+        :root {
+            --bg: #f5f4ef;
+            --card: #ffffff;
+            --ink: #1a1a17;
+            --muted: #9a978f;
+            --line: #e7e4db;
+            --hole: #ece9e0;
+            --p1: #1f3a5f;
+            --p2: #d97757;
+            --accent: #6b8e4e;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 14px 34px rgba(20, 20, 15, 0.07);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: var(--bg);
+            color: var(--ink);
+            color-scheme: light;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            overflow: hidden;
+        }
+
+        .app {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            padding: 12px;
+            gap: 10px;
+        }
+
+        /* 横屏：棋盘在左，按键 + 状态紧贴右侧 */
+        @media (orientation: landscape) {
+            .app {
+                flex-direction: row;
+            }
+
+            .panel {
+                flex-direction: column;
+                order: 2;
+            }
+
+            .board-wrap {
+                order: 1;
+                justify-content: flex-end;
+            }
+        }
+
+        /* 竖屏：按键 + 状态在顶部，棋盘紧贴下方 */
+        @media (orientation: portrait) {
+            .app {
+                flex-direction: column;
+            }
+
+            .panel {
+                flex-direction: row;
+                order: 1;
+            }
+
+            .board-wrap {
+                order: 2;
+                justify-content: flex-start;
+            }
+        }
+
+        .panel {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 14px;
+            color: var(--muted);
+            min-height: 22px;
+            white-space: nowrap;
+        }
+
+        .status strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .status.win strong {
+            color: var(--accent);
+        }
+
+        .turn-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--p1);
+            flex-shrink: 0;
+        }
+
+        .turn-dot.p2 {
+            background: var(--p2);
+        }
+
+        .board-wrap {
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .board {
+            display: flex;
+            gap: 6px;
+            width: min(92vw, 448px);
+            user-select: none;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 13px;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.15s ease;
+        }
+
+        .col:hover {
+            background: rgba(0, 0, 0, 0.035);
+        }
+
+        .col.full,
+        .board.over .col {
+            cursor: default;
+        }
+
+        .board.over .col:hover,
+        .col.full:hover {
+            background: transparent;
+        }
+
+        .cell {
+            aspect-ratio: 1 / 1;
+            position: relative;
+        }
+
+        .hole {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--hole);
+            overflow: hidden;
+        }
+
+        .piece {
+            position: absolute;
+            left: 7%;
+            top: 7%;
+            width: 86%;
+            height: 86%;
+            border-radius: 50%;
+            background: var(--p1);
+            transition: opacity 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .piece.p2 {
+            background: var(--p2);
+        }
+
+        .piece.dim {
+            opacity: 0.26;
+        }
+
+        .piece.win {
+            box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--accent);
+        }
+
+        .piece.drop {
+            animation: drop 0.42s cubic-bezier(0.32, 1.3, 0.55, 1);
+        }
+
+        @keyframes drop {
+            from {
+                transform: translateY(-150%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        button {
+            font: inherit;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            color: var(--ink);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            padding: 9px 16px;
+            cursor: pointer;
+            transition: border-color 0.15s ease, opacity 0.15s ease;
+        }
+
+        button:hover:not(:disabled) {
+            border-color: var(--ink);
+        }
+
+        button:disabled {
+            color: var(--muted);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        button.primary {
+            background: var(--ink);
+            color: #fff;
+            border-color: var(--ink);
+        }
+
+        button.primary:hover:not(:disabled) {
+            opacity: 0.88;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="panel">
+            <button id="undo" aria-label="悔棋">悔棋</button>
+            <div class="status" id="status"></div>
+            <button id="reset" aria-label="重来">重来</button>
+        </div>
+        <div class="board-wrap">
+            <div class="board" id="board" role="grid" aria-label="四子棋棋盘"></div>
+        </div>
+    </div>
+
+    <script>
+        const COLS = 7, ROWS = 6;
+        const NAME = { 1: '蓝方', 2: '橙方' };
+
+        const boardEl = document.getElementById('board');
+        const boardWrapEl = document.querySelector('.board-wrap');
+        const statusEl = document.getElementById('status');
+        const undoBtn = document.getElementById('undo');
+        const resetBtn = document.getElementById('reset');
+
+        let moves = [];     // 当前落子序列（列号 0-6），以 URL 为唯一数据源
+        let prevLen = 0;    // 上一次渲染时的手数，用于判断是否需要播放落子动画
+
+        // —— 从 URL hash 解析合法落子序列 ——
+        function parseHash() {
+            const h = location.hash.slice(1);
+            const arr = [];
+            const board = emptyBoard();
+            for (const ch of h) {
+                const n = parseInt(ch, 10);
+                if (!(n >= 0 && n < COLS)) break;        // 非法列号：停止
+                if (board[0][n] !== 0) break;            // 该列已满：停止
+                for (let r = ROWS - 1; r >= 0; r--) {
+                    if (board[r][n] === 0) {
+                        board[r][n] = arr.length % 2 === 0 ? 1 : 2;
+                        break;
+                    }
+                }
+                arr.push(n);
+            }
+            return arr;
+        }
+
+        function emptyBoard() {
+            return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+        }
+
+        // 由落子序列构建棋盘
+        function buildBoard(seq) {
+            const board = emptyBoard();
+            seq.forEach((col, i) => {
+                const player = i % 2 === 0 ? 1 : 2;
+                for (let r = ROWS - 1; r >= 0; r--) {
+                    if (board[r][col] === 0) { board[r][col] = player; break; }
+                }
+            });
+            return board;
+        }
+
+        // 检测四连，返回 { player, cells } 或 null
+        function checkWin(board) {
+            const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const p = board[r][c];
+                    if (!p) continue;
+                    for (const [dr, dc] of dirs) {
+                        const cells = [[r, c]];
+                        for (let k = 1; k < 4; k++) {
+                            const nr = r + dr * k, nc = c + dc * k;
+                            if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) break;
+                            if (board[nr][nc] !== p) break;
+                            cells.push([nr, nc]);
+                        }
+                        if (cells.length >= 4) return { player: p, cells };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // 计算最后一手落在哪一格（用于落子动画）
+        function lastPlaced(seq) {
+            if (!seq.length) return null;
+            const board = buildBoard(seq.slice(0, -1));
+            const col = seq[seq.length - 1];
+            for (let r = ROWS - 1; r >= 0; r--) {
+                if (board[r][col] === 0) return { col, row: r };
+            }
+            return null;
+        }
+
+        // —— 让棋盘在可用空间内最大化（保持方格为正方形） ——
+        function fitBoard() {
+            const PAD = 13, gap = 6;
+            const availW = boardWrapEl.clientWidth;
+            const availH = boardWrapEl.clientHeight;
+            const cellByW = (availW - 2 * PAD - 6 * gap) / 7;
+            const cellByH = (availH - 2 * PAD - 5 * gap) / 6;
+            const cell = Math.max(0, Math.min(cellByW, cellByH));
+            const w = 2 * PAD + 7 * cell + 6 * gap;
+            boardEl.style.width = Math.floor(w) + 'px';
+        }
+
+        // —— 渲染棋盘与状态 ——
+        function render() {
+            const animate = moves.length > prevLen;
+            prevLen = moves.length;
+
+            const board = buildBoard(moves);
+            const win = checkWin(board);
+            const over = !!win || moves.length === ROWS * COLS;
+            const last = lastPlaced(moves);
+            const winSet = win ? new Set(win.cells.map(([r, c]) => r * COLS + c)) : null;
+
+            boardEl.innerHTML = '';
+            boardEl.classList.toggle('over', over);
+
+            for (let c = 0; c < COLS; c++) {
+                const colEl = document.createElement('div');
+                colEl.className = 'col' + (board[0][c] !== 0 ? ' full' : '');
+                colEl.dataset.col = c;
+                colEl.setAttribute('role', 'gridcell');
+                colEl.setAttribute('tabindex', over ? '-1' : '0');
+                colEl.setAttribute('aria-label', `第 ${c + 1} 列`);
+
+                for (let r = 0; r < ROWS; r++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+
+                    const hole = document.createElement('div');
+                    hole.className = 'hole';
+
+                    const v = board[r][c];
+                    if (v) {
+                        const piece = document.createElement('div');
+                        piece.className = 'piece p' + v;
+                        if (winSet && !winSet.has(r * COLS + c)) piece.classList.add('dim');
+                        if (winSet && winSet.has(r * COLS + c)) piece.classList.add('win');
+                        if (animate && last && last.col === c && last.row === r) {
+                            piece.classList.add('drop');
+                        }
+                        hole.appendChild(piece);
+                    }
+
+                    cell.appendChild(hole);
+                    colEl.appendChild(cell);
+                }
+
+                colEl.addEventListener('click', () => play(c));
+                colEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(c); }
+                });
+                boardEl.appendChild(colEl);
+            }
+
+            // 状态栏（原“第几手”位置）
+            statusEl.classList.toggle('win', !!win);
+            if (win) {
+                statusEl.innerHTML =
+                    `<span class="turn-dot p${win.player}"></span> <strong>获胜</strong>`;
+            } else if (moves.length === ROWS * COLS) {
+                statusEl.innerHTML = `<strong>平局</strong>`;
+            } else {
+                const cur = moves.length % 2 === 0 ? 1 : 2;
+                statusEl.innerHTML =
+                    `<span class="turn-dot p${cur}"></span>落子`;
+            }
+
+            undoBtn.disabled = moves.length === 0;
+            resetBtn.disabled = moves.length === 0;
+        }
+
+        // —— 落子：写入 URL，由 popstate 之外直接同步 ——
+        function play(col) {
+            if (col < 0 || col >= COLS) return;
+            const board = buildBoard(moves);
+            if (board[0][col] !== 0) return;             // 列已满
+            if (checkWin(board)) return;                 // 已结束
+
+            const next = moves.concat(col);
+            history.pushState(null, '', '#' + next.join(''));
+            moves = next;
+            render();
+        }
+
+        // —— 悔棋：后退一步 ——
+        function undo() {
+            if (moves.length === 0) return;
+            history.back();
+        }
+
+        // —— 重新开始 ——
+        function reset() {
+            if (moves.length === 0) return;
+            history.pushState(null, '', location.pathname + location.search);
+            moves = [];
+            render();
+        }
+
+        // URL 变化（后退/前进/刷新）时从地址栏重建状态
+        function syncFromUrl() {
+            moves = parseHash();
+            render();
+        }
+
+        window.addEventListener('popstate', syncFromUrl);
+        window.addEventListener('resize', fitBoard);
+        window.addEventListener('orientationchange', fitBoard);
+        undoBtn.addEventListener('click', undo);
+        resetBtn.addEventListener('click', reset);
+
+        // 棋盘容器尺寸变化时自适应最大化
+        if (window.ResizeObserver) {
+            new ResizeObserver(fitBoard).observe(boardWrapEl);
+        }
+
+        // 初始：依据当前 URL 恢复棋局
+        syncFromUrl();
+        fitBoard();
+    </script>
+</body>
+
+</html>

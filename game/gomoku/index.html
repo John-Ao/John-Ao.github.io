@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>五子棋</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<div id="wrap"><canvas id="c" aria-label="15×15 五子棋棋盘；候选点绿色胜势、红色负势、灰色均势；X 为黑棋禁手"></canvas></div>
+<aside><h1>五子棋</h1><p id="status" aria-live="polite"></p>
+<div id="bar"><button id="undo">悔棋</button><button id="share">分享</button><button id="reset">重开</button><button id="analysis" aria-pressed="false" title="Rapfi · Alpha-Beta + NNUE 持续分析，点击关闭">AI 分析</button><button id="renju" aria-pressed="false" title="启用黑棋禁手规则并在棋盘上显示 X">黑棋禁手</button></div>
+</aside></main><div id="notice" role="status" hidden></div>
+<script src="game.js?v=rapfi-2"></script><script src="board.js?v=rapfi-2"></script><script src="rapfi-client.js?v=rapfi-2"></script><script src="app.js?v=rapfi-2"></script>
+</body></html>

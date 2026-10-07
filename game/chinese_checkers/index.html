@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#faf7f2"><title>六角跳棋 · 本地 AI 分析</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css"></head>
+<body>
+<main>
+ <section id="wrap" aria-label="六角跳棋棋盘"><svg id="surface" viewBox="0 0 720 660" aria-hidden="true"></svg><div id="board"></div><svg id="arrows" viewBox="0 0 720 660" aria-hidden="true"></svg></section>
+ <aside>
+  <div id="modes" role="group" aria-label="游玩人数"><button data-count="2">2 人</button><button data-count="3">3 人</button><button data-count="4">4 人</button><button data-count="6">6 人</button></div>
+  <p id="status" role="status"></p><div id="players" aria-label="各方入营进度"></div>
+  <div id="bar"><button id="undo">悔棋</button><button id="share">分享</button><button id="reset">重开</button><button id="analysis" aria-pressed="false">AI 分析</button><button id="rotate">旋转棋盘</button><button id="pass" hidden>跳过回合</button></div>
+  <section id="insight" hidden aria-label="AI 候选走法"><div class="analysis-heading"><span>候选走法</span><span id="engine-status" role="status"></span></div><div id="candidates"></div><p class="fine">本地启发式搜索 · 评分为相对进展估计，非胜率。点选候选查看路线，不会自动落子。</p></section>
+ </aside>
+</main><div id="notice" role="status" hidden></div><script type="module" src="app.js"></script>
+</body></html>

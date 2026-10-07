@@ -1,0 +1,12 @@
+FluidR3 General MIDI samples
+
+Original Fluid soundfont: Frank Wen and contributors.
+Pre-rendered MP3 samples: MIDI.js Soundfonts, maintained by Benjamin Gleitzman.
+Source: https://github.com/gleitz/midi-js-soundfonts
+Sample source: https://github.com/gleitz/midi-js-soundfonts/tree/gh-pages/FluidR3_GM
+License: Creative Commons Attribution 3.0 Unported (CC BY 3.0)
+License text: https://creativecommons.org/licenses/by/3.0/legalcode
+
+Changes in KEYROOM: ten instrument dictionaries extracted from the original
+MIDI.js JavaScript wrappers into JSON. MP3 sample data is unmodified.
+No endorsement by the original creators is implied.

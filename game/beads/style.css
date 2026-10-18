@@ -1,0 +1,63 @@
+:root {
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color-scheme: light;
+  --background: #f4f4f4;
+  --text: #333333;
+  --button: #e5e5e5;
+  --button-hover: #d9d9d9;
+  --rail: #d2d2d2;
+  color: var(--text);
+  background: var(--background);
+  font-synthesis: none;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #202020;
+  --text: #e5e5e5;
+  --button: #383838;
+  --button-hover: #484848;
+  --rail: #484848;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.puzzle { width: min(100vw, 100dvh); }
+svg { display: block; width: 100%; overflow: visible; touch-action: none; user-select: none; }
+.rail { fill: none; stroke: #d9dcd3; stroke-width: 2; pointer-events: none; }
+.home-rail { stroke: var(--home-color); stroke-opacity: .45; }
+.global-rail { stroke: var(--rail); }
+.hit { fill: none; stroke: transparent; stroke-width: 68; cursor: grab; }
+.bead { cursor: grab; stroke-width: 1.5; }
+.hit:active, .bead:active { cursor: grabbing; }
+.actions { display: contents; }
+.actions button {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  z-index: 1;
+}
+#shuffle { left: max(12px, env(safe-area-inset-left)); }
+#reset { right: max(12px, env(safe-area-inset-right)); }
+#theme-toggle {
+  top: auto;
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+}
+button {
+  min-width: 86px;
+  padding: 11px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--button);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button:hover { background: var(--button-hover); }
+button:focus-visible, [tabindex]:focus-visible { outline: 3px solid #578b78; outline-offset: 4px; }

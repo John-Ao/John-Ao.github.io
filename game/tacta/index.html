@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f2f2f2"><script src="theme.js"></script><title>Tacta</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="app-bar">
+ <a class="brand" href="./" aria-label="Tacta 首页">Tacta</a>
+ <div id="players" aria-label="双方比分"></div>
+ <details class="menu"><summary aria-label="游戏菜单">☰ <span>菜单</span></summary><nav aria-label="游戏设置">
+  <button id="rulesBtn">玩法说明</button><button id="deckBtn">牌面资料</button><button id="resultBtn" disabled>查看结算</button><button id="privacyBtn">交接遮屏</button>
+  <label class="auto-handoff"><input type="checkbox" id="autoHandoff" checked> 自动交接遮屏</label>
+  <label class="auto-handoff"><input type="checkbox" id="nightMode"> 夜间模式</label>
+  <label class="auto-handoff"><input type="checkbox" id="dualLayout"> 双列布局</label>
+  <label class="auto-handoff"><input type="checkbox" id="mirrorPlayer2"> 玩家 2 对面视角（旋转 180°）</label>
+  <button id="newBtn">重新开局</button>
+ </nav></details>
+</header>
+<main>
+ <aside id="player2Panel" class="hand-panel player2-panel" hidden aria-label="玩家 2 候选手牌">
+  <div class="opponent-summary" id="p2Summary"></div><div class="hand-title"><h1 id="p2handTitle"></h1><span id="p2orientation"></span></div>
+  <div id="p2hand" class="hand"></div>
+  <div class="move-controls"><div class="move-picker"><button id="p2prevMove" aria-label="上一个落点">‹</button><span id="p2moveCount"></span><button id="p2nextMove" aria-label="下一个落点">›</button></div><button id="p2playBtn" class="primary" disabled>选择落点</button></div><p class="personal-status" id="p2Status"></p>
+ </aside>
+ <section class="table-panel" aria-label="牌桌">
+  <div class="table-top"><span id="progress">第 1 / 36 手</span><div class="view-tools"><button id="zoomOut" aria-label="缩小">−</button><button id="fitBtn">全览</button><button id="tableBtn">桌界</button><button id="zoomIn" aria-label="放大">＋</button></div></div>
+  <div id="boardWrap"><svg id="board" role="group" aria-label="共享卡牌桌面，可单指拖动、双指缩放" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  <div class="table-bottom"><span id="status" aria-live="polite"></span><span id="saveNote" role="status"></span></div>
+ </section>
+ <aside id="primaryPanel" class="hand-panel" aria-label="候选手牌">
+  <div class="opponent-summary" id="primarySummary"></div>
+  <div class="hand-title"><h1 id="handTitle"></h1><span id="orientation"></span></div>
+  <div id="hand" class="hand"></div>
+  <div class="move-controls"><div class="move-picker"><button id="prevMove" aria-label="上一个落点">‹</button><span id="moveCount"></span><button id="nextMove" aria-label="下一个落点">›</button></div><button id="playBtn" class="primary" disabled>选择落点</button></div><p class="personal-status" id="primaryStatus"></p>
+ </aside>
+</main>
+<dialog id="rules"><button class="close" data-close="rules" aria-label="关闭说明">×</button><div class="eyebrow">HOW TO PLAY</div><h2>把每一点留到最后。</h2><p>桌面支持单指拖动、双指捏合缩放；电脑可拖动或滚轮缩放。选中右侧手牌后，用左上、右上按钮分别逆时针和顺时针旋转，下方按钮镜像翻面。</p><ol><li><b>只选两端。</b>每人 18 张牌，不能翻看中间牌。比较两端最小值决定先手，同值再比较两端之和。</li><li><b>旋转和镜像。</b>背面是正面的镜像。点击旋转每次转 45°，包括斜放；圆点和空心形状均可互相覆盖。</li><li><b>精确匹配。</b>连接形状的轮廓、尺寸、方向必须完全一致。每手只连接一张牌的一个形状，不得破坏其他可见轮廓或覆盖第二张牌的图形。</li><li><b>桌边有效。</b>卡牌不能越过开局固定的桌界。缩放和平移只是改变视角，不会扩大桌面。已确认的牌不能移动。</li><li><b>无合法连接才可独立放置。</b>系统检查两端牌的全部旋转和翻面。确实无解时可点击桌内空白处，不得接触其他牌。</li><li><b>所有牌出完才结算。</b>每个可见圆点计 1 分，中间数字和花色不计分；最高分获胜，平分则共享胜利。</li></ol><div class="rules-note">按发行商官方规则书实现基本轮流玩法，自动阻止非法落牌，因此无需手工纠正非法牌。牌面按官方图例和高清照片重绘；其中 8 张的完整布局尚待核实，几何尺寸也为归一化近似。不是官方授权版，不能宣称完整复刻。先手两次比较仍相同，规则未指定，本页随机选取。</div><a href="https://images.salsify.com/image/upload/s--hagOKqsT--/nup3rya2tqz8sssfbiz6.pdf" target="_blank" rel="noopener">查看实体版官方规则 ↗</a><button class="primary" data-close="rules">明白了，开始吧 →</button></dialog>
+<dialog id="restart"><h2>重新开一局？</h2><p>当前对局将被替换，两副牌会重新洗牌。</p><div class="dialog-actions"><button data-close="restart">继续本局</button><button id="confirmNew" class="primary">重新开始</button></div></dialog>
+<dialog id="handoff"><div class="eyebrow">PASS THE TABLE</div><div class="handoff-mark">◩</div><h2 id="handoffTitle"></h2><p>准备好后，揭开桌面继续对局。</p><button class="primary" data-close="handoff">我准备好了 →</button></dialog>
+<dialog id="result"><div class="eyebrow">EVERY DOT COUNTS</div><h2 id="winner"></h2><p id="finalScore"></p><div class="dialog-actions"><button data-close="result">回看桌面</button><button id="againBtn" class="primary">再来一局 →</button></div></dialog>
+<dialog id="deckInfo"><button class="close" data-close="deckInfo" aria-label="关闭牌面资料">×</button><h2>牌面与资料</h2><p>每种花色 1–6 点，共 18 张。下方是固定牌面目录，不是任何玩家的洗牌顺序。标注「待完整核实」的 8 张含根据局部图像推定的部分。</p><div id="catalogue"></div><p>轮流流程、叠放限制和计分依据官方规则书；牌面布局、起始牌线条与几何比例仍有近似。</p><a href="RESEARCH.md" target="_blank">查看逐张资料记录 ↗</a></dialog><script src="cards.js"></script><script src="engine.js"></script><script src="gestures.js"></script><script src="app.js"></script>
+</body></html>

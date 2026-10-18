@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f4f4">
+  <title>Beads</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+</head>
+<body>
+  <main>
+    <section class="puzzle" aria-label="转珠拼图">
+      <svg id="board" viewBox="12 12 616 616" aria-label="四个可拖动圆形导轨和中央虚拟导轨"></svg>
+    </section>
+    <div class="actions">
+      <button id="shuffle" class="primary">打乱</button>
+      <button id="reset">重置</button>
+      <button id="theme-toggle" aria-label="切换日夜间模式">夜间</button>
+    </div>
+  </main>
+  <script src="puzzle.js"></script><script src="app.js"></script>
+</body>
+</html>

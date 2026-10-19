@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f5f2eb"><title>Quoridor · 双人对战</title><link rel="stylesheet" href="style.css?v=2"><script defer src="engine.js?v=2"></script><script defer src="layout.js?v=2"></script><script defer src="app.js?v=2"></script></head>
+<body><main>
+<section class="game" aria-label="Quoridor 双人对战">
+<div class="player amber" id="player1"><span><i></i>玩家二 <small>向下 ↓</small></span><span class="stock"></span></div>
+<div class="goal blue-text">玩家一的终点</div>
+<div id="board" class="board" aria-label="9 × 9 棋盘"></div>
+<div class="goal amber-text">玩家二的终点</div>
+<div class="player blue" id="player0"><span><i></i>玩家一 <small>向上 ↑</small></span><span class="stock"></span></div>
+</section>
+<section class="controls" aria-label="对局操作">
+<div class="turnline"><h1 id="turn"></h1><span id="ply"></span></div>
+<p id="hint" role="status" aria-live="polite"></p>
+<div class="modes" role="group" aria-label="选择行动"><button id="move">走棋</button><button id="wall">放墙</button></div>
+<div id="wallControls" hidden><div class="orient"><button id="horizontal">横墙 ━</button><button id="vertical">竖墙 ┃</button></div><button id="confirm" class="primary" disabled>确认放墙</button></div>
+<div class="utilities"><button id="undo">悔棋</button><button id="restart">新一局</button><button id="rules">规则</button></div>
+</section>
+</main>
+<dialog id="rulesDialog"><h2>Quoridor 双人规则</h2><ul><li>9 × 9 棋盘，双方从各自底线中央出发，各有 10 面墙，随机决定先手。</li><li>每回合走一步棋，或放一面墙。先到达对面任意底线格的玩家获胜。</li><li>棋子通常上下左右移动一格，不能穿墙。</li><li>相邻且中间无墙时可直跳对方；若对方身后有墙或是棋盘边界，可绕至对方左右相邻的可达格。</li><li>每面墙长两格，不能重叠、交叉，也不能封死任何一方通向终点的所有路线。</li></ul><p>操作：走棋时点亮点；放墙时点棋盘交点，选方向，再确认。双方共用此设备轮流操作。</p><a href="https://en.gigamic.com/index.php?controller=attachment&amp;id_attachment=467" target="_blank" rel="noopener">Gigamic 官方规则书 ↗</a><form method="dialog"><button class="primary">返回对局</button></form></dialog>
+<dialog id="restartDialog"><h2>开始新一局？</h2><p>当前对局将被清空，并重新随机决定先手。</p><div class="orient"><button id="cancelRestart">继续本局</button><button id="acceptRestart" class="primary">开始新局</button></div></dialog>
+</body></html>

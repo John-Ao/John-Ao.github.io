@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f2f2f2"><title>Blokus · 双人对战</title><link rel="stylesheet" href="style.css"><script defer src="engine.js"></script><script defer src="app.js"></script></head>
+<body><main>
+  <section class="scores" aria-label="玩家得分"><div id="player0"></div><div id="player1"></div></section>
+  <div class="game">
+    <section class="board-section" aria-label="游戏棋盘">
+      <div class="board-tools"><strong id="turn"></strong></div>
+      <div id="board-scroll"><canvas id="board" width="1000" height="1000" tabindex="0" aria-label="Blokus 棋盘。选择棋块后点按候选圆点，使用方向按钮微调，再确认落子。"></canvas></div>
+      <p id="message" role="status" aria-live="polite"></p>
+    </section>
+    <section class="controls" aria-label="当前回合操作">
+      <div class="tray-title"><div><strong id="tray-title">可用棋块</strong><span id="remaining"></span></div><div class="utilities"><button id="rules">规则</button><button id="restart" title="选择人数并开始新对局" aria-label="选择人数并开始新对局">双人 ▾</button></div></div>
+      <div id="tray"></div>
+      <div class="selection"><svg id="selected" viewBox="0 0 110 110" aria-label="选中棋块"></svg><div><strong id="piece-title">选择一块棋块</strong><p>点棋块 → 点棋盘 → 确认落子</p></div></div>
+      <div class="transforms"><button id="rotate">↻ 旋转</button><button id="flip">⇄ 翻转</button><button id="hint">可落位置</button></div>
+      <div class="placement"><div class="arrows" aria-label="微调位置"><button data-dx="0" data-dy="-1" aria-label="上移">↑</button><button data-dx="-1" data-dy="0" aria-label="左移">←</button><button data-dx="0" data-dy="1" aria-label="下移">↓</button><button data-dx="1" data-dy="0" aria-label="右移">→</button></div><button id="confirm" class="primary" disabled>确认落子</button></div>
+
+    </section>
+  </div>
+</main>
+<dialog id="rules-dialog"><h2>Blokus 对战规则</h2><ul><li>20×20 棋盘。双人模式：玩家一控制蓝、红，玩家二控制黄、绿。四人模式：玩家一至四分别控制蓝、黄、红、绿。两种模式都依蓝 → 黄 → 红 → 绿落子。</li><li>每色 21 块：1 格、2 格各一块，3 格两块，4 格五块，5 格十二块。</li><li>首块覆盖本色标记的棋盘角；之后必须与同色棋块角接，不能边接。异色接触不限，不能重叠或越界。</li><li>棋块可旋转、翻转。确认后不能移动；无合法位置的颜色自动跳过，全部无法落子时结束。</li><li>本游戏采用正计分：棋盘上每格得 1 分，每人所控制颜色的格子数相加为总分，分高者胜，相同最高分则并列第一；没有额外奖励分。</li></ul><p>触屏：选择棋块，再点按或拖动棋盘预览。用方向键微调；检查预览后确认。棋块上的黑点是定位格；选中棋块后，棋盘上的彩色圆点标出当前朝向的全部合法落点。点圆点即可预览，再确认落子。旋转、翻转会同步更新定位格和落点。</p><p>本机自动保存进度。键盘：方向键移动，R 旋转，F 翻转，Enter 确认。</p><a href="https://service.mattel.com/instruction_sheets/R1983%20-%20Blokus.pdf" target="_blank" rel="noopener">Mattel 官方规则（PDF）</a><form method="dialog"><button>关闭</button></form></dialog>
+<dialog id="restart-dialog"><h2>开始新对局</h2><label for="player-count">对战人数</label><select id="player-count"><option value="2">双人 · 每人两色</option><option value="4">四人 · 每人一色</option></select><p>开始新对局会清除当前进度；取消则保留。</p><form method="dialog"><button value="cancel">继续对局</button><button id="restart-confirm" value="restart" class="primary">开始对局</button></form></dialog>
+<dialog id="remaining-dialog" aria-labelledby="remaining-title">
+  <div class="remaining-heading"><h2 id="remaining-title">剩余棋块</h2><form method="dialog"><button aria-label="关闭剩余棋块">关闭</button></form></div>
+  <div id="remaining-colors"></div>
+</dialog>
+</body></html>

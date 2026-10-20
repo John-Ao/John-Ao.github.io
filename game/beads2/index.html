@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>匈牙利环</title>
+<link rel="stylesheet" href="style.css">
+<main>
+  <canvas tabindex="0" aria-label="匈牙利环：沿轨道拖动珠子。键盘左右键选择圆环，上下键转动。"></canvas>
+  <div class="controls" aria-label="游戏控制">
+    <button id="shuffle">打乱</button>
+    <button id="reset">重置</button>
+    <button id="theme" aria-pressed="false">夜间模式</button>
+    <button id="orientation" aria-pressed="false">切换竖屏</button>
+  </div>
+  <p id="status" role="status">沿圆环拖动珠子，使每种颜色连成一段</p>
+</main>
+<script src="game.js"></script>
+</html>

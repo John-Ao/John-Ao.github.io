@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 48px 24px;
+            background: #f6f7fb;
+            color: #202435;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        .sub {
+            color: #697386;
+            margin: 0 0 32px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: white;
+            padding: 26px;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px #00000008;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 26px #00000016;
+        }
+
+        .emoji {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .name {
+            font-size: 18px;
+            font-weight: 650;
+            overflow-wrap: anywhere;
+        }
+
+        .number {
+            color: #697386;
+        }
+
+        .hint {
+            margin-top: 10px;
+            color: #8791a2;
+            font-size: 13px;
+        }
+
+        .status {
+            grid-column: 1 / -1;
+            padding: 24px;
+            text-align: center;
+            color: #697386;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 28px 16px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .grid {
+                gap: 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="grid" id="games">
+            <div class="status">Loading...</div>
+        </div>
+    </main>
+
+    <script>
+        // GitHub 仓库配置
+        const OWNER = "John-Ao";
+        const REPO = "John-Ao.github.io";
+        const BRANCH = "master";
+        const DIR = "game";
+
+        const API_URL =
+            `https://api.github.com/repos/${OWNER}/${REPO}` +
+            `/contents/${DIR}?ref=${BRANCH}`;
+
+        const container = document.getElementById("games");
+
+        function showStatus(message) {
+            const status = document.createElement("div");
+            status.className = "status";
+            status.textContent = message;
+            container.replaceChildren(status);
+        }
+
+        function createCard(name, url, number) {
+            const card = document.createElement("a");
+            card.className = "card";
+            card.href = url;
+
+            const title = document.createElement("div");
+            title.className = "name";
+            const formattedName = name
+                .replace(/([a-zA-Z])([0-9])/g, "$1 $2")
+                .replace(/([0-9])([a-zA-Z])/g, "$1 $2")
+                .split(/[_\s]+/)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(" ");
+            const numberLabel = document.createElement("span");
+            numberLabel.className = "number";
+            numberLabel.textContent = String(number).padStart(2, "0");
+            title.append(numberLabel, ` ${formattedName}`);
+
+            card.append(title);
+            return card;
+        }
+
+        async function loadGames() {
+            try {
+                const response = await fetch(API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`GitHub API HTTP ${response.status}`);
+                }
+
+                const files = await response.json();
+
+                if (!Array.isArray(files)) {
+                    throw new Error("返回的数据不是目录列表");
+                }
+
+                // 支持：
+                // 1. game/xxx.html
+                // 2. game/xxx/（默认入口 index.html）
+                const games = files
+                    .filter(file =>
+                        (
+                            file.type === "file" &&
+                            file.name.toLowerCase().endsWith(".html") &&
+                            file.name.toLowerCase() !== "index.html"
+                        ) ||
+                        file.type === "dir"
+                    )
+                    .map(file => {
+                        const isDirectory = file.type === "dir";
+
+                        const name = isDirectory
+                            ? file.name
+                            : file.name.slice(0, -5);
+
+                        const url = isDirectory
+                            ? `./${encodeURIComponent(file.name)}/`
+                            : `./${encodeURIComponent(file.name)}`;
+
+                        return { name, url };
+                    })
+                    .sort((a, b) =>
+                        a.name.localeCompare(b.name, "zh-CN", {
+                            numeric: true,
+                            sensitivity: "base"
+                        })
+                    );
+
+                container.replaceChildren();
+
+                if (games.length === 0) {
+                    showStatus("暂无游戏");
+                    return;
+                }
+
+                for (const [index, game] of games.entries()) {
+                    container.appendChild(
+                        createCard(game.name, game.url, index + 1)
+                    );
+                }
+
+            } catch (error) {
+                console.error("加载游戏列表失败：", error);
+                showStatus("游戏列表加载失败：" + error.message);
+            }
+        }
+
+        loadGames();
+    </script>
+</body>
+
+</html>

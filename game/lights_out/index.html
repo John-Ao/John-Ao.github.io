@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Lights Out</title>
+<link rel="stylesheet" href="style.css">
+<main>
+  <div id="board" role="group" aria-label="熄灯棋盘"></div>
+  <div class="controls">
+    <button id="menu-toggle" aria-expanded="false" aria-controls="menu">菜单</button>
+    <div id="menu" hidden aria-label="游戏菜单">
+      <button id="shuffle">打乱</button>
+      <button id="reset">重置</button>
+      <button id="theme" aria-pressed="false">夜间模式</button>
+      <button id="low-brightness" aria-pressed="false">开启低亮度</button>
+      <button id="settings">设置</button>
+      <button id="fullscreen">进入全屏</button>
+      <button id="timer-toggle" aria-pressed="false">开启计时</button>
+      <button id="timer-pause" hidden>暂停计时</button>
+      <button id="share">分享当前局面</button>
+    </div>
+  </div>
+  <output id="timer" hidden aria-label="计时器"></output>
+  <dialog id="confirm-dialog">
+    <form method="dialog">
+      <p id="confirm-message"></p>
+      <div class="dialog-actions"><button value="cancel" autofocus>取消</button><button value="confirm">确认</button></div>
+    </form>
+  </dialog>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <p id="share-title">分享当前局面</p>
+    <input id="share-link" readonly aria-label="分享链接">
+    <p id="share-result" role="status"></p>
+    <div class="dialog-actions"><button id="share-close">关闭</button><button id="share-copy">复制链接</button></div>
+  </dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <form id="settings-form">
+      <p id="settings-title">设置</p>
+      <label>行数（高）<select id="rows" name="rows"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+      <label>列数（宽）<select id="cols" name="cols"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+      <label>颜色模式<select id="colors" name="colors"><option value="3">三色：暗 → 中 → 亮 → 暗</option><option value="2">双色：暗 → 亮 → 暗</option></select></label>
+      <p class="note">更改设置将生成新局面，并清零计时。</p>
+      <div class="dialog-actions"><button type="button" id="settings-cancel">取消</button><button type="submit">应用</button></div>
+    </form>
+  </dialog>
+  <p id="status" role="status">点击格子及其上下左右，全部变暗即完成</p>
+</main>
+<script src="game.js"></script>
+</html>

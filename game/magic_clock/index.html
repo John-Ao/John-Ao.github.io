@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light dark"><title>魔表</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<div id="boards" aria-label="魔表正反面"></div>
+<div class="controls"><button id="menu-toggle" aria-expanded="false" aria-controls="menu" aria-label="菜单">☰</button><div id="menu" hidden>
+<button id="shuffle">打乱</button><button id="reset">重置</button><button id="theme">夜间模式</button>
+<label>拨轮交互<select id="interaction"><option value="drag">拖动圆弧</option><option value="buttons">正反转按钮</option></select></label>
+<label>布局<select id="layout"><option value="auto">跟随屏幕</option><option value="horizontal">横排</option><option value="vertical">竖排</option></select></label>
+<button id="fullscreen">进入全屏</button><button id="timer-toggle">开启计时</button><button id="timer-pause" hidden>暂停计时</button><button id="share">分享当前局面</button>
+</div></div><output id="timer" hidden></output><p id="status" role="status"></p>
+<dialog id="confirm-dialog"><form method="dialog"><p id="confirm-message"></p><div class="dialog-actions"><button value="cancel" autofocus>取消</button><button value="confirm">确认</button></div></form></dialog>
+<dialog id="share-dialog"><p>分享当前局面</p><input id="share-link" readonly aria-label="分享链接"><p id="share-result" role="status"></p><div class="dialog-actions"><button data-close>关闭</button><button id="share-copy">复制链接</button></div></dialog>
+</main><script src="model.js"></script><script src="game.js"></script></body></html>

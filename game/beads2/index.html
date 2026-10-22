@@ -7,20 +7,21 @@
 <link rel="stylesheet" href="style.css">
 <main>
   <canvas tabindex="0" aria-label="匈牙利环：沿轨道拖动珠子。键盘左右键选择圆环，上下键转动。"></canvas>
-  <div class="controls">
-    <button id="menu-toggle" aria-expanded="false" aria-controls="menu">菜单</button>
-    <div id="menu" hidden aria-label="游戏菜单">
-      <button id="shuffle">打乱</button>
-      <button id="reset">重置</button>
-      <button id="theme" aria-pressed="false">夜间模式</button>
+  <button class="corner-button" id="menu-toggle" aria-label="打开菜单" title="菜单" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <button class="corner-button" id="theme" aria-label="切换至夜间模式" title="切换至夜间模式" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A9 9 0 0 1 10 3a9 9 0 1 0 10.5 11Z"/></svg></button>
+  <button class="corner-button" id="shuffle" aria-label="打乱" title="打乱"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><g fill="currentColor" stroke="none"><circle cx="7.5" cy="7.5" r="1.3"/><circle cx="16.5" cy="7.5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="7.5" cy="16.5" r="1.3"/><circle cx="16.5" cy="16.5" r="1.3"/></g></svg></button>
+  <button class="corner-button" id="reset" aria-label="重置" title="重置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0-2 8M20 4v6h-6"/></svg></button>
+  <div class="clock" hidden aria-label="用时"><span id="timer">00:00</span><span id="ms">.000</span></div>
+  <dialog id="menu" aria-labelledby="menu-title">
+    <div class="dialog-top"><h2 id="menu-title">菜单</h2><button id="menu-close" aria-label="关闭">×</button></div>
+    <div class="menu-list">
       <button id="orientation" aria-pressed="false">切换竖屏</button>
       <button id="fullscreen">进入全屏</button>
       <button id="timer-toggle" aria-pressed="false">开启计时</button>
       <button id="timer-pause" hidden>暂停计时</button>
       <button id="share">分享当前局面</button>
     </div>
-  </div>
-  <output id="timer" hidden aria-label="计时器"></output>
+  </dialog>
   <dialog id="confirm-dialog">
     <form method="dialog">
       <p id="confirm-message"></p>

@@ -7,12 +7,20 @@ canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab;outlin
 canvas:active{cursor:grabbing}
 canvas:focus-visible{outline:2px solid var(--text);outline-offset:-3px;border-radius:8px}
 button{min-height:44px;padding:11px 18px;border:0;border-radius:8px;background:var(--button);color:var(--text);font:400 14px Inter,"PingFang SC","Microsoft YaHei",sans-serif;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.controls{position:fixed;z-index:2;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right))}
-#menu-toggle{display:block;margin-left:auto}
-#menu{margin-top:8px;padding:6px;max-height:calc(100dvh - 80px);overflow:auto;background:var(--bg);border:1px solid var(--hover);border-radius:10px;min-width:160px}
-#menu button{display:block;width:100%;text-align:left;margin:2px 0}
-[hidden],#menu button[hidden]{display:none!important}
-#timer{position:fixed;top:max(20px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));font-variant-numeric:tabular-nums;pointer-events:none}
+[hidden]{display:none!important}
+.corner-button{position:fixed;z-index:2;width:44px;height:44px;padding:9px;background:transparent;border:0;border-radius:12px}
+#menu-toggle{top:max(6px,env(safe-area-inset-top));left:max(6px,env(safe-area-inset-left))}
+#theme{top:max(6px,env(safe-area-inset-top));right:max(6px,env(safe-area-inset-right))}
+#shuffle{bottom:max(6px,env(safe-area-inset-bottom));left:max(6px,env(safe-area-inset-left))}
+#reset{bottom:max(6px,env(safe-area-inset-bottom));right:max(6px,env(safe-area-inset-right))}
+svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#theme .sun{display:none}
+:root[data-theme=dark] #theme .sun{display:block}
+:root[data-theme=dark] #theme .moon{display:none}
+.clock{position:fixed;top:max(6px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);height:44px;display:flex;align-items:center;white-space:nowrap;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:1px;pointer-events:none}
+#ms{font-size:15px;opacity:.6;letter-spacing:0;align-self:center;margin-top:6px}
+main.clock-row{padding-top:calc(max(6px,env(safe-area-inset-top)) + 96px)}
+main.clock-row .clock{top:calc(max(6px,env(safe-area-inset-top)) + 48px)}
 dialog{width:min(400px,calc(100% - 32px));border:1px solid var(--hover);border-radius:12px;background:var(--bg);color:var(--text);padding:20px}
 dialog::backdrop{background:#0006}
 dialog p{margin:0 0 18px;line-height:1.6}
@@ -24,3 +32,12 @@ button:disabled{opacity:.5;cursor:default}
 html,body{overscroll-behavior:none}
 canvas{-webkit-touch-callout:none}
 #status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+dialog{width:min(460px,calc(100% - 24px));max-height:calc(100dvh - 28px);overflow:auto;border-radius:22px;padding:22px;box-shadow:0 20px 90px #0003}
+dialog::backdrop{background:#10101066;backdrop-filter:blur(5px)}
+.dialog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+h2{margin:0;font-size:20px;font-weight:600}
+.dialog-top button{border:none;background:transparent;font-size:26px;padding:0 8px}
+.menu-list{display:grid;gap:8px}
+.menu-list>button{text-align:left;display:flex;justify-content:space-between;border:1px solid var(--hover);background:var(--bg);border-radius:12px}
+.menu-list>button:hover{background:var(--button)}

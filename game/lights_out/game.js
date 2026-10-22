@@ -6,11 +6,14 @@ function turn(index){const row=Math.floor(index/cols),col=index%cols;for(const [
 function solved(){return beads.every(v=>v===0);}
 function report(){status.textContent=timerPaused()?'已暂停 · 在菜单中继续计时':moved&&solved()?`已完成 · ${moves} 步`:`点击格子及其上下左右，全部变暗即完成${moves?' · '+moves+' 步':''}`;}
 function draw(){
+ const timer=document.querySelector('.clock'),menu=document.querySelector('#menu-toggle').getBoundingClientRect(),themeButton=document.querySelector('#theme').getBoundingClientRect();
+ const room=2*Math.min(innerWidth/2-menu.right,themeButton.left-innerWidth/2)-16;
+ board.parentElement.classList.toggle('clock-row',!timer.hidden&&timer.getBoundingClientRect().width>room);
  board.style.setProperty('--cols',cols);board.dataset.colors=colors;
  const area=board.parentElement,style=getComputedStyle(area),gap=parseFloat(getComputedStyle(board).gap)||0;
  const bounds={left:parseFloat(style.paddingLeft),top:parseFloat(style.paddingTop),right:area.clientWidth-parseFloat(style.paddingRight),bottom:area.clientHeight-parseFloat(style.paddingBottom)};
  let spaces=[bounds];
- for(const control of document.querySelectorAll('#menu-toggle, #timer:not([hidden])')){
+ for(const control of document.querySelectorAll('.corner-button, .clock:not([hidden])')){
   const rect=control.getBoundingClientRect(),obstacle={left:rect.left-8,right:rect.right+8,top:rect.top-8,bottom:rect.bottom+8};
   spaces=spaces.flatMap(space=>{
    if(obstacle.right<=space.left||obstacle.left>=space.right||obstacle.bottom<=space.top||obstacle.top>=space.bottom)return [space];
@@ -72,8 +75,10 @@ function timerPaused(){return clock.enabled&&clock.phase==='paused';}
 function freezeClock(){clock.elapsed=elapsed();runningSince=null;}
 function renderTimer(){
  const ms=elapsed(),seconds=Math.floor(ms/1000);
- $('#timer').hidden=!clock.enabled;
- $('#timer').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}.${String(Math.floor(ms%1000)).padStart(3,'0')}`+({ready:' · 待开始',paused:' · 已暂停',finished:' · 已完成'}[clock.phase]||'');
+ $('.clock').hidden=!clock.enabled;
+ $('#timer').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+ $('#ms').textContent=`.${String(Math.floor(ms%1000)).padStart(3,'0')}`;
+ $('.clock').setAttribute('aria-label','用时 '+$('#timer').textContent+$('#ms').textContent+({ready:'，待开始',paused:'，已暂停',finished:'，已完成'}[clock.phase]||''));
  $('#timer-toggle').textContent=clock.enabled?'关闭计时':'开启计时';
  $('#timer-toggle').setAttribute('aria-pressed',clock.enabled);
  $('#timer-pause').hidden=!clock.enabled||!['running','paused'].includes(clock.phase);
@@ -100,10 +105,10 @@ function restore(){
   const r=data?.version===1?data.size:data?.rows,c=data?.version===1?data.size:data?.cols;
   if([1,2].includes(data?.version)&&validBeads(data.beads,r,c,data.colors)){
    beads=data.beads;rows=r;cols=c;colors=data.colors;moves=Number.isSafeInteger(data.moves)&&data.moves>=0?data.moves:0;dark=typeof data.dark==='boolean'?data.dark:dark;lowBrightness=data.lowBrightness===true;moved=!!data.moved;
-   const c=data.clock;
-   if(c&&typeof c.enabled==='boolean'&&['ready','running','paused','finished'].includes(c.phase)&&Number.isFinite(c.elapsed)&&c.elapsed>=0){
-    clock={enabled:c.enabled,phase:c.phase,elapsed:c.elapsed};
-    if(clock.enabled&&clock.phase==='running'){if(Number.isFinite(c.savedAt))clock.elapsed+=Math.max(0,Date.now()-c.savedAt);runningSince=Date.now();}
+   const savedClock=data.clock;
+   if(savedClock&&typeof savedClock.enabled==='boolean'&&['ready','running','paused','finished'].includes(savedClock.phase)&&Number.isFinite(savedClock.elapsed)&&savedClock.elapsed>=0){
+    clock={enabled:savedClock.enabled,phase:savedClock.phase,elapsed:savedClock.elapsed};
+    if(clock.enabled&&clock.phase==='running'){if(Number.isFinite(savedClock.savedAt))clock.elapsed+=Math.max(0,Date.now()-savedClock.savedAt);runningSince=Date.now();}
    }
   }
  }catch{}
@@ -123,10 +128,11 @@ function loadShare(){
  hash.delete('state');
  try{history.replaceState(null,'',location.pathname+location.search+(hash.size?'#'+hash.toString():''));}catch{}
 }
-function setMenu(open){$('#menu').hidden=!open;$('#menu-toggle').setAttribute('aria-expanded',open);}
-$('#menu-toggle').onclick=()=>setMenu($('#menu').hidden);
-document.addEventListener('pointerdown',e=>{if(!e.target.closest('.controls'))setMenu(false);});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#menu').hidden){setMenu(false);$('#menu-toggle').focus();}});
+function setMenu(open){if(open){stopDrag();renderSettings();if(!$('#menu').open)$('#menu').showModal();}else $('#menu').close();$('#menu-toggle').setAttribute('aria-expanded',open);}
+$('#menu-toggle').onclick=()=>setMenu(true);
+$('#menu-close').onclick=()=>setMenu(false);
+$('#menu').addEventListener('close',()=>$('#menu-toggle').setAttribute('aria-expanded','false'));
+$('#menu').addEventListener('click',e=>{const r=$('#menu').getBoundingClientRect();if(e.target===$('#menu')&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))setMenu(false);});
 let pendingAction=null;
 function confirmAction(message,action){setMenu(false);pendingAction=action;$('#confirm-message').textContent=message;$('#confirm-dialog').returnValue='cancel';$('#confirm-dialog').showModal();}
 $('#confirm-dialog').setAttribute('aria-labelledby','confirm-message');
@@ -134,12 +140,31 @@ $('#confirm-dialog').addEventListener('close',()=>{if($('#confirm-dialog').retur
 function newRound(shuffle){stopDrag();beads=Array(rows*cols).fill(0);if(shuffle){do{for(let i=0;i<beads.length;i++){const count=Math.floor(Math.random()*colors);for(let j=0;j<count;j++)turn(i);}}while(solved());}moved=false;moves=0;resetClock();report();save();draw();}
 $('#shuffle').onclick=()=>confirmAction('打乱当前局面并重新计时？',()=>newRound(true));
 $('#reset').onclick=()=>confirmAction('重置为初始局面并清零计时？',()=>newRound(false));
-function theme(){document.documentElement.dataset.theme=dark?'dark':'light';const b=$('#theme');b.textContent=dark?'日间模式':'夜间模式';b.setAttribute('aria-pressed',dark);document.documentElement.dataset.lowBrightness=String(lowBrightness);const dim=$('#low-brightness');dim.textContent=lowBrightness?'关闭低亮度':'开启低亮度';dim.setAttribute('aria-pressed',lowBrightness);draw();}
+function theme(){document.documentElement.dataset.theme=dark?'dark':'light';const b=$('#theme');b.setAttribute('aria-label',dark?'切换至日间模式':'切换至夜间模式');b.title=b.getAttribute('aria-label');b.setAttribute('aria-pressed',dark);document.documentElement.dataset.lowBrightness=String(lowBrightness);const dim=$('#low-brightness');dim.textContent=lowBrightness?'关闭低亮度':'开启低亮度';dim.setAttribute('aria-pressed',lowBrightness);draw();}
 $('#theme').onclick=()=>{dark=!dark;theme();save();};
 $('#low-brightness').onclick=()=>{lowBrightness=!lowBrightness;theme();save();};
-$('#settings').onclick=()=>{setMenu(false);$('#rows').value=rows;$('#cols').value=cols;$('#colors').value=colors;$('#settings-dialog').showModal();};
-$('#settings-cancel').onclick=()=>$('#settings-dialog').close();
-$('#settings-form').onsubmit=e=>{e.preventDefault();const r=Number($('#rows').value),c=Number($('#cols').value),k=Number($('#colors').value);if(!validConfig(r,c,k))return;$('#settings-dialog').close();if(r!==rows||c!==cols||k!==colors){rows=r;cols=c;colors=k;newRound(true);}};
+function renderSettings(){
+ for(const [id,value] of [['rows',rows],['cols',cols],['colors',colors]]){
+  const group=$('#'+id),buttons=[...group.querySelectorAll('button')];
+  group.style.setProperty('--selected',buttons.findIndex(b=>Number(b.dataset.value)===value));
+  for(const b of buttons){const selected=Number(b.dataset.value)===value;b.setAttribute('aria-checked',String(selected));b.tabIndex=selected?0:-1;}
+ }
+}
+for(const id of ['rows','cols','colors']){
+ const group=$('#'+id);
+ group.addEventListener('click',e=>{
+  const button=e.target.closest('button');if(!button||button.getAttribute('aria-checked')==='true')return;
+  const value=Number(button.dataset.value),r=id==='rows'?value:rows,c=id==='cols'?value:cols,k=id==='colors'?value:colors;
+  if(!validConfig(r,c,k))return;
+  confirmAction(`改为 ${r} × ${c}、${k===2?'双色':'三色'}并生成新局面？`,()=>{rows=r;cols=c;colors=k;newRound(true);renderSettings();});
+ });
+ group.addEventListener('keydown',e=>{
+  const buttons=[...group.querySelectorAll('button')],index=buttons.indexOf(document.activeElement);
+  if(index<0||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key))return;
+  e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?buttons.length-1:(index+(['ArrowRight','ArrowDown'].includes(e.key)?1:buttons.length-1))%buttons.length;
+  buttons[next].focus();buttons[next].click();
+ });
+}
 $('#timer-toggle').onclick=()=>{clock.enabled=!clock.enabled;resetClock();report();save();resize();};
 $('#timer-pause').onclick=()=>{stopDrag();if(clock.phase==='running'){freezeClock();clock.phase='paused';}else if(clock.phase==='paused'){clock.phase='running';runningSince=Date.now();}renderTimer();draw();report();save();};
 $('#fullscreen').disabled=!document.fullscreenEnabled;
@@ -157,9 +182,9 @@ window.addEventListener('pagehide',save);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});
 window.addEventListener('hashchange',()=>{loadShare();renderTimer();draw();report();});
 window.addEventListener('resize',()=>{stopDrag();resize();});
-restore();theme();renderTimer();draw();report();
+restore();theme();renderSettings();renderTimer();draw();report();
 const layoutObserver=new ResizeObserver(()=>{stopDrag();resize();});
-for(const element of [board.parentElement,$('#menu-toggle'),$('#timer')])layoutObserver.observe(element);
+for(const element of [board.parentElement,...document.querySelectorAll('.corner-button,.clock')])layoutObserver.observe(element);
 function tickTimer(){
  if(clock.enabled&&clock.phase==='running')renderTimer();
  requestAnimationFrame(tickTimer);

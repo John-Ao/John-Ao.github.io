@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>滑动拼图</title>
+<link rel="stylesheet" href="style.css">
+<main>
+  <div class="toolbar">
+    <div class="toolbar-actions">
+      <button id="menu-toggle" aria-label="打开菜单" title="菜单" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <button id="theme" aria-label="切换至夜间模式" title="切换至夜间模式" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A9 9 0 0 1 10 3a9 9 0 1 0 10.5 11Z"/></svg></button>
+    </div>
+    <div class="clock" aria-label="用时"><span id="timer">00:00</span><span id="ms">.000</span></div>
+    <div class="toolbar-actions">
+      <button id="shuffle" aria-label="打乱" title="打乱"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><g fill="currentColor" stroke="none"><circle cx="7.5" cy="7.5" r="1.3"/><circle cx="16.5" cy="7.5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="7.5" cy="16.5" r="1.3"/><circle cx="16.5" cy="16.5" r="1.3"/></g></svg></button>
+      <button id="reset" aria-label="重置" title="重置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0-2 8M20 4v6h-6"/></svg></button>
+    </div>
+  </div>
+  <div id="board" role="group" aria-label="滑动拼图棋盘"></div>
+  <dialog id="menu" aria-labelledby="menu-title">
+    <div class="dialog-top"><h2 id="menu-title">菜单</h2><button id="menu-close" aria-label="关闭">×</button></div>
+    <div class="segmented-setting"><span id="size-label">局面（行 × 列）</span><div id="size" class="segmented" role="radiogroup" aria-labelledby="size-label" style="--segments:4;--selected:2"><span class="segment-thumb" aria-hidden="true"></span><button role="radio" data-value="2x2">2 × 2</button><button role="radio" data-value="2x3">2 × 3</button><button role="radio" data-value="3x3">3 × 3</button><button role="radio" data-value="4x4">4 × 4</button></div></div>
+    <div class="segmented-setting"><span id="mode-label">操作模式</span><div id="mode" class="segmented" role="radiogroup" aria-labelledby="mode-label" style="--segments:2;--selected:1"><span class="segment-thumb" aria-hidden="true"></span><button role="radio" data-value="click">点击</button><button role="radio" data-value="slide">滑动</button></div></div>
+    <div class="menu-list">
+      <button id="low-brightness" aria-pressed="false">开启低亮度</button>
+      <button id="share">分享当前局面</button>
+      <button id="fullscreen">进入全屏</button>
+      <button id="timer-toggle" aria-pressed="true">关闭计时</button>
+      <button id="timer-pause" hidden>暂停计时</button>
+    </div>
+  </dialog>
+  <dialog id="confirm-dialog">
+    <form method="dialog">
+      <p id="confirm-message"></p>
+      <div class="dialog-actions"><button value="cancel" autofocus>取消</button><button value="confirm">确认</button></div>
+    </form>
+  </dialog>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <p id="share-title">分享当前局面</p>
+    <input id="share-link" readonly aria-label="分享链接">
+    <p id="share-result" role="status"></p>
+    <div class="dialog-actions"><button id="share-close">关闭</button><button id="share-copy">复制链接</button></div>
+  </dialog>
+  <p id="status" role="status">按从左到右、从上到下的顺序排列数字，右下角留空</p>
+</main>
+<script src="game.js"></script>
+</html>

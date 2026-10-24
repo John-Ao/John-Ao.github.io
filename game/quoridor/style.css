@@ -34,3 +34,21 @@ dialog ul{margin:10px 0}dialog form{margin-top:8px}
 .player>span:first-child{gap:min(6px,calc(var(--board-size) / 50))}
 .player i{width:min(10px,calc(var(--board-size) / 25));height:min(10px,calc(var(--board-size) / 25))}
 .goal{font-size:min(10px,calc(var(--board-size) / 18));letter-spacing:0}
+
+/* Network controls remain in the existing action area. */
+#networkStatus{font-size:.8rem;line-height:1.35;overflow-wrap:anywhere;margin:4px 0}
+#networkDialog{max-height:90dvh;overflow:auto}
+#networkDialog input{display:block;box-sizing:border-box;width:100%;padding:8px;margin:6px 0;font:inherit}
+#networkDialog button{margin:4px 0}
+#networkDialog .orient{flex-wrap:wrap}
+#roomControls>button{width:100%}
+#networkMessage{white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* In-game dialogs use explicit actions; the close icon never confirms an action. */
+dialog h2{padding-right:36px}
+dialog .dialog-close{position:absolute;top:8px;right:8px;width:36px;min-height:36px;padding:0;margin:0!important;border:0;background:transparent;font-size:26px;line-height:1;border-radius:8px;color:#62665f}
+dialog .dialog-close:hover{background:#ece8df}
+#eventDialog .primary,#proposal .primary{width:auto;margin:0}
+#eventMessage,#proposalText{white-space:pre-wrap;overflow-wrap:anywhere}
+#reviewProposal{width:100%;margin-top:6px}
+[hidden]{display:none!important}

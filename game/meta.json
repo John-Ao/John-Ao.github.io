@@ -1,0 +1,77 @@
+[
+  {
+    "game": "aeroplane_chess",
+    "title": "飞行棋"
+  },
+  {
+    "game": "backgammon",
+    "title": "双陆棋"
+  },
+  {
+    "game": "beads"
+  },
+  {
+    "game": "beads2",
+    "title": "匈牙利环"
+  },
+  {
+    "game": "blokus"
+  },
+  {
+    "game": "chess",
+    "title": "国际象棋"
+  },
+  {
+    "game": "chinese_checkers",
+    "title": "六角跳棋"
+  },
+  {
+    "game": "chinese_chess",
+    "title": "中国象棋"
+  },
+  {
+    "game": "connect4",
+    "title": "四子棋"
+  },
+  {
+    "game": "dots_and_boxes",
+    "title": "点格棋"
+  },
+  {
+    "game": "gomoku",
+    "title": "五子棋"
+  },
+  {
+    "game": "lights_out"
+  },
+  {
+    "game": "magic_clock",
+    "title": "魔表"
+  },
+  {
+    "game": "mastermind",
+    "title": "猜颜色"
+  },
+  {
+    "game": "megaminx",
+    "title": "五魔方"
+  },
+  {
+    "game": "othello",
+    "title": "黑白棋"
+  },
+  {
+    "game": "quoridor"
+  },
+  {
+    "game": "slide",
+    "title": "滑动拼图"
+  },
+  {
+    "game": "tacta"
+  },
+  {
+    "game": "tents_and_trees",
+    "title": "帐篷与树"
+  }
+]

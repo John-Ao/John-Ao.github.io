@@ -1,5 +1,8 @@
 [
   {
+    "game": "7_Wonders_Duel"
+  },
+  {
     "game": "aeroplane_chess",
     "title": "飞行棋"
   },
@@ -38,8 +41,24 @@
     "title": "点格棋"
   },
   {
+    "game": "Frosthaven"
+  },
+  {
+    "game": "Gloomhaven"
+  },
+  {
     "game": "gomoku",
     "title": "五子棋"
+  },
+  {
+    "game": "hive",
+    "title": "昆虫棋"
+  },
+  {
+    "game": "jaipur"
+  },
+  {
+    "game": "Keep_Talking_and_Nobody_Explodes"
   },
   {
     "game": "lights_out"
@@ -57,21 +76,62 @@
     "title": "五魔方"
   },
   {
+    "game": "monopoly",
+    "title": "大富翁"
+  },
+  {
     "game": "othello",
     "title": "黑白棋"
   },
   {
+    "game": "patchwork"
+  },
+  {
+    "game": "polyomino",
+    "title": "多格骨牌拼图"
+  },
+  {
     "game": "quoridor"
+  },
+  {
+    "game": "Radlands"
+  },
+  {
+    "game": "Schotten_Totten"
+  },
+  {
+    "game": "Sky_Team"
+  },
+  {
+    "game": "Slay_the_Spire"
+  },
+  {
+    "game": "Sleeping_Gods"
   },
   {
     "game": "slide",
     "title": "滑动拼图"
   },
   {
+    "game": "Space_Rescue"
+  },
+  {
+    "game": "Spirit_Island"
+  },
+  {
+    "game": "Splendor_Duel"
+  },
+  {
     "game": "tacta"
+  },
+  {
+    "game": "Targi"
   },
   {
     "game": "tents_and_trees",
     "title": "帐篷与树"
+  },
+  {
+    "game": "Toy_Battle"
   }
 ]

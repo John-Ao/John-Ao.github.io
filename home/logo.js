@@ -31,7 +31,7 @@
     }
     const gradient = context.createLinearGradient(x(4), y(5), x(196), y(94));
     const dark = document.documentElement.dataset.theme === 'dark';
-    const colors = dark ? ['#7eaa9d', '#98c9ba', '#d5eade'] : ['#49665c', '#58796e', '#809084'];
+    const colors = dark ? ['#92aaa0', '#a5b8ae', '#b5c3ba'] : ['#49665c', '#58796e', '#809084'];
     [0, .55, 1].forEach((stop, index) => gradient.addColorStop(stop, colors[index]));
     context.fillStyle = gradient;
     context.fill(path, 'evenodd');

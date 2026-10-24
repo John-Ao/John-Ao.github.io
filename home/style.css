@@ -21,30 +21,23 @@ body{
   isolation:isolate;
   touch-action:pinch-zoom
 }
-body::before,body::after{
-  content:"";
-  position:fixed;
-  z-index:-1;
-  pointer-events:none;
-  border-radius:50%;
-  filter:blur(70px);
-  opacity:.6;
-  transition:background 500ms
+body > .ambient-orb {
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  width: var(--orb-size, 58vmax);
+  height: var(--orb-size, 58vmax);
+  border-radius: 48%;
+  filter: blur(clamp(40px, 6vmax, 90px));
+  opacity: .55;
+  transform: translate(var(--orb-x), var(--orb-y)) translate(-50%, -50%);
+  transition: background-color 500ms;
 }
-body::before{
-  width:60vw;
-  height:65vh;
-  left:-22vw;
-  top:20vh;
-  background:#e3e8dd
-}
-body::after{
-  width:52vw;
-  height:65vh;
-  right:-24vw;
-  top:-25vh;
-  background:#ece2d6
-}
+body > .ambient-orb--one { background: #cdddc8; }
+body > .ambient-orb--two { background: #e6d6c1; }
+body > .ambient-orb--three { background: #d0dbe5; }
 body[data-page=app]{
   --accent:#617669;
   --tint:#e9eee8
@@ -63,13 +56,13 @@ body[data-page=blog]{
   --accent:#756b84;
   --tint:#ece8f0
 }
-body[data-page=tool]::before{
+body[data-page=tool] > .ambient-orb--one{
   background:#dbe5ed
 }
-body[data-page=music]::before{
+body[data-page=music] > .ambient-orb--one{
   background:#eee0cf
 }
-body[data-page=blog]::before{
+body[data-page=blog] > .ambient-orb--one{
   background:#e5dfed
 }
 a{
@@ -695,11 +688,12 @@ body[data-page="home"] .navigation {
   --tint: #35303c;
   --edge: #50455c;
 }
-[data-theme="dark"] body::before { background: #293e32; }
-[data-theme="dark"] body::after { background: #373328; }
-[data-theme="dark"] body[data-page="tool"]::before { background: #283c4a; }
-[data-theme="dark"] body[data-page="music"]::before { background: #42372a; }
-[data-theme="dark"] body[data-page="blog"]::before { background: #382e45; }
+[data-theme="dark"] body > .ambient-orb--one { background: #252f29; }
+[data-theme="dark"] body > .ambient-orb--two { background: #302c25; }
+[data-theme="dark"] body > .ambient-orb--three { background: #252d34; }
+[data-theme="dark"] body[data-page="tool"] > .ambient-orb--one { background: #252e35; }
+[data-theme="dark"] body[data-page="music"] > .ambient-orb--one { background: #302b25; }
+[data-theme="dark"] body[data-page="blog"] > .ambient-orb--one { background: #2b2832; }
 [data-theme="dark"] .home-logo { filter: brightness(1.65) saturate(.8); }
 .theme-toggle {
   position: fixed;
@@ -761,13 +755,13 @@ body[data-page="game"] {
   --tint: #efeade;
   --edge: #dfd5be;
 }
-body[data-page="game"]::before { background: #e8e2cd; }
+body[data-page="game"] > .ambient-orb--one { background: #e8e2cd; }
 [data-theme="dark"] body[data-page="game"] {
   --accent: #d4c08e;
   --tint: #423e2e;
   --edge: #60583f;
 }
-[data-theme="dark"] body[data-page="game"]::before { background: #3d3926; }
+[data-theme="dark"] body[data-page="game"] > .ambient-orb--one { background: #2d2c24; }
 .grid-game { grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 14px; }
 .grid-game .game-card {
   min-height: 132px;
@@ -854,4 +848,20 @@ body[data-page="game"]::before { background: #e8e2cd; }
 }
 @media (max-width: 650px), (max-height: 500px) {
   .grid-game .card-description { font-size: 11px; margin-top: 6px; }
+}
+
+.ambient-orb { will-change: transform; }
+@media (prefers-reduced-motion: reduce) {
+  .ambient-orb { will-change: auto; }
+}
+
+/* Fine, stationary dither breaks up gradient bands, behind all UI content. */
+.ambient-dither {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url('/home/noise.png') repeat;
+  background-size: 256px 256px;
+  opacity: .035;
 }

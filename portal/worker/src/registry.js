@@ -1,4 +1,4 @@
-import { VERSION, DAY, SESSION_TTL, random, hash, verify, validKey, validId, loginMessage, requestMessage, registrationMessage, assert, json, failure } from '../../shared/protocol.js';
+import { VERSION, GUEST_IDLE_TTL, SESSION_TTL, random, hash, verify, validKey, validId, loginMessage, requestMessage, registrationMessage, assert, json, failure } from '../../shared/protocol.js';
 
 export class PortalRegistry {
   constructor(ctx, env) { this.ctx = ctx; this.env = env; }
@@ -19,8 +19,20 @@ export class PortalRegistry {
       this.data = { trust, challenges: {}, sessions: {}, codes: {}, rooms: {}, rates: {}, keys: this.data.keys || {}, keyInvitations: {} };
     }
     this.data.keys ||= {}; this.data.keyInvitations ||= {};
+    // Remove legacy application metadata on load; permissions are region-based.
+    for (const group of ['sessions', 'codes', 'rooms', 'keys']) for (const item of Object.values(this.data[group])) {
+      delete item.gameId; delete item.lastGameId;
+      if (item.scope === 'game') item.scope = 'creator';
+    }
     const now = Date.now();
-    for (const group of ['challenges', 'sessions', 'codes', 'rates', 'keyInvitations']) for (const [id, item] of Object.entries(this.data[group])) if (item.expires <= now) delete this.data[group][id];
+    for (const group of ['challenges', 'sessions', 'codes', 'rates', 'keyInvitations']) for (const [id, item] of Object.entries(this.data[group])) if (item.expires <= now) {
+      if (group === 'sessions' && item.scope === 'guest') {
+        // WebSocket activity updates the grant in its Room, not this session cache.
+        const room = await this.room(item.roomId, 'info');
+        if (room.guest === item.publicKey && room.guestGrant === item.grantId && room.guestExpires > now) { item.expires = room.guestExpires; continue; }
+      }
+      delete this.data[group][id];
+    }
     for (const session of Object.values(this.data.sessions)) for (const [nonce, expires] of Object.entries(session.nonces)) if (expires <= now) delete session.nonces[nonce];
     this.publicKey = this.data.override?.publicKey || this.env.ADMIN_PUBLIC_KEY;
     try { this.kdf = this.data.override?.kdf || JSON.parse(this.env.KDF_CONFIG || 'null'); } catch { this.kdf = null; }
@@ -55,7 +67,7 @@ export class PortalRegistry {
   session(publicKey, scope, extra = {}) {
     assert(Object.keys(this.data.sessions).length < 64, '会话数量已达上限，请退出其他会话', 429);
     const id = random();
-    this.data.sessions[id] = { publicKey, scope, created: Date.now(), expires: Date.now() + (scope === 'guest' ? DAY : SESSION_TTL), nonces: {}, ...extra };
+    this.data.sessions[id] = { publicKey, scope, created: Date.now(), expires: Date.now() + (scope === 'guest' ? GUEST_IDLE_TTL : SESSION_TTL), nonces: {}, ...extra };
     return { session: id, expires: this.data.sessions[id].expires, scope, ...extra };
   }
   async authenticate(path, body, auth, audience) {
@@ -68,20 +80,19 @@ export class PortalRegistry {
     if (s.keyId) {
       const key = this.data.keys[s.keyId];
       assert(key && !key.revokedAt, '此密钥已被撤销', 403);
-      key.lastUsedAt = Date.now(); if (s.gameId) key.lastGameId = s.gameId;
+      key.lastUsedAt = Date.now();
     }
     s.nonces[auth.nonce] = Date.now() + 120000;
     return s;
   }
   async route(request) {
     const url = new URL(request.url), path = url.pathname, audience = url.origin;
-    if (request.method === 'GET' && path === '/v1/config') return { version: VERSION, configured: validKey(this.publicKey) && !!this.kdf, publicKey: this.publicKey, kdf: this.kdf, games: JSON.parse(this.env.GAME_PATHS || '{}') };
+    if (request.method === 'GET' && path === '/v1/config') return { version: VERSION, configured: validKey(this.publicKey) && !!this.kdf, publicKey: this.publicKey, kdf: this.kdf };
     assert(request.method === 'POST', '请求方法不支持', 405);
     const raw = await request.text(); assert(raw.length < 16384, '请求过大', 413);
     let envelope; try { envelope = JSON.parse(raw); } catch { assert(false, '无效 JSON'); }
     const { body = {}, auth } = envelope;
     assert(body && typeof body === 'object' && !Array.isArray(body), '请求格式错误');
-    const games = JSON.parse(this.env.GAME_PATHS || '{}');
     assert(validKey(this.publicKey) && this.kdf, '服务尚未配置管理员公钥', 503);
     if (path === '/v1/challenge') {
       this.limit(request, 'login', 10);
@@ -133,17 +144,22 @@ export class PortalRegistry {
       const code = this.data.codes[body.code];
       assert(code && code.expires > Date.now() && await hash(body.verifier || '') === code.pkce, '授权码无效或已过期', 401);
       if (code.keyId) assert(this.data.keys[code.keyId] && !this.data.keys[code.keyId].revokedAt, '密钥已被撤销', 403);
-      const result = this.session(code.publicKey, 'game', { gameId: code.gameId, ...(code.keyId ? { keyId: code.keyId } : {}) });
+      const result = this.session(code.publicKey, 'creator', { ...(code.keyId ? { keyId: code.keyId } : {}) });
       delete this.data.codes[body.code];
       return result;
     }
     if (path === '/v1/join') {
       this.limit(request, 'join', 20);
       assert(validId(body.roomId) && validKey(body.publicKey) && validKey(body.invite), '邀请格式错误');
-      const result = await this.room(body.roomId, 'join', { publicKey: body.publicKey, inviteHash: await hash(body.invite), gameId: body.gameId });
+      const result = await this.room(body.roomId, 'join', { publicKey: body.publicKey, inviteHash: await hash(body.invite) });
       // Retries by the same key are safe, including when the HTTP response was lost.
-      for (const [id, s] of Object.entries(this.data.sessions)) if (s.scope === 'guest' && s.roomId === body.roomId && s.publicKey === body.publicKey) return { session: id, expires: s.expires, scope: s.scope, roomId: s.roomId, gameId: s.gameId, seat: 1 };
-      return { ...this.session(body.publicKey, 'guest', { roomId: body.roomId, gameId: result.gameId }), seat: 1 };
+      for (const [id, s] of Object.entries(this.data.sessions)) {
+        if (s.scope === 'guest' && s.roomId === body.roomId && s.publicKey === body.publicKey && s.grantId === result.grantId) {
+          s.expires = result.guestExpires;
+          return { session: id, expires: s.expires, scope: s.scope, roomId: s.roomId, grantId: s.grantId, seat: 1 };
+        }
+      }
+      return { ...this.session(body.publicKey, 'guest', { roomId: body.roomId, grantId: result.grantId, expires: result.guestExpires }), seat: 1 };
     }
     const session = await this.authenticate(path, body, auth, audience);
     this.limit(request, 'api', 120);
@@ -192,25 +208,24 @@ export class PortalRegistry {
     }
     if (path === '/v1/authorize') {
       assert(['admin', 'member'].includes(session.scope), '仅管理员或普通密钥可授权创建房间', 403);
-      assert(Object.hasOwn(games, body.gameId) && validKey(body.publicKey) && validKey(body.pkce), '授权参数无效');
+      assert(validKey(body.publicKey) && validKey(body.pkce), '授权参数无效');
       const redirect = new URL(body.redirect, audience);
-      assert((this.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).includes(redirect.origin) && redirect.pathname === games[body.gameId] && !redirect.search && !redirect.hash, '返回地址不允许');
+      assert((this.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).includes(redirect.origin) && !redirect.username && !redirect.password && !redirect.search && !redirect.hash, '返回地址不允许');
       assert(Object.keys(this.data.codes).length < 64, '授权请求过多', 429);
-      const code = random(); this.data.codes[code] = { gameId: body.gameId, publicKey: body.publicKey, pkce: body.pkce, expires: Date.now() + 60000, ...(session.keyId ? { keyId: session.keyId } : {}) };
+      const code = random(); this.data.codes[code] = { publicKey: body.publicKey, pkce: body.pkce, expires: Date.now() + 60000, ...(session.keyId ? { keyId: session.keyId } : {}) };
       return { code };
     }
     if (path === '/v1/rooms') {
-      assert(['admin', 'game'].includes(session.scope), '无权创建房间', 403);
-      assert(Object.hasOwn(games, body.gameId) && (session.scope === 'admin' || session.gameId === body.gameId), '游戏未授权', 403);
+      assert(['admin', 'creator'].includes(session.scope), '无权创建房间', 403);
       assert(validId(body.roomId), '房间 ID 无效');
       const existing = this.data.rooms[body.roomId];
       if (!existing) assert(Object.keys(this.data.rooms).length < 50, '房间上限为 50，请先关闭旧房间', 429);
-      else assert(existing.owner === session.publicKey && existing.gameId === body.gameId && (existing.keyId || null) === (session.keyId || null), '房间 ID 已占用', 409);
+      else assert(existing.owner === session.publicKey && (existing.keyId || null) === (session.keyId || null), '房间 ID 已占用', 409);
       // Write the index before contacting the Room; repeated creation repairs partial failures.
-      this.data.rooms[body.roomId] = { gameId: body.gameId, owner: session.publicKey, created: existing?.created || Date.now(), creationCounted: existing?.creationCounted || false, ...(session.keyId ? { keyId: session.keyId } : {}) };
+      this.data.rooms[body.roomId] = { owner: session.publicKey, created: existing?.created || Date.now(), creationCounted: existing?.creationCounted || false, ...(session.keyId ? { keyId: session.keyId } : {}) };
       await this.save();
-      const result = await this.room(body.roomId, 'create', { gameId: body.gameId, owner: session.publicKey, roomId: body.roomId });
-      if (!this.data.rooms[body.roomId].creationCounted && session.keyId) { this.data.keys[session.keyId].roomsCreated++; this.data.keys[session.keyId].lastGameId = body.gameId; }
+      const result = await this.room(body.roomId, 'create', { owner: session.publicKey, roomId: body.roomId });
+      if (!this.data.rooms[body.roomId].creationCounted && session.keyId) { this.data.keys[session.keyId].roomsCreated++; }
       this.data.rooms[body.roomId].creationCounted = true;
       return result;
     }
@@ -235,13 +250,19 @@ export class PortalRegistry {
     assert(match && validId(match[1]), '接口不存在', 404);
     const [, id, op] = match;
     const info = await this.room(id, 'info'); assert(!info.closed, '房间已关闭或过期', 410);
-    const owner = (this.data.rooms[id]?.keyId || null) === (session.keyId || null) && info.owner === session.publicKey && (session.scope === 'admin' || (session.scope === 'game' && session.gameId === info.gameId));
-    const guest = session.scope === 'guest' && session.roomId === id && info.guest === session.publicKey;
+    const owner = (this.data.rooms[id]?.keyId || null) === (session.keyId || null) && info.owner === session.publicKey && (session.scope === 'admin' || session.scope === 'creator');
+    const guest = session.scope === 'guest' && session.roomId === id && info.guest === session.publicKey && info.guestGrant === session.grantId && info.guestExpires > Date.now();
     const admin = session.scope === 'admin';
-    if (op === 'info') { assert(owner || guest || admin, '无权访问房间', 403); return { ...info, seat: owner ? 0 : guest ? 1 : null }; }
+    if (op === 'info') {
+      assert(owner || guest || admin, '无权访问房间', 403);
+      const fresh = await this.room(id, 'read', { seat: guest ? 1 : 0, publicKey: session.publicKey, grantId: session.grantId });
+      if (guest) session.expires = fresh.guestExpires;
+      const { guestGrant, ...visible } = fresh;
+      return { ...visible, seat: owner ? 0 : guest ? 1 : null };
+    }
     if (op === 'ticket') {
       assert(owner || guest, '无权加入此房间，请重新授权', 403);
-      return this.room(id, 'ticket', { seat: owner ? 0 : 1, publicKey: session.publicKey, sessionId: auth.session, expires: session.expires });
+      return this.room(id, 'ticket', { seat: owner ? 0 : 1, publicKey: session.publicKey, sessionId: auth.session, expires: session.expires, grantId: session.grantId });
     }
     assert(owner || admin, '需要房主或管理员权限', 403);
     if (op === 'invite') { assert(validKey(body.secret), '邀请密钥无效'); return this.room(id, op, { inviteHash: await hash(body.secret) }); }

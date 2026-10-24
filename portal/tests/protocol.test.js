@@ -12,7 +12,7 @@ test('确定性 Ed25519 派生、不可导出会话私钥和签名上下文', as
   assert.equal(a.publicKey, b.publicKey); assert.equal(a.privateKey.extractable, false);
   const session = await newIdentity(); assert.equal(session.privateKey.extractable, false);
   const auth = { session: random(), time: Date.now(), nonce: random(16) };
-  const text = requestMessage('/v1/rooms', { gameId:'quoridor' }, auth, 'https://api.test');
+  const text = requestMessage('/v1/rooms', { roomId:'example-region-01' }, auth, 'https://api.test');
   const signature = await sign(a.privateKey, text);
   assert(await verify(a.publicKey, signature, text));
   assert.equal(await verify(a.publicKey, signature, text.replace('/v1/rooms','/v1/admin/rotate')), false);

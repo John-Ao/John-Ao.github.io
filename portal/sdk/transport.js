@@ -54,7 +54,7 @@ export class RoomConnection extends EventTarget {
         this.ready = false; clearInterval(this.heartbeat);
         if ([4001, 4002, 4003, 4004].includes(e.code)) {
           this.stopped = true;
-          const error = Object.assign(new Error(({4001:'会话已过期，请重新登录或请房主授权',4002:'此席位已在另一标签页打开',4003:'访客席位已被撤销',4004:'房间已关闭或过期'})[e.code]), { code: e.code, status: ({4001:401,4002:409,4003:403,4004:410})[e.code] });
+          const error = Object.assign(new Error(({4001:this.seat===1?'访客连续 8 小时无操作，或身份已退出；请房主重新分享':'会话已过期，请重新登录',4002:'此席位已在另一标签页打开',4003:'访客席位已被撤销',4004:'房间已关闭或过期'})[e.code]), { code: e.code, status: ({4001:401,4002:409,4003:403,4004:410})[e.code] });
           this.clearPending(error); this.emit('error', error);
         }
         this.emit('status', this.stopped ? 'closed' : 'disconnected'); this.retry();

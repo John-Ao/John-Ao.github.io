@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f2f2f2"><script src="theme.js"></script><title>Tacta</title><link rel="stylesheet" href="style.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#f2f2f2"><script src="theme.js"></script><title>Tacta</title><link rel="stylesheet" href="style.css"></head>
 <body>
 <header class="app-bar">
  <a class="brand" href="./" aria-label="Tacta 首页">Tacta</a>
@@ -11,7 +11,7 @@
   <label class="auto-handoff"><input type="checkbox" id="nightMode"> 夜间模式</label>
   <label class="auto-handoff"><input type="checkbox" id="dualLayout"> 双列布局</label>
   <label class="auto-handoff"><input type="checkbox" id="mirrorPlayer2"> 玩家 2 对面视角（旋转 180°）</label>
-  <button id="newBtn">重新开局</button>
+  <button id="network">联网</button><button id="undo" hidden>请求悔棋</button><button id="reviewProposal" hidden>查看协商请求</button><button id="newBtn">重新开局</button>
  </nav></details>
 </header>
 <main>
@@ -23,7 +23,7 @@
  <section class="table-panel" aria-label="牌桌">
   <div class="table-top"><span id="progress">第 1 / 36 手</span><div class="view-tools"><button id="zoomOut" aria-label="缩小">−</button><button id="fitBtn">全览</button><button id="tableBtn">桌界</button><button id="zoomIn" aria-label="放大">＋</button></div></div>
   <div id="boardWrap"><svg id="board" role="group" aria-label="共享卡牌桌面，可单指拖动、双指缩放" xmlns="http://www.w3.org/2000/svg"></svg></div>
-  <div class="table-bottom"><span id="status" aria-live="polite"></span><span id="saveNote" role="status"></span></div>
+  <div class="table-bottom"><span id="status" aria-live="polite"></span><span id="networkStatus" role="status" hidden></span><span id="saveNote" role="status"></span></div>
  </section>
  <aside id="primaryPanel" class="hand-panel" aria-label="候选手牌">
   <div class="opponent-summary" id="primarySummary"></div>
@@ -36,5 +36,8 @@
 <dialog id="restart"><h2>重新开一局？</h2><p>当前对局将被替换，两副牌会重新洗牌。</p><div class="dialog-actions"><button data-close="restart">继续本局</button><button id="confirmNew" class="primary">重新开始</button></div></dialog>
 <dialog id="handoff"><div class="eyebrow">PASS THE TABLE</div><div class="handoff-mark">◩</div><h2 id="handoffTitle"></h2><p>准备好后，揭开桌面继续对局。</p><button class="primary" data-close="handoff">我准备好了 →</button></dialog>
 <dialog id="result"><div class="eyebrow">EVERY DOT COUNTS</div><h2 id="winner"></h2><p id="finalScore"></p><div class="dialog-actions"><button data-close="result">回看桌面</button><button id="againBtn" class="primary">再来一局 →</button></div></dialog>
-<dialog id="deckInfo"><button class="close" data-close="deckInfo" aria-label="关闭牌面资料">×</button><h2>牌面与资料</h2><p>每种花色 1–6 点，共 18 张。下方是固定牌面目录，不是任何玩家的洗牌顺序。标注「待完整核实」的 8 张含根据局部图像推定的部分。</p><div id="catalogue"></div><p>轮流流程、叠放限制和计分依据官方规则书；牌面布局、起始牌线条与几何比例仍有近似。</p><a href="RESEARCH.md" target="_blank">查看逐张资料记录 ↗</a></dialog><script src="cards.js"></script><script src="engine.js"></script><script src="gestures.js"></script><script src="app.js"></script>
+<dialog id="deckInfo"><button class="close" data-close="deckInfo" aria-label="关闭牌面资料">×</button><h2>牌面与资料</h2><p>每种花色 1–6 点，共 18 张。下方是固定牌面目录，不是任何玩家的洗牌顺序。标注「待完整核实」的 8 张含根据局部图像推定的部分。</p><div id="catalogue"></div><p>轮流流程、叠放限制和计分依据官方规则书；牌面布局、起始牌线条与几何比例仍有近似。</p><a href="RESEARCH.md" target="_blank">查看逐张资料记录 ↗</a></dialog><dialog id="networkDialog" aria-labelledby="networkTitle"><button class="close" data-close="networkDialog" aria-label="关闭联网菜单">×</button><h2 id="networkTitle">联网对战</h2><p>双人诚信对战；牌堆通过共享日志同步，不提供防窥牌保证。</p><p id="networkMessage" role="status"></p><div class="orient"><button id="createRoom" hidden>创建房间</button><button id="resumeRoom" hidden>恢复房间</button><button id="joinRoom" hidden>加入邀请对局</button></div><section id="roomControls" hidden><section id="inviteControls" hidden><p id="inviteHint" hidden>访客席位已占用；邀请其他人前，请先重置访客席位。</p><label id="inviteLinkField">邀请链接<input id="shareLink" readonly aria-label="邀请链接"></label><div class="orient"><button id="inviteRoom">生成邀请</button><button id="copyInvite">复制链接</button></div></section><div class="orient"><button id="syncRoom">重新同步</button><button id="resign">认输</button></div><button id="loginAgain">房主重新登录</button><button id="resetGuest">重置访客席位</button><button id="closeRoom">关闭房间</button><button id="leaveRoom">返回本地对局</button></section></dialog>
+<dialog id="proposal" aria-labelledby="proposalTitle" aria-describedby="proposalText"><button class="close" data-close="proposal" aria-label="稍后处理协商请求">×</button><h2 id="proposalTitle"></h2><p id="proposalText"></p><div id="proposalActions" class="orient"><button id="rejectProposal">拒绝</button><button id="acceptProposal" class="primary">同意</button></div></dialog>
+<dialog id="eventDialog" aria-labelledby="eventTitle" aria-describedby="eventMessage"><button class="close" data-close="eventDialog" aria-label="关闭提示">×</button><h2 id="eventTitle"></h2><p id="eventMessage"></p><div class="orient"><button id="eventCancel">取消</button><button id="eventAccept" class="primary">知道了</button></div></dialog>
+<script src="cards.js"></script><script src="engine.js"></script><script src="gestures.js"></script><script src="network-state.js"></script><script src="app.js"></script><script src="network-controller.js"></script>
 </body></html>

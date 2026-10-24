@@ -12,7 +12,7 @@ function pendingId() { return apiBase() + ':registration:' + invitation.invitati
 function showRegistered(key) {
   registered=key;$('register').hidden=true;$('registered').hidden=false;$('expiry').textContent='';
   $('keySummary').textContent=`密钥已创建：${key.alias || key.keyId.slice(0,16)}。请保存恢复文件和密钥密码。`;
-  $('games').replaceChildren();for(const [name,path] of Object.entries(config.games)){const a=document.createElement('a');a.textContent='打开 '+name;a.href=path;$('games').append(a);}
+  $('games').replaceChildren();for(const [name,path] of Object.entries(config.games || {})){const a=document.createElement('a');a.textContent='打开 '+name;a.href=path;$('games').append(a);}
   status('密钥已保存到当前浏览器，可以用于游戏登录。');
 }
 $('backup').onclick=()=>downloadPersonalKey(registered);

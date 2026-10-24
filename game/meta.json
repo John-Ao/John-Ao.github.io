@@ -1,6 +1,6 @@
 [
   {
-    "game": "7_Wonders_Duel"
+    "game": "7_wonders_duel"
   },
   {
     "game": "aeroplane_chess",
@@ -41,10 +41,10 @@
     "title": "点格棋"
   },
   {
-    "game": "Frosthaven"
+    "game": "frosthaven"
   },
   {
-    "game": "Gloomhaven"
+    "game": "gloomhaven"
   },
   {
     "game": "gomoku",
@@ -58,7 +58,7 @@
     "game": "jaipur"
   },
   {
-    "game": "Keep_Talking_and_Nobody_Explodes"
+    "game": "keep_talking_and_nobody_explodes"
   },
   {
     "game": "lights_out"
@@ -94,44 +94,44 @@
     "game": "quoridor"
   },
   {
-    "game": "Radlands"
+    "game": "radlands"
   },
   {
-    "game": "Schotten_Totten"
+    "game": "schotten_totten"
   },
   {
-    "game": "Sky_Team"
+    "game": "sky_team"
   },
   {
-    "game": "Slay_the_Spire"
+    "game": "slay_the_spire"
   },
   {
-    "game": "Sleeping_Gods"
+    "game": "sleeping_gods"
   },
   {
     "game": "slide",
     "title": "滑动拼图"
   },
   {
-    "game": "Space_Rescue"
+    "game": "space_rescue"
   },
   {
-    "game": "Spirit_Island"
+    "game": "spirit_island"
   },
   {
-    "game": "Splendor_Duel"
+    "game": "splendor_duel"
   },
   {
     "game": "tacta"
   },
   {
-    "game": "Targi"
+    "game": "targi"
   },
   {
     "game": "tents_and_trees",
     "title": "帐篷与树"
   },
   {
-    "game": "Toy_Battle"
+    "game": "toy_battle"
   }
 ]

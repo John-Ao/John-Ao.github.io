@@ -7,7 +7,7 @@ async function loadPortal(){
  random=protocol.random;({applyEvent,replay,GAME_VERSION}=game);portal=sdk.createPortal({gameId:'quoridor'});
 }
 let online = null, onlineModel = null, networkError = '', peerJoined = false, peerOnline = false, connectionStatus = '';
-let invitation=null, invitationEntry=new URLSearchParams(location.hash.slice(1)).has('invite')||!!sessionStorage.getItem('quoridor.invitation');
+let invitation=null, invitationEntry=new URLSearchParams(location.hash.slice(1)).has('invite')||sessionStorage.getItem('quoridor.invitationEntry')==='1'||!!sessionStorage.getItem('quoridor.invitation');
 const activeRoomKey = 'quoridor.online.room', recentRoomKey = 'quoridor.online.recent';
 let localSnapshot=null;
 const busyButtons=new Set();
@@ -216,7 +216,7 @@ async function attachRoom(room){
    render();
    if(status==='closed'){
      const message=lastConnectionError?.message||'房间已关闭或当前连接已结束。';
-     if(lastConnectionError?.status!==401)leaveOnline(room,{message});
+     if(lastConnectionError?.status!==401||room.seat===1)leaveOnline(room,{message});
      else{clearDialogs();clearInviteLink();}
      gameDialog('连接已结束',message,{key:'connection-closed'});
    }
@@ -238,7 +238,7 @@ async function networkTask(button,fn){
 $('network').onclick=async()=>{openDialog('networkDialog');try{await loadPortal();renderNetwork();}catch(e){$('networkMessage').textContent=e.message;$('createRoom').disabled=true;}};
 $('createRoom').onclick=e=>networkTask(e.target,async()=>{if(invitationEntry)return;try{await portal.credentials();}catch(error){if(error.status===401){sessionStorage.setItem('quoridor.createAfterLogin','1');await portal.login();return;}throw error;}await attachRoom(await portal.createRoom());});
 $('resumeRoom').onclick=e=>networkTask(e.target,async()=>{const id=sessionStorage.getItem(activeRoomKey)||sessionStorage.getItem(recentRoomKey);try{await portal.credentials(id);}catch(error){if(error.status===401&&!error.message.includes('访客')){await portal.login();return;}throw error;}await attachRoom(portal.room(id));});
-$('inviteRoom').onclick=e=>networkTask(e.target,async()=>{const room=online;if(!room?.ready||peerJoined)return;clearInviteLink();renderNetwork();const invite=await portal.createInvite(room.id);if(online!==room||!room.ready||peerJoined)return;$('shareLink').value=invite.url;shareExpires=invite.expires;inviteExpiryTimer=setTimeout(()=>{if(online===room){clearInviteLink();renderNetwork();$('networkMessage').textContent='邀请已过期，可重新生成。';}},Math.max(0,invite.expires-Date.now()));$('networkMessage').textContent='邀请 30 分钟内有效，仅可认领一次。';});
+$('inviteRoom').onclick=e=>networkTask(e.target,async()=>{const room=online;if(!room?.ready||peerJoined)return;clearInviteLink();renderNetwork();const invite=await portal.createInvite(room.id);if(online!==room||!room.ready||peerJoined)return;$('shareLink').value=invite.url;shareExpires=invite.expires;inviteExpiryTimer=setTimeout(()=>{if(online===room){clearInviteLink();renderNetwork();$('networkMessage').textContent='邀请已过期，可重新生成。';}},Math.max(0,invite.expires-Date.now()));$('networkMessage').textContent='分享链接 24 小时内有效；访客连续 8 小时无操作后需重新分享。';});
 $('copyInvite').onclick=e=>networkTask(e.target,async()=>{if(!$('shareLink').value)throw new Error('请先生成邀请');try{await navigator.clipboard.writeText($('shareLink').value);$('networkMessage').textContent='邀请链接已复制';}catch{$('shareLink').select();$('networkMessage').textContent='请选择并复制链接';}});
 $('loginAgain').onclick=e=>networkTask(e.target,async()=>{await portal.login();});
 $('syncRoom').onclick=()=>{online?.reconnect();$('networkMessage').textContent='正在重新读取消息记录…';};
@@ -251,12 +251,12 @@ $('closeRoom').onclick=e=>networkTask(e.target,async()=>{const room=online;if(aw
 $('leaveRoom').onclick=async()=>{const room=online;if(await gameDialog('离开联网对局？','你将断开连接并返回本地对局。对方会收到离线提示。',{confirm:'离开对局',valid:()=>online===room})){leaveOnline(room,{remember:true});}};
 
 async function receiveInvitation(params){
- invitationEntry=true;
+ invitationEntry=true;sessionStorage.setItem('quoridor.invitationEntry','1');
  const incoming={room:params.get('room'),invite:params.get('invite')};
  historyURLClear();
  if(online){
    const room=online;
-   if(room.id===incoming.room&&room.ready){gameDialog('已在此房间中','当前身份已连接，无需再次使用邀请链接。');return;}
+   if(room.id===incoming.room&&room.ready&&!room.stopped){gameDialog('已在此房间中','当前身份已连接，无需再次使用邀请链接。');return;}
    if(!await gameDialog('切换到邀请房间？','当前连接将断开，原房间会保留。',{confirm:'切换房间',valid:()=>online===room}))return;
    leaveOnline(room,{remember:true});
  }

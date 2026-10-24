@@ -27,7 +27,6 @@
   ],
   "vars": {
     "ALLOWED_ORIGINS": "https://john-ao.github.io,http://localhost:8004,http://127.0.0.1:8004",
-    "GAME_PATHS": "{\"quoridor\":\"/game/quoridor/\"}",
     "ADMIN_PUBLIC_KEY": "TQh6YodXJkwS8FYo-DmXh8xLwSmEzubzcfEXWcjQ1l8",
     "KDF_CONFIG": "{\"version\":1,\"algorithm\":\"argon2id\",\"salt\":\"8RwSJsrAnJy_OxU_ZWLD8w\",\"memorySize\":65536,\"iterations\":3,\"parallelism\":4}"
   },

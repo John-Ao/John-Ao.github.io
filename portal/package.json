@@ -8,7 +8,8 @@
     "dev": "wrangler dev --config worker/wrangler.jsonc",
     "deploy": "wrangler deploy --config worker/wrangler.jsonc",
     "check:deploy": "wrangler deploy --dry-run --config worker/wrangler.jsonc",
-    "test:browser": "node tests/browser.mjs"
+    "test:browser": "node tests/browser.mjs",
+    "test:tacta": "node tests/tacta-browser.mjs"
   },
   "devDependencies": {
     "esbuild": "0.17.19",

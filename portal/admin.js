@@ -1,7 +1,6 @@
 import { api, adminLogin, serverConfig } from './sdk/auth.js';
 import { deriveMaster } from './crypto/keys.js';
-import { random } from './shared/protocol.js';
-import { config } from './config.js';
+import { random, ROOM_IDLE_TTL } from './shared/protocol.js';
 import { $, status, busy, download, kdfConfig, fingerprint } from './ui.js';
 let credentials, settings, currentKeyInvite=null, keyInviteTimer=null;
 async function refresh() {
@@ -10,17 +9,14 @@ async function refresh() {
   if (!rooms.length) { const row = document.createElement('tr'), td = document.createElement('td'); td.colSpan = 3; td.textContent = '暂无房间'; row.append(td); $('rooms').append(row); }
   for (const room of rooms) {
     const row = document.createElement('tr');
-    const name = document.createElement('td'); name.textContent = room.gameId + ' · ' + room.roomId;
-    const state = document.createElement('td'); state.textContent = `${room.guest ? '双方已加入' : '等待访客'} · ${room.seq} 条消息 · ${new Date(room.lastActivity + 86400000).toLocaleString()} 过期`;
+    const name = document.createElement('td'); name.textContent = room.roomId;
+    const state = document.createElement('td'); state.textContent = `${room.guest ? '双方已加入' : '等待访客'} · ${room.seq} 条消息 · ${new Date(room.lastActivity + ROOM_IDLE_TTL).toLocaleString()} 过期`;
     const controls = document.createElement('td');
-    for (const [label, op] of [['生成邀请','invite'], ['撤销邀请','revoke-invite'], ['重置访客席位','reset-guest'], ['关闭房间','close']]) {
-      const button = document.createElement('button'); button.textContent = label; button.disabled = op === 'invite' && !!room.guest;
+    for (const [label, op] of [['撤销邀请','revoke-invite'], ['重置访客席位','reset-guest'], ['关闭房间','close']]) {
+      const button = document.createElement('button'); button.textContent = label;
       button.onclick = () => busy(button, async () => {
         if (['close','reset-guest'].includes(op) && !confirm(`${label}？${op === 'reset-guest' ? '现有访客将断开，房间消息记录会保留。' : '双方将断开，消息记录将删除。'}`)) return;
-        const secret = op === 'invite' ? random() : null;
-        await api(`/v1/rooms/${room.roomId}/${op}`, secret ? { secret } : {}, credentials);
-        if (secret) { const url = new URL(config.games[room.gameId], location.origin); url.hash = new URLSearchParams({ room: room.roomId, invite: secret }); $('inviteLink').value = url.href; $('inviteResult').hidden = false; }
-        else { $('inviteResult').hidden = true; $('inviteLink').value = ''; }
+        await api(`/v1/rooms/${room.roomId}/${op}`, {}, credentials);
         await refreshKeys(); status(label + '完成');
       }); controls.append(button);
     }
@@ -58,7 +54,7 @@ async function refreshKeys(){
     const identity=document.createElement('td'),alias=document.createElement('input');alias.value=key.alias;alias.maxLength=80;alias.setAttribute('aria-label','密钥别名');
     const fingerprint=document.createElement('small');fingerprint.textContent=key.keyId.slice(0,20)+' · '+(key.revokedAt?'已撤销':'有效');fingerprint.title=key.publicKey;
     const save=document.createElement('button');save.textContent='保存别名';save.onclick=()=>busy(save,async()=>{await api('/v1/admin/keys/alias',{keyId:key.keyId,alias:alias.value},credentials);await refreshKeys();status('别名已保存');});identity.append(alias,fingerprint,save);
-    const usage=document.createElement('td');usage.className='key-usage';usage.textContent=`创建：${date(key.created)}\n最近鉴权：${date(key.lastUsedAt)}\n密钥登录 ${key.loginCount} 次 · 创建房间 ${key.roomsCreated} 次\n当前 ${key.activeRooms} 个房间 · ${key.activeSessions} 个会话${key.lastGameId?'\n最近游戏：'+key.lastGameId:''}`;
+    const usage=document.createElement('td');usage.className='key-usage';usage.textContent=`创建：${date(key.created)}\n最近鉴权：${date(key.lastUsedAt)}\n密钥登录 ${key.loginCount} 次 · 创建房间 ${key.roomsCreated} 次\n当前 ${key.activeRooms} 个房间 · ${key.activeSessions} 个会话`;
     const actions=document.createElement('td'),revoke=document.createElement('button');revoke.textContent=key.revokedAt?'已撤销':'撤销密钥';revoke.disabled=!!key.revokedAt;
     revoke.onclick=()=>busy(revoke,async()=>{
       const accepted=await confirmKeyRevoke();if(!accepted)return;

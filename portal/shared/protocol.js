@@ -1,7 +1,9 @@
 export const VERSION = 1;
 export const DAY = 86400000;
 export const SESSION_TTL = 8 * 3600000;
-export const INVITE_TTL = 30 * 60000;
+export const INVITE_TTL = DAY;
+export const ROOM_IDLE_TTL = 7 * DAY;
+export const GUEST_IDLE_TTL = 8 * 3600000;
 export const MAX_EVENTS = 2048;
 export const MAX_LOG_BYTES = 512 * 1024;
 export const MAX_PAYLOAD_BYTES = 4096;

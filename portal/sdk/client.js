@@ -1,12 +1,16 @@
-import { config } from '../config.js';
 import { api, apiBase } from './auth.js';
 import { stored } from './storage.js';
 import { newIdentity } from '../crypto/keys.js';
 import { random, hash } from '../shared/protocol.js';
 import { RoomConnection } from './transport.js?v=2';
-export function createPortal({ gameId }) { return new PortalClient(gameId); }
+export function createPortal({ gameId, returnPath = location.pathname.replace(/index\.html$/, '') }) { return new PortalClient(gameId, returnPath); }
 class PortalClient {
-  constructor(gameId) { if (!config.games[gameId]) throw new Error('未注册的游戏'); this.gameId = gameId; }
+  constructor(gameId, returnPath) {
+    if (typeof gameId !== 'string' || !/^[\w-]{1,80}$/.test(gameId)) throw new Error('客户端标识无效');
+    const url = new URL(returnPath, location.origin);
+    if (url.origin !== location.origin || url.search || url.hash || url.username || url.password) throw new Error('返回地址必须是本站页面');
+    this.gameId = gameId; this.returnURL = url.href;
+  }
   key(roomId) { return `${apiBase()}:${this.gameId}:${roomId || 'host'}`; }
   async identity(roomId) {
     const key = this.key(roomId); let value = await stored(key);
@@ -15,7 +19,7 @@ class PortalClient {
   async login() {
     const identity = await this.identity(), verifier = random(), state = random(16);
     sessionStorage.setItem('portal.oauth.' + this.gameId, JSON.stringify({ verifier, state, time: Date.now() }));
-    const redirect = new URL(config.games[this.gameId], location.origin).href;
+    const redirect = this.returnURL;
     const url = new URL('../login.html', import.meta.url);
     url.search = new URLSearchParams({ game: this.gameId, key: identity.publicKey, pkce: await hash(verifier), state, redirect });
     location.assign(url); return new Promise(() => {});
@@ -30,27 +34,28 @@ class PortalClient {
     await stored(this.key(), { ...identity, ...session }); sessionStorage.removeItem('portal.oauth.' + this.gameId); return true;
   }
   async credentials(roomId) {
+    // Guest expiry is sliding and authoritative in the room (including WS writes).
     const guest = roomId ? await stored(this.key(roomId)) : null;
     const value = guest?.session ? guest : await stored(this.key());
-    if (!value?.session || value.expires <= Date.now()) throw Object.assign(new Error(guest?.session ? '访客凭证已过期，请房主重新授权席位' : '请先通过 Portal 登录'), { status: 401, scope: guest?.session ? 'guest' : 'game' });
+    if (!value?.session || (value.scope !== 'guest' && value.expires <= Date.now())) throw Object.assign(new Error(guest?.session ? '访客凭证已过期，请房主重新授权席位' : '请先通过 Portal 登录'), { status: 401, scope: guest?.session ? 'guest' : 'creator' });
     return value;
   }
   async createRoom() {
     const credentials = await this.credentials();
     const storageKey = 'portal.creating.' + this.gameId;
     let roomId = sessionStorage.getItem(storageKey); if (!roomId) { roomId = random(16); sessionStorage.setItem(storageKey, roomId); }
-    await api('/v1/rooms', { roomId, gameId: this.gameId }, credentials);
+    await api('/v1/rooms', { roomId }, credentials);
     sessionStorage.removeItem(storageKey); return this.room(roomId);
   }
   async join(roomId, invite) {
     const identity = await this.identity(roomId);
-    const session = await api('/v1/join', { roomId, invite, publicKey: identity.publicKey, gameId: this.gameId });
+    const session = await api('/v1/join', { roomId, invite, publicKey: identity.publicKey });
     await stored(this.key(roomId), { ...identity, ...session }); return this.room(roomId);
   }
   room(roomId) { return new RoomConnection(this, roomId); }
   async createInvite(roomId) {
     const secret = random(); const { expires } = await api(`/v1/rooms/${roomId}/invite`, { secret }, await this.credentials(roomId));
-    const url = new URL(config.games[this.gameId], location.origin); url.hash = new URLSearchParams({ room: roomId, invite: secret });
+    const url = new URL(this.returnURL); url.hash = new URLSearchParams({ room: roomId, invite: secret });
     return { url: url.href, expires };
   }
   async roomAction(roomId, action) { return api(`/v1/rooms/${roomId}/${action}`, {}, await this.credentials(roomId)); }

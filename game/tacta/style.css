@@ -36,3 +36,7 @@ dialog.opposite{transform:rotate(180deg)}
 
 :root[data-theme="dark"]{color-scheme:dark;--paper:#181818;--ink:#eee;--muted:#b8b8b8;--line:#484848;--surface:#242424;--hover:#383838;--table:#303030;--outside:#202020;--table-edge:#777;--target:#484848;--target-active:#686868;--target-edge:#ccc;--card-slot:#353535;--purple:#b599e4}
 .primary{color:#181818;font-weight:600}
+
+#networkDialog .orient,#proposal .orient,#eventDialog .orient{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#networkDialog input{display:block;width:100%;min-width:0;padding:10px;background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+#roomControls>button{margin:4px}#networkStatus{font-size:10px;overflow-wrap:anywhere}.table-bottom:has(#networkStatus:not([hidden])){flex-wrap:wrap;overflow:auto}

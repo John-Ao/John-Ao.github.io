@@ -3,7 +3,6 @@
 <form id="login"><label>Master password<input id="password" type="password" autocomplete="current-password" required></label><button type="submit">登录</button> <a href="setup.html">初始化公钥</a></form>
 <section id="admin" hidden><div class="actions"><button id="refresh">刷新房间</button><button id="export">导出公开恢复配置</button><button id="logout">退出登录</button></div><p><small id="fingerprint"></small></p>
 <table><thead><tr><th>房间</th><th>状态</th><th>操作</th></tr></thead><tbody id="rooms"></tbody></table>
-<label id="inviteResult" hidden>邀请链接<input id="inviteLink" readonly></label>
 <section aria-labelledby="keysTitle"><h2 id="keysTitle">游戏密钥</h2><form id="createKeyInvite"><label>密钥别名<input id="keyAlias" maxlength="80" placeholder="例如：小明" required></label><button type="submit">创建 5 分钟注册链接</button></form>
 <label id="keyInviteResult" hidden>密钥注册链接<input id="keyInviteLink" readonly></label><p id="keyInviteExpiry"></p>
 <div class="actions"><button id="copyKeyInvite" hidden>复制注册链接</button><button id="refreshKeys">刷新密钥</button></div>

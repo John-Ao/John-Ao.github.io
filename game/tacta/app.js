@@ -11,6 +11,7 @@ try { const raw=localStorage.getItem(storageKey); if(raw)state=E.restore(JSON.pa
 catch { notice='旧存档无法读取，已开始新局。'; }
 if(!state)state=E.create();
 function save() {
+  if(online)return;
   try {localStorage.setItem(storageKey,JSON.stringify(state));}
   catch {$('saveNote').textContent='浏览器无法存档，请保持页面打开';}
 }
@@ -31,15 +32,16 @@ function handSvg(c,chosen) {
   return `<svg viewBox="${b.minX-5} ${b.minY-5} ${b.maxX-b.minX+10} ${b.maxY-b.minY+10}" aria-hidden="true">${cardSvg(c,0,0,r,f)}</svg>`;
 }
 function render() {
+  renderNetwork();
   document.documentElement.style.setProperty('--accent',colors[state.turn]);
   const scores=E.score(state);
   $('players').innerHTML=names.map((name,i)=>`<div class="player ${state.turn===i&&!state.finished?'active':''}" style="--player:${colors[i]}"><div class="player-top"><span class="player-symbol">${symbols[i]}</span>${name}<span class="turn-badge">${state.finished?'已完成':state.turn===i?'出牌':''}</span></div><div class="score-line"><span class="score">${scores[i]}</span><small>点</small><span class="remaining">余 ${state.decks[i].length} 张</span></div></div>`).join('');
-  $('progress').textContent=state.finished?'36 / 36 · 已结束':`第 ${state.board.length} / 36 手`;
+  $('progress').textContent=state.finished?`${state.board.length-1} / 36 · 已结束`:`第 ${state.board.length} / 36 手`;
   $('resultBtn').disabled=!state.finished;
-  legal=state.finished?[]:E.moves(state,current(),rotation,flip);
-  isolated=!state.finished&&!E.hasMove(state);
-  const status=state.finished?`${scores[0]===scores[1]?'平分秋色':names[scores[0]>scores[1]?0:1]+'获胜'} · 紫 ${scores[0]} : ${scores[1]} 橙`:pending?pending.isolated?'独立放置预览 · 确认后交接':`覆盖${pending.targetCard==='start'?'起始牌':pending.targetCard.startsWith('0-')?'紫方':'橙方'} ${pending.covered} 点 · 确认后交接`:isolated?'两端牌全部方向均无法连接 · 点击桌内空白处独立放置':legal.length?`${legal.length} 个合法落点 · 点击 ＋ 或用箭头预览`:'当前方向无落点 · 试试旋转、翻面或另一张牌';
-  $('status').textContent=notice||status;
+  legal=state.finished||!canAct()?[]:E.moves(state,current(),rotation,flip);
+  isolated=canAct()&&!state.finished&&!E.hasMove(state);
+  const status=state.resigned!==undefined?`${names[state.resigned]}认输 · ${names[1-state.resigned]}获胜`:state.finished?`${scores[0]===scores[1]?'平分秋色':names[scores[0]>scores[1]?0:1]+'获胜'} · 紫 ${scores[0]} : ${scores[1]} 橙`:pending?pending.isolated?'独立放置预览 · 确认后交接':`覆盖${pending.targetCard==='start'?'起始牌':pending.targetCard.startsWith('0-')?'紫方':'橙方'} ${pending.covered} 点 · 确认后交接`:isolated?'两端牌全部方向均无法连接 · 点击桌内空白处独立放置':legal.length?`${legal.length} 个合法落点 · 点击 ＋ 或用箭头预览`:'当前方向无落点 · 试试旋转、翻面或另一张牌';
+  $('status').textContent=online&&!state.finished&&!canAct()?'等待对方、连接恢复或协商完成':notice||status;
   renderHands(scores,notice||status);
   renderBoard();
 }
@@ -48,15 +50,15 @@ function renderHands(scores,status) {
   document.body.classList.toggle('mirror-player2',layout.mirror);
   $('player2Panel').hidden=!layout.dual;
   $('dualLayout').checked=layout.dual;$('mirrorPlayer2').checked=layout.mirror;
-  for(const [prefix,owner,panel] of [['',layout.dual?0:state.turn,$('primaryPanel')],['p2',1,$('player2Panel')]]) {
-    const active=owner===state.turn&&!state.finished;
+  for(const [prefix,owner,panel] of [['',online?(online.seat??0):layout.dual?0:state.turn,$('primaryPanel')],['p2',1,$('player2Panel')]]) {
+    const active=owner===state.turn&&!state.finished&&canAct();
     panel.classList.toggle('opposite',layout.mirror&&owner===1);
     panel.style.setProperty('--accent',colors[owner]);
     panel.dataset.owner=owner;
     const el=id=>$(prefix+id);
     el('handTitle').textContent=`玩家 ${owner+1} · ${names[owner]}${active?'出牌':state.finished?'结束':'等待'}`;
     el('orientation').textContent=active?`方向 ${rotation}° · ${flip?'镜像背面':'正面'}`:`余 ${state.decks[owner].length} 张`;
-    el('hand').innerHTML=E.ends({...state,turn:owner}).map((c,i)=>{const chosen=active&&selected===i;return `<div class="card-slot ${chosen?'selected':''}"><button class="hand-card" data-card="${i}" ${active?'':'disabled'} aria-pressed="${chosen}" aria-label="${i?'牌堆底':'牌堆顶'}，${c.value}点">${handSvg(c,chosen)}<span>${i?'牌堆底':'牌堆顶'} · ${c.value} 点</span></button>${chosen?`<button class="card-tool rotate-left" data-action="left" aria-label="逆时针旋转45度">↶</button><button class="card-tool rotate-right" data-action="right" aria-label="顺时针旋转45度">↷</button><button class="card-tool flip-card" data-action="flip" aria-label="翻面">⇆</button>`:''}</div>`;}).join('');
+    el('hand').innerHTML=online&&owner!==online.seat?'':E.ends({...state,turn:owner}).map((c,i)=>{const chosen=active&&selected===i;return `<div class="card-slot ${chosen?'selected':''}"><button class="hand-card" data-card="${i}" ${active?'':'disabled'} aria-pressed="${chosen}" aria-label="${i?'牌堆底':'牌堆顶'}，${c.value}点">${handSvg(c,chosen)}<span>${i?'牌堆底':'牌堆顶'} · ${c.value} 点</span></button>${chosen?`<button class="card-tool rotate-left" data-action="left" aria-label="逆时针旋转45度">↶</button><button class="card-tool rotate-right" data-action="right" aria-label="顺时针旋转45度">↷</button><button class="card-tool flip-card" data-action="flip" aria-label="翻面">⇆</button>`:''}</div>`;}).join('');
     el('playBtn').disabled=!active||!pending;
     el('playBtn').textContent=state.finished?'本局已结束':!active?'等待对方':pending?'确认落牌':'选择落点';
     el('prevMove').disabled=el('nextMove').disabled=!active||!legal.length;
@@ -92,8 +94,9 @@ function renderBoard() {
   $('board').innerHTML=html;
 }
 function resetSelection() {selected=0;rotation=0;flip=false;pending=null;notice='';manualCamera=false;view=null;showTable=false;}
-function newGame() {state=E.create();resetSelection();document.querySelectorAll('dialog[open]').forEach(d=>d.close());save();render();}
+function newGame() {if(online){requestRestart();return;}state=E.create();resetSelection();document.querySelectorAll('dialog[open]').forEach(d=>d.close());save();render();}
 for(const prefix of ['', 'p2'])$(prefix+'hand').addEventListener('click',e=>{
+  if(!canAct())return;
   if(Number(e.currentTarget.closest('.hand-panel').dataset.owner)!==state.turn||state.finished)return;
   const action=e.target.closest('[data-action]');
   if(action){
@@ -107,6 +110,7 @@ for(const prefix of ['', 'p2'])$(prefix+'hand').addEventListener('click',e=>{
   selected=Number(b.dataset.card);rotation=0;flip=false;pending=null;notice='';render();
 });
 function selectMove(e) {
+  if(!canAct())return;
   const target=e.target.closest('[data-move]');
   if(target){pending=legal[Number(target.dataset.move)];notice='';render();return;}
   if(!isolated||state.finished||!Number.isFinite(e.clientX))return;
@@ -119,14 +123,15 @@ function selectMove(e) {
 // Pointer taps are handled on release. Native click after a drag/pinch is ignored.
 $('board').addEventListener('click',e=>{if(e.detail===0)selectMove(e);});
 $('board').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectMove(e);}});
-function cycleMove(delta) {if(!legal.length)return;const i=pending?legal.findIndex(m=>near(m,pending)):-1;pending=legal[(i+delta+legal.length)%legal.length];notice='';render();}
+function cycleMove(delta) {if(!canAct()||!legal.length)return;const i=pending?legal.findIndex(m=>near(m,pending)):-1;pending=legal[(i+delta+legal.length)%legal.length];notice='';render();}
 for(const prefix of ['', 'p2']) {$(prefix+'prevMove').onclick=()=>cycleMove(-1);$(prefix+'nextMove').onclick=()=>cycleMove(1);}
 $('playBtn').onclick=$('p2playBtn').onclick=()=>{
-  if(!pending||state.finished)return;
+  if(!canAct()||!pending||state.finished)return;
+  if(online){sendGame({kind:'action',action:{id:current().id,rotation,flip,x:pending.x,y:pending.y}});return;}
   try {E.play(state,current().id,rotation,flip,pending.x,pending.y);}catch(e){notice=e.message;pending=null;render();return;}
   resetSelection();save();render();if(state.finished)showResult();else if($('autoHandoff').checked)handoff();
 };
-function showResult() {const s=E.score(state);$('winner').textContent=s[0]===s[1]?'平分秋色，共享胜利。':`${names[s[0]>s[1]?0:1]}获胜！`;$('finalScore').textContent=`紫方 ${s[0]} 点 · 橙方 ${s[1]} 点。双方全部出完，按可见圆点结算。`;$('result').showModal();}
+function showResult() {const s=E.score(state);$('winner').textContent=state.resigned!==undefined?names[1-state.resigned]+'获胜（对方认输）':s[0]===s[1]?'平分秋色，共享胜利。':`${names[s[0]>s[1]?0:1]}获胜！`;$('finalScore').textContent=state.resigned!==undefined?'本局以认输结束。':`紫方 ${s[0]} 点 · 橙方 ${s[1]} 点。双方全部出完，按可见圆点结算。`;$('result').showModal();}
 function handoff() {$('handoffTitle').textContent=state.finished?'这场对局已结束':`请交给${names[state.turn]}玩家`;$('handoff').showModal();}
 $('rulesBtn').onclick=()=>$('rules').showModal();$('newBtn').onclick=()=>$('restart').showModal();
 $('confirmNew').onclick=$('againBtn').onclick=newGame;$('privacyBtn').onclick=handoff;
@@ -158,7 +163,7 @@ $('fitBtn').onclick=()=>{manualCamera=false;showTable=false;renderBoard();};
 $('tableBtn').onclick=()=>{showTable=!showTable;manualCamera=false;renderBoard();};
 const gestures=TactaGestures.attach($('board'),{getView:()=>view,setView:applyCamera,onTap:selectMove});
 window.addEventListener('blur',()=>gestures.cancel());
-window.addEventListener('resize',renderBoard);render();save();
+window.addEventListener('resize',renderBoard);save();
 
 // Menus never occupy board space or stay open over an activated dialog.
 const menu=document.querySelector('.menu');

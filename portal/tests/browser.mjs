@@ -14,7 +14,7 @@ let apiBase='',mf,browser,host,guest;
 const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.wasm':'application/wasm','.json':'application/json'};
 const server=createServer(async(req,res)=>{
   try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
-    if(path==='/portal/config.js'){res.setHeader('Content-Type','text/javascript');res.end(`export const config={apiBase:${JSON.stringify(apiBase)},games:{quoridor:'/game/quoridor/'}};`);return;}
+    if(path==='/portal/config.js'){res.setHeader('Content-Type','text/javascript');res.end(`export const config={apiBase:${JSON.stringify(apiBase)},games:{}};`);return;}
     const file=resolve(root,'.'+(path.endsWith('/')?path+'index.html':path));if(!file.startsWith(root+sep))throw Error('invalid');
     res.setHeader('Content-Type',mime[extname(file)]||'application/octet-stream');res.end(await readFile(file));
   }catch{res.statusCode=404;res.end('Not found');}
@@ -34,8 +34,12 @@ try{
   const material=await crypto.subtle.importKey('raw',raw,'HKDF',false,['deriveBits']);const seed=new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF',hash:'SHA-256',salt:unb64(kdf.salt),info:new TextEncoder().encode('portal/master-ed25519/v1')},material,256));
   assert.equal((await fromSeed(seed)).publicKey,publicKey);raw.fill(0);seed.fill(0);assert.equal(await host.inputValue('#password'),'');
   console.log('PASS browser Argon2id/WASM and deterministic Ed25519');
-  const bundle=await build({entryPoints:[resolve(root,'portal/worker/src/index.js')],bundle:true,format:'esm',write:false});
-  mf=new Miniflare({modules:true,script:bundle.outputFiles[0].text,compatibilityDate:'2025-03-01',port:0,bindings:{ALLOWED_ORIGINS:origin,GAME_PATHS:JSON.stringify({quoridor:'/game/quoridor/'}),ADMIN_PUBLIC_KEY:publicKey,KDF_CONFIG:JSON.stringify(kdf)},durableObjects:{REGISTRY:{className:'PortalRegistry',useSQLite:true},ROOMS:{className:'GameRoom',useSQLite:true}}});
+  const bundle=await build({entryPoints:[resolve(root,'portal/worker/src/index.js')],bundle:true,format:'esm',write:false,
+    plugins:[{name:'expire-guest-for-test',setup(build){build.onLoad({filter:/worker\/src\/room\.js$/},async args=>({loader:'js',contents:(await readFile(args.path,'utf8')).replace('  async fetch(request) {', `  async fetch(request) {
+      if(new URL(request.url).pathname==='/__expire-guest'){
+        const m=await this.meta();m.guestExpires=Date.now()-1;await this.persist(m);await this.alarm();return new Response('ok');
+      }`)}));}}]});
+  mf=new Miniflare({modules:true,script:bundle.outputFiles[0].text,compatibilityDate:'2025-03-01',port:0,bindings:{ALLOWED_ORIGINS:origin,ADMIN_PUBLIC_KEY:publicKey,KDF_CONFIG:JSON.stringify(kdf)},durableObjects:{REGISTRY:{className:'PortalRegistry',useSQLite:true},ROOMS:{className:'GameRoom',useSQLite:true}}});
   apiBase=(await mf.ready).origin;
   await host.goto(origin+'/game/quoridor/');await host.click('#network');await host.click('#createRoom');await host.waitForURL('**/portal/login.html?*');
   await host.fill('#password',password);await host.click('#login button[type=submit]');await host.waitForURL('**/game/quoridor/**');
@@ -74,6 +78,8 @@ try{
   for(const page of [host,guest]){await page.waitForFunction(()=>document.querySelector('#ply').textContent==='第 1 手');await dismissEvent(page,'已悔棋');}
   await guest.click('#restart');await host.waitForSelector('#acceptProposal',{state:'visible'});await host.click('#acceptProposal');
   for(const page of [host,guest])await dismissEvent(page,'新棋局已开始');
+  // Stored expiry is only a snapshot; WS activity can renew the authoritative grant.
+  await guest.evaluate(async()=>{const {stored}=await import('/portal/sdk/storage.js');const value=await portal.credentials(online.id);await stored(portal.key(online.id),{...value,expires:Date.now()-1});});
   await guest.reload();await guest.waitForFunction(()=>document.querySelector('#networkStatus').textContent.includes('已连接'));
   assert.equal(await guest.locator('#proposal').isVisible(),false); // no historical request popups
   assert.deepEqual(await snapshot(host),await snapshot(guest));
@@ -90,9 +96,23 @@ try{
   await dismissEvent(host,'对方已重新连接');
   assert.deepEqual(await snapshot(host),await snapshot(guest));
   console.log('PASS explicit leave, peer-offline popup, room resume, and reconnect notification');
+  const existingRoom=await host.evaluate(()=>online.id),beforeExpiry=await snapshot(host);
+  const roomNS=await mf.getDurableObjectNamespace('ROOMS');
+  await roomNS.get(roomNS.idFromName(existingRoom)).fetch('https://test/__expire-guest');
+  await dismissEvent(guest,'连接已结束');assert.equal(await guest.evaluate(()=>online),null);
+  assert.equal(await guest.locator('#createRoom').isVisible(),false);
+  await host.waitForFunction(()=>!peerJoined);await dismissEvent(host,'对方已离开');
+  await host.click('#network');await host.click('#inviteRoom');await host.waitForFunction(()=>document.querySelector('#shareLink').value.includes('invite='));
+  const renewedInvite=await host.inputValue('#shareLink');await host.click('[data-close=networkDialog]');
+  await guest.goto(renewedInvite);await guest.click('#joinRoom');await guest.waitForFunction(()=>!!online?.ready&&!!onlineModel);
+  assert.equal(await guest.evaluate(()=>online.id),existingRoom);assert.deepEqual(await snapshot(guest),beforeExpiry);
+  // Avoid letting a legitimate offline/rejoined notification obscure later controls.
+  for(const page of [host,guest])await page.evaluate(()=>clearDialogs());
+  console.log('PASS stale expiry snapshot, idle guest termination and fresh sharing into the same region');
+
   await host.screenshot({path:resolve(output,'quoridor-desktop.png')});await guest.screenshot({path:resolve(output,'quoridor-mobile.png')});
   const layout=await guest.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,board:document.querySelector('#board').getBoundingClientRect().toJSON()}));assert(layout.scroll<=layout.width+1);assert(layout.board.width>150);
-  const strangerContext=await browser.newContext(),stranger=await strangerContext.newPage();await stranger.goto(invite);await stranger.click('#joinRoom');await stranger.waitForFunction(()=>document.querySelector('#networkMessage').textContent.includes('已被其他人'));await strangerContext.close();
+  const strangerContext=await browser.newContext(),stranger=await strangerContext.newPage();await stranger.goto(renewedInvite);await stranger.click('#joinRoom');await stranger.waitForFunction(()=>document.querySelector('#networkMessage').textContent.includes('已被其他人'));await strangerContext.close();
   const before=await snapshot(guest);
   await host.evaluate(async()=>{await online.send({version:GAME_VERSION,roundId:onlineModel.roundId,base:onlineModel.revision,kind:'action',action:{type:'move',r:-999,c:1000}});});
   await guest.waitForFunction(()=>document.querySelector('#networkStatus').textContent.includes('本地校验'));
@@ -100,7 +120,7 @@ try{
   assert.equal(await guest.locator('#board .cell.legal').count(),0);
   console.log('PASS illegal peer message is rejected locally and shown to player');
   const admin=await hostContext.newPage();admin.on('pageerror',e=>errors.push(e.message));admin.on('dialog',d=>d.accept());
-  await admin.goto(origin+'/portal/');await admin.fill('#password',password);await admin.click('#login button');await admin.waitForSelector('#admin',{state:'visible'});await admin.waitForFunction(()=>document.querySelector('#rooms').textContent.includes('quoridor'));
+  await admin.goto(origin+'/portal/');await admin.fill('#password',password);await admin.click('#login button');await admin.waitForSelector('#admin',{state:'visible'});await admin.waitForFunction(()=>document.querySelector('#rooms tbody tr, #rooms tr')!==null&&!document.querySelector('#rooms').textContent.includes('暂无房间'));
   await admin.screenshot({path:resolve(output,'portal-admin.png')});
   await admin.getByRole('button',{name:'关闭房间',exact:true}).click();await admin.waitForFunction(()=>document.querySelector('#rooms').textContent.includes('暂无房间'));
   for(const page of [host,guest]){

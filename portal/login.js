@@ -1,5 +1,4 @@
 import { personalKey, memberLogin, recoverPersonalKey, savePersonalKey } from './sdk/personal-key.js';
-import { config } from './config.js';
 import { adminLogin, api } from './sdk/auth.js';
 import { $, status, busy } from './ui.js';
 import { validKey, validId } from './shared/protocol.js';
@@ -7,12 +6,12 @@ const params = new URLSearchParams(location.search);
 let redirect;
 try {
   redirect = new URL(params.get('redirect'));
-  if (!config.games[params.get('game')] || redirect.origin !== location.origin || redirect.pathname !== config.games[params.get('game')] || redirect.search || redirect.hash || !validKey(params.get('key')) || !validKey(params.get('pkce')) || !validId(params.get('state'))) throw new Error('授权请求无效，请从游戏页面重新发起登录');
+  if (!/^[\w-]{1,80}$/.test(params.get('game') || '') || redirect.origin !== location.origin || redirect.username || redirect.password || redirect.search || redirect.hash || !validKey(params.get('key')) || !validKey(params.get('pkce')) || !validId(params.get('state'))) throw new Error('授权请求无效，请从游戏页面重新发起登录');
   $('scope').textContent = `授权 ${params.get('game')} 创建及管理自己的对局房间。`;
 } catch (e) { $('login').hidden = true; $('personal').hidden = true; status(e.message, true); }
 async function authorize(credentials) {
   try {
-    const { code } = await api('/v1/authorize', { gameId: params.get('game'), publicKey: params.get('key'), pkce: params.get('pkce'), redirect: redirect.href }, credentials);
+    const { code } = await api('/v1/authorize', { publicKey: params.get('key'), pkce: params.get('pkce'), redirect: redirect.href }, credentials);
     // Logout failure must not discard an already-issued one-time authorization code.
     await api('/v1/logout', {}, credentials).catch(() => {});
     redirect.hash = new URLSearchParams({ code, state: params.get('state') }); location.replace(redirect);

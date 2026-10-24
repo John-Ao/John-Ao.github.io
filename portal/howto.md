@@ -31,8 +31,8 @@ flowchart LR
 | [sdk/client.js](sdk/client.js) | 登录跳转、授权码兑换、创建/加入房间、邀请、凭证恢复 |
 | [sdk/transport.js](sdk/transport.js) | 连接事件、全量同步、单条待确认消息、重连与终止 |
 | [shared/protocol.js](shared/protocol.js) | 通信版本、编码工具和容量限制 |
-| [config.js](config.js) | Worker 地址与游戏 ID/路径注册 |
-| [worker/wrangler.jsonc](worker/wrangler.jsonc) | 后端游戏路径白名单、Origin 白名单 |
+| [config.js](config.js) | Worker 地址与可选的前端导航目录 |
+| [worker/wrangler.jsonc](worker/wrangler.jsonc) | Origin 白名单与身份配置（无游戏路径注册表） |
 | [worker/src/registry.js](worker/src/registry.js) | 服务端权限边界；不要只依据按钮判断权限 |
 | [worker/src/room.js](worker/src/room.js) | 席位、邀请、日志、去重、过期和关闭行为 |
 | [Quoridor 本地消息协议](../game/quoridor/online-protocol.mjs) | 游戏版本、局 ID、局面版本、纯函数重放、双方协商 |
@@ -52,7 +52,7 @@ flowchart LR
 | 已注册普通游戏密钥 | 完成游戏授权后可以 | 可以 | 不可以 |
 | 房间邀请访客 | 不可以 | 仅指定房间 | 不可以 |
 
-管理员和普通密钥持有人从普通游戏入口发起 Portal 登录，最终得到绑定游戏的 `game` 会话。访客通过房间邀请获得绑定房间的 `guest` 会话。
+管理员和普通密钥持有人从普通游戏入口发起 Portal 登录，最终得到绑定客户端公钥的 `creator` 会话；服务端不登记游戏 ID。访客通过房间邀请获得绑定房间的 `guest` 会话。
 
 普通密钥登录的中间 `member` 会话仅用于申请游戏授权，不能直接访问管理接口，也不能直接创建房间。游戏只调用 `portal.login()` / `portal.completeLogin()`，无需处理这些中间会话。
 
@@ -64,32 +64,24 @@ flowchart LR
 
 | 链接 | 入口 | 用途 | 默认期限 |
 | --- | --- | --- | --- |
-| 房间邀请 | `/game/<id>/#room=...&invite=...` | 认领指定房间的访客席位 | 30 分钟，单次认领 |
+| 房间邀请 | `/game/<id>/#room=...&invite=...` | 认领指定房间的访客席位 | 24 小时，单次认领 |
 | 密钥注册链接 | `/portal/key.html#id=...&secret=...` | 创建可用于今后游戏登录的普通密钥 | 签发后 5 分钟，只登记一个密钥 |
 
 新游戏只需处理第一类。第二类由 Portal 管理后台签发，游戏不能自行生成或模拟。
 
 普通密钥的恢复文件配合个人密钥密码使用；不包含密码或私钥。创建者认证由 Portal 登录页统一处理，游戏不提供自己的“master password 输入框”。
 
-## 4. 注册新游戏
+## 4. 接入新客户端，无需服务端注册
 
-为游戏选择稳定的 `gameId`，例如 `example_game`，并确定唯一返回路径，例如 `/game/example_game/`。
+为客户端选择稳定的本地 `gameId`，例如 `example_game`。它仅用于浏览器凭证命名空间和登录页文案，不发送给 Worker，也不决定服务端权限。
 
-在 [config.js](config.js) 的 `games` 中**保留现有条目并追加**：
-
-```js
-// 仅展示新增条目；不要覆盖 apiBase 或其他游戏。
-example_game: '/game/example_game/'
-```
-
-同步修改 [worker/wrangler.jsonc](worker/wrangler.jsonc) 中 `GAME_PATHS` 的 JSON 字符串，追加相同 ID 和路径。前后端必须一致。
-
-- 注册的是精确路径；`/game/example_game/` 与 `/game/example_game/index.html` 不是同一个授权返回路径。
-- 保留当前 `apiBase`、管理员公钥、KDF 配置、DO 绑定和 migration，不为接入游戏重新初始化管理员。
-- 默认返回地址无查询参数和 fragment；Portal 用 fragment 携带一次性授权码和 state。
-- 同时允许实际页面的 origin。Origin 是协议、主机、端口，不包括 `/portal/` 或游戏路径。
-- 修改后端 `GAME_PATHS` 或 `ALLOWED_ORIGINS` 需要重新部署 Worker；只发布静态页面不够。
-- 只修改已注册游戏的界面和本地消息处理逻辑时，通常只需更新静态文件。
+- 调用 `createPortal({ gameId: 'example_game' })` 即可；SDK 使用当前页面路径作为授权返回地址，将尾部 `index.html` 规范化为目录。
+- 需要固定入口时可指定 `returnPath: '/game/example_game/'`。返回地址必须同源且无查询参数和 fragment。
+- `config.games` 是密钥注册完成页的可选导航目录，不是游戏白名单；无需为了授权或建房修改它。
+- Worker 不存储游戏 ID、路径或游戏规则。不要重新加入 `GAME_PATHS` 配置或游戏专属分支。
+- 保留当前 `apiBase`、管理员公钥、KDF 配置、DO 绑定和 migration。
+- 仍须允许实际页面的 origin；新增站点 origin 或修改通用后端逻辑才需要部署 Worker。新增游戏及修改其 UI/本地协议仅发布静态文件。
+- `sync` 没有 `gameId`。使用 payload 内的游戏协议 `version` 校验，错误版本必须在本地拒绝。
 
 ## 5. 推荐的代码分层
 
@@ -133,7 +125,7 @@ const portal = createPortal({ gameId: 'example_game' });
 | `await portal.completeLogin()` | 是否处理了授权码返回 | 处理 `#code=...&state=...`，校验 state，兑换并保存游戏会话 |
 | `await portal.login()` | 跳转到 Portal 登录页 | **不会在当前页面继续返回**；发起跳转前保存“创建/恢复房间”的意图 |
 | `await portal.credentials()` | 当前创建者游戏凭证 | 无凭证/已过期时抛错；不要将返回的私钥或会话信息展示/记录 |
-| `await portal.credentials(roomId)` | 该房间访客凭证，或创建者凭证 | 过期错误的 `status` 为 401；可通过 `scope` 区分访客与创建者 |
+| `await portal.credentials(roomId)` | 该房间访客凭证，或创建者凭证 | 访客有效期由服务端 Room 判定，不能用本地 `expires` 快照拒绝仍活跃的访客；通过 `scope` 区分身份 |
 | `await portal.createRoom()` | `RoomConnection` | 本身不连接 WebSocket；仅创建者调用 |
 | `await portal.join(roomId, invite)` | `RoomConnection` | 兑换邀请并保存访客身份；由明确的“加入”操作触发 |
 | `portal.room(roomId)` | `RoomConnection` | 恢复已知房间，不重新消费邀请 |
@@ -168,7 +160,7 @@ SDK 没有 `room.on('state')`、`sendAction()`、私信、服务器游戏快照�
 
 | 事件 | detail | 游戏应做的事 |
 | --- | --- | --- |
-| `sync` | `{ type, events, seq, seat, gameId }` | 校验游戏 ID，完整重放到候选状态，成功后替换模型；不要弹出所有历史事件通知 |
+| `sync` | `{ type, events, seq, seat }` | 校验 payload 游戏版本，完整重放到候选状态，成功后替换模型；不要弹出所有历史事件通知 |
 | `event` | `{ seq, id, seat, payload }` | 校验并应用一条新游戏事件；发送方也会收到自己的事件 |
 | `presence` | `{ type, joined, online }` | 更新席位与在线状态；`online` 为席位数组 |
 | `pending` | `true` / `false` | 禁用/恢复发送控件；清空 pending 不代表对方认可操作合法 |
@@ -331,7 +323,6 @@ async function attach(room) {
   room.on('sync', data => {
     if (currentRoom !== room) return;
     try {
-      if (data.gameId !== GAME_ID) throw new Error('房间与游戏不匹配');
       const next = replay(rules, data.events);
       model = next;
       paused = false;
@@ -381,7 +372,7 @@ SDK 会处理消息序号、同一 ID 的重复发送、一个 pending 消息、
 | 主动离开 | 调用 `disconnect()`，服务端房间仍在 | 恢复本地模式；活动 ID 转为“最近房间”，允许明确恢复 |
 | 刷新 | 通过保存身份连接原房间并全量重放 | 不重新认领邀请，不再生成初始局面 |
 | 同席位其他标签页接管 | 旧连接停止，不争抢重连 | 提示已在其他标签页打开；不能无限自动接管回来 |
-| 会话过期 | 停止发送；房主可重新授权 | 提供符合身份的恢复操作，不能让访客跳转管理员登录 |
+| 会话过期 | 房主可重新授权；访客连续 8 小时无操作后释放席位 | 清理旧访客恢复入口，请房主生成新分享链接；不能让访客跳转管理员登录 |
 | 访客席位撤销 | 旧访客断开；房间日志保留 | 访客清理旧状态；房主清空链接，允许重新邀请 |
 | 房间关闭/过期 | 房间日志、成员和邀请失效 | 删除恢复 ID、旧链接、提案和等待状态；普通创建者可直接新建房间 |
 | 普通密钥撤销 | 会话失效，其创建的房间被关闭 | 处理正常的关闭/鉴权失败，不绕过服务端恢复权限 |
@@ -420,7 +411,7 @@ SDK 的 `status: closed` 不一定表示服务端房间已被删除；结合之�
 - 成功后保存 URL 与服务端返回的 `expires`，在过期时清空显示。
 - 邀请被认领、撤销、席位重置、断开进入不可用状态或房间结束后，不能继续展示旧链接为可用状态。
 - 席位已经占用时，说明“邀请其他人前请先重置访客席位”。不要只留下一个不明原因的禁用按钮。
-- 重置访客保留棋局，意味着新访客接续同一席位，不等于新开一局。
+- 重置访客保留棋局，意味着新访客接续同一席位，不等于新开一局。访客空闲超时会自动释放席位，房主直接生成新链接即可；旧链接和旧授权代次均不能恢复访问。
 
 ## 11. 界面规范与参考
 
@@ -506,7 +497,9 @@ SDK 的 `status: closed` 不一定表示服务端房间已被删除；结合之�
 | 房间日志 | 最多 2048 条事件或 512 KiB，以先到者为准 |
 | 发送频率 | 每个连接每 10 秒最多 30 条业务消息 |
 | SDK 待确认发送 | 同时一条 |
-| 房间过期 | 最后业务活动后 24 小时；心跳不续期 |
+| 房间过期 | 无有效读写或管理操作后 7 天；心跳和后台列表检查不续期 |
+| 访客过期 | 无有效主动读写后 8 小时；房主活动、被动推送和失败请求不续期 |
+| 未认领分享链接 | 生成后 24 小时失效 |
 | 重连恢复 | 完整有序日志，没有服务器游戏快照或日志压缩 API |
 | 访客邀请重试 | 同一密钥首次认领后两分钟内可幂等重试；长期恢复使用保存的身份 |
 
@@ -596,8 +589,8 @@ CORS 排错时区分 Worker 自己返回的 `403 {"error":"不允许的来源"}`
 
 ## 15. Agent 交付要求
 
-完成后说明：新增了哪些联网行为、游戏协议和版本、修改了哪些注册配置、测试了哪些具体场景、哪些能力仍不支持，以及是否需要用户重新部署 Worker。
+完成后说明：新增了哪些联网行为、游戏协议和版本、测试了哪些具体场景、哪些能力仍不支持。仅新增游戏不需要部署 Worker；修改通用后端时说明部署要求。
 
-如果只是新增游戏，应主要修改该游戏、两处游戏注册配置及相关文档/测试。只有发现确实属于通用通信层的问题时才修改 Portal，并为已有 Quoridor 和权限流程做回归。
+如果只是新增游戏，应主要修改该游戏及相关文档/测试，无需修改注册配置。只有发现确实属于通用通信层的问题时才修改 Portal，并为已有 Quoridor 和权限流程做回归。
 
 不要在测试未完成时声称已经线上验证，也不要因为静态页面可打开就认为通信完成。最终目标是另一个 agent 或用户按照说明，可以完成授权、创建、邀请、合法对战、协商、重连和关闭后的再次开局。

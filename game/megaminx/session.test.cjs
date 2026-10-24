@@ -1,0 +1,19 @@
+const assert=require('node:assert/strict');
+const S=require('./session.js');
+const state={v:1,shape:'irregular',moves:S.encodeMoves([[0,1],[11,-1],[4,1]]),pending:S.encodeMoves([[3,-1]]),fast:true,fastCount:1,elapsed:12345,status:'running',camera:[[1,0,0],[0,1,0],[0,0,1]],zoom:1.2,selected:4};
+assert.deepEqual(S.decode(S.encode(state)),state);
+assert.deepEqual(S.decodeMoves(state.moves),[[0,1],[11,-1],[4,1]]);
+assert.deepEqual(S.validateRecord({...state,id:'session',created:100,updated:200}),{...state,id:'session',created:100,updated:200});
+for(const patch of [{moves:'<script>'},{elapsed:-1},{zoom:100},{camera:[[1,0,0],[0,1,0],[0,0,-1]]},{selected:12},{pending:'A'.repeat(20001)},{v:2}])assert.throws(()=>S.validate({...state,...patch}));
+let now=0;const clock=new S.Stopwatch(()=>now);clock.start();now=1000;assert.equal(clock.elapsed(),1000);
+clock.pause('modal');now=3000;assert.equal(clock.elapsed(),1000);
+clock.pause('hidden');clock.resume('modal');now=5000;assert.equal(clock.elapsed(),1000);
+clock.resume('hidden');now=6000;assert.equal(clock.elapsed(),2000);
+clock.stop();now=10000;assert.equal(clock.elapsed(),2000);
+clock.reset(12345);now=20000;assert.equal(clock.elapsed(),12345);clock.start();now=21000;assert.equal(clock.elapsed(),13345);
+console.log('PASS: share/history round trips, invalid data rejection, timer pause/resume and refresh baseline.');
+
+assert.equal(S.validate({...state,fastCount:undefined}).fastCount,1);
+const mixed={...state,pending:'ABCDEF',fastCount:2};
+assert.deepEqual(S.decode(S.encode(mixed)),mixed);
+assert.throws(()=>S.validate({...state,fastCount:2}));

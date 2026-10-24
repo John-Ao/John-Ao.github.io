@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
+<defs>
+<linearGradient id="sage" x1="4" y1="5" x2="196" y2="94" gradientUnits="userSpaceOnUse">
+  <stop offset="0" stop-color="#49665c"/>
+  <stop offset="0.55" stop-color="#58796e"/>
+  <stop offset="1" stop-color="#809084"/>
+</linearGradient><mask id="cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="100"><rect width="200" height="100" fill="white"/><g fill="black"><g>
+	<rect x="48.62" y="12.66" width="37.16" height="34.78" />
+	<path d="M85.29,13.16v33.78H49.12V13.16H85.29 M86.29,12.16H48.12v35.78h38.16V12.16L86.29,12.16z" />
+</g>
+<g>
+	<rect x="48.62" y="55.59" width="37.16" height="39.91" />
+	<path d="M85.29,56.09V95H49.12V56.09H85.29 M86.29,55.09H48.12V96h38.16V55.09L86.29,55.09z" />
+</g>
+<g>
+	<rect x="151.18" y="12.66" width="37.16" height="74.13" />
+	<path d="M187.84,13.16v73.13h-36.16V13.16H187.84 M188.84,12.16h-38.16v75.13h38.16V12.16L188.84,12.16z" />
+</g>
+</g></mask></defs>
+<g fill="url(#sage)" mask="url(#cutouts)"><g>
+	<rect x="4.5" y="5.5" width="88.44" height="88.44" />
+	<path d="M92.44,6v87.44H5V6H92.44 M93.44,5H4v89.44h89.44V5L93.44,5z" />
+</g>
+<g>
+	<rect x="107.06" y="5.5" width="88.44" height="88.44" />
+	<path d="M195,6v87.44h-87.44V6H195 M196,5h-89.44v89.44H196V5L196,5z" />
+</g>
+</g>
+</svg>

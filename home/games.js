@@ -117,7 +117,6 @@ import { loadGameMetadata } from '/game/catalog.js';
         const arrow = document.createElement('span');
         arrow.className = 'arrow';
         arrow.setAttribute('aria-hidden', 'true');
-        arrow.textContent = '↗';
         card.append(number, title);
         if (game.description) {
           const description = document.createElement('span');

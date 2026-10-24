@@ -17,7 +17,7 @@
       }, 450);
     }
     root.dataset.theme = theme;
-    document.querySelector('meta[name="theme-color"]').content = dark ? '#181e1c' : '#f6f5f2';
+    document.querySelector('meta[name="theme-color"]').content = dark ? '#191b1d' : '#f6f5f2';
     if (button) {
       const label = dark ? '切换至浅色模式' : '切换至深色模式';
       button.setAttribute('aria-label', label);

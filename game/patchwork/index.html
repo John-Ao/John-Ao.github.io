@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f4efe5"><title>Patchwork</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main>
+<div class="tools"><h1>Patchwork</h1><div><button id="rules">规则</button><button id="undo">撤回一步</button><button id="restart">新对局</button></div></div>
+<section class="timeline" aria-label="时间轴"><div class="section-label"><span class="track-legend"><i class="legend-square income" aria-hidden="true"></i>=结算收益</span><span class="track-legend"><i class="legend-square leather" aria-hidden="true"></i>=获取1×1方格</span><strong>时间轴</strong><span id="bonus"></span></div><div id="track"></div></section>
+<div class="play-area">
+<section class="player" id="player0"><div class="player-heading"><h2 class="value-pair">玩家 <b>1</b></h2><div class="stats"></div></div><div class="board-space"><div class="board" id="board0" aria-label="玩家 1 的拼布棋盘"></div></div></section>
+<section class="workbench"><button id="advance" class="advance"></button><div id="turn" aria-live="polite"></div><section class="patch-list" aria-label="剩余拼布"><div class="patch-list-label">剩余拼布 <span id="remaining"></span></div><div id="market" class="market" tabindex="0" role="region" aria-label="拼布列表，前三块高亮可选"></div></section><div id="placement" hidden><div class="selection"><div id="selected-shape"></div><div id="selected-info"></div></div><div class="transform"><button id="rotate">↻ 旋转</button><button id="flip">⇋ 翻面</button><button id="cancel">取消</button></div><p id="hint">点击自己棋盘上的位置预览。</p><button id="confirm" class="primary" disabled>确认放置</button></div><div id="message" role="status"></div><details><summary>行动记录</summary><ol id="log"></ol></details></section>
+<section class="player" id="player1"><div class="player-heading"><h2 class="value-pair">玩家 <b>2</b></h2><div class="stats"></div></div><div class="board-space"><div class="board" id="board1" aria-label="玩家 2 的拼布棋盘"></div></div></section>
+</div>
+<section id="result" hidden aria-live="polite"></section>
+<p id="save-status" class="small"></p>
+</main>
+<dialog id="rules-dialog"><h2>规则与操作</h2><p>两人在同一屏幕上轮流操作。各有一张 9×9 棋盘和 5 枚纽扣，玩家 1 先手。</p><ol><li>时间轨上落后的玩家行动；同格时，刚到达该格的玩家继续行动。</li><li>购买：从标记后的三块布片中选一块，支付纽扣，旋转或翻面后放入棋盘，按布片的时间值前进。布片不能重叠或越界。</li><li>或选择前进：走到对手前一格，每走一格获得 1 枚纽扣；终点最多到 53。</li><li>越过收入标记，获得棋盘上累计收入数量的纽扣。一次经过多个标记分别结算，新买布片也计入。</li><li>最先经过皮革标记者，立即免费放置一个 1×1 补丁；共五个，棋盘全满则弃置。</li><li>最先铺满任意连续 7×7 区域的玩家获得 7 分奖励。</li><li>双方到达终点后，得分＝剩余纽扣＋奖励−空格数×2。高分获胜；平分时先到终点者胜。</li></ol><p>触屏操作：点布片 → 旋转／翻面 → 点棋盘选位置 → 确认。点击位置对应布片外框左上角；预览中虚线格为待放布片，红色表示位置无效。确认前可随时调整。</p><p>本实现采用经典版 33 块布片参数。收入结算点为 5、11、17、23、29、35、41、47、53；皮革补丁为 20、26、32、44、50。采用展开的时间轨与顺序布片列表。</p><p>规则来源：<a href="https://cdn.1j1ju.com/medias/74/af/f2-patchwork-rulebook.pdf" target="_blank" rel="noreferrer">Lookout / Mayfair 经典版规则书</a> · <a href="https://www.lookout-spiele.de/upload/en_patchworkre.html_PWNR_Rulebook_EN_web.pdf" target="_blank" rel="noreferrer">Lookout 官方规则书</a>。设计：Uwe Rosenberg。</p><button id="close-rules" class="primary">返回对局</button></dialog>
+<dialog id="restart-dialog"><h2>开始新对局？</h2><p>当前对局将被替换，布片顺序会重新随机排列。</p><button id="cancel-restart">继续当前对局</button><button id="confirm-restart" class="primary">开始新对局</button></dialog>
+<script src="pieces.js"></script><script src="engine.js"></script><script src="app.js"></script>
+</body></html>

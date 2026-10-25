@@ -1,0 +1,32 @@
+const assert=require('node:assert/strict');
+const J=require('./engine.js');
+const copy=s=>JSON.parse(JSON.stringify(s));
+let s=J.round([0,0],0);
+assert.equal(s.version,2);
+assert.equal(s.history.initial.deck.length,40);
+assert.equal(s.history.initial.history,undefined);
+s.players[0].hand=['cloth','cloth','cloth','gold'];
+s.players[0].camels=2;
+s.market=['diamond','silver','leather','camel','camel'];
+let original=copy(s);
+s=J.act(s,{type:'sell',hand:[0,1,2]});
+assert.deepEqual(original.history.events,[]);
+let event=s.history.events[0];
+assert.deepEqual(event.public.sold,['cloth','cloth','cloth']);
+assert.deepEqual(event.public.goodsTokens,[{type:'cloth',value:5},{type:'cloth',value:3},{type:'cloth',value:3}]);
+assert.deepEqual(event.public.bonusTypes,[3]);
+assert.equal(event.private.bonusTokens[0].value,s.players[0].bonus[0]);
+assert.equal(event.after.history,undefined);
+assert.deepEqual(J.act({...event.before,history:{version:1,initial:event.before,events:[]},previousRounds:[]},event.action).history.events[0].after,event.after);
+const saved=copy(s);assert.deepEqual(saved,s);
+// Full history is retained beyond the short display log.
+s=J.round([0,0],0);s.players.forEach((p,i)=>{p.hand=Array(2).fill(i?'silver':'gold');p.camels=0;});s.market=['cloth','cloth','camel','camel','camel'];
+for(let i=0;i<12;i++)s=J.act(s,{type:'exchange',market:s.market.flatMap((t,j)=>t==='camel'?[]:[j]),hand:[0,1]});
+assert.equal(s.history.events.length,12);assert.equal(s.log.length,8);
+assert.deepEqual(s.history.events[10].after,s.history.events[11].before);
+const untouched=copy(s);assert.throws(()=>J.act(s,{type:'exchange',market:[0]}));assert.deepEqual(s,untouched);
+// Refill order and end-of-round results are retained.
+s=J.round([0,0],0);s.market=['cloth','camel','camel','camel','camel'];s.deck=['gold'];
+s=J.act(s,{type:'camels'});event=s.history.events[0];assert.deepEqual(event.public.refill,['gold']);assert.equal(s.ended,true);assert.deepEqual(event.result,s.result);
+let next=J.nextRound(s);assert.equal(next.previousRounds.length,1);assert.deepEqual(next.previousRounds[0].final.result,s.result);assert.deepEqual(next.previousRounds[0].history,s.history);assert.equal(next.history.events.length,0);assert.equal(next.number,2);
+console.log('Passed: structured actions, awards, snapshots, replay, persistence, full history, invalid action isolation, refill, settlement and round archive.');

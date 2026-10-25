@@ -252,3 +252,11 @@ Cloudflare Free 当前支持 SQLite DO。官方额度包括 Worker 100,000 请�
 - https://developers.cloudflare.com/durable-objects/best-practices/websockets/
 - https://www.rfc-editor.org/rfc/rfc9106.html
 - `vendor/README.txt`：固定版本、许可证与 SHA-256 校验值。
+
+## 备用访问线路
+
+`config.apiBase` 始终是原 Worker 的地址：它用于签名 audience、浏览器凭证、恢复文件和待确认消息的命名空间。不要将它改为代理 IP。`config.routes` 只配置访问入口；当前提供 Cloudflare 直连和 `https://45.76.9.45` 美国服务器备用线路，两者访问同一套房间数据。
+
+在通信管理页、游戏登录页或密钥注册页选择“通信线路”。选择保存在当前站点的浏览器 localStorage 中，同浏览器未采用邀请指定线路的标签页会同步；对应游戏会重新连接并重放消息。邀请指定线路优先于浏览器默认偏好；如需手动覆盖，可在该游戏标签页前往 `/portal/` 选择线路，再返回游戏，不需要管理员登录。注册页若初始化失败，切换后刷新页面重试。默认直连，不自动跨线路重试写操作；API 请求最长等待 15 秒。邀请参数使用 `p1.<线路标识>.<邀请凭证>` 格式。访客点击加入时自动采用房主生成链接时的线路，选择只保存在当前标签页的 sessionStorage 中，刷新后仍生效，不覆盖浏览器长期偏好。房主后续切换不会改变已发出的邀请。仅接受配置中的线路标识，不允许任意代理地址；旧格式邀请不再支持，需要房主重新生成。
+
+代理必须固定回源到 Worker，保留 Origin，并将回源 Host/SNI 设置为 Worker 主机。无需修改 Worker 或迁移房间数据。服务器故障与 Cloudflare 后端故障不是同一种故障：所有入口仍依赖同一个 Worker。当前 Worker 的来源 IP 限流会将代理用户合并计数；代理入口适用于小规模备用，增加人数前需设计可信代理身份传递，不能直接信任客户端提供的 IP 头。

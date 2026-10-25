@@ -1,5 +1,7 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>创建游戏密钥</title><link rel="stylesheet" href="assets.css"><script type="module" src="key.js"></script></head><body><main>
-<h1>创建游戏密钥</h1><p id="status" class="status" role="status" aria-live="polite"></p><p id="expiry"></p>
+<h1>创建游戏密钥</h1>
+<label>通信线路<select id="portalRoute"></select></label><p id="routeStatus" class="status" role="status"></p><script type="module" src="route-selector.js"></script>
+<p id="status" class="status" role="status" aria-live="polite"></p><p id="expiry"></p>
 <form id="register" hidden><p>此密钥可以创建游戏房间，不能进入管理后台。密码不上传；恢复密钥需要密码和恢复文件。</p><label>密钥密码（至少 16 字符）<input id="keyPassword" type="password" autocomplete="new-password" minlength="16" required></label><label>重复密码<input id="keyRepeat" type="password" autocomplete="new-password" required></label><button type="submit">创建密钥</button></form>
 <section id="registered" hidden><p id="keySummary"></p><button id="backup">下载密钥恢复文件</button><div id="games" class="actions"></div></section>
 </main></body></html>

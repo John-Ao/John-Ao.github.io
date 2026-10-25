@@ -1,6 +1,8 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>Portal 管理</title><link rel="stylesheet" href="assets.css"><script type="module" src="admin.js?v=3"></script></head><body><main>
 <h1>通信管理</h1>
-<section aria-labelledby="connectionTitle"><h2 id="connectionTitle">Cloudflare Worker 连接测试</h2><p>服务地址：<code id="workerAddress"></code></p><button id="testConnection" type="button" aria-controls="connectionStatus">测试连接</button><p id="connectionStatus" class="status" role="status" aria-live="polite"></p></section>
+<label>通信线路<select id="portalRoute"></select></label><p id="routeStatus" class="status" role="status"></p><script type="module" src="route-selector.js"></script>
+
+<section aria-labelledby="connectionTitle"><h2 id="connectionTitle">连接测试</h2><p>服务地址：<code id="workerAddress"></code></p><button id="testConnection" type="button" aria-controls="connectionStatus">测试连接</button><p id="connectionStatus" class="status" role="status" aria-live="polite"></p></section>
 <script type="module" src="connection.js"></script>
 <p id="status" class="status" role="status" aria-live="polite"></p>
 <form id="login"><label>Master password<input id="password" type="password" autocomplete="current-password" required></label><button type="submit">登录</button> <a href="setup.html">初始化公钥</a></form>

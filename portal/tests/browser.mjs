@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createServer } from 'node:http';
+import { createServer, request as httpRequest } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import { chromium } from 'playwright';
@@ -11,10 +11,32 @@ import { unb64 } from '../shared/protocol.js';
 const root=resolve(new URL('../../',import.meta.url).pathname), output=resolve(root,'portal/test-results');
 await mkdir(output,{recursive:true});
 let apiBase='',mf,browser,host,guest;
+let proxyRequests=0,proxySockets=0;
+const relay=createServer((req,res)=>{
+  proxyRequests++;
+  const upstream=httpRequest(apiBase+req.url,{method:req.method,headers:{...req.headers,host:new URL(apiBase).host}},response=>{
+    res.writeHead(response.statusCode,response.headers);response.pipe(res);
+  });
+  upstream.on('error',()=>{res.writeHead(502);res.end();});req.pipe(upstream);
+});
+relay.on('upgrade',(req,socket,head)=>{
+  const upstream=httpRequest(apiBase+req.url,{headers:{...req.headers,host:new URL(apiBase).host}});
+  upstream.on('upgrade',(response,peer,peerHead)=>{
+    proxySockets++;
+    socket.write('HTTP/1.1 101 Switching Protocols\r\n'+Object.entries(response.headers).map(([k,v])=>k+': '+v).join('\r\n')+'\r\n\r\n');
+    if(head.length)peer.write(head);if(peerHead.length)socket.write(peerHead);
+    socket.pipe(peer);peer.pipe(socket);
+    socket.on('error',()=>peer.destroy());peer.on('error',()=>socket.destroy());
+    socket.on('close',()=>peer.destroy());peer.on('close',()=>socket.destroy());
+  });
+  upstream.on('response',()=>socket.destroy());upstream.on('error',()=>socket.destroy());upstream.end();
+});
+await new Promise(r=>relay.listen(0,'127.0.0.1',r));
+const relayBase=`http://127.0.0.1:${relay.address().port}`;
 const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.wasm':'application/wasm','.json':'application/json'};
 const server=createServer(async(req,res)=>{
   try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
-    if(path==='/portal/config.js'){res.setHeader('Content-Type','text/javascript');res.end(`export const config={apiBase:${JSON.stringify(apiBase)},games:{}};`);return;}
+    if(path==='/portal/config.js'){res.setHeader('Content-Type','text/javascript');res.end(`export const config={apiBase:${JSON.stringify(apiBase)},routes:[{id:'direct',label:'直连',url:${JSON.stringify(apiBase)}},{id:'relay',label:'备用',url:${JSON.stringify(relayBase)}}],games:{}};`);return;}
     const file=resolve(root,'.'+(path.endsWith('/')?path+'index.html':path));if(!file.startsWith(root+sep))throw Error('invalid');
     res.setHeader('Content-Type',mime[extname(file)]||'application/octet-stream');res.end(await readFile(file));
   }catch{res.statusCode=404;res.end('Not found');}
@@ -42,12 +64,22 @@ try{
   mf=new Miniflare({modules:true,script:bundle.outputFiles[0].text,compatibilityDate:'2025-03-01',port:0,bindings:{ALLOWED_ORIGINS:origin,ADMIN_PUBLIC_KEY:publicKey,KDF_CONFIG:JSON.stringify(kdf)},durableObjects:{REGISTRY:{className:'PortalRegistry',useSQLite:true},ROOMS:{className:'GameRoom',useSQLite:true}}});
   apiBase=(await mf.ready).origin;
   await host.goto(origin+'/game/quoridor/');await host.click('#network');await host.click('#createRoom');await host.waitForURL('**/portal/login.html?*');
-  await host.fill('#password',password);await host.click('#login button[type=submit]');await host.waitForURL('**/game/quoridor/**');
+  await host.selectOption('#portalRoute','relay');await host.fill('#password',password);await host.click('#login button[type=submit]');await host.waitForURL('**/game/quoridor/**');
   await host.waitForFunction(()=>document.querySelector('#networkStatus').textContent.includes('已连接'),{},{timeout:30000});
   await host.click('#network');await host.click('#inviteRoom');await host.waitForFunction(()=>document.querySelector('#shareLink').value.includes('invite='));
   const invite=await host.inputValue('#shareLink');await host.locator('[data-close=networkDialog]').click();
+  assert.match(new URLSearchParams(new URL(invite).hash.slice(1)).get('invite'),/^p1\.relay\./);
+  await guestContext.route(apiBase+'/**',route=>route.abort('failed'));
+
   await guest.goto(invite);await guest.waitForSelector('#joinRoom',{state:'visible'});assert.equal(await guest.locator('#createRoom').isVisible(),false);assert.equal(await guest.locator('#resumeRoom').isVisible(),false);await guest.click('#joinRoom');await guest.waitForFunction(()=>document.querySelector('#networkStatus').textContent.includes('已连接'));
   await host.waitForFunction(()=>!document.querySelector('#networkStatus').textContent.includes('等待对手'));
+  assert.equal(new URL(await guest.evaluate(()=>online.ws.url)).host,new URL(relayBase).host);
+  assert.equal(await guest.evaluate(base=>localStorage.getItem('portal.route:'+base),apiBase),null);
+  await guest.reload();await guest.waitForFunction(()=>!!online?.ready);
+  assert.equal(new URL(await guest.evaluate(()=>online.ws.url)).host,new URL(relayBase).host);
+  await guestContext.unroute(apiBase+'/**');
+  console.log('PASS invite follows host relay with direct route blocked; reload retains tab route without changing browser preference');
+
   const turn=await host.textContent('#turn'),active=turn.includes('玩家一')?host:guest;
   await active.locator('#board .cell.legal').first().click();
   for(const page of [host,guest])await page.waitForFunction(()=>document.querySelector('#ply').textContent==='第 2 手');
@@ -57,6 +89,19 @@ try{
   await host.waitForFunction(()=>document.querySelector('#networkStatus').textContent.includes('已连接'));
   assert.deepEqual(await snapshot(host),await snapshot(guest));
   console.log('PASS two browsers join, synchronize a legal move, and reconnect');
+  assert.ok(proxyRequests>0);assert.ok(proxySockets>0);
+  const routePage=await hostContext.newPage();await routePage.goto(origin+'/portal/');
+  assert.equal(await routePage.inputValue('#portalRoute'),'relay');
+  await routePage.selectOption('#portalRoute','direct');
+  await host.waitForFunction(base=>online.ready&&new URL(online.ws.url).host===new URL(base).host,apiBase);
+  assert.deepEqual(await snapshot(host),await snapshot(guest));
+  assert.equal(new URL(await guest.evaluate(()=>online.ws.url)).host,new URL(relayBase).host);
+  await routePage.selectOption('#portalRoute','relay');
+  await host.waitForFunction(base=>online.ready&&new URL(online.ws.url).host===new URL(base).host,relayBase);
+  assert.deepEqual(await snapshot(host),await snapshot(guest));
+  await routePage.close();
+  console.log('PASS relay login/signatures, mixed-route game, cross-tab route switching and replay');
+
   async function dismissEvent(page,title){
     await page.waitForFunction(expected=>document.querySelector('#eventDialog').open&&document.querySelector('#eventTitle').textContent.includes(expected),title);
     await page.click('#eventAccept');await page.waitForSelector('#eventDialog',{state:'hidden'});
@@ -192,4 +237,4 @@ try{
   console.log('PASS five-minute key registration, ordinary-key login, recovery, alias/usage management, revocation, and no admin auto-login');
   const filePage=await hostContext.newPage();filePage.on('pageerror',e=>errors.push(e.message));await filePage.goto('file://'+root+'/game/quoridor/index.html');await filePage.locator('.cell.legal').first().click();assert.equal(await filePage.textContent('#ply'),'第 2 手');
   assert.deepEqual(errors,[]);console.log('PASS original file:// local play; no browser script errors');
-}catch(e){console.error('Browser errors:',errors);if(host){console.error('Host URL:',host.url(),'UI:',await host.locator('body').innerText());await host.screenshot({path:resolve(output,'failure.png')});}throw e;}finally{await browser?.close();await mf?.dispose();await new Promise(r=>server.close(r));}
+}catch(e){console.error('Browser errors:',errors);if(host){console.error('Host URL:',host.url(),'UI:',await host.locator('body').innerText());await host.screenshot({path:resolve(output,'failure.png')});}throw e;}finally{await browser?.close();await mf?.dispose();await new Promise(r=>server.close(r));await new Promise(r=>relay.close(r));}

@@ -1,0 +1,104 @@
+:root{color-scheme:light;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f3f3f3;color:#252525;font-synthesis:none}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 35%,#fafafa,#f3f3f3 85%);min-height:100dvh}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;min-height:48px;border:1px solid #bcbcbc;border-radius:12px;background:#fff;padding:10px 18px}button:hover{filter:brightness(.95)}button:focus-visible,a:focus-visible{outline:3px solid #333;outline-offset:3px}button:disabled{opacity:.4;cursor:default}main{max-width:1080px;margin:auto;padding:22px}.bar,.row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}h1{font:600 28px Georgia,serif;letter-spacing:1px;margin:0}h2{font-size:19px;margin:0}p{line-height:1.7}.muted,small{color:#606060}.players{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.player{padding:15px 18px;border:1px solid #ccc;border-radius:14px;background:#fff}.active{border-color:#444;box-shadow:inset 4px 0 #444}.seal{color:#444}.section{margin:18px 0}.tokens{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}.token{border-radius:12px;background:#fff;padding:12px 8px;text-align:center;border:1px solid #d0d0d0}.coins{display:flex;justify-content:center;flex-wrap:wrap;gap:3px;margin-top:9px}.coin{font-size:22px;font-weight:750;font-variant-numeric:tabular-nums;width:36px;height:36px;display:grid;place-items:center;border:1px solid #999;border-radius:50%;color:#222}.cards{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.card{border-radius:12px;position:relative;flex:1;min-width:75px;max-width:160px;min-height:132px;border:2px solid #bcbcbc;background:#f5f5f5;padding:12px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:0 5px 10px #0002}.symbol{width:48px;height:48px;object-fit:contain}.token-label{display:flex;align-items:center;justify-content:center;gap:7px;font-weight:650}.token-label .symbol{width:28px;height:28px}.opponent{margin-bottom:16px;background:#eee}.opponent .card{background:#fafafa}.card.selected{background:#e2e2e2}.bar [aria-pressed="true"]{background:#333;color:#fff}.card.selected{outline:3px solid #333;outline-offset:2px;transform:translateY(-4px)}.card.selected:after{content:'✓';position:absolute;right:6px;top:3px;color:#222}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button.chosen,.primary{background:#333;color:#fff;border-color:#333;font-weight:650}.work{background:#fff;border:1px solid #ccc;border-radius:16px;padding:18px}.hint{margin:12px 0;color:#555;font-size:14px;min-height:24px}.actions{margin-top:18px}.notice{color:#333;min-height:24px;font-size:14px}.bonus{margin-top:12px;font-size:13px;color:#606060}.stepper{display:flex;align-items:center;gap:12px}.stepper button{padding:6px 16px}.log{font-size:13px;color:#606060;margin:16px 0 0;line-height:1.8}.veil{position:fixed;inset:0;z-index:5;background:#f3f3f3f5;display:grid;place-items:center;padding:24px}.sheet{max-width:480px;width:100%;text-align:center;background:#fff;border:1px solid #bbb;padding:32px;border-radius:22px;box-shadow:0 25px 90px #0005}.sheet h2{font-size:28px}.sheet button{width:100%;margin-top:12px}.sheet table{width:100%;border-collapse:collapse;margin:18px 0}.sheet td,.sheet th{padding:10px 3px;border-bottom:1px solid #ddd;font-size:14px}dialog{max-width:620px;width:calc(100% - 28px);background:#fff;color:#252525;border:1px solid #bbb;border-radius:18px;padding:24px;max-height:85dvh}dialog::backdrop{background:#0006}dialog li{line-height:1.8;margin:8px 0}a{color:#333}body.rotated main{transform:rotate(180deg)}@media(max-width:600px){main{padding:12px}.tokens{grid-template-columns:repeat(3,1fr)}.token{padding:8px 5px}.card{min-width:50px;min-height:108px;font-size:13px;gap:9px}.cards{gap:7px}.symbol{width:36px;height:36px}.work{padding:12px}.players{margin:12px 0}.player{padding:12px;font-size:14px}.toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.toolbar button{padding:9px 4px;font-size:14px}.section{margin:14px 0}.coins{gap:2px}.coin{width:30px;height:30px;font-size:20px}.bar button{padding:8px 12px}.sheet{padding:24px}.hand .card{flex:0 0 calc((100% - 21px)/4);max-width:none}}
+
+/* Open hands stay on their player's side, regardless of whose turn it is. */
+[hidden]{display:none!important}
+.table-center{min-width:0}
+.open-hands main{max-width:1440px}
+.open-hands .table-layout{display:grid;grid-template-columns:140px minmax(0,1fr) 140px;gap:16px;align-items:start}
+.open-hands .table-center>.section:first-child{margin-top:0}
+.side-hand{padding:12px;margin:0;min-width:0}
+.side-hand h2{font-size:18px;margin-bottom:4px}
+.side-hand>small{display:block}
+.side-hand .hand{flex-direction:column;gap:10px}
+.side-hand .hand .card{flex:none;width:100%;min-width:0;max-width:none;min-height:120px}
+.open-hands .tokens{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:800px){
+.open-hands main{padding:10px}
+.open-hands .table-layout{grid-template-columns:88px minmax(0,1fr) 88px;gap:8px}
+.side-hand{padding:8px}
+.side-hand h2{font-size:16px}
+.side-hand>small{font-size:12px}
+.side-hand .hand .card{min-height:94px;padding:8px 3px;font-size:13px}
+.side-hand .symbol{width:32px;height:32px}
+.open-hands .tokens{grid-template-columns:repeat(2,minmax(0,1fr))}
+.open-hands .toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.open-hands .toolbar button{padding:8px 3px;font-size:13px}
+.open-hands .work:not(.side-hand){padding:10px}
+.open-hands .stepper{gap:5px;flex-wrap:wrap}
+.open-hands .table-center .card{min-width:50px}
+}
+@media(max-width:440px){
+.open-hands main{padding:8px}
+.open-hands .table-layout{grid-template-columns:64px minmax(0,1fr) 64px;gap:6px}
+.side-hand{padding:5px;border-radius:10px}
+.side-hand h2{font-size:14px}
+.side-hand .hand .card{min-height:84px;font-size:12px}
+.side-hand .symbol{width:28px;height:28px}
+.open-hands .token{padding:7px 3px}
+.open-hands .token-label{flex-direction:column;gap:2px;font-size:13px}
+.open-hands .coin{width:28px;height:28px;font-size:20px}
+.open-hands .table-center h2{font-size:16px}
+.open-hands .table-center .row{gap:6px}
+.open-hands .table-center .actions>.primary{width:100%;padding:8px 3px;font-size:13px}
+}
+
+.camel-herd{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:14px;padding:12px 0 4px;border-top:1px solid #ccc;font-size:13px}.camel-herd strong{font-size:22px;font-variant-numeric:tabular-nums}.camel-herd strong small{font-size:12px;font-weight:400}
+
+.player-score{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;padding-top:10px;border-top:1px solid #ddd;font-size:13px}.player-score>span{display:flex;align-items:baseline;gap:6px}.player-score strong{font-size:20px;font-variant-numeric:tabular-nums}.player-score .score-total{font-weight:650}.score-total strong{font-size:26px}
+
+.deck-counts{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px}.deck-count{display:flex;align-items:center;gap:4px;font-size:12px;color:#555}.deck-count .symbol{width:22px;height:22px}.deck-count strong{font-size:16px;color:#252525;font-variant-numeric:tabular-nums}
+
+.opponent-estimate{margin:12px 0 18px;padding:14px 18px;border:1px solid #ccc;border-radius:14px;background:#fff;font-size:13px}.opponent-estimate p{margin:7px 0}.opponent-estimate b{font-size:18px;font-variant-numeric:tabular-nums}.known-tokens{display:flex;flex-wrap:wrap;gap:6px 12px}.known-tokens>span{display:flex;align-items:center;gap:4px}.known-tokens .symbol{width:22px;height:22px}.player{min-width:0}
+
+/* Desktop: use the available width instead of stacking tall panels. */
+@media(min-width:1100px){
+main,.open-hands main{max-width:1680px;padding:12px 18px}
+button{min-height:40px;padding:7px 14px}
+h1{font-size:26px}h2{font-size:17px}
+.players{margin:10px 0;gap:10px}
+.player{padding:9px 14px}
+.player-score{margin-top:6px;padding-top:5px;gap:5px 18px}
+.player-score strong{font-size:18px}.score-total strong{font-size:22px}
+.section{margin:10px 0}
+.tokens,.open-hands .tokens{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:7px}
+.token{padding:7px 4px}
+.token-label{gap:4px;font-size:14px}.token-label .symbol{width:24px;height:24px}
+.coins{gap:3px;margin-top:6px}.coin{width:30px;height:30px;font-size:20px}
+.bonus{margin-top:6px;font-size:12px}
+.cards{gap:8px;margin-top:8px}
+.card{min-height:88px;padding:7px 5px;gap:5px;font-size:14px;box-shadow:0 2px 5px #0002}
+.symbol{width:36px;height:36px}
+.work{padding:10px 12px}
+.hint{margin:7px 0;min-height:20px;font-size:13px}
+.actions{margin-top:8px}
+.notice:empty{display:none}.notice{min-height:20px}
+.log{margin-top:8px;line-height:1.5}
+.deck-counts{gap:4px 10px;margin-top:6px}
+.open-hands .table-layout{grid-template-columns:140px minmax(0,1fr) 140px;gap:12px}
+.side-hand{padding:9px;margin:0}
+.side-hand h2{font-size:16px}.side-hand>small{font-size:12px}
+.side-hand .hand{gap:6px;margin-top:8px}
+.side-hand .hand .card{min-height:48px;height:clamp(48px,calc((100dvh - 285px)/7),72px);flex-direction:row;gap:8px;padding:5px;font-size:14px}
+.side-hand .symbol{width:30px;height:30px}
+.camel-herd{flex-direction:row;justify-content:center;flex-wrap:wrap;gap:5px;margin-top:8px;padding:8px 0 0}
+.camel-herd .symbol{width:26px;height:26px}.camel-herd strong{font-size:20px}
+body:not(.open-hands) main:has(.opponent-estimate){display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:0 12px}
+body:not(.open-hands) main>.bar,body:not(.open-hands) main>.players{grid-column:1/-1}
+body:not(.open-hands) main>.opponent-estimate{grid-column:2;grid-row:3;margin:0;align-self:start;padding:12px}
+body:not(.open-hands) main>.table-layout{grid-column:1;grid-row:3;min-width:0}
+body:not(.open-hands) .table-center>.section:first-child{margin-top:0}
+.sheet{padding:20px;max-height:calc(100dvh - 32px);overflow:auto}
+.sheet h2{font-size:24px}.sheet p{margin:8px 0}.sheet table{margin:10px 0}.sheet td,.sheet th{padding:6px 3px}.sheet button{margin-top:8px}
+}
+@media(min-width:1100px){
+.card{min-height:72px;gap:3px}
+.side-hand .hand .card{height:clamp(48px,calc((100dvh - 350px)/7),72px)}
+.table-center>.work{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px}
+.table-center>.work>.toolbar{grid-column:1;grid-row:1}
+.table-center>.work>.actions{grid-column:2;grid-row:1;margin:0;justify-content:flex-end}
+.table-center>.work>.hint,.table-center>.work>.row:not(.actions),.table-center>.work>.hand,.table-center>.work>.notice{grid-column:1/-1}
+.table-center>.work>.hint{margin:5px 0}
+}
+@media(min-width:1100px){
+.section{margin:8px 0}.players{margin:8px 0}.token{padding:5px 4px}.log{margin-top:6px}
+}

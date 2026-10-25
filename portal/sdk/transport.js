@@ -1,10 +1,15 @@
 import { api, apiBase } from './auth.js';
+import { endpointBase, onRouteChange } from './routes.js';
 import { random } from '../shared/protocol.js';
 export class RoomConnection extends EventTarget {
   constructor(client, id) {
     super(); this.client = client; this.id = id; this.seq = 0; this.ready = false; this.stopped = false; this.attempt = 0; this.generation = 0;
+    this.watchRoute();
     this.outboxKey = `portal.outbox.${apiBase()}.${id}`;
     try { this.pending = JSON.parse(sessionStorage.getItem(this.outboxKey) || 'null'); } catch { this.pending = null; }
+  }
+  watchRoute() {
+    this.unwatchRoute ||= onRouteChange(() => { if (!this.stopped) this.reconnect(); });
   }
   on(type, fn) { this.addEventListener(type, e => fn(e.detail)); return this; }
   emit(type, detail) { this.dispatchEvent(new CustomEvent(type, { detail })); }
@@ -16,9 +21,10 @@ export class RoomConnection extends EventTarget {
       const credentials = await this.client.credentials(this.id);
       if (this.stopped || generation !== this.generation) return;
       this.seat = credentials.scope === 'guest' ? 1 : 0;
-      const { ticket } = await api(`/v1/rooms/${this.id}/ticket`, {}, credentials);
+      const endpoint = endpointBase();
+      const { ticket } = await api(`/v1/rooms/${this.id}/ticket`, {}, credentials, endpoint);
       if (this.stopped || generation !== this.generation) return;
-      const url = new URL(`/v1/connect/${this.id}`, apiBase()); url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'; url.searchParams.set('ticket', ticket);
+      const url = new URL(`/v1/connect/${this.id}`, endpoint); url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'; url.searchParams.set('ticket', ticket);
       const ws = this.ws = new WebSocket(url);
       ws.onmessage = ({ data }) => {
         if (this.ws !== ws || generation !== this.generation || data === 'pong') return;
@@ -88,10 +94,11 @@ export class RoomConnection extends EventTarget {
     });
   }
   reconnect() {
+    this.watchRoute();
     this.stopped = false; this.ready = false; this.generation++;
     clearTimeout(this.timer); clearInterval(this.heartbeat);
     const old = this.ws; this.ws = null; old?.close(4000, 'Resync');
     return this.connect();
   }
-  disconnect() { this.stopped = true; this.ready = false; this.generation++; clearTimeout(this.timer); clearInterval(this.heartbeat); const ws = this.ws; this.ws = null; ws?.close(1000, 'Leaving'); if(this.pending)this.clearPending(new Error('连接已结束')); }
+  disconnect() { this.unwatchRoute?.(); this.unwatchRoute = null; this.stopped = true; this.ready = false; this.generation++; clearTimeout(this.timer); clearInterval(this.heartbeat); const ws = this.ws; this.ws = null; ws?.close(1000, 'Leaving'); if(this.pending)this.clearPending(new Error('连接已结束')); }
 }

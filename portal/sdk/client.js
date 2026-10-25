@@ -1,4 +1,6 @@
 import { api, apiBase } from './auth.js';
+import { selectedRoute, selectTabRoute } from './routes.js';
+import { encodeInvite, decodeInvite } from './invite.js';
 import { stored } from './storage.js';
 import { newIdentity } from '../crypto/keys.js';
 import { random, hash } from '../shared/protocol.js';
@@ -48,14 +50,17 @@ class PortalClient {
     sessionStorage.removeItem(storageKey); return this.room(roomId);
   }
   async join(roomId, invite) {
+    const invitation = decodeInvite(invite);
+    selectTabRoute(invitation.route.id);
     const identity = await this.identity(roomId);
-    const session = await api('/v1/join', { roomId, invite, publicKey: identity.publicKey });
+    const session = await api('/v1/join', { roomId, invite: invitation.secret, publicKey: identity.publicKey }, undefined, invitation.route.url);
     await stored(this.key(roomId), { ...identity, ...session }); return this.room(roomId);
   }
   room(roomId) { return new RoomConnection(this, roomId); }
   async createInvite(roomId) {
-    const secret = random(); const { expires } = await api(`/v1/rooms/${roomId}/invite`, { secret }, await this.credentials(roomId));
-    const url = new URL(this.returnURL); url.hash = new URLSearchParams({ room: roomId, invite: secret });
+    const route = selectedRoute();
+    const secret = random(); const { expires } = await api(`/v1/rooms/${roomId}/invite`, { secret }, await this.credentials(roomId), route.url);
+    const url = new URL(this.returnURL); url.hash = new URLSearchParams({ room: roomId, invite: encodeInvite(route.id, secret) });
     return { url: url.href, expires };
   }
   async roomAction(roomId, action) { return api(`/v1/rooms/${roomId}/${action}`, {}, await this.credentials(roomId)); }

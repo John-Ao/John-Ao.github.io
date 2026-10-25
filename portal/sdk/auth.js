@@ -1,4 +1,5 @@
 import { config } from '../config.js';
+import { endpointBase } from './routes.js';
 import { random, loginMessage, requestMessage } from '../shared/protocol.js';
 import { newIdentity, sign, deriveMaster } from '../crypto/keys.js';
 export function apiBase() {
@@ -7,18 +8,18 @@ export function apiBase() {
   if (url.protocol !== 'https:' && !(url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))) throw new Error('通信服务必须使用 HTTPS');
   return url.origin;
 }
-export async function api(path, body = {}, credentials) {
+export async function api(path, body = {}, credentials, endpoint = endpointBase()) {
   const base = apiBase(); let auth;
   if (credentials) {
     auth = { session: credentials.session, time: Date.now(), nonce: random(16) };
     auth.signature = await sign(credentials.privateKey, requestMessage(path, body, auth, base));
   }
-  const r = await fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body, auth }), cache: 'no-store', referrerPolicy: 'no-referrer' });
+  const r = await fetch(endpoint + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ body, auth }), credentials: 'omit', cache: 'no-store', signal: AbortSignal.timeout(15000), referrerPolicy: 'no-referrer' });
   const data = await r.json();
   if (!r.ok) throw Object.assign(new Error(data.error || '服务请求失败'), { status: r.status }); return data;
 }
 export async function serverConfig() {
-  const r = await fetch(apiBase() + '/v1/config', { cache: 'no-store', referrerPolicy: 'no-referrer' });
+  const r = await fetch(endpointBase() + '/v1/config', { credentials: 'omit', cache: 'no-store', signal: AbortSignal.timeout(15000), referrerPolicy: 'no-referrer' });
   const data = await r.json(); if (!r.ok) throw new Error(data.error); return data;
 }
 export async function adminLogin(password) {

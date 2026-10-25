@@ -55,13 +55,15 @@
     "title": "昆虫棋"
   },
   {
-    "game": "jaipur"
+    "game": "jaipur",
+    "title": "斋普尔"
   },
   {
     "game": "keep_talking_and_nobody_explodes"
   },
   {
-    "game": "lights_out"
+    "game": "lights_out",
+    "title": "关灯"
   },
   {
     "game": "magic_clock",
@@ -84,11 +86,12 @@
     "title": "黑白棋"
   },
   {
-    "game": "patchwork"
+    "game": "patchwork",
+    "title": "拼布艺术"
   },
   {
     "game": "polyomino",
-    "title": "多格骨牌拼图"
+    "title": "多米诺拼图"
   },
   {
     "game": "quoridor"
@@ -103,7 +106,8 @@
     "game": "sky_team"
   },
   {
-    "game": "slay_the_spire"
+    "game": "slay_the_spire",
+    "title": "杀戮尖塔"
   },
   {
     "game": "sleeping_gods"
@@ -119,7 +123,8 @@
     "game": "spirit_island"
   },
   {
-    "game": "splendor_duel"
+    "game": "splendor_duel",
+    "title": "璀璨宝石·对决"
   },
   {
     "game": "tacta"

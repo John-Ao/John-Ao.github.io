@@ -42,7 +42,6 @@ $('rotate').onsubmit = e => { e.preventDefault(); busy(e.submitter, async () => 
   await api('/v1/admin/rotate', next, credentials); download(next);
   $('rotate').reset(); clearKeyInvite(); credentials = null; $('admin').hidden = true; $('login').hidden = false; status('密码已轮换，请保存下载的公开恢复配置并重新登录。');
 }); };
-serverConfig().then(s => status(s.configured ? '服务可用，请登录' : '服务尚未配置管理员公钥')).catch(e => status(e.message, true));
 
 function clearKeyInvite(){currentKeyInvite=null;clearTimeout(keyInviteTimer);$('keyInviteResult').hidden=true;$('copyKeyInvite').hidden=true;$('keyInviteLink').value='';$('keyInviteExpiry').textContent='';}
 function date(value){return value?new Date(value).toLocaleString():'尚未使用';}

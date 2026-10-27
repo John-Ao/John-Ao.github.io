@@ -1,6 +1,13 @@
 'use strict';
 const M=Cuboid,$=id=>document.getElementById(id),canvas=$('puzzle'),gl=canvas.getContext('webgl',{antialias:true,alpha:true});
-const KEY='cuboid.session.v1',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55'];
+const P=PolyPuzzle;
+let puzzleType='cuboid',order=3;
+const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方'};
+function createPuzzle(){return puzzleType==='cuboid'?M.create(size):P.create(puzzleType,order);}
+function turnStep(axis){return puzzleType==='cuboid'?M.step(size,axis):P.step(puzzleType,order,axis);}
+function applyTurn(target,axis,layer,dir){if(puzzleType==='cuboid')M.turn(target,size,axis,layer,dir);else P.turn(target,puzzleType,order,axis,layer,dir);}
+function isSolved(){return puzzleType==='cuboid'?M.solved(pieces):P.solved(pieces,puzzleType,order);}
+const KEY='cuboid.session.v1',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55','#a979ce','#55c4c4','#eaa6c3','#b1cb67','#927454','#a1b8de','#d84fa3','#258880','#8b67dd','#f4b947','#abc5ec','#a24636','#b9d4a0','#e8b49a'];
 let size=[3,3,3],pieces=M.create(size),moves=[],cursor=0,align=3,zoom=1,theme='day',dim=false;
 let camera=pose(3),width=1,height=1,scale=1,polygons=[],dirty=true,drag=null,animation=null,snap=null;
 let elapsed=0,running=false,lastTick=performance.now(),saveAt=0,toastTimer;
@@ -12,22 +19,25 @@ function pose(mode){
 }
 function multiply(a,b){return a.map(row=>[0,1,2].map(j=>row.reduce((sum,x,k)=>sum+x*b[k][j],0)));}
 function view(v){return camera.map(row=>M.dot(row,v));}
-function cameraDistance(){return Math.hypot(...size)*1.8;}
+function cameraDistance(){return (puzzleType==='cuboid'?Math.hypot(...size):5)*1.8;}
 function project(v){const q=view(v),perspective=cameraDistance()/(cameraDistance()-q[2]);return [width/2+q[0]*scale*perspective,height/2-q[1]*scale*perspective,q[2]];}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),2400);$('status').textContent=message;}
 function busy(){return !!animation||!!drag||!!pinch;}
 function controls(){ $('undo').disabled=busy()||cursor===0;$('redo').disabled=busy()||cursor===moves.length; }
 function save(){
- try{localStorage.setItem(KEY,JSON.stringify({size,moves,cursor,camera,align,zoom,theme,dim,elapsed,running}));}catch{toast('无法保存进度：浏览器存储不可用');}
+ try{localStorage.setItem(KEY,JSON.stringify({puzzleType,order,size,moves,cursor,camera,align,zoom,theme,dim,elapsed,running}));}catch{toast('无法保存进度：浏览器存储不可用');}
 }
 function restore(shared){
  try{
   const s=shared||JSON.parse(localStorage.getItem(KEY));if(!s)return;
   if(!M.validSize(s.size)||!Array.isArray(s.moves)||s.moves.length>100000||!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>s.moves.length)throw Error();
-  const restored=M.create(s.size);
-  for(const move of s.moves){if(!Array.isArray(move)||move.length!==3)throw Error();M.turn(restored,s.size,...move);}
-  for(let i=s.moves.length-1;i>=s.cursor;i--){const [a,l,d]=s.moves[i];M.turn(restored,s.size,a,l,-d);}
-  size=s.size;pieces=restored;moves=s.moves;cursor=s.cursor;
+  const nextType=s.puzzleType||'cuboid',nextOrder=s.order??3;
+  if(nextType!=='cuboid'&&!P.valid(nextType,nextOrder))throw Error();
+  const restored=nextType==='cuboid'?M.create(s.size):P.create(nextType,nextOrder);
+  const replay=(a,l,d)=>{if(nextType==='cuboid')M.turn(restored,s.size,a,l,d);else P.turn(restored,nextType,nextOrder,a,l,d);};
+  for(const move of s.moves){if(!Array.isArray(move)||move.length!==3)throw Error();replay(...move);}
+  for(let i=s.moves.length-1;i>=s.cursor;i--){const [a,l,d]=s.moves[i];replay(a,l,-d);}
+  puzzleType=nextType;order=nextOrder;size=s.size;pieces=restored;moves=s.moves;cursor=s.cursor;
   if(Array.isArray(s.camera)&&s.camera.length===3&&s.camera.every(r=>Array.isArray(r)&&r.length===3&&r.every(Number.isFinite)&&Math.abs(M.dot(r,r)-1)<.001)&&Math.abs(M.dot(M.cross(s.camera[0],s.camera[1]),s.camera[2])-1)<.001)camera=s.camera;
   if([0,1,2,3].includes(s.align))align=s.align;
   if(Number.isFinite(s.zoom))zoom=Math.max(.55,Math.min(1.8,s.zoom));
@@ -43,7 +53,7 @@ if(location.hash.startsWith('#cube=')){
  history.replaceState(null,'',location.pathname+location.search);
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#cube='))location.reload();});
-function shareURL(){const url=new URL(location.href);url.hash='cube='+encodeURIComponent(JSON.stringify({v:1,size,moves,cursor,camera,align,zoom,elapsed}));return url.href;}
+function shareURL(){const url=new URL(location.href);url.hash='cube='+encodeURIComponent(JSON.stringify({v:1,puzzleType,order,size,moves,cursor,camera,align,zoom,elapsed}));return url.href;}
 
 if(!gl){$('status').textContent='浏览器不支持 WebGL';throw Error('WebGL unavailable');}
 function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
@@ -58,8 +68,9 @@ function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixe
 new ResizeObserver(resize).observe(canvas);
 function rgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);}
 function render(){
- scale=Math.min(width,height)*.72/Math.hypot(...size)*zoom;
+ scale=Math.min(width,height)*.72/(puzzleType==='cuboid'?Math.hypot(...size):puzzleType==='pyraminx'?5:3.5)*zoom;
  gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ if(puzzleType!=='cuboid'){renderPoly();dirty=false;return;}
  const data=[];polygons=[];
  const turn=animation||drag?.turn;
  for(const piece of pieces){
@@ -81,6 +92,7 @@ function render(){
  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.DYNAMIC_DRAW);gl.drawArrays(gl.TRIANGLES,0,data.length/6);dirty=false;
 }
 function hitTest(x,y){
+ if(puzzleType!=='cuboid')return hitPoly(x,y);
  // Ray-cast the unbroken outer shell, so a press on a sticker seam also turns a layer.
  const sx=(x-width/2)/scale,sy=-(y-height/2)/scale;
  const distance=cameraDistance(),origin=camera[2].map(n=>n*distance);
@@ -101,25 +113,24 @@ function hitTest(x,y){
 }
 function snapView(){
  if(!align)return;
- const base=pose(align);let best=null,score=-Infinity;
- for(const front of [...M.axes,...M.axes.map(v=>v.map(n=>-n))])for(const up of [...M.axes,...M.axes.map(v=>v.map(n=>-n))]){
-  if(M.dot(front,up)!==0)continue;
-  const candidate=multiply(base,[M.cross(up,front),up,front]),s=candidate.reduce((sum,row,i)=>sum+M.dot(row,camera[i]),0);
+ let best=null,score=-Infinity;
+ for(const candidate of alignmentCandidates(align)){
+  const s=candidate.reduce((sum,row,i)=>sum+M.dot(row,camera[i]),0);
   if(s>score){score=s;best=candidate;}
  }
  snap={from:camera.map(r=>r.slice()),to:best,start:performance.now()};dirty=true;
 }
 function normalize(v){const length=Math.hypot(...v);return v.map(n=>n/length);}
 function animateTurn(axis,layer,dir,from=0,commit=true,kind='manual'){
- const to=commit?M.step(size,axis)*dir:0;
+ const to=commit?turnStep(axis)*dir:0;
  animation={axis,layer,dir,angle:from,from,to,start:performance.now(),duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:180,commit,kind};controls();dirty=true;
 }
 function finishTurn(a){
  if(a.commit){
-  M.turn(pieces,size,a.axis,a.layer,a.dir);
+  applyTurn(pieces,a.axis,a.layer,a.dir);
   if(a.kind==='manual'){moves=moves.slice(0,cursor);moves.push([a.axis,a.layer,a.dir]);cursor++;running=true;}
   if(a.kind==='undo')cursor--;if(a.kind==='redo')cursor++;
-  if(M.solved(pieces)){running=false;if(a.kind==='manual')toast('已还原');}
+  if(isSolved()){running=false;if(a.kind==='manual')toast('已还原');}
  }
  animation=null;controls();save();dirty=true;
 }
@@ -162,12 +173,13 @@ function updatePuzzleDrag(e){
  for(const sample of [...samples,e]){
   const [x,y]=localPoint(sample);M.extendTrajectory(drag.track,x-drag.x,y-drag.y);
  }
+ if(puzzleType!=='cuboid'){updatePolyDrag();return;}
  const faceCenter=drag.hit.piece.p.map((v,i)=>v+drag.hit.normal[i]*.5);
  const choice=M.matchTrajectory(faceCenter,drag.hit.normal,camera,drag.track,cameraDistance(),drag.turn?.axis);
  drag.turn=choice?{...choice,layer:drag.hit.piece.p[choice.axis],angle:0}:null;
  if(drag.turn){
   const t=drag.turn,distance=drag.track.x*t.tangent[0]+drag.track.y*t.tangent[1];
-  t.angle=Math.max(-1,Math.min(1,distance/Math.max(70,Math.min(width,height)*.22)))*M.step(size,t.axis);
+  t.angle=Math.max(-1,Math.min(1,distance/Math.max(70,Math.min(width,height)*.22)))*turnStep(t.axis);
  }
  dirty=true;
 }
@@ -177,7 +189,7 @@ function release(e,cancelled){
  if(cancelled){cancelDrag();return;}
  if(drag.hit&&e.type==='pointerup')updatePuzzleDrag(e);
  const d=drag;drag=null;
- if(d.turn){const t=d.turn;animateTurn(t.axis,t.layer,t.angle<0?-1:1,t.angle,Math.abs(t.angle)>M.step(size,t.axis)*.16);}
+ if(d.turn){const t=d.turn;animateTurn(t.axis,t.layer,t.angle<0?-1:1,t.angle,Math.abs(t.angle)>turnStep(t.axis)*.16);}
  else if(!d.hit&&d.moved){snapView();save();}
  controls();
 }
@@ -207,18 +219,19 @@ function confirmAction(title,message,action){
  for(const [label,fn]of [['取消',()=>$('modal').close()],['确认',()=>{action();$('modal').close();}]]){const b=document.createElement('button');b.textContent=label;b.onclick=fn;buttons.append(b);}
  box.append(p,buttons);openDialog(title,box);
 }
-function reset(next=size){size=next.slice();pieces=M.create(size);moves=[];cursor=0;animation=null;drag=null;elapsed=0;running=false;controls();dirty=true;syncSizes();save();}
+function reset(next=size){size=next.slice();pieces=createPuzzle();moves=[];cursor=0;animation=null;drag=null;elapsed=0;running=false;controls();dirty=true;syncSizes();save();}
 $('reset').onclick=()=>{if(!busy())confirmAction('复原','复原当前魔方并清零计时？',()=>reset());};
 $('shuffle').onclick=()=>{if(busy())return;confirmAction('打乱','打乱当前魔方并清零计时？',()=>{
- reset();let previous=-1;
+ reset();
+ if(puzzleType!=='cuboid'){let previous='';for(let i=0;i<60;i++){let choices=P.legalMoves(pieces,puzzleType,order).filter(m=>m.join()!==previous);if(!choices.length)choices=P.legalMoves(pieces,puzzleType,order);const [a,l]=choices[Math.floor(Math.random()*choices.length)],d=Math.random()<.5?-1:1;applyTurn(pieces,a,l,d);moves.push([a,l,d]);previous=[a,l].join();}cursor=moves.length;controls();dirty=true;save();return;}
+ let previous=-1;
  for(let i=0;i<60;i++){let axis;do{axis=Math.floor(Math.random()*3);}while(axis===previous);previous=axis;const layer=Math.floor(Math.random()*size[axis])-(size[axis]-1)/2,dir=Math.random()<.5?-1:1;M.turn(pieces,size,axis,layer,dir);moves.push([axis,layer,dir]);}
  cursor=moves.length;controls();dirty=true;save();
  });};
-function syncSizes(){['x','y','z'].forEach((a,i)=>{const group=$('size-'+a);group.querySelector(`input[value="${size[i]}"]`).checked=true;group.style.setProperty('--index',size[i]-1);});}
+function syncSizes(){syncTypeUI();['x','y','z'].forEach((a,i)=>{const group=$('size-'+a);group.querySelector(`input[value="${size[i]}"]`).checked=true;group.style.setProperty('--index',size[i]-1);});}
 for(const a of ['x','y','z'])$('size-'+a).addEventListener('change',e=>{$('size-'+a).style.setProperty('--index',Number(e.target.value)-1);});
 syncSizes();
-$('dimensions').onsubmit=e=>{e.preventDefault();const next=['x','y','z'].map(a=>Number($('size-'+a).querySelector('input:checked').value));if(M.validSize(next))confirmAction('应用尺寸',`将魔方设为 ${next.join(' × ')} 并复原？`,()=>reset(next));};
-const labels=['关闭角度对齐','正对','2/3 正面 + 1/3 顶面','正面 + 上面 + 右面'];
+$('dimensions').onsubmit=e=>{e.preventDefault();if(puzzleType!=='cuboid'){const next=Number($('order-track').querySelector('input:checked').value);confirmAction('应用阶数',`将${typeNames[puzzleType]}设为 ${next} 阶并复原？`,()=>{order=next;reset();});return;}const next=['x','y','z'].map(a=>Number($('size-'+a).querySelector('input:checked').value));if(M.validSize(next))confirmAction('应用尺寸',`将魔方设为 ${next.join(' × ')} 并复原？`,()=>reset(next));};
 function cubeIcon(mode){
  const basis=pose(mode===0?3:mode),vertices=[];for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1])vertices.push([x,y,z]);
  let paths='';vertices.forEach((v,i)=>vertices.forEach((w,j)=>{if(j<=i||v.filter((n,k)=>n!==w[k]).length!==1)return;
@@ -227,27 +240,17 @@ function cubeIcon(mode){
  }));
  return `<svg viewBox="0 0 48 48" aria-hidden="true">${paths}${mode===0?'<path d="M6 42L42 6" stroke-width="3"/>':''}</svg>`;
 }
-labels.forEach((label,i)=>{const b=document.createElement('button');b.title=label;b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',String(align===i));b.innerHTML=cubeIcon(i);b.onclick=()=>{align=i;snap=null;[...$('align-options').children].forEach((el,j)=>el.setAttribute('aria-pressed',String(i===j)));snapView();save();};$('align-options').append(b);});
 $('timer-control').onclick=()=>{if(busy())return;const box=document.createElement('div');box.className='dialog-actions';for(const label of [running?'暂停':'开始','清零']){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{if(label==='清零'){elapsed=0;running=false;}else running=!running;$('modal').close();save();};box.append(b);}openDialog('计时',box);};
-function drawHelpArrows(){
- const ns='http://www.w3.org/2000/svg',group=$('help-arrows').querySelector('g');group.replaceChildren();
+function layoutHelp(){
  for(const note of $('help-overlay').querySelectorAll('[data-for]')){
-  const target=$(note.dataset.for).getBoundingClientRect(),r=note.getBoundingClientRect();
-  let tx=target.left+target.width/2,ty=target.top+target.height/2;
-  if(note.dataset.for==='align-options'){const path=document.createElementNS(ns,'path'),x=target.right+12;path.setAttribute('d',`M${r.right+6} ${r.top+r.height/2}L${x} ${r.top+r.height/2}L${x} ${ty}L${target.right+2} ${ty}`);group.append(path);continue;}
-  const cx=r.left+r.width/2,cy=r.top+r.height/2,dx=tx-cx,dy=ty-cy;
-  const ratio=Math.min(dx? (r.width/2+8)/Math.abs(dx):Infinity,dy?(r.height/2+8)/Math.abs(dy):Infinity);
-  const sx=cx+dx*ratio,sy=cy+dy*ratio;
-  const distance=Math.hypot(tx-sx,ty-sy),gap=12;
-  if(distance<=gap)continue;
-  tx-=(tx-sx)/distance*gap;ty-=(ty-sy)/distance*gap;
-  const path=document.createElementNS(ns,'path');path.setAttribute('d',note.dataset.for==='theme'?`M${sx} ${sy}L${target.left-14} ${sy}L${target.left-14} ${target.top+target.height/2}L${target.left-2} ${target.top+target.height/2}`:`M${sx} ${sy}L${tx} ${ty}`);group.append(path);
+  const target=$(note.dataset.for).getBoundingClientRect();
+  Object.assign(note.style,{left:target.left+'px',top:target.top+'px',width:target.width+'px',height:target.height+'px'});
  }
 }
-$('help').onclick=()=>{cancelDrag();pinch=null;pointers.clear();snap=null;controls();$('help-overlay').showModal();drawHelpArrows();$('help-close').focus();};
+$('help').onclick=()=>{cancelDrag();pinch=null;pointers.clear();snap=null;controls();$('help-overlay').showModal();layoutHelp();$('help-overlay').focus();};
 $('help-overlay').onclick=e=>{e.stopPropagation();$('help-overlay').close();};
 $('help-overlay').addEventListener('close',()=>{lastTick=performance.now();$('help').focus();});
-window.addEventListener('resize',()=>{if($('help-overlay').open)drawHelpArrows();});
+window.addEventListener('resize',()=>{if($('help-overlay').open)layoutHelp();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelDrag();pinch=null;pointers.clear();controls();save();}lastTick=performance.now();});
 window.addEventListener('pagehide',save);
 function frame(now){

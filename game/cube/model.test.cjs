@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const M=require('./model.js');
 const signature=p=>JSON.stringify(p,(k,v)=>typeof v==='number'&&Object.is(v,-0)?0:v);
 let cases=0;
-for(let x=1;x<=5;x++)for(let y=1;y<=5;y++)for(let z=1;z<=5;z++){
+for(let x=1;x<=9;x++)for(let y=1;y<=9;y++)for(let z=1;z<=9;z++){
  const size=[x,y,z],p=M.create(size),initial=signature(p);
  assert.equal(p.length,x*y*z);assert(M.solved(p));
  assert.equal(p.reduce((s,p)=>s+p.stickers.length,0),2*(x*y+y*z+x*z));
@@ -25,7 +25,7 @@ for(const x of [-1,0,1])for(const y of [-1,0,1]){
  const right=M.matchGesture(point,[0,0,1],camera,100,0),up=M.matchGesture(point,[0,0,1],camera,0,-100);
  assert.equal(right.axis,1);assert.equal(right.dir,1);assert.equal(up.axis,0);assert.equal(up.dir,-1);
 }
-assert.throws(()=>M.create([0,3,3]));assert.throws(()=>M.create([1,2.5,3]));
+assert.throws(()=>M.create([10,3,3]));assert.throws(()=>M.create([0,3,3]));assert.throws(()=>M.create([1,2.5,3]));
 console.log(`PASS: ${cases} sizes, every layer and legal angle, inverse scrambles, occupancy and exterior stickers; face-center/edge/corner gestures.`);
 // Projected neighboring sticker centers define the row/column direction.
 for(const camera of [M.axes,M.axes.map(v=>M.rotate(M.rotate(v,0,-.4),1,.6))]){

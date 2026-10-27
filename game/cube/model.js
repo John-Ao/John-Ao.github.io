@@ -4,9 +4,9 @@ const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
 const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
 const axes=[[1,0,0],[0,1,0],[0,0,1]];
 function rotate(v,axis,angle){const c=Math.cos(angle),s=Math.sin(angle),n=axes[axis],w=cross(n,v),d=dot(n,v);return v.map((x,i)=>x*c+w[i]*s+n[i]*d*(1-c));}
-function validSize(size){return Array.isArray(size)&&size.length===3&&size.every(n=>Number.isInteger(n)&&n>=1&&n<=5);}
+function validSize(size){return Array.isArray(size)&&size.length===3&&size.every(n=>Number.isInteger(n)&&n>=1&&n<=9);}
 function create(size){
- if(!validSize(size))throw Error('尺寸必须为 1–5 的整数');
+ if(!validSize(size))throw Error('尺寸必须为 1–9 的整数');
  const pieces=[];
  for(let x=0;x<size[0];x++)for(let y=0;y<size[1];y++)for(let z=0;z<size[2];z++){
   const grid=[x,y,z],p=grid.map((n,i)=>n-(size[i]-1)/2),stickers=[];

@@ -65,5 +65,50 @@ await page.mouse.move(...diagonal.start);await page.mouse.down();await page.mous
 assert.equal(await page.evaluate(()=>drag.turn.axis),1);
 await page.mouse.up();await page.waitForTimeout(250);
 assert.deepEqual(await page.evaluate(()=>moves.at(-1)),[1,-1,-1]);
+// Maximum dimensions remain usable on a narrow mobile screen.
+await page.setViewportSize({width:320,height:740});
+await page.locator('#menu').click();
+for(const a of ['x','y','z'])await page.locator(`#size-${a} input[value="9"]`).check();
+assert(await page.evaluate(()=>document.querySelector('.dimensions').scrollWidth<=document.querySelector('.dimensions').clientWidth));
+await page.locator('#dimensions button[type=submit]').click();await page.getByRole('button',{name:'确认',exact:true}).click();
+assert.deepEqual(await page.evaluate(()=>size),[9,9,9]);
+await page.evaluate(()=>{M.turn(pieces,size,0,4,1);moves=[[0,4,1]];cursor=1;save();});
+const shared=await page.evaluate(()=>({url:shareURL(),state:JSON.stringify(pieces)}));
+await page.locator('#menu').click();await page.locator('#share').click();
+assert.equal(await page.getByLabel('分享链接',{exact:true}).inputValue(),shared.url);
+await page.goto('about:blank');await page.goto(shared.url);await page.waitForTimeout(250);
+assert.equal(await page.evaluate(()=>JSON.stringify(pieces)),shared.state);
+assert.equal(await page.evaluate(()=>running),false);
+await page.locator('#undo').click();await page.waitForTimeout(260);await page.reload();await page.waitForTimeout(200);
+assert.equal(await page.evaluate(()=>cursor),0);
+await page.evaluate(()=>{reset([3,3,3]);camera=pose(1);zoom=1;render();});
+const touch=await page.context().newCDPSession(page);
+const center=await page.evaluate(()=>{const r=canvas.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};});
+const send=(type,points)=>touch.send('Input.dispatchTouchEvent',{type,touchPoints:points.map(([x,y],id)=>({x,y,id}))});
+await send('touchStart',[[center.x,center.y]]);
+await send('touchMove',[[center.x+35,center.y]]);
+await send('touchStart',[[center.x+35,center.y],[center.x-35,center.y]]);
+await send('touchMove',[[center.x,center.y+55],[center.x,center.y-55]]);
+await send('touchEnd',[]);await page.waitForTimeout(350);
+assert.equal(await page.evaluate(()=>cursor),0);
+assert(await page.evaluate(()=>zoom>1.5));
+assert(await page.evaluate(()=>Math.abs(camera[0][1])>.99&&Math.abs(camera[2][2]-1)<1e-6));
+assert(await page.evaluate(()=>!drag&&!pinch&&pointers.size===0));
+await page.reload();await page.waitForTimeout(200);
+assert(await page.evaluate(()=>zoom>1.5&&Math.abs(camera[0][1])>.99));
+// Help is modal, pauses the clock, and follows viewport changes.
+for(const viewport of [{width:390,height:844},{width:320,height:568},{width:900,height:800},{width:844,height:390}]){
+ await page.setViewportSize(viewport);await page.locator('#help').click();
+ assert(await page.locator('#help-overlay').evaluate(el=>el.open));
+ assert.equal(await page.locator('#help-arrows g path').count(),8);
+ assert(await page.locator('#help-overlay').evaluate(el=>el.scrollWidth===el.clientWidth&&el.scrollHeight===el.clientHeight));
+ await page.evaluate(()=>{running=true;elapsed=1000;});await page.waitForTimeout(100);
+ assert.equal(await page.evaluate(()=>elapsed),1000);
+ await page.keyboard.press('Escape');assert.equal(await page.locator('#help-overlay').evaluate(el=>el.open),false);
+ assert(await page.locator('#help').evaluate(el=>el===document.activeElement));
+ await page.evaluate(()=>{running=false;});
+}
+await page.locator('#help').click();await page.locator('#help-close').click();
+assert.equal(await page.locator('#help-overlay').evaluate(el=>el.open),false);
 assert.deepEqual(errors,[]);console.log('PASS: WebGL render, piece gesture, blank orbit, undo/redo, reload, 4 alignment modes, dimensions form, 180-degree gesture, mobile layout; no browser errors.');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

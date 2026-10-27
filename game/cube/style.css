@@ -29,25 +29,38 @@ fieldset>button{width:100%}#align-options{position:fixed;z-index:2;bottom:max(6p
 
 .size-track{grid-template-columns:repeat(9,1fr);width:324px;max-width:calc(100% - 24px);--index:2}.size-track::before{width:calc((100% - 6px)/9);transform:translateX(calc(var(--index)*100%))}.size-track label{position:relative;display:block;min-width:0;text-align:center}.size-track input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.size-track span{display:block;padding:7px 0;font-size:13px;line-height:20px}.size-track input:checked+span{color:var(--bg)}.size-track input:focus-visible+span{outline:3px solid var(--highlight);outline-offset:2px;border-radius:8px}
 
-#help,#help-close{top:calc(max(6px,env(safe-area-inset-top)) + 52px);right:max(6px,env(safe-area-inset-right))}
-#help-overlay{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:rgba(14,24,21,.78);color:#fff;box-shadow:none;overflow:hidden}
+#help{top:calc(max(6px,env(safe-area-inset-top)) + 52px);right:max(6px,env(safe-area-inset-right))}
+#help-overlay{position:fixed;inset:0;width:100%;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:rgba(14,24,21,.78);color:#fff;box-shadow:none;overflow:hidden;outline:none}
 #help-overlay::backdrop{background:transparent;backdrop-filter:none}
-#help-close{color:#fff;z-index:3;background:transparent}
-#help-arrows{position:absolute;inset:0;width:100%;height:100%;stroke:#e2ecdf;stroke-width:1.4;pointer-events:none}
-#help-arrows g path{marker-end:url(#help-arrowhead)}
-#help-overlay p{margin:0;color:inherit;font-size:14px;line-height:1.6}
+#help-overlay p{margin:0;color:inherit;font-size:14px;line-height:1.5}
 #help-overlay small{font-size:12px;color:#d4ded5;font-weight:400}
-.help-note{position:absolute;z-index:1}
-.help-menu{left:20px;top:112px}.help-timer{left:50%;top:70px;transform:translateX(-50%);text-align:center}.help-theme{right:20px;top:174px}
+.help-note{position:absolute;z-index:1;display:flex;align-items:center;justify-content:center;text-align:center;background:#1c2925;border-radius:10px}
+#help-overlay .help-align{border:1px solid #e2ecdf;border-radius:12px;font-size:12px;white-space:nowrap}
 .help-gestures{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 32px);padding:12px 0}
 #help-overlay .help-gestures p{margin-bottom:8px}.help-gestures small{display:block;margin-top:12px}
-.help-undo{right:calc(50% + 20px);bottom:192px}.help-redo{left:calc(50% + 20px);bottom:192px}
-.help-shuffle{left:20px;bottom:124px}.help-reset{right:20px;bottom:124px;text-align:right}
-.help-align{left:50%;bottom:58px;transform:translateX(-50%);text-align:center;white-space:nowrap}
-@media(max-height:650px){.help-menu{top:72px}.help-theme{top:118px}.help-timer{top:54px}.help-gestures{top:45%}#help-overlay .help-gestures p{margin-bottom:3px}.help-gestures small{margin-top:5px}.help-undo,.help-redo{bottom:156px}.help-shuffle,.help-reset{bottom:100px}}
-@media(max-height:480px) and (min-width:600px){.help-gestures{top:46%;font-size:12px}.help-menu{top:110px}.help-theme{top:130px}.help-undo{right:calc(50% + 150px);bottom:90px}.help-redo{left:calc(50% + 150px);bottom:90px}.help-shuffle,.help-reset{bottom:80px}}
+@media(max-height:650px){#help-overlay .help-gestures p{margin-bottom:3px}.help-gestures small{margin-top:5px}}
 
-/* Keep the alignment explanation clear of the undo/redo targets. */
-.help-undo,.help-redo{bottom:126px}.help-align{bottom:192px}
-@media(max-height:650px){.help-align{bottom:172px}}
-@media(max-height:480px) and (min-width:600px){.help-align{left:auto;right:20px;bottom:150px;transform:none;text-align:right}.help-undo,.help-redo{bottom:90px}}
+[hidden]{display:none!important}
+.type-setting{display:grid;gap:8px;margin-bottom:8px;font-size:14px}
+.type-track{--count:7;--index:0;grid-template-columns:repeat(var(--count),1fr);width:100%}
+.type-track::before{width:calc((100% - 6px)/var(--count));transform:translateX(calc(var(--index)*100%))}
+.type-track label{position:relative;min-width:0;text-align:center}
+.type-track input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
+.type-track span{display:flex;align-items:center;justify-content:center;min-height:44px;pointer-events:none}
+.type-track svg{width:30px;height:30px;stroke-width:1.2}
+.type-track input:checked+span{color:var(--bg)}
+.type-track input:focus-visible+span{outline:3px solid var(--highlight);border-radius:8px}
+#order-track{grid-template-columns:repeat(var(--count),1fr)}
+#order-track::before{width:calc((100% - 6px)/var(--count))}
+#order-row{margin:6px 0 14px}
+#dimensions,fieldset,.type-setting{min-width:0}
+#order-track{flex:1;min-width:0;width:auto}
+.dimension-row .size-track{flex:1;min-width:0;width:auto;max-width:none}
+
+@media(max-width:400px){.type-track svg{width:26px;height:26px}}
+/* A changing number of stops must not let the sliding highlight widen the menu. */
+.type-track,.size-track{overflow:hidden}
+
+.type-track input:focus-visible+span,.size-track input:focus-visible+span{outline-offset:-3px}
+
+body:has(#help-overlay[open]) #help{visibility:hidden}

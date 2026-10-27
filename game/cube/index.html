@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#edf0f4">
-<title>长方体魔方</title><link rel="stylesheet" href="style.css">
+<title>魔方</title><link rel="stylesheet" href="style.css">
 </head>
 <body><main id="game">
 <button class="corner-button" id="menu" aria-label="打开菜单" title="菜单" aria-haspopup="dialog" aria-controls="modal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -21,28 +21,27 @@
 </main>
 <dialog id="modal"><div class="dialog-top"><h2 id="dialog-title">菜单</h2><button id="close" aria-label="关闭">×</button></div>
 <div id="menu-panel" class="menu-list">
-<form id="dimensions"><fieldset><legend>尺寸</legend><div class="dimensions">
+<div class="type-setting"><span id="type-label">长方体魔方</span><div id="puzzle-types" class="switch-track type-track" role="radiogroup" aria-label="魔方类型"></div></div>
+<form id="dimensions"><fieldset><legend id="size-legend">尺寸</legend><div class="dimensions">
 <div class="dimension-row menu-setting"><span>X</span><div id="size-x" class="switch-track size-track" role="group" aria-label="X 尺寸"><label><input type="radio" name="size-x" value="1"><span>1</span></label><label><input type="radio" name="size-x" value="2"><span>2</span></label><label><input type="radio" name="size-x" value="3" checked><span>3</span></label><label><input type="radio" name="size-x" value="4"><span>4</span></label><label><input type="radio" name="size-x" value="5"><span>5</span></label><label><input type="radio" name="size-x" value="6"><span>6</span></label><label><input type="radio" name="size-x" value="7"><span>7</span></label><label><input type="radio" name="size-x" value="8"><span>8</span></label><label><input type="radio" name="size-x" value="9"><span>9</span></label></div></div>
 <div class="dimension-row menu-setting"><span>Y</span><div id="size-y" class="switch-track size-track" role="group" aria-label="Y 尺寸"><label><input type="radio" name="size-y" value="1"><span>1</span></label><label><input type="radio" name="size-y" value="2"><span>2</span></label><label><input type="radio" name="size-y" value="3" checked><span>3</span></label><label><input type="radio" name="size-y" value="4"><span>4</span></label><label><input type="radio" name="size-y" value="5"><span>5</span></label><label><input type="radio" name="size-y" value="6"><span>6</span></label><label><input type="radio" name="size-y" value="7"><span>7</span></label><label><input type="radio" name="size-y" value="8"><span>8</span></label><label><input type="radio" name="size-y" value="9"><span>9</span></label></div></div>
 <div class="dimension-row menu-setting"><span>Z</span><div id="size-z" class="switch-track size-track" role="group" aria-label="Z 尺寸"><label><input type="radio" name="size-z" value="1"><span>1</span></label><label><input type="radio" name="size-z" value="2"><span>2</span></label><label><input type="radio" name="size-z" value="3" checked><span>3</span></label><label><input type="radio" name="size-z" value="4"><span>4</span></label><label><input type="radio" name="size-z" value="5"><span>5</span></label><label><input type="radio" name="size-z" value="6"><span>6</span></label><label><input type="radio" name="size-z" value="7"><span>7</span></label><label><input type="radio" name="size-z" value="8"><span>8</span></label><label><input type="radio" name="size-z" value="9"><span>9</span></label></div></div>
-</div><button type="submit">应用尺寸并复原</button></fieldset></form>
+</div><div id="order-row" class="menu-setting" hidden><span>阶数</span><div id="order-track" class="switch-track size-track" role="radiogroup" aria-label="阶数"></div></div><button type="submit">应用尺寸并复原</button></fieldset></form>
 <button id="share">分享链接</button>
 <button id="dim" class="menu-switch" aria-pressed="false"><span>低亮度</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
 <button id="fullscreen" class="menu-switch" aria-pressed="false"><span>全屏</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
 
 </div><div id="dialog-content" hidden></div></dialog>
-<dialog id="help-overlay" aria-label="操作帮助">
-<svg id="help-arrows" aria-hidden="true"><defs><marker id="help-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6"/></marker></defs><g></g></svg>
-<button id="help-close" class="corner-button" aria-label="关闭帮助" title="关闭帮助"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg></button>
-<p class="help-note help-menu" data-for="menu">菜单<br><small>尺寸 1–9、分享链接<br>低亮度、全屏</small></p>
-<p class="help-note help-timer" data-for="timer-control">计时<br><small>开始、暂停、清零</small></p>
-<p class="help-note help-theme" data-for="theme">切换日间 / 夜间</p>
-<div class="help-gestures"><p><strong>拖动魔方块 → 转动一层</strong></p><p>拖动空白处 → 调整视角</p><p>双指捏合 / 滚轮 → 缩放</p><p>双指扭转 → 绕视线轴旋转</p><small>正方形截面转 90°，其余转 180°<br>手动转层开始计时，还原后停止</small></div>
-<p class="help-note help-undo" data-for="undo">撤销转层</p>
-<p class="help-note help-redo" data-for="redo">重做转层</p>
-<p class="help-note help-shuffle" data-for="shuffle">打乱<br><small>清零计时</small></p>
-<p class="help-note help-reset" data-for="reset">复原<br><small>清零计时</small></p>
-<p class="help-note help-align" data-for="align-options">视角对齐 · 从左到右<br><small>关闭 / 正对 / 双面 / 三面</small></p>
+<dialog id="help-overlay" aria-label="操作帮助" tabindex="-1">
+<p class="help-note help-menu" data-for="menu">菜单</p>
+<p class="help-note help-timer" data-for="timer-control">计时</p>
+<p class="help-note help-theme" data-for="theme">日夜<br>切换</p>
+<div class="help-gestures"><p><strong>拖动魔方块：转动一层</strong></p><p>拖动空白处：调整视角</p><p>双指捏合 / 滚轮：缩放</p><p>双指扭转：绕视线轴旋转</p><small><span id="turn-help">正方形截面转 90°，其余转 180°</span><br>手动转层开始计时，还原后停止</small></div>
+<p class="help-note help-undo" data-for="undo">撤销</p>
+<p class="help-note help-redo" data-for="redo">重做</p>
+<p class="help-note help-shuffle" data-for="shuffle">打乱</p>
+<p class="help-note help-reset" data-for="reset">复原</p>
+<p class="help-note help-align" data-for="align-options">角度对齐选项</p>
 </dialog>
 <div id="toast" role="status"></div>
-<script src="model.js"></script><script src="game.js"></script></body></html>
+<script src="model.js"></script><script src="polyhedra.js"></script><script src="alignment.js"></script><script src="types.js"></script><script src="game.js"></script></body></html>

@@ -100,7 +100,9 @@ assert(await page.evaluate(()=>zoom>1.5&&Math.abs(camera[0][1])>.99));
 for(const viewport of [{width:390,height:844},{width:320,height:568},{width:900,height:800},{width:844,height:390}]){
  await page.setViewportSize(viewport);await page.locator('#help').click();
  assert(await page.locator('#help-overlay').evaluate(el=>el.open));
- assert.equal(await page.locator('#help-arrows g path').count(),8);
+ assert.equal(await page.locator('#help-arrows,#help-close').count(),0);
+ assert.equal(await page.locator('.help-align').textContent(),'角度对齐选项');
+ assert(await page.locator('#help-overlay').evaluate(el=>[...el.querySelectorAll('[data-for]')].every(note=>{const a=note.getBoundingClientRect(),b=document.getElementById(note.dataset.for).getBoundingClientRect();return ['left','top','width','height'].every(k=>Math.abs(a[k]-b[k])<1);})));
  assert(await page.locator('#help-overlay').evaluate(el=>el.scrollWidth===el.clientWidth&&el.scrollHeight===el.clientHeight));
  await page.evaluate(()=>{running=true;elapsed=1000;});await page.waitForTimeout(100);
  assert.equal(await page.evaluate(()=>elapsed),1000);
@@ -108,7 +110,7 @@ for(const viewport of [{width:390,height:844},{width:320,height:568},{width:900,
  assert(await page.locator('#help').evaluate(el=>el===document.activeElement));
  await page.evaluate(()=>{running=false;});
 }
-await page.locator('#help').click();await page.locator('#help-close').click();
+await page.locator('#help').click();await page.locator('.help-menu').click();
 assert.equal(await page.locator('#help-overlay').evaluate(el=>el.open),false);
 assert.deepEqual(errors,[]);console.log('PASS: WebGL render, piece gesture, blank orbit, undo/redo, reload, 4 alignment modes, dimensions form, 180-degree gesture, mobile layout; no browser errors.');await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

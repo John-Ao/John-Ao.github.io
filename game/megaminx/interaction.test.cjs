@@ -364,3 +364,94 @@ timerElements['timer-control'].onclick();timerAction('清零');timerAction('清�
 assert.equal(timerClock.elapsed(),0);assert.equal(timerClock.running,false);assert.equal(timerRun.status,'idle');
 timerAction('开始');timerNow=3000;assert.equal(timerClock.elapsed(),500);
 console.log('PASS: timer start, dialog pause/resume, reset confirmation/cancellation and restart from zero.');
+
+const puzzleContext=vm.createContext({M,assert,S:require('./session.js'),setTimeout,clearTimeout});
+vm.runInContext(`
+let now=0;
+const clock=new S.Stopwatch(()=>now),STORAGE_KEY='sessions';
+let records=[],currentRun={id:'original',created:1,status:'running'},saveTimer=null,storageWarning=false;
+let shape='irregular',history=[[0,1]],pieces=M.fromMoves(shape,history),animation=null,queue=[];
+let camera=[[1,0,0],[0,1,0],[0,0,1]],zoom=1.3,selected=4,viewAnimation=null;
+const SCRAMBLE_TURN_MS=40,QUEUED_TURN_MS=90,MANUAL_TURN_MS=230;
+const elements={},$=id=>elements[id]??=( {setAttribute(){}} );
+let stored;
+const localStorage={setItem(key,value){stored=JSON.parse(value);}};
+${source.slice(source.indexOf('function finishSolve('),source.indexOf('function clearSteps('))}
+function clearSteps(){} function settleView(){} function update(){} function tick(){} function toast(){}
+function closeDialog(){clock.resume('modal');}
+function startTurn(){throw Error('Unexpected queued turn');}
+${source.slice(source.indexOf('function newRun('),source.indexOf('function applyTheme('))}
+${source.slice(source.indexOf('function createPuzzle('),source.indexOf('// Rasterize at thumbnail'))}
+clock.start();now=1500;clock.pause('modal');
+createPuzzle('regular');
+const second=currentRun.id;
+assert.notEqual(second,'original');assert.equal(shape,'regular');assert.equal(history.length,0);
+assert.equal(clock.elapsed(),0);assert.equal(clock.running,false);assert.ok(M.isSolved(pieces,shape));
+assert.equal(records.length,2);assert.equal(stored.current,second);
+records.find(r=>r.id===second).favorite=true;persist();assert.equal(records.find(r=>r.id===second).favorite,true);
+history=[[2,-1]];pieces=M.fromMoves(shape,history);currentRun.status='running';clock.start();now+=700;
+clock.pause('modal');switchPuzzle('original');
+assert.equal(shape,'irregular');assert.equal(S.encodeMoves(history),S.encodeMoves([[0,1]]));
+assert.equal(clock.elapsed(),1500);assert.equal(zoom,1.3);assert.equal(selected,4);
+now+=300;clock.pause('modal');switchPuzzle(second);
+assert.equal(shape,'regular');assert.equal(S.encodeMoves(history),S.encodeMoves([[2,-1]]));
+assert.equal(clock.elapsed(),700);assert.equal(records.find(r=>r.id==='original').elapsed,1800);
+assert.equal(stored.current,second);assert.equal(records.length,2);
+clock.pause('modal');switchPuzzle(second);assert.equal(records.length,2);assert.equal(clock.running,true);
+clearTimeout(saveTimer);
+`,puzzleContext);
+console.log('PASS: new puzzles preserve existing state; switching restores independent shapes, moves, timers and persisted selection.');
+
+const thumbnailContext=vm.createContext({M,S:require('./session.js'),assert});
+vm.runInContext(`
+${source.slice(source.indexOf('const colors='),source.indexOf("let shape='irregular'"))}
+${source.slice(source.indexOf('function drawThumbnail('),source.indexOf('const thumbnailRecords='))}
+let pixels;
+const target={width:96,getContext(){return {createImageData(w,h){return {data:new Uint8ClampedArray(w*h*4)};},putImageData(image){pixels=image.data;}};}};
+const record={shape:'regular',moves:'',camera:[[1,0,0],[0,1,0],[0,0,1]]};
+drawThumbnail(target,record);
+assert.ok(pixels.filter((v,i)=>i%4===3&&v===255).length>1000);
+const solved=Array.from(pixels).join(',');
+drawThumbnail(target,{...record,moves:S.encodeMoves([[0,1],[3,-1],[7,1]])});
+assert.notEqual(Array.from(pixels).join(','),solved);
+drawThumbnail(target,{...record,shape:'irregular'});
+assert.ok(pixels.some((v,i)=>i%4===3&&v===255));
+`,thumbnailContext);
+console.log('PASS: thumbnails rasterize both shapes and reflect saved moves.');
+
+vm.runInContext(`
+function confirmAction(title,message,label,action){action();}
+function stopViewAnimation(){} function clearPreview(){} function updateAutoCenter(){}
+let gesture=null,dragPreview=null;
+const SCRAMBLE_STEPS=60;
+startTurn=()=>{queue=[];};
+${source.slice(source.indexOf("$('reset').onclick="),source.indexOf('function inside('))}
+records=[];newRun('idle',false);persist();
+assert.equal(records.length,0);assert.equal(stored.active.recorded,false);
+const draft=stored.active;restore(draft);persist();assert.equal(records.length,0);
+$('shuffle').onclick();persist();assert.equal(records.length,1);
+const round=currentRun.id;
+$('shuffle').onclick();persist();assert.equal(records.length,1);assert.equal(currentRun.id,round);
+$('reset').onclick();persist();assert.equal(records.length,1);assert.equal(currentRun.id,round);assert.equal(currentRun.completed,true);
+const completed=stored.active;restore(completed);assert.equal(currentRun.completed,true);
+$('shuffle').onclick();persist();assert.equal(records.length,2);assert.notEqual(currentRun.id,round);
+$('reset').onclick();$('reset').onclick();persist();assert.equal(records.length,2);
+createPuzzle('irregular');assert.equal(records.length,3);
+const manual=currentRun.id;$('shuffle').onclick();persist();assert.equal(records.length,3);assert.equal(currentRun.id,manual);
+clearTimeout(saveTimer);
+`,puzzleContext);
+console.log('PASS: draft refresh creates no history; repeated shuffle/reset reuse one record; next completed round and manual creation add one record.');
+
+vm.runInContext(`
+let notices=0;toast=()=>notices++;timeText=ms=>String(ms);
+newRun('idle');finishSolve();assert.equal(notices,0);
+$('shuffle').onclick();assert.equal(currentRun.solvePending,true);persist();
+restore(stored.active);assert.equal(currentRun.solvePending,true);
+finishSolve();assert.equal(notices,1);assert.equal(currentRun.solvePending,false);
+currentRun.status='running';finishSolve();assert.equal(notices,1);
+persist();restore(stored.active);finishSolve();assert.equal(notices,1);
+$('shuffle').onclick();finishSolve();assert.equal(notices,2);
+$('shuffle').onclick();$('reset').onclick();finishSolve();assert.equal(notices,2);
+clearTimeout(saveTimer);
+`,puzzleContext);
+console.log('PASS: only the first solve after shuffle notifies; reset consumes eligibility and refresh preserves it.');

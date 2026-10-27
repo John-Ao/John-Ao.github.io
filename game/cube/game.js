@@ -1,10 +1,11 @@
 'use strict';
 const M=Cuboid,$=id=>document.getElementById(id),canvas=$('puzzle'),gl=canvas.getContext('webgl',{antialias:true,alpha:true});
-const KEY='cuboid.session.v1',colors=['#ef9142','#df4e55','#f1d64e','#f3f1e9','#549d70','#548bd4'];
+const KEY='cuboid.session.v1',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55'];
 let size=[3,3,3],pieces=M.create(size),moves=[],cursor=0,align=3,zoom=1,theme='day',dim=false;
 let camera=pose(3),width=1,height=1,scale=1,polygons=[],dirty=true,drag=null,animation=null,snap=null;
 let elapsed=0,running=false,lastTick=performance.now(),saveAt=0,toastTimer;
-const pointers=new Set();
+const pointers=new Map();
+let pinch=null;
 function pose(mode){
  const yaw=mode===3?Math.PI/4:0,pitch=mode===3?Math.atan(1/Math.sqrt(2)):mode===2?Math.atan(.5):0;
  return M.axes.map(v=>M.rotate(M.rotate(v,0,-pitch),1,yaw));
@@ -14,14 +15,14 @@ function view(v){return camera.map(row=>M.dot(row,v));}
 function cameraDistance(){return Math.hypot(...size)*1.8;}
 function project(v){const q=view(v),perspective=cameraDistance()/(cameraDistance()-q[2]);return [width/2+q[0]*scale*perspective,height/2-q[1]*scale*perspective,q[2]];}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),2400);$('status').textContent=message;}
-function busy(){return !!animation||!!drag;}
+function busy(){return !!animation||!!drag||!!pinch;}
 function controls(){ $('undo').disabled=busy()||cursor===0;$('redo').disabled=busy()||cursor===moves.length; }
 function save(){
  try{localStorage.setItem(KEY,JSON.stringify({size,moves,cursor,camera,align,zoom,theme,dim,elapsed,running}));}catch{toast('无法保存进度：浏览器存储不可用');}
 }
-function restore(){
+function restore(shared){
  try{
-  const s=JSON.parse(localStorage.getItem(KEY));if(!s)return;
+  const s=shared||JSON.parse(localStorage.getItem(KEY));if(!s)return;
   if(!M.validSize(s.size)||!Array.isArray(s.moves)||s.moves.length>100000||!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>s.moves.length)throw Error();
   const restored=M.create(s.size);
   for(const move of s.moves){if(!Array.isArray(move)||move.length!==3)throw Error();M.turn(restored,s.size,...move);}
@@ -31,9 +32,19 @@ function restore(){
   if([0,1,2,3].includes(s.align))align=s.align;
   if(Number.isFinite(s.zoom))zoom=Math.max(.55,Math.min(1.8,s.zoom));
   theme=s.theme==='night'?'night':'day';dim=s.dim===true;elapsed=Number.isFinite(s.elapsed)?Math.max(0,s.elapsed):0;running=s.running===true;
- }catch{toast('存档无效，已使用新魔方');}
+ }catch{toast(shared?'分享链接无效，已保留本地局面':'存档无效，已使用新魔方');}
 }
 restore();
+if(location.hash.startsWith('#cube=')){
+ try{const shared=JSON.parse(decodeURIComponent(location.hash.slice(6)));if(shared.v!==1)throw Error();restore({...shared,theme,dim,running:false});}
+ catch{toast('分享链接无效，已保留本地局面');}
+ // Consume the import once so reload restores subsequent local progress.
+ save();
+ history.replaceState(null,'',location.pathname+location.search);
+}
+window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#cube='))location.reload();});
+function shareURL(){const url=new URL(location.href);url.hash='cube='+encodeURIComponent(JSON.stringify({v:1,size,moves,cursor,camera,align,zoom,elapsed}));return url.href;}
+
 if(!gl){$('status').textContent='浏览器不支持 WebGL';throw Error('WebGL unavailable');}
 function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
 const program=gl.createProgram();
@@ -115,13 +126,24 @@ function finishTurn(a){
 function localPoint(e){const r=canvas.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
 canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0&&e.pointerType==='mouse')return;
- pointers.add(e.pointerId);canvas.setPointerCapture(e.pointerId);
- if(pointers.size>1){cancelDrag();return;}
+ pointers.set(e.pointerId,localPoint(e));canvas.setPointerCapture(e.pointerId);
+ if(pointers.size>1){cancelDrag();snap=null;if(pointers.size===2&&!$('modal').open)startPinch();return;}
  if(animation||$('modal').open)return;
  snap=null;if(dirty)render();const [x,y]=localPoint(e);
  drag={id:e.pointerId,x,y,lastX:x,lastY:y,hit:hitTest(x,y),turn:null,track:M.createTrajectory(),moved:false};controls();
 });
+function startPinch(){
+ const [a,b]=[...pointers.values()];
+ pinch={distance:Math.max(1,Math.hypot(b[0]-a[0],b[1]-a[1])),angle:Math.atan2(b[1]-a[1],b[0]-a[0]),zoom,camera:camera.map(r=>r.slice())};controls();
+}
 canvas.addEventListener('pointermove',e=>{
+ if(pointers.has(e.pointerId))pointers.set(e.pointerId,localPoint(e));
+ if(pinch){
+  const [a,b]=[...pointers.values()];if(!b)return;
+  zoom=Math.max(.55,Math.min(1.8,pinch.zoom*Math.hypot(b[0]-a[0],b[1]-a[1])/pinch.distance));
+  const angle=Math.atan2(b[1]-a[1],b[0]-a[0])-pinch.angle,c=Math.cos(angle),s=Math.sin(angle),[r,u,f]=pinch.camera;
+  camera=[r.map((v,i)=>v*c+u[i]*s),u.map((v,i)=>v*c-r[i]*s),f.slice()];dirty=true;return;
+ }
  if(!drag||drag.id!==e.pointerId||pointers.size!==1)return;
  const [x,y]=localPoint(e),dx=x-drag.x,dy=y-drag.y;
  if(!drag.hit){
@@ -151,7 +173,7 @@ function updatePuzzleDrag(e){
 }
 function cancelDrag(){if(drag?.turn){const t=drag.turn;animateTurn(t.axis,t.layer,1,t.angle,false);}drag=null;controls();dirty=true;}
 function release(e,cancelled){
- pointers.delete(e.pointerId);if(!drag||drag.id!==e.pointerId)return;
+ pointers.delete(e.pointerId);if(pinch){if(pointers.size>=2)startPinch();else{pinch=null;save();controls();}return;}if(!drag||drag.id!==e.pointerId)return;
  if(cancelled){cancelDrag();return;}
  if(drag.hit&&e.type==='pointerup')updatePuzzleDrag(e);
  const d=drag;drag=null;
@@ -169,6 +191,13 @@ $('dim').onclick=()=>{dim=!dim;themeUpdate();save();};
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('当前浏览器无法进入全屏');}};
 document.addEventListener('fullscreenchange',()=>$('fullscreen').setAttribute('aria-pressed',String(!!document.fullscreenElement)));
 function openDialog(title,content){cancelDrag();$('dialog-title').textContent=title;$('menu-panel').hidden=!!content;$('dialog-content').hidden=!content;$('dialog-content').replaceChildren();if(content)$('dialog-content').append(content);$('modal').showModal();}
+$('share').onclick=()=>{
+ const box=document.createElement('div');box.className='link-box';
+ const input=document.createElement('input');input.readOnly=true;input.value=shareURL();input.setAttribute('aria-label','分享链接');
+ const button=document.createElement('button');button.textContent='复制链接';
+ button.onclick=async()=>{try{await navigator.clipboard.writeText(input.value);toast('链接已复制');}catch{input.focus();input.select();toast('请手动复制链接');}};
+ input.onclick=()=>input.select();box.append(input,button);openDialog('分享当前局面',box);
+};
 $('menu').onclick=()=>{if(animation)return;syncSizes();openDialog('菜单');};
 $('close').onclick=()=>$('modal').close();
 $('modal').addEventListener('click',e=>{if(e.target===$('modal')){const r=$('modal').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('modal').close();}});
@@ -200,10 +229,29 @@ function cubeIcon(mode){
 }
 labels.forEach((label,i)=>{const b=document.createElement('button');b.title=label;b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',String(align===i));b.innerHTML=cubeIcon(i);b.onclick=()=>{align=i;snap=null;[...$('align-options').children].forEach((el,j)=>el.setAttribute('aria-pressed',String(i===j)));snapView();save();};$('align-options').append(b);});
 $('timer-control').onclick=()=>{if(busy())return;const box=document.createElement('div');box.className='dialog-actions';for(const label of [running?'暂停':'开始','清零']){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{if(label==='清零'){elapsed=0;running=false;}else running=!running;$('modal').close();save();};box.append(b);}openDialog('计时',box);};
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelDrag();save();}lastTick=performance.now();});
+function drawHelpArrows(){
+ const ns='http://www.w3.org/2000/svg',group=$('help-arrows').querySelector('g');group.replaceChildren();
+ for(const note of $('help-overlay').querySelectorAll('[data-for]')){
+  const target=$(note.dataset.for).getBoundingClientRect(),r=note.getBoundingClientRect();
+  let tx=target.left+target.width/2,ty=target.top+target.height/2;
+  if(note.dataset.for==='align-options'){const path=document.createElementNS(ns,'path'),x=target.right+12;path.setAttribute('d',`M${r.right+6} ${r.top+r.height/2}L${x} ${r.top+r.height/2}L${x} ${ty}L${target.right+2} ${ty}`);group.append(path);continue;}
+  const cx=r.left+r.width/2,cy=r.top+r.height/2,dx=tx-cx,dy=ty-cy;
+  const ratio=Math.min(dx? (r.width/2+8)/Math.abs(dx):Infinity,dy?(r.height/2+8)/Math.abs(dy):Infinity);
+  const sx=cx+dx*ratio,sy=cy+dy*ratio;
+  const distance=Math.hypot(tx-sx,ty-sy),gap=12;
+  if(distance<=gap)continue;
+  tx-=(tx-sx)/distance*gap;ty-=(ty-sy)/distance*gap;
+  const path=document.createElementNS(ns,'path');path.setAttribute('d',note.dataset.for==='theme'?`M${sx} ${sy}L${target.left-14} ${sy}L${target.left-14} ${target.top+target.height/2}L${target.left-2} ${target.top+target.height/2}`:`M${sx} ${sy}L${tx} ${ty}`);group.append(path);
+ }
+}
+$('help').onclick=()=>{cancelDrag();pinch=null;pointers.clear();snap=null;controls();$('help-overlay').showModal();drawHelpArrows();$('help-close').focus();};
+$('help-overlay').onclick=e=>{e.stopPropagation();$('help-overlay').close();};
+$('help-overlay').addEventListener('close',()=>{lastTick=performance.now();$('help').focus();});
+window.addEventListener('resize',()=>{if($('help-overlay').open)drawHelpArrows();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelDrag();pinch=null;pointers.clear();controls();save();}lastTick=performance.now();});
 window.addEventListener('pagehide',save);
 function frame(now){
- if(running&&!document.hidden&&!$('modal').open)elapsed+=now-lastTick;lastTick=now;
+ if(running&&!document.hidden&&!$('modal').open&&!$('help-overlay').open)elapsed+=now-lastTick;lastTick=now;
  const ms=Math.floor(elapsed);$('timer').textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0');$('ms').textContent='.'+String(ms%1000).padStart(3,'0');
  if(animation){const a=animation,t=a.duration?Math.min(1,(now-a.start)/a.duration):1;a.angle=a.from+(a.to-a.from)*(1-(1-t)**3);dirty=true;if(t===1)finishTurn(a);}
  if(snap){const t=Math.min(1,(now-snap.start)/240),e=t*t*(3-2*t),rows=snap.from.map((r,i)=>r.map((v,j)=>v+(snap.to[i][j]-v)*e));camera=[normalize(rows[0]),null,null];camera[2]=normalize(M.cross(camera[0],rows[1]));camera[1]=M.cross(camera[2],camera[0]);dirty=true;if(t===1){camera=snap.to;snap=null;save();}}

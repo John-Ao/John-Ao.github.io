@@ -43,9 +43,10 @@ const canvas={setPointerCapture(){},getBoundingClientRect(){return {left:0,top:0
 function view(v){return camera.map(row=>M.dot(row,v));}
 function project(v){const q=view(v);return [300+q[0]*scale,300-q[1]*scale,q[2]];}
 function orbit(dx,dy){orbits.push([dx,dy]);}
-function settleView(){}
+let settles=0;function settleView(){settles++;}
 function save(){} function select(i){selected=i;} function pick(){return picked;}
 let picked=null;
+let polygons=[],centerIds=M.axes.map((_,i)=>i);
 let simulateAnimation=false;
 function startTurn(axis,dir){turns.push([axis,dir]);selected=axis;if(simulateAnimation)animation={axis,dir};return true;}
 ${source.slice(source.indexOf('function inside('),source.indexOf('function pick('))}
@@ -84,11 +85,68 @@ for(selected=0;selected<12;selected++){
  for(const block of blocks){
   const sticker=block.faces.find(f=>f.color===selected);if(!sticker)continue;
   const center=M.average(sticker.points);
-  const expected=M.axes.flatMap((n,i)=>i!==selected&&M.layer(blocks,i).includes(block.id)?[i]:[]).sort((a,b)=>a-b).join(',');
+  const expected=M.axes.flatMap((n,i)=>i!==selected&&M.layer(blocks,i).includes(block.id)?[i]:[]);
   for(scale of [110,360,650])for(const point of [center,...sticker.points.map(v=>M.add(M.mul(v,.98),M.mul(center,.02)))]){
-   const actual=edgeCandidates(project(point)).map(e=>e.axis).sort((a,b)=>a-b).join(',');
-   assert.equal(actual,expected,'whole edge/corner block must be eligible at every zoom');
+   const actual=edgeCandidates(project(point)).map(e=>e.axis);
+   assert.ok(expected.every(axis=>actual.includes(axis)),'whole edge/corner block must be eligible at every zoom');
   }
+ }
+}
+// Use actual rendered surfaces to exercise side faces outside the selected pentagon.
+{
+ const savedCenters=centerIds;
+ const layers=M.axes.map((_,i)=>M.layer(pieces,i));
+ centerIds=layers.map((ids,i)=>ids.find(id=>layers.every((other,j)=>j===i||!other.includes(id))));
+ let sideHits=0;
+ for(selected=0;selected<12;selected++){
+  const normal=M.axes[selected],right=M.norm(M.cross(normal,[.13,1,.27])),up=M.cross(normal,right);
+  camera=[right,up,normal].map(v=>M.rotate(v,right,.65));
+  polygons=pieces.flatMap(piece=>piece.faces.map(f=>{
+   const normal=M.norm(M.cross(M.sub(f.points[1],f.points[0]),M.sub(f.points[2],f.points[0])));
+   return {...f,normal,piece:piece.id,screen:f.points.map(project)};
+  })).filter(f=>view(f.normal)[2]>.00001);
+  for(const f of polygons){
+   const p=project(M.average(f.points));
+   if(inside(p,regularFaces[selected].points.map(project))||visiblePiece(p)!==f.piece||boundaryPiece(p)===null)continue;
+   sideHits++;
+   const candidates=edgeCandidates(p);
+   const expected=layers.flatMap((ids,i)=>i!==selected&&ids.includes(f.piece)?[i]:[]);
+   assert.equal(candidates.map(e=>e.axis).sort((a,b)=>a-b).join(','),expected.join(','));
+   assert.ok(onSelectedFace(p));
+   const previous=orbits.length,previousSettles=settles,previousTurns=turns.length;
+   const edge=candidates[0],to=[p[0]+edge.tangent[0]*24,p[1]+edge.tangent[1]*24];
+   canvas.onpointerdown(event(p));canvas.onpointermove(event(to));canvas.onpointerup(event(to));
+   assert.equal(turns.length,previousTurns+1);
+   canvas.onpointerdown(event(p));canvas.onpointermove(event([900,900]));
+   canvas.onpointerdown(event([0,0],2));canvas.onpointermove(event([50,50],2));
+   canvas.onpointerup(event([900,900]));canvas.onpointerup(event([50,50],2));
+   assert.equal(orbits.length,previous);assert.equal(settles,previousSettles);
+   animation={};assert.ok(onSelectedFace(p));animation=null;
+  }
+ }
+ assert.ok(sideHits>0);
+ // A closer unrelated surface must occlude a boundary block.
+ const boundary=layers[0].find(id=>id!==centerIds[0]);selected=0;
+ const surface=(piece,z)=>({piece,screen:[[0,0,z],[10,0,z],[0,10,z]]});
+ polygons=[surface(boundary,0),surface(centerIds[1],1)];
+ assert.equal(boundaryPiece([2,2]),null);
+ polygons=[];centerIds=savedCenters;zoom=1;
+}
+// The extra band accepts starts 10% inward, but not 25%, at every zoom.
+for(selected=0;selected<12;selected++){
+ const normal=M.axes[selected],right=M.norm(M.cross(normal,[.13,1,.27])),up=M.cross(normal,right);
+ camera=[right,up,normal].map(v=>M.rotate(v,right,.3));
+ const face=regularFaces[selected];
+ for(let i=0;i<5;i++){
+  const midpoint=M.average([face.points[i],face.points[(i+1)%5]]);
+  const axis=M.axes.findIndex((n,j)=>j!==selected&&Math.abs(M.dot(n,face.points[i])-1)<1e-6&&Math.abs(M.dot(n,face.points[(i+1)%5])-1)<1e-6);
+  for(scale of [110,360,650])for(const extra of [.10,.25]){
+   const depth=M.regularDepth-(1-M.regularDepth)*extra;
+   const t=(depth-M.dot(M.axes[axis],normal))/(1-M.dot(M.axes[axis],normal));
+   const point=project(M.add(M.mul(midpoint,t),M.mul(normal,1-t)));
+   assert.equal(edgeCandidates(point).some(e=>e.axis===axis),extra===.10);
+  }
+  assert.equal(edgeCandidates(project(normal)).length,0);
  }
 }
 scale=200;
@@ -104,9 +162,32 @@ canvas.onpointerdown(event([400,400],2));canvas.onpointerup(event(q));canvas.onp
 assert.equal(turns.length,count);
 canvas.onpointerdown(event(p));
 canvas.onpointermove(event([p[0]-edge.tangent[1]*24,p[1]+edge.tangent[0]*24]));
-canvas.onpointerup(event(p));assert.ok(orbits.length);assert.equal(turns.length,count);
+canvas.onpointerup(event(p));assert.equal(orbits.length,0);assert.equal(turns.length,count);
 assert.equal(edgeCandidates(project(M.axes[0])).length,0);
 assert.equal(edgeCandidates([0,0]).length,0);
+// Lock the entire gesture, including movement outside the face and multitouch.
+for(const shell of ['regular','irregular']){
+ shape=shell;
+ polygons=[{piece:0,color:0,normal:M.axes[0],points:regularFaces[0].points,screen:regularFaces[0].points.map(project)}];
+ for(const busy of [false,true]){
+  animation=busy?{}:null;
+  const from=project(M.axes[0]),outside=[900,900],oldSettles=settles,oldZoom=zoom;
+  assert.ok(onSelectedFace(from));
+  canvas.onpointerdown(event(from));canvas.onpointermove(event(outside));
+  canvas.onpointerdown(event([400,400],2));canvas.onpointermove(event([450,450],2));
+  canvas.onpointerup(event(outside));canvas.onpointerup(event([450,450],2));
+  assert.equal(orbits.length,0);assert.equal(settles,oldSettles);assert.notEqual(zoom,oldZoom);
+ }
+ animation=null;
+}
+// Outside-face gestures still rotate, unless another finger starts on the face.
+shape='regular';
+canvas.onpointerdown(event([0,0]));canvas.onpointermove(event([25,0]));canvas.onpointerup(event([25,0]));
+assert.equal(orbits.length,1);
+const oldOrbitCount=orbits.length;
+canvas.onpointerdown(event([0,0]));canvas.onpointerdown(event(project(M.axes[0]),2));
+canvas.onpointermove(event([25,0]));canvas.onpointerup(event([25,0]));canvas.onpointerup(event(project(M.axes[0]),2));
+assert.equal(orbits.length,oldOrbitCount);
 shape='irregular';assert.equal(edgeCandidates(p).length,0);
 shape='regular';selected=null;assert.equal(edgeCandidates(p).length,0);
 selected=0;animation={};assert.equal(edgeCandidates(p).length,0);

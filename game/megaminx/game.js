@@ -239,10 +239,40 @@ function pick(p){let nearest=null,depth=-Infinity;const s=Math.min(width,height)
 
 // The regular shell stays fixed after every complete turn, even when scrambled.
 const regularFaces=M.shell(M.axes);
+// Resolve the frontmost rendered surface, including dark seams and side faces.
+function visiblePiece(p){
+ let piece=null,depth=-Infinity;
+ for(const f of polygons){
+  if(!inside(p,f.screen))continue;
+  const [a,b,c]=f.screen,n=M.cross(M.sub(b,a),M.sub(c,a));
+  if(Math.abs(n[2])<1e-9)continue;
+  const z=a[2]-(n[0]*(p[0]-a[0])+n[1]*(p[1]-a[1]))/n[2];
+  if(z>depth){depth=z;piece=f.piece;}
+ }
+ return piece;
+}
+function boundaryPiece(p){
+ if(inputMode!=='gestures'||selected===null)return null;
+ const piece=visiblePiece(p);
+ return piece!==centerIds[selected]&&(M.layer(pieces,selected)||[]).includes(piece)?piece:null;
+}
+// Match the selected surface even when turning is temporarily unavailable.
+function onSelectedFace(p){
+ if(inputMode!=='gestures'||selected===null)return false;
+ if(boundaryPiece(p)!==null)return true;
+ const anchor=M.axes[selected];
+ if(shape==='regular')return view(anchor)[2]>.00001&&inside(p,regularFaces[selected].points.map(project));
+ const center=polygons.filter(f=>f.piece===centerIds[selected]&&f.color>=0)
+  .sort((a,b)=>M.dot(b.normal,anchor)-M.dot(a.normal,anchor))[0];
+ if(!center)return false;
+ const depth=M.dot(center.normal,center.points[0]);
+ return polygons.some(f=>f.color>=0&&M.dot(f.normal,center.normal)>1-1e-6&&
+  f.points.every(v=>Math.abs(M.dot(center.normal,v)-depth)<1e-6)&&inside(p,f.screen));
+}
 function edgeCandidates(p){
  if(inputMode!=='gestures'||shape!=='regular'||selected===null||animation||queue.length||view(M.axes[selected])[2]<=.05)return [];
- const face=regularFaces[selected],screen=face.points.map(project);
- if(!inside(p,screen))return [];
+ const face=regularFaces[selected],screen=face.points.map(project),piece=boundaryPiece(p);
+ if(piece===null&&!inside(p,screen))return [];
  const candidates=[];
  for(let i=0;i<face.points.length;i++){
   const a=face.points[i],b=face.points[(i+1)%face.points.length],u=screen[i],v=screen[(i+1)%screen.length];
@@ -251,16 +281,16 @@ function edgeCandidates(p){
   const distance=Math.abs(dx*(p[1]-u[1])-dy*(p[0]-u[0]))/length;
   const axis=M.axes.findIndex((n,j)=>j!==selected&&Math.abs(M.dot(n,a)-1)<1e-6&&Math.abs(M.dot(n,b)-1)<1e-6);
   if(axis<0)continue;
-  // This layer's intersection with the selected face is exactly its edge
-  // block plus the two corner blocks. Test the whole region, including seams.
-  const region=[],n=M.axes[axis];
+  // Extend the edge/corner band inward by 15% for easier starts near seams.
+  // Keep it inside the selected face; center-block gestures retain priority.
+  const region=[],n=M.axes[axis],hitDepth=M.regularDepth-(1-M.regularDepth)*.15;
   for(let j=0;j<face.points.length;j++){
    const from=face.points[j],to=face.points[(j+1)%face.points.length];
-   const df=M.dot(n,from)-M.regularDepth,dt=M.dot(n,to)-M.regularDepth;
+   const df=M.dot(n,from)-hitDepth,dt=M.dot(n,to)-hitDepth;
    if(df>=0)region.push(from);
    if((df>=0)!==(dt>=0))region.push(M.add(from,M.mul(M.sub(to,from),df/(df-dt))));
   }
-  if(!inside(p,region.map(project)))continue;
+  if(piece!==null?!(M.layer(pieces,axis)||[]).includes(piece):!inside(p,region.map(project)))continue;
   const velocity=view(M.cross(M.axes[axis],M.average([a,b])));
   candidates.push({axis,distance,tangent:[dx/length,dy/length],velocity:[velocity[0],-velocity[1]]});
  }
@@ -298,8 +328,8 @@ function clearPreview(){dragPreview=null;dirty=true;}
 
 function pos(e){const r=canvas.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
 function pair(){const [a,b]=[...pointers.values()];return {distance:Math.hypot(a[0]-b[0],a[1]-b[1]),center:[(a[0]+b[0])/2,(a[1]+b[1])/2]};}
-canvas.onpointerdown=e=>{if(e.button!==0)return;stopViewAnimation();canvas.setPointerCapture(e.pointerId);const p=pos(e);pointers.set(e.pointerId,p);if(pointers.size===1){gesture={start:p,last:p,moved:false,multi:false,edges:edgeCandidates(p),center:inputMode==='gestures'&&!animation&&!queue.length?pick(p):null,turn:null,orbit:false,selected};}else{gesture.multi=true;clearPreview();pinch=pair();}};
-canvas.onpointermove=e=>{if(!pointers.has(e.pointerId))return;const p=pos(e);pointers.set(e.pointerId,p);if(pointers.size>=2){const q=pair();if(pinch){zoom=Math.max(.55,Math.min(1.8,zoom*q.distance/Math.max(1,pinch.distance)));orbit(q.center[0]-pinch.center[0],q.center[1]-pinch.center[1]);}pinch=q;dirty=true;return;}if(!gesture||gesture.multi)return;
+canvas.onpointerdown=e=>{if(e.button!==0)return;stopViewAnimation();canvas.setPointerCapture(e.pointerId);const p=pos(e);pointers.set(e.pointerId,p);if(pointers.size===1){gesture={start:p,last:p,moved:false,multi:false,blockOrbit:onSelectedFace(p),edges:edgeCandidates(p),center:inputMode==='gestures'&&!animation&&!queue.length?pick(p):null,turn:null,orbit:false,selected};}else{gesture.multi=true;gesture.blockOrbit ||= onSelectedFace(p);clearPreview();pinch=pair();}};
+canvas.onpointermove=e=>{if(!pointers.has(e.pointerId))return;const p=pos(e);pointers.set(e.pointerId,p);if(pointers.size>=2){const q=pair();if(pinch){zoom=Math.max(.55,Math.min(1.8,zoom*q.distance/Math.max(1,pinch.distance)));if(!gesture.blockOrbit)orbit(q.center[0]-pinch.center[0],q.center[1]-pinch.center[1]);}pinch=q;dirty=true;return;}if(!gesture||gesture.multi)return;
  const dx=p[0]-gesture.start[0],dy=p[1]-gesture.start[1],distance=Math.hypot(dx,dy);
  if(distance>7)gesture.moved=true;
  if(gesture.turn){previewTurn(dx,dy);return;}
@@ -312,7 +342,7 @@ canvas.onpointermove=e=>{if(!pointers.has(e.pointerId))return;const p=pos(e);poi
   gesture.turn=edgeTurn(gesture.edges,dx,dy);
   if(gesture.turn){previewTurn(dx,dy);return;}
  }
- if(gesture.moved){gesture.orbit=true;orbit(p[0]-gesture.last[0],p[1]-gesture.last[1]);}gesture.last=p;};
+ if(gesture.moved&&!gesture.blockOrbit){gesture.orbit=true;orbit(p[0]-gesture.last[0],p[1]-gesture.last[1]);}gesture.last=p;};
 function release(e,cancel=false){if(!pointers.has(e.pointerId))return;const p=pos(e);pointers.delete(e.pointerId);
  if(!cancel&&gesture&&!gesture.multi){
   if(gesture.turn){
@@ -329,7 +359,7 @@ function release(e,cancel=false){if(!pointers.has(e.pointerId))return;const p=po
   else if(!gesture.moved&&!animation)select(pick(p));
  }
  if(cancel)clearPreview();
- if(!pointers.size){const movedView=gesture?.orbit||gesture?.multi;clearPreview();gesture=null;pinch=null;if(movedView)settleView();save();}}
+ if(!pointers.size){const movedView=gesture?.orbit||(gesture?.multi&&!gesture.blockOrbit);clearPreview();gesture=null;pinch=null;if(movedView)settleView();save();}}
 canvas.onpointerup=e=>release(e);canvas.onpointercancel=e=>release(e,true);canvas.onlostpointercapture=e=>release(e,true);
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.55,Math.min(1.8,zoom*Math.exp(-e.deltaY*.001)));dirty=true;scheduleSave();},{passive:false});
 function captureGameKey(e){

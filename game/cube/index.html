@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#edf0f4">
+<title>长方体魔方</title><link rel="stylesheet" href="style.css">
+</head>
+<body><main id="game">
+<button class="corner-button" id="menu" aria-label="打开菜单" title="菜单" aria-haspopup="dialog" aria-controls="modal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<button class="corner-button" id="theme" aria-label="切换至夜间模式" title="切换至夜间模式" aria-pressed="false"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A9 9 0 0 1 10 3a9 9 0 1 0 10.5 11Z"/></svg></button>
+<button class="corner-button" id="shuffle" aria-label="打乱" title="打乱"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><g fill="currentColor" stroke="none"><circle cx="7.5" cy="7.5" r="1.3"/><circle cx="16.5" cy="7.5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="7.5" cy="16.5" r="1.3"/><circle cx="16.5" cy="16.5" r="1.3"/></g></svg></button>
+<button class="corner-button" id="reset" aria-label="复原" title="复原"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0-2 8M20 4v6h-6"/></svg></button>
+<button class="corner-button" id="undo" aria-label="撤销" title="撤销" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
+<button class="corner-button" id="redo" aria-label="重做" title="重做" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+<button id="timer-control" class="clock" aria-label="计时控制" aria-haspopup="dialog" aria-controls="modal"><span id="timer">00:00</span><span id="ms">.000</span></button>
+<div id="stage">
+<canvas id="puzzle" aria-label="长方体魔方；拖动魔方块转层，拖动空白处调整视角。" tabindex="0"></canvas>
+</div>
+<div id="align-options" role="group" aria-label="角度对齐"></div>
+<output id="status" class="sr-only" aria-live="polite"></output>
+</main>
+<dialog id="modal"><div class="dialog-top"><h2 id="dialog-title">菜单</h2><button id="close" aria-label="关闭">×</button></div>
+<div id="menu-panel" class="menu-list">
+<form id="dimensions"><fieldset><legend>尺寸</legend><div class="dimensions">
+<div class="dimension-row menu-setting"><span>X</span><div id="size-x" class="switch-track size-track" role="group" aria-label="X 尺寸"><label><input type="radio" name="size-x" value="1"><span>1</span></label><label><input type="radio" name="size-x" value="2"><span>2</span></label><label><input type="radio" name="size-x" value="3" checked><span>3</span></label><label><input type="radio" name="size-x" value="4"><span>4</span></label><label><input type="radio" name="size-x" value="5"><span>5</span></label></div></div>
+<div class="dimension-row menu-setting"><span>Y</span><div id="size-y" class="switch-track size-track" role="group" aria-label="Y 尺寸"><label><input type="radio" name="size-y" value="1"><span>1</span></label><label><input type="radio" name="size-y" value="2"><span>2</span></label><label><input type="radio" name="size-y" value="3" checked><span>3</span></label><label><input type="radio" name="size-y" value="4"><span>4</span></label><label><input type="radio" name="size-y" value="5"><span>5</span></label></div></div>
+<div class="dimension-row menu-setting"><span>Z</span><div id="size-z" class="switch-track size-track" role="group" aria-label="Z 尺寸"><label><input type="radio" name="size-z" value="1"><span>1</span></label><label><input type="radio" name="size-z" value="2"><span>2</span></label><label><input type="radio" name="size-z" value="3" checked><span>3</span></label><label><input type="radio" name="size-z" value="4"><span>4</span></label><label><input type="radio" name="size-z" value="5"><span>5</span></label></div></div>
+</div><button type="submit">应用尺寸并复原</button></fieldset></form>
+<button id="dim" class="menu-switch" aria-pressed="false"><span>低亮度</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
+<button id="fullscreen" class="menu-switch" aria-pressed="false"><span>全屏</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
+
+</div><div id="dialog-content" hidden></div></dialog>
+<div id="toast" role="status"></div>
+<script src="model.js"></script><script src="game.js"></script></body></html>

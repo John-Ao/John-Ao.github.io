@@ -21,7 +21,11 @@ function validate(data){
  if(!Number.isInteger(fastCount)||fastCount<0||fastCount>(data.pending||'').length)throw Error('转动速度记录无效');
  return {v:1,shape:data.shape,moves:data.moves,pending:data.pending||'',fast:fastCount>0,fastCount,elapsed:data.elapsed,status:data.status,camera:data.camera.map(v=>v.slice()),zoom:data.zoom,selected:data.selected};
 }
-function validateRecord(raw){const state=validate(raw);if(typeof raw.id!=='string'||!raw.id||raw.id.length>100||![raw.created,raw.updated].every(x=>Number.isFinite(x)&&x>0&&x<8e15))throw Error('历史记录无效');return {...state,id:raw.id,created:raw.created,updated:raw.updated};}
+function validateRecord(raw){const state=validate(raw);if(typeof raw.id!=='string'||!raw.id||raw.id.length>100||![raw.created,raw.updated].every(x=>Number.isFinite(x)&&x>0&&x<8e15))throw Error('历史记录无效');if(raw.favorite!==undefined&&typeof raw.favorite!=='boolean')throw Error('收藏状态无效');return {...state,id:raw.id,created:raw.created,updated:raw.updated,...(raw.favorite!==undefined?{favorite:raw.favorite}:{}),...(typeof raw.completed==='boolean'?{completed:raw.completed}:{}),...(typeof raw.solvePending==='boolean'?{solvePending:raw.solvePending}:{})};}
+function retainRecords(records){
+ let count=0;
+ return [...records].sort((a,b)=>b.updated-a.updated).filter(r=>r.favorite||count++<100);
+}
 function encode(data){return btoa(JSON.stringify(validate(data))).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');}
 function decode(text){if(text.length>70000)throw Error('分享链接过长');return validate(JSON.parse(atob(text.replaceAll('-','+').replaceAll('_','/'))));}
 class Stopwatch{
@@ -34,6 +38,6 @@ class Stopwatch{
  pause(reason){this.settle();this.blockers.add(reason);}
  resume(reason){this.blockers.delete(reason);if(this.running)this.start();}
 }
-const api={encodeMoves,decodeMoves,validate,validateRecord,encode,decode,Stopwatch};
+const api={encodeMoves,decodeMoves,validate,validateRecord,retainRecords,encode,decode,Stopwatch};
 if(typeof module!=='undefined')module.exports=api;else root.PentafishSession=api;
 })(globalThis);

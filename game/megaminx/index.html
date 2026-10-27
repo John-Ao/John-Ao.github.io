@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#edf0f4">
-<title>五魔方</title><link rel="stylesheet" href="style.css?v=18">
+<title>五魔方</title><link rel="stylesheet" href="style.css?v=20">
 </head>
 <body><main id="game">
 <button class="corner-button" id="menu" aria-label="打开菜单" title="菜单" aria-haspopup="dialog" aria-controls="modal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -24,6 +24,7 @@
 </main>
 <dialog id="modal"><div class="dialog-top"><h2 id="dialog-title">菜单</h2><button id="close" aria-label="关闭">×</button></div>
 <div id="menu-panel" class="menu-list">
+<button id="new-puzzle">新建魔方</button><button id="switch-puzzle">切换魔方</button>
 <div class="menu-setting"><span>魔方外形</span><div class="shape-switch" role="group" aria-label="魔方外形"><button id="regular" aria-pressed="false">常规</button><button id="irregular" aria-pressed="true">异形</button></div></div>
 <button id="input-mode" class="menu-switch" aria-pressed="true"><span>操作模式</span><span class="switch-track" aria-hidden="true"><span>按钮</span><span>手势</span></span></button>
 <button id="auto-center" class="menu-switch" aria-pressed="true"><span>自动切换中心点</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
@@ -33,4 +34,4 @@
 <button id="share">分享局面</button><button id="history-open">历史记录</button>
 </div><div id="dialog-content" hidden></div></dialog>
 <div id="toast" role="status"></div><input id="import-file" type="file" accept="application/json,.json" hidden>
-<script src="model.js?v=14"></script><script src="session.js?v=2"></script><script src="game.js?v=27"></script></body></html>
+<script src="model.js?v=14"></script><script src="session.js?v=5"></script><script src="game.js?v=31"></script></body></html>

@@ -29,6 +29,12 @@ function recordViewStep(target){
  const after={camera:target.map(row=>row.slice()),selected:autoCenter?frontFace().axis:selected};
  const action={type:'view',before,after};recordStep(action);viewStepAction=action;
 }
+function finishSolve(notify=true){
+ const shouldNotify=notify&&currentRun.solvePending===true;
+ currentRun.solvePending=false;
+ clock.stop();currentRun.status='solved';currentRun.completed=true;
+ if(shouldNotify)toast('已还原 · '+timeText(clock.elapsed()));
+}
 function clearSteps(){undoSteps=[];redoSteps=[];viewStepStart=null;viewStepAction=null;}
 function replayStep(redo){
  if(animation||queue.length||viewAnimation||dragPreview||pointers.size)return;
@@ -38,7 +44,7 @@ function replayStep(redo){
   const dir=redo?step.dir:-step.dir;
   if(!M.turn(pieces,step.axis,dir))return;
   history.push([step.axis,dir]);selected=step.axis;updateAutoCenter();
-  if(M.isSolved(pieces,shape)){clock.stop();currentRun.status='solved';}
+  if(M.isSolved(pieces,shape))finishSolve();
   else{currentRun.status='running';clock.start();}
  }else{
   const state=redo?step.after:step.before;
@@ -127,7 +133,7 @@ function draw(time){requestAnimationFrame(draw);if(!dirty&&!animation&&!viewAnim
    animation=null;theta=0;
    if(queue.length)startTurn(...queue.shift());
    else if(completed.duration!==SCRAMBLE_TURN_MS&&M.isSolved(pieces,shape)){
-    clock.stop();currentRun.status='solved';toast('已还原 · '+timeText(clock.elapsed()));
+    finishSolve();
    }
    if(!animation)settleView();
    update();save();
@@ -212,7 +218,7 @@ function startTurn(axis,dir,record=true,duration=MANUAL_TURN_MS){
  const ids=M.layer(pieces,axis);
  if(!ids?.length){queue=[];update('这一层被跨切面块阻挡');return false;}
  if(duration!==SCRAMBLE_TURN_MS){
-  if(currentRun.status==='solved'){save();newRun('running');}
+  if(currentRun.status==='solved')clock.reset();
   currentRun.status='running';clock.start();
  }
  animation={axis,dir,record,duration,ids:new Set(ids),start:performance.now()};selected=axis;update('转动中');save();return true;
@@ -220,7 +226,7 @@ function startTurn(axis,dir,record=true,duration=MANUAL_TURN_MS){
 function select(i){selected=i;updateAutoCenter();dirty=true;save();}
 $('cw').onclick=()=>startTurn(selected,-1);$('ccw').onclick=()=>startTurn(selected,1);
 $('reset').onclick=()=>confirmAction('复原魔方','确定复原魔方？当前局面和撤销记录将被清空。','复原',()=>{
- clearSteps();stopViewAnimation();clearPreview();gesture=null;save();animation=null;queue=[];history=[];pieces=M.create(shape);selected=null;settleView();newRun('idle');update();save();tick();
+ clearSteps();stopViewAnimation();clearPreview();gesture=null;save();animation=null;queue=[];history=[];pieces=M.create(shape);selected=null;settleView();finishSolve(false);update();save();tick();
 });
 function setShape(next){
  if(animation||queue.length||dragPreview||shape===next)return;
@@ -231,7 +237,7 @@ function setShape(next){
 }
 $('regular').onclick=()=>setShape('regular');
 $('irregular').onclick=()=>setShape('irregular');
-$('shuffle').onclick=()=>{if(animation||dragPreview)return;confirmAction('打乱魔方','确定打乱魔方？将重新打乱并清空撤销记录。','打乱',()=>{if(animation||dragPreview)return;clearSteps();stopViewAnimation();save();newRun('ready');tick();let previous=-1;for(let i=0;i<SCRAMBLE_STEPS;i++){let a;do{a=Math.floor(Math.random()*12);}while(a===previous);previous=a;queue.push([a,Math.random()<.5?-1:1,true,SCRAMBLE_TURN_MS]);}startTurn(...queue.shift());});};
+$('shuffle').onclick=()=>{if(animation||dragPreview)return;confirmAction('打乱魔方','确定打乱魔方？将重新打乱并清空撤销记录。','打乱',()=>{if(animation||dragPreview)return;clearSteps();stopViewAnimation();save();if(currentRun.completed)newRun('ready');else{clock.reset();currentRun.status='ready';currentRun.recorded=true;}currentRun.solvePending=true;tick();let previous=-1;for(let i=0;i<SCRAMBLE_STEPS;i++){let a;do{a=Math.floor(Math.random()*12);}while(a===previous);previous=a;queue.push([a,Math.random()<.5?-1:1,true,SCRAMBLE_TURN_MS]);}startTurn(...queue.shift());});};
 function inside(p,vs){let hit=false;for(let i=0,j=vs.length-1;i<vs.length;j=i++){const a=vs[i],b=vs[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])hit=!hit;}return hit;}
 function pick(p){let nearest=null,depth=-Infinity;const s=Math.min(width,height)*.34*zoom,x=(p[0]-width/2)/s,y=(height/2-p[1])/s;
  for(const f of polygons){if(!inside(p,f.screen))continue;const n=view(f.normal),v=view(f.points[0]),z=(M.dot(n,v)-n[0]*x-n[1]*y)/n[2];if(z<=depth)continue;depth=z;nearest=f;}
@@ -380,7 +386,7 @@ window.addEventListener('keyup',captureGameKey,{capture:true,passive:false});
 function timeText(ms){const n=Math.floor(ms/1000);return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}.${String(Math.floor(ms%1000)).padStart(3,'0')}`;}
 function tick(){const [main,fraction]=timeText(clock.elapsed()).split('.');$('timer').textContent=main;$('ms').textContent='.'+fraction;}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),3200);}
-function newRun(status){clock.reset();currentRun={id:globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`,created:Date.now(),status};}
+function newRun(status,recorded=true){clock.reset();currentRun={recorded,completed:false,solvePending:false,id:globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`,created:Date.now(),status};}
 function snapshot(){
  const waiting=[...(animation?[[animation.axis,animation.dir,true,animation.duration]]:[]),...queue];
  const pending=waiting.map(([a,d])=>[a,d]);
@@ -388,24 +394,24 @@ function snapshot(){
  return {v:1,shape,moves:S.encodeMoves(history),pending:S.encodeMoves(pending),fast:fastCount>0,fastCount,elapsed:clock.elapsed(),status:currentRun.status,camera:camera.map(v=>v.slice()),zoom,selected};
 }
 function remember(){
- if(!currentRun)return;
- const record={...snapshot(),id:currentRun.id,created:currentRun.created,updated:Date.now()};
- const index=records.findIndex(r=>r.id===record.id);if(index>=0)records.splice(index,1);
- records.unshift(record);records=records.slice(0,100);
+ if(!currentRun||currentRun.recorded===false)return;
+ const record={...snapshot(),id:currentRun.id,created:currentRun.created,completed:!!currentRun.completed,solvePending:currentRun.solvePending===true,updated:Date.now()};
+ const index=records.findIndex(r=>r.id===record.id);if(index>=0){record.favorite=records[index].favorite===true;records.splice(index,1);}
+ records.unshift(record);records=S.retainRecords(records);
 }
 function persist(){
  clearTimeout(saveTimer);saveTimer=null;remember();
- try{localStorage.setItem(STORAGE_KEY,JSON.stringify({v:1,current:currentRun.id,records}));}
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify({v:1,current:currentRun.id,active:{...snapshot(),...currentRun,updated:Date.now()},records}));}
  catch{if(!storageWarning){toast('本地存储不可用或已满，请在历史记录中导出备份');storageWarning=true;}}
 }
 function scheduleSave(){if(!currentRun)return;clearTimeout(saveTimer);saveTimer=setTimeout(persist,180);}
 function save(){remember();scheduleSave();}
-function restore(raw,{fresh=false}={}){
+function restore(raw,{fresh=false,recorded=true}={}){
  const state=S.validate(raw);
  const restored=M.fromMoves(state.shape,S.decodeMoves(state.moves));
  clearSteps();animation=null;queue=[];shape=state.shape;pieces=restored;history=S.decodeMoves(state.moves);
  viewAnimation=null;camera=state.camera;zoom=state.zoom;selected=state.selected;
- if(fresh)newRun(state.status);else currentRun={id:raw.id,created:raw.created,status:state.status};
+ if(fresh)newRun(state.status,recorded);else currentRun={id:raw.id,created:raw.created,status:state.status,recorded:raw.recorded!==false,completed:raw.completed??state.status==='solved',solvePending:raw.solvePending===true};
  clock.reset(state.elapsed);if(state.status==='running')clock.start();
  $('regular').setAttribute('aria-pressed',shape==='regular');$('irregular').setAttribute('aria-pressed',shape==='irregular');
  queue=S.decodeMoves(state.pending).map(([a,d],i)=>[a,d,true,i<state.fastCount?SCRAMBLE_TURN_MS:state.pending.length>1?QUEUED_TURN_MS:MANUAL_TURN_MS]);
@@ -553,42 +559,112 @@ function share(){
  if(location.protocol==='file:')paragraph(box,'跨设备分享需使用静态网站地址。');
 }
 $('share').onclick=share;
-function showRecords(){
- persist();const box=openDialog('历史记录');
+function createPuzzle(nextShape){
+ persist();
+ const state={...snapshot(),shape:nextShape,moves:'',pending:'',fast:false,fastCount:0,elapsed:0,status:'idle',selected:null,zoom:1};
+ restore(state,{fresh:true});persist();closeDialog();toast('已新建魔方');
+}
+function showNewPuzzle(){
+ const box=openDialog('新建魔方');
+ paragraph(box,'选择外形，当前魔方会自动保存。');
  const actions=document.createElement('div');actions.className='dialog-actions';
+ actions.append(button('常规魔方',()=>createPuzzle('regular')),button('异形魔方',()=>createPuzzle('irregular')));box.append(actions);
+}
+function switchPuzzle(id){
+ if(id===currentRun.id){closeDialog();return;}
+ persist();const record=records.find(r=>r.id===id);
+ if(!record){toast('该魔方记录已不存在');return;}
+ restore(record);persist();closeDialog();toast('已切换魔方');
+}
+$('new-puzzle').onclick=showNewPuzzle;
+$('switch-puzzle').onclick=()=>showRecords(true);
+// Rasterize at thumbnail resolution with a depth buffer, including irregular pieces.
+function drawThumbnail(target,record){
+ const size=target.width,ctx=target.getContext('2d');
+ const image=ctx.createImageData(size,size),depth=new Float64Array(size*size).fill(-Infinity);
+ const model=M.fromMoves(record.shape,S.decodeMoves(record.moves));
+ const faces=model.flatMap(piece=>piece.faces.map(face=>({color:face.color,points:face.points.map(p=>record.camera.map(row=>M.dot(row,p)))})));
+ const extent=Math.max(...faces.flatMap(face=>face.points.flatMap(p=>[Math.abs(p[0]),Math.abs(p[1])])));
+ const scale=(size-10)/(2*extent);
+ function triangle(a,b,c,color){
+  const area=(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);if(Math.abs(area)<1e-9)return;
+  for(let y=Math.max(0,Math.floor(Math.min(a[1],b[1],c[1])));y<=Math.min(size-1,Math.ceil(Math.max(a[1],b[1],c[1])));y++)
+   for(let x=Math.max(0,Math.floor(Math.min(a[0],b[0],c[0])));x<=Math.min(size-1,Math.ceil(Math.max(a[0],b[0],c[0])));x++){
+    const u=((b[0]-x-.5)*(c[1]-y-.5)-(b[1]-y-.5)*(c[0]-x-.5))/area;
+    const v=((c[0]-x-.5)*(a[1]-y-.5)-(c[1]-y-.5)*(a[0]-x-.5))/area,w=1-u-v;
+    if(Math.min(u,v,w)<-1e-7)continue;
+    const z=u*a[2]+v*b[2]+w*c[2],i=y*size+x;if(z<=depth[i])continue;
+    depth[i]=z;image.data.set([...color,255],i*4);
+   }
+ }
+ function polygon(points,color){for(let i=1;i<points.length-1;i++)triangle(points[0],points[i],points[i+1],color);}
+ for(const face of faces){
+  const normal=M.norm(M.cross(M.sub(face.points[1],face.points[0]),M.sub(face.points[2],face.points[0])));if(normal[2]<=.00001)continue;
+  const points=face.points.map(p=>[size/2+p[0]*scale,size/2-p[1]*scale,p[2]]);
+  polygon(points,[28,33,38]);if(face.color<0)continue;
+  const light=.78+.22*Math.max(0,M.dot(normal,M.norm([-.3,.6,1])));
+  const color=colors[face.color].slice(1).match(/../g).map(v=>Math.round(parseInt(v,16)*light));
+  polygon(M.insetProjected(points,.65).map(p=>[p[0],p[1],p[2]+.0001]),color);
+ }
+ ctx.putImageData(image,0,0);
+}
+const thumbnailRecords=new WeakMap();
+const thumbnailObserver=new IntersectionObserver(entries=>{
+ for(const entry of entries)if(entry.isIntersecting){
+  const target=entry.target;thumbnailObserver.unobserve(target);
+  drawThumbnail(target,thumbnailRecords.get(target));
+ }
+});
+function showRecords(switching=false){
+ thumbnailObserver.disconnect();
+ persist();const box=openDialog(switching?'切换魔方':'历史记录');
+ const actions=document.createElement('div');actions.className='dialog-actions';
+ if(!switching){
  actions.append(button('导出 JSON',()=>{
   persist();const blob=new Blob([JSON.stringify({v:1,records},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='megaminx-history.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
  }),button('导入 JSON',()=>$('import-file').click()));box.append(actions);
- paragraph(box,`${records.length} 条记录 · 保存在当前浏览器，最多保留 100 条`);
+ }
+ paragraph(box,`${records.length} 条记录 · 保存在当前浏览器，未收藏最多保留 100 条，收藏不自动清理`);
  const list=document.createElement('div');list.className='history-list';
- for(const r of [...records].sort((a,b)=>b.updated-a.updated)){
-  const item=button('',()=>{persist();restore(r);closeDialog();toast('已恢复历史局面');});item.className='history-item';
+ for(const r of [...records].sort((a,b)=>Number(!!b.favorite)-Number(!!a.favorite)||b.updated-a.updated)){
+  const row=document.createElement('div');row.className='history-row';
+  const item=button('',()=>switchPuzzle(r.id));item.className='history-item';
+  const thumbnail=document.createElement('canvas');thumbnail.width=thumbnail.height=96;thumbnail.className='history-thumbnail';thumbnail.setAttribute('aria-hidden','true');
+  const details=document.createElement('span');details.className='history-details';
+  const star=button(r.favorite?'★':'☆',()=>{
+   persist();const record=records.find(record=>record.id===r.id);
+   if(record)record.favorite=!record.favorite;persist();showRecords(switching);
+   [...$('dialog-content').querySelectorAll('[data-favorite]')].find(el=>el.dataset.favorite===r.id)?.focus();
+  });
+  star.className='history-star';star.dataset.favorite=r.id;star.setAttribute('aria-pressed',!!r.favorite);star.setAttribute('aria-label',r.favorite?'取消收藏':'收藏魔方');
+  thumbnailObserver.observe(thumbnail);thumbnailRecords.set(thumbnail,r);
+  item.setAttribute('aria-current',r.id===currentRun.id?'true':'false');
   const title=document.createElement('span');title.textContent=`${r.shape==='regular'?'常规':'异形'} · ${{idle:'未开始',ready:'待开始',running:'进行中',solved:'已还原'}[r.status]}${r.id===currentRun.id?' · 当前':''}`;
   const time=document.createElement('span');time.textContent=timeText(r.elapsed);
-  const date=document.createElement('small');date.textContent=new Date(r.created).toLocaleString('zh-CN',{hour12:false});item.append(title,time,date);list.append(item);
+  const date=document.createElement('small');date.textContent=new Date(r.created).toLocaleString('zh-CN',{hour12:false});details.append(title,time,date);item.append(thumbnail,details);row.append(item,star);list.append(row);
  }
  box.append(list);
 }
-$('history-open').onclick=showRecords;
+$('history-open').onclick=()=>showRecords();
 $('import-file').onchange=async e=>{
  const file=e.target.files[0];e.target.value='';if(!file)return;
  try{
   if(file.size>8*1024*1024)throw Error('文件不能超过 8 MB');const raw=JSON.parse(await file.text());
-  if(raw.v!==1||!Array.isArray(raw.records)||raw.records.length>100)throw Error('历史记录格式不正确或超过 100 条');
+  if(raw.v!==1||!Array.isArray(raw.records))throw Error('历史记录格式不正确');
   const incoming=raw.records.map(S.validateRecord);if(new Set(incoming.map(r=>r.id)).size!==incoming.length)throw Error('记录编号重复');
   persist();const map=new Map(records.map(r=>[r.id,r]));for(const r of incoming)if(r.id!==currentRun.id&&(!map.has(r.id)||map.get(r.id).updated<r.updated))map.set(r.id,r);
-  records=[...map.values()].sort((a,b)=>b.updated-a.updated).slice(0,100);persist();showRecords();toast('历史记录已导入');
+  records=S.retainRecords([...map.values()]);persist();showRecords();toast('历史记录已导入');
  }catch(e){toast('导入失败：'+e.message);}
 };
 function fromHash(){
  if(!location.hash.startsWith('#p='))return false;
  try{
-  const state=S.decode(location.hash.slice(3));if(currentRun)persist();restore(state,{fresh:true});
+  const state=S.decode(location.hash.slice(3));if(currentRun)persist();restore(state,{fresh:true,recorded:false});
   globalThis.history.replaceState(null,'',location.pathname+location.search);toast('已载入分享局面');return true;
  }catch(e){toast('分享链接无效：'+e.message);return false;}
 }
 function initialize(){
- let current=null,theme='day',savedInputMode='gestures';
+ let current=null,active=null,theme='day',savedInputMode='gestures';
  try{
   savedInputMode=localStorage.getItem(INPUT_MODE_KEY)||'gestures';
   const options=JSON.parse(localStorage.getItem(VIEW_OPTIONS_KEY)||'{}');
@@ -596,15 +672,16 @@ function initialize(){
   const savedTheme=localStorage.getItem(THEME_KEY);if(['day','night','dim'].includes(savedTheme))theme=savedTheme;
   const stored=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
   if(stored?.v===1&&Array.isArray(stored.records)){
-   records=stored.records.slice(0,100).flatMap(raw=>{try{return [S.validateRecord(raw)];}catch{return [];}});current=stored.current;
+   records=stored.records.flatMap(raw=>{try{return [S.validateRecord(raw)];}catch{return [];}});current=stored.current;
+   if(stored.active){try{active={...S.validateRecord(stored.active),recorded:stored.active.recorded!==false};}catch{}}
   }
  }catch{toast('本地记录无法读取');}
  setInputMode(savedInputMode);updateViewOptions();applyTheme(theme);
  if(document.hidden)clock.pause('hidden');
  if(fromHash())return;
- const saved=records.find(r=>r.id===current);
+ const saved=active?.id===current?active:records.find(r=>r.id===current);
  if(saved){try{restore(saved);return;}catch{toast('上次局面无法恢复');}}
- newRun('idle');settleView();tick();save();
+ newRun('idle',false);settleView();tick();save();
 }
 window.addEventListener('hashchange',fromHash);
 document.addEventListener('visibilitychange',()=>{

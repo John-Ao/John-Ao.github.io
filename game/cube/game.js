@@ -111,7 +111,7 @@ function render(){
    const light=(.78+.22*Math.max(0,M.dot(camera[2],n)))*(dim?.42:1);
    function polygon(screen,color,bias=0){const tint=color.map(c=>c*light);for(let j=1;j<screen.length-1;j++)for(const i of [0,j,j+1])data.push((screen[i][0]/width)*2-1,1-screen[i][1]/height*2,1-2*cameraDistance()/(4*(cameraDistance()-screen[i][2]))-bias,...tint);}
    const screen=body.map(project);polygon(screen,[.055,.062,.07]);
-   if(sticker)polygon(P.insetFace(body,STICKER_INSET/scale).map(project),rgb(colors[sticker.color]),.0005);
+   if(sticker)polygon(P.insetFace(body,STICKER_INSET/scale).map(project),rgb(colors[P.stickerColorIndex('cuboid',sticker.color)]),.0005);
    polygons.push({screen,world:body,piece,normal});
   }
  }
@@ -254,10 +254,12 @@ $('shuffle').onclick=()=>{if(busy())return;confirmAction('打乱','打乱当前�
  for(let i=0;i<60;i++){let axis;do{axis=Math.floor(Math.random()*3);}while(axis===previous);previous=axis;const layer=Math.floor(Math.random()*size[axis])-(size[axis]-1)/2,dir=Math.random()<.5?-1:1;M.turn(pieces,size,axis,layer,dir);moves.push([axis,layer,dir]);}
  cursor=moves.length;controls();dirty=true;save();
  });};
-function syncSizes(){syncTypeUI();['x','y','z'].forEach((a,i)=>{const group=$('size-'+a);group.querySelector(`input[value="${size[i]}"]`).checked=true;group.style.setProperty('--index',size[i]-1);});}
+// Menu X/Y/Z mean height/width/depth; geometry remains right/up/front.
+const dimensionAxes=[1,0,2];
+function syncSizes(){syncTypeUI();['x','y','z'].forEach((a,i)=>{const value=size[dimensionAxes[i]],group=$('size-'+a);group.querySelector(`input[value="${value}"]`).checked=true;group.style.setProperty('--index',value-1);});}
 for(const a of ['x','y','z'])$('size-'+a).addEventListener('change',e=>{$('size-'+a).style.setProperty('--index',Number(e.target.value)-1);});
 syncSizes();
-$('dimensions').onsubmit=e=>{e.preventDefault();if(puzzleType!=='cuboid'){const next=Number($('order-track').querySelector('input:checked').value);confirmAction('应用阶数',`将${typeNames[puzzleType]}设为 ${next} 阶并复原？`,()=>{order=next;reset();});return;}const next=['x','y','z'].map(a=>Number($('size-'+a).querySelector('input:checked').value));if(M.validSize(next))confirmAction('应用尺寸',`将魔方设为 ${next.join(' × ')} 并复原？`,()=>reset(next));};
+$('dimensions').onsubmit=e=>{e.preventDefault();if(puzzleType!=='cuboid'){const next=Number($('order-track').querySelector('input:checked').value);confirmAction('应用阶数',`将${typeNames[puzzleType]}设为 ${next} 阶并复原？`,()=>{order=next;reset();});return;}const dimensions=['x','y','z'].map(a=>Number($('size-'+a).querySelector('input:checked').value)),next=dimensionAxes.map(i=>dimensions[i]);if(M.validSize(next))confirmAction('应用尺寸',`将魔方设为 ${dimensions.join(' × ')} 并复原？`,()=>reset(next));};
 function cubeIcon(mode){
  const basis=pose(mode===0?3:mode),vertices=[];for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1])vertices.push([x,y,z]);
  let paths='';vertices.forEach((v,i)=>vertices.forEach((w,j)=>{if(j<=i||v.filter((n,k)=>n!==w[k]).length!==1)return;

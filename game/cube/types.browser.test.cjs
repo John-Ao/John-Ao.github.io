@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
  const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const page=await browser.newPage({viewport:{width:390,height:844}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(process.env.CUBE_URL||'http://127.0.0.1:18765/game/cube/');
- for(const [type,targetOrder] of [['pyraminx',5],['skewb',2],['skewb',3],['skewb',4],['skewb',5],['skewb',6],['skewb',7],['megaminx',2],['megaminx',4],['megaminx',6],['megaminx',5],['sq1',3],['gear',3],['octahedron',3],['octahedron',5],['icosahedron',3],['icosahedron',5],['cuboid',3]]){
+ for(const [type,targetOrder] of [['pyraminx',5],['skewb',2],['skewb',3],['skewb',4],['skewb',5],['skewb',6],['skewb',7],['megaminx',2],['megaminx',4],['megaminx',6],['megaminx',5],['sq1',3],['gear',3],['octahedron',3],['octahedron',4],['octahedron',6],['octahedron',5],['icosahedron',3],['icosahedron',4],['icosahedron',6],['icosahedron',5],['cuboid',3]]){
   await page.locator('#menu').click();await page.locator(`#puzzle-types input[value="${type}"]`).check();
   assert.equal(await page.evaluate(()=>puzzleType),type);
   assert.equal(await page.locator('.dimensions').isVisible(),type==='cuboid');

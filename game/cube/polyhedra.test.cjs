@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),P=require('./polyhedra');
 let seed=314159;const random=()=>((seed=(1664525*seed+1013904223)>>>0)/2**32);
-for(const type of Object.keys(P.orders))for(const order of P.orders[type].length?P.orders[type]:[3]){
+for(const type of Object.keys(P.orders).filter(type=>type!=='gear'))for(const order of P.orders[type].length?P.orders[type]:[3]){
  const pieces=P.create(type,order),original=JSON.parse(JSON.stringify(pieces));assert(P.solved(pieces,type,order));
  for(const [axis,layer] of P.legalMoves(pieces,type,order)){
   const count=Math.round(2*Math.PI/P.step(type,order,axis));for(let i=0;i<count;i++)P.turn(pieces,type,order,axis,layer,1);assert(P.solved(pieces,type,order));

@@ -42,12 +42,12 @@ fieldset>button{width:100%}#align-options{position:fixed;z-index:2;bottom:max(6p
 
 [hidden]{display:none!important}
 .type-setting{display:grid;gap:8px;margin-bottom:8px;font-size:14px}
-.type-track{--count:7;--index:0;grid-template-columns:repeat(var(--count),1fr);width:100%}
+.type-track{--count:8;--index:0;grid-template-columns:repeat(var(--count),1fr);width:100%}
 .type-track::before{width:calc((100% - 6px)/var(--count));transform:translateX(calc(var(--index)*100%))}
 .type-track label{position:relative;min-width:0;text-align:center}
 .type-track input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
 .type-track span{display:flex;align-items:center;justify-content:center;min-height:44px;pointer-events:none}
-.type-track svg{width:30px;height:30px;stroke-width:1.2}
+.type-track svg{width:30px;height:30px;fill:currentColor;stroke:none}
 .type-track input:checked+span{color:var(--bg)}
 .type-track input:focus-visible+span{outline:3px solid var(--highlight);border-radius:8px}
 #order-track{grid-template-columns:repeat(var(--count),1fr)}
@@ -64,3 +64,10 @@ fieldset>button{width:100%}#align-options{position:fixed;z-index:2;bottom:max(6p
 .type-track input:focus-visible+span,.size-track input:focus-visible+span{outline-offset:-3px}
 
 body:has(#help-overlay[open]) #help{visibility:hidden}
+
+/* Balance the apparent area of triangular and faceted icons against squares. */
+.type-track svg{transform:scale(var(--icon-scale,1))}
+.type-track input[value=pyraminx]+span{--icon-scale:1.2}
+.type-track input[value=megaminx]+span{--icon-scale:1.12}
+.type-track input[value=octahedron]+span{--icon-scale:1.25}
+.type-track input[value=icosahedron]+span{--icon-scale:1.14}

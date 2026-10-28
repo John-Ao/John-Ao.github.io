@@ -1,6 +1,7 @@
 /* Convex-piece models; cuts and legal moves use the same geometric planes. */
 (function(root){
 'use strict';
+const Gear=typeof module!=='undefined'?require('./gear'):root.GearCube;
 const EPS=1e-6,TAU=2*Math.PI;
 const add=(a,b)=>a.map((v,i)=>v+b[i]),sub=(a,b)=>a.map((v,i)=>v-b[i]),mul=(a,s)=>a.map(v=>v*s);
 const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=a=>mul(a,1/Math.hypot(...a));
@@ -23,16 +24,62 @@ const phi=(1+Math.sqrt(5))/2,mega=[];for(const a of [-1,1])for(const b of [-1,1]
 const octa=[...tetra,...tetra.map(n=>mul(n,-1))];
 const icosa=octa.map(n=>n.slice());
 for(const a of [-1,1])for(const b of [-1,1])icosa.push(norm([0,a/phi,b*phi]),norm([a*phi,0,b/phi]),norm([a/phi,b*phi,0]));
-const orders={pyraminx:[2,3,4,5],megaminx:[3,5,7],skewb:[3,5,7],octahedron:[3,5],icosahedron:[3,5],sq1:[]};
+const icoVertices=unique(shell(icosa).flatMap(f=>f.points)),icoAxes=icoVertices.map(norm);
+const icoRadius=Math.hypot(...icoVertices[0]);
+const icoAdjacent=Math.max(...icoVertices.slice(1).map(v=>dot(v,icoAxes[0])));
+const orders={pyraminx:[2,3,4,5],megaminx:[2,3,4,5,6,7],skewb:[2,3,4,5,6,7],octahedron:[3,5],icosahedron:[3,5],sq1:[],gear:[]};
 function valid(type,order){return Object.hasOwn(orders,type)&&(orders[type].length?orders[type].includes(order):order===3);}
 function config(type,order){if(!valid(type,order))throw Error('无效魔方类型或阶数');
+ if(type==='gear')return Gear.config;
  if(type==='pyraminx')return {normals:tetra.map(n=>mul(n,-1)),axes:tetra,cuts:Array.from({length:order-1},(_,i)=>-1+4*(i+1)/order),step:TAU/3};
+ if(type==='megaminx'&&order%2===0)return {normals:mega,axes:mega,cuts:Array.from({length:order/2},(_,i)=>1-(i+1)*.4/(order/2)),step:TAU/5};
  if(type==='megaminx')return {normals:mega,axes:mega,cuts:Array.from({length:(order-1)/2},(_,i)=>1-(i+1)*(1-Math.sqrt(5)/3)/((order-1)/2)),step:TAU/5};
- if(type==='skewb')return {normals:cubeNormals,axes:tetra,cuts:Array.from({length:order-2},(_,i)=>Math.ceil(i/2)*(i%2?1:-1)*.4),step:TAU/3};
- if(type==='octahedron'||type==='icosahedron'){const normals=type==='octahedron'?octa:icosa;return {normals,axes:normals,cuts:Array.from({length:(order-1)/2},(_,i)=>1-(i+1)*.25/((order-1)/2)),step:TAU/3};}
+ if(type==='skewb'){
+  // Keep cuts strictly between the cube-vertex levels ±1/sqrt(3).
+  // End segments are half the width of interior segments. The 2nd order
+  // still has the original single center cut and two equal corner segments.
+  const cuts=Array.from({length:order-1},(_,i)=>(2*(i+.5)/(order-1)-1)/Math.sqrt(3));
+  // Retain the existing center / positive / negative move indices for evens.
+  cuts.sort((a,b)=>Math.abs(Math.abs(a)-Math.abs(b))<EPS?b-a:Math.abs(a)-Math.abs(b));
+  // Append opposite caps so existing saved axis indices remain valid.
+  return {normals:cubeNormals,axes:[...tetra,...tetra.map(n=>mul(n,-1))],cuts,step:TAU/3};
+ }
+ // On each triangular face, intersections divide every edge into equal parts.
+ if(type==='octahedron')return {normals:octa,axes:octa,cuts:Array.from({length:(order-1)/2},(_,i)=>1-2*(i+1)/order),step:TAU/3};
+ if(type==='icosahedron')return {normals:icosa,axes:icoAxes,cuts:Array.from({length:order-1},(_,i)=>icoRadius-(icoRadius-icoAdjacent)*(i+1)/order),step:TAU/5};
  return {normals:cubeNormals,axes:[[0,1,0],[0,-1,0],[1,0,0]],cuts:[.5],step:Math.PI/6};
 }
-function create(type,order=3){const c=config(type,order);let cells=[shell(c.normals)];
+// Even minxes divide each face into five corner kites, then subdivide each
+// kite into an m x m grid. Shared edge/corner tiles form one physical piece.
+function createEvenMinx(order){
+ const m=order/2,groups=new Map(),key=v=>v.map(x=>Math.round(x*1e7)).join(',');
+ for(const face of shell(mega)){
+  const center=average(face.points),vs=face.points;
+  for(let k=0;k<5;k++){
+   const vertex=vs[k],prev=mul(add(vertex,vs[(k+4)%5]),.5),next=mul(add(vertex,vs[(k+1)%5]),.5);
+   const at=(u,v)=>add(add(mul(center,(1-u)*(1-v)),mul(prev,u*(1-v))),add(mul(vertex,u*v),mul(next,(1-u)*v)));
+   for(let i=0;i<m;i++)for(let j=0;j<m;j++){
+    const points=[at(i/m,j/m),at((i+1)/m,j/m),at((i+1)/m,(j+1)/m),at(i/m,(j+1)/m)];
+    let id;
+    if(i===m-1&&j===m-1)id='corner:'+key(vertex);
+    else if(i===m-1)id='edge:'+key(at(1,(j+.5)/m));
+    else if(j===m-1)id='edge:'+key(at((i+.5)/m,1));
+    else id=`center:${face.color}:${k}:${i}:${j}`;
+    if(!groups.has(id))groups.set(id,[]);groups.get(id).push({color:face.color,points});
+   }
+  }
+ }
+ return [...groups.values()].map((outer,id)=>{
+  const edges=new Map();for(const f of outer)f.points.forEach((a,i)=>{const b=f.points[(i+1)%f.points.length],edge=[key(a),key(b)].sort().join('|');if(edges.has(edge))edges.delete(edge);else edges.set(edge,[a,b]);});
+  const faces=[...outer,...[...edges.values()].map(([a,b])=>({color:-1,points:[b,a,[0,0,0]]}))];
+  return {id,faces,anchor:average(outer.flatMap(f=>f.points))};
+ });
+}
+
+function create(type,order=type==='skewb'?2:3){
+ if(type==='gear'){config(type,order);return Gear.create();}
+ if(type==='megaminx'&&order%2===0){config(type,order);return createEvenMinx(order);}
+const c=config(type,order);let cells=[shell(c.normals)];
  if(type==='sq1'){
   const body=cells[0];cells=[];
   for(const sign of [-1,1]){let angle=0;for(let i=0;i<8;i++){const next=angle+(i%2?1:2)*Math.PI/6;
@@ -42,13 +89,58 @@ function create(type,order=3){const c=config(type,order);let cells=[shell(c.norm
  }else for(const n of c.axes)for(const d of c.cuts){const next=[];for(const fs of cells){const ds=fs.flatMap(f=>f.points.map(p=>dot(p,n)-d));if(Math.min(...ds)<-EPS&&Math.max(...ds)>EPS)next.push(clip(fs,n,d),clip(fs,mul(n,-1),-d));else next.push(fs);}cells=next;}
  return cells.filter(fs=>fs.some(f=>f.color>=0)).map((faces,id)=>({id,faces}));
 }
-function selection(pieces,type,order,axis,layer){const c=config(type,order);if(!Number.isInteger(axis)||axis<0||axis>=c.axes.length||!Number.isInteger(layer)||layer<0||layer>=(type==='sq1'?1:c.cuts.length))return null;
+function selection(pieces,type,order,axis,layer){if(type==='gear')return Gear.selection(pieces,axis,layer);const c=config(type,order);if(!Number.isInteger(axis)||axis<0||axis>=c.axes.length||!Number.isInteger(layer)||layer<0||layer>=(type==='sq1'?1:type==='pyraminx'?order:c.cuts.length))return null;
+ if(type==='pyraminx'){
+  const n=c.axes[axis],low=layer===order-1?-1:c.cuts[layer],high=layer===order-1?c.cuts[0]:(c.cuts[layer+1]??3),ids=[];
+  for(const p of pieces){
+   const heights=p.faces.flatMap(f=>f.points.map(v=>dot(v,n))),min=Math.min(...heights),max=Math.max(...heights);
+   if(max<=low+EPS||min>=high-EPS)continue;
+   if(min<low-EPS||max>high+EPS)return null;
+   ids.push(p.id);
+  }
+  return ids.length?ids:null;
+ }
  const n=c.axes[axis],d=type==='sq1'?(axis===2?0:.5):c.cuts[layer],ids=[];
- for(const p of pieces){const ds=p.faces.flatMap(f=>f.points.map(v=>dot(v,n)-d));if(Math.max(...ds)<=EPS)continue;if(Math.min(...ds)<-EPS)return null;ids.push(p.id);}return ids.length?ids:null;
+ for(const p of pieces){if(p.anchor){if(dot(p.anchor,n)>d+EPS)ids.push(p.id);continue;}const ds=p.faces.flatMap(f=>f.points.map(v=>dot(v,n)-d));if(Math.max(...ds)<=EPS)continue;if(Math.min(...ds)<-EPS)return null;ids.push(p.id);}return ids.length?ids:null;
 }
 function step(type,order,axis){return type==='sq1'&&axis===2?Math.PI:config(type,order).step;}
-function turn(pieces,type,order,axis,layer,dir){const ids=selection(pieces,type,order,axis,layer);if(!ids||![-1,1].includes(dir))throw Error('当前切面被块阻挡');const set=new Set(ids),c=config(type,order);for(const p of pieces)if(set.has(p.id))for(const f of p.faces)f.points=f.points.map(v=>rotate(v,c.axes[axis],step(type,order,axis)*dir));}
-function solved(pieces,type,order){const ns=config(type,order).normals;return pieces.every(p=>p.faces.every(f=>f.color<0||f.points.every(v=>Math.abs(dot(v,ns[f.color])-1)<1e-5)));}
-function legalMoves(pieces,type,order){const c=config(type,order),out=[];for(let a=0;a<c.axes.length;a++)for(let l=0;l<(type==='sq1'?1:c.cuts.length);l++)if(selection(pieces,type,order,a,l))out.push([a,l]);return out;}
-const api={shell,orders,valid,config,create,selection,step,turn,solved,legalMoves,rotate,average,norm,cross,sub,dot};if(typeof module!=='undefined')module.exports=api;else root.PolyPuzzle=api;
+function turn(pieces,type,order,axis,layer,dir){if(type==='gear'){Gear.turn(pieces,axis,layer,dir);return;}const ids=selection(pieces,type,order,axis,layer);if(!ids||![-1,1].includes(dir))throw Error('当前切面被块阻挡');const set=new Set(ids),c=config(type,order);for(const p of pieces)if(set.has(p.id)){const angle=step(type,order,axis)*dir;if(p.anchor)p.anchor=rotate(p.anchor,c.axes[axis],angle);for(const f of p.faces)f.points=f.points.map(v=>rotate(v,c.axes[axis],angle));}}
+function solved(pieces,type,order){if(type==='gear')return Gear.solved(pieces);const ns=config(type,order).normals;return pieces.every(p=>p.faces.every(f=>f.color<0||f.points.every(v=>Math.abs(dot(v,ns[f.color])-1)<1e-5)));}
+function legalMoves(pieces,type,order){const c=config(type,order),out=[];for(let a=0;a<c.axes.length;a++)for(let l=0;l<(type==='sq1'?1:type==='pyraminx'?order:c.cuts.length);l++)if(selection(pieces,type,order,a,l))out.push([a,l]);return out;}
+// Offset every projected edge inward by the same CSS-pixel distance. Clipping
+// may remove a tiny sticker entirely; never replace it with a scaled polygon.
+function insetProjected(points,distance,cameraDistance=Infinity){
+ if(points.length<3)return [];
+ let result=points.map(p=>p.slice());
+ const area=points.reduce((sum,a,i)=>{const b=points[(i+1)%points.length];return sum+a[0]*b[1]-b[0]*a[1];},0);
+ if(Math.abs(area)<EPS)return [];const sign=area>0?1:-1;
+ for(let i=0;i<points.length&&result.length;i++){
+  const a=points[i],b=points[(i+1)%points.length],dx=b[0]-a[0],dy=b[1]-a[1],length=Math.hypot(dx,dy);if(length<EPS)continue;
+  const side=p=>sign*(dx*(p[1]-a[1])-dy*(p[0]-a[0]))/length-distance,next=[];
+  for(let j=0;j<result.length;j++){
+   const p=result[j],q=result[(j+1)%result.length],dp=side(p),dq=side(q);
+   if(dp>=0)next.push(p);
+   if((dp>=0)!==(dq>=0)){
+    const t=dp/(dp-dq),v=p.map((x,k)=>x+(q[k]-x)*t);
+    if(p.length>2&&Number.isFinite(cameraDistance))v[2]=cameraDistance-1/((1-t)/(cameraDistance-p[2])+t/(cameraDistance-q[2]));
+    next.push(v);
+   }
+  }
+  result=next;
+ }
+ return result.length>=3?result:[];
+}
+
+// Inset in the face's own plane, before perspective foreshortening. A screen
+// offset would consume disproportionately much of an almost edge-on sticker.
+function insetFace(points,distance){
+ if(points.length<3)return [];
+ const origin=points[0],edge=sub(points[1],origin);if(Math.hypot(...edge)<EPS)return [];
+ const u=norm(edge);let normal;
+ for(let i=2;i<points.length;i++){const n=cross(u,sub(points[i],origin));if(Math.hypot(...n)>EPS){normal=norm(n);break;}}
+ if(!normal)return [];
+ const v=cross(normal,u),flat=points.map(p=>{const q=sub(p,origin);return [dot(q,u),dot(q,v)];});
+ return insetProjected(flat,distance).map(([x,y])=>add(origin,add(mul(u,x),mul(v,y))));
+}
+const api={insetFace,insetProjected,shell,orders,valid,config,create,selection,step,turn,solved,legalMoves,rotate,average,norm,cross,sub,dot};if(typeof module!=='undefined')module.exports=api;else root.PolyPuzzle=api;
 })(globalThis);

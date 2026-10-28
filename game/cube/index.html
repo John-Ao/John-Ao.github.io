@@ -15,7 +15,7 @@
 <button id="timer-control" class="clock" aria-label="计时控制" aria-haspopup="dialog" aria-controls="modal"><span id="timer">00:00</span><span id="ms">.000</span></button>
 <div id="stage">
 <canvas id="puzzle" aria-label="长方体魔方；拖动魔方块转层，拖动空白处调整视角。" tabindex="0"></canvas>
-</div>
+<div id="clock-boards" hidden></div></div>
 <div id="align-options" role="group" aria-label="角度对齐"></div>
 <output id="status" class="sr-only" aria-live="polite"></output>
 </main>
@@ -26,7 +26,9 @@
 <div class="dimension-row menu-setting"><span title="上下">X</span><div id="size-x" class="switch-track size-track" role="group" aria-label="X 尺寸（上下）"><label><input type="radio" name="size-x" value="1"><span>1</span></label><label><input type="radio" name="size-x" value="2"><span>2</span></label><label><input type="radio" name="size-x" value="3" checked><span>3</span></label><label><input type="radio" name="size-x" value="4"><span>4</span></label><label><input type="radio" name="size-x" value="5"><span>5</span></label><label><input type="radio" name="size-x" value="6"><span>6</span></label><label><input type="radio" name="size-x" value="7"><span>7</span></label><label><input type="radio" name="size-x" value="8"><span>8</span></label><label><input type="radio" name="size-x" value="9"><span>9</span></label></div></div>
 <div class="dimension-row menu-setting"><span title="左右">Y</span><div id="size-y" class="switch-track size-track" role="group" aria-label="Y 尺寸（左右）"><label><input type="radio" name="size-y" value="1"><span>1</span></label><label><input type="radio" name="size-y" value="2"><span>2</span></label><label><input type="radio" name="size-y" value="3" checked><span>3</span></label><label><input type="radio" name="size-y" value="4"><span>4</span></label><label><input type="radio" name="size-y" value="5"><span>5</span></label><label><input type="radio" name="size-y" value="6"><span>6</span></label><label><input type="radio" name="size-y" value="7"><span>7</span></label><label><input type="radio" name="size-y" value="8"><span>8</span></label><label><input type="radio" name="size-y" value="9"><span>9</span></label></div></div>
 <div class="dimension-row menu-setting"><span title="前后">Z</span><div id="size-z" class="switch-track size-track" role="group" aria-label="Z 尺寸（前后）"><label><input type="radio" name="size-z" value="1"><span>1</span></label><label><input type="radio" name="size-z" value="2"><span>2</span></label><label><input type="radio" name="size-z" value="3" checked><span>3</span></label><label><input type="radio" name="size-z" value="4"><span>4</span></label><label><input type="radio" name="size-z" value="5"><span>5</span></label><label><input type="radio" name="size-z" value="6"><span>6</span></label><label><input type="radio" name="size-z" value="7"><span>7</span></label><label><input type="radio" name="size-z" value="8"><span>8</span></label><label><input type="radio" name="size-z" value="9"><span>9</span></label></div></div>
-</div><div id="order-row" class="menu-setting" hidden><span>阶数</span><div id="order-track" class="switch-track size-track" role="radiogroup" aria-label="阶数"></div></div><button type="submit">应用尺寸并复原</button></fieldset></form>
+</div><div id="order-row" class="menu-setting" hidden><span>阶数</span><div id="order-track" class="switch-track size-track" role="radiogroup" aria-label="阶数"></div></div><div id="clock-dimensions" hidden></div></fieldset></form>
+<div id="clock-settings" hidden><label class="menu-setting">转动方式<select id="clock-interaction"><option value="drag">圆弧拖动</option><option value="buttons">圆弧按钮</option></select></label><label class="menu-setting">排列方式<select id="clock-layout"><option value="auto">自动</option><option value="horizontal">左右</option><option value="vertical">上下</option></select></label></div>
+<button id="history-open">历史记录</button>
 <button id="share">分享链接</button>
 <button id="dim" class="menu-switch" aria-pressed="false"><span>低亮度</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
 <button id="fullscreen" class="menu-switch" aria-pressed="false"><span>全屏</span><span class="switch-track" aria-hidden="true"><span>关闭</span><span>开启</span></span></button>
@@ -36,7 +38,7 @@
 <p class="help-note help-menu" data-for="menu">菜单</p>
 <p class="help-note help-timer" data-for="timer-control">计时</p>
 <p class="help-note help-theme" data-for="theme">日夜<br>切换</p>
-<div class="help-gestures"><p><strong>拖动魔方块：转动一层</strong></p><p>拖动空白处：调整视角</p><p>双指捏合 / 滚轮：缩放</p><p>双指扭转：绕视线轴旋转</p><small><span id="turn-help">正方形截面转 90°，其余转 180°</span><br>手动转层开始计时，还原后停止</small></div>
+<div class="help-gestures"><p><strong>拖动魔方块：转动一层</strong></p><p>拖动空白处：调整视角</p><p>双指捏合 / 滚轮：缩放</p><p>双指扭转：绕视线轴旋转</p><small><span id="turn-help">正方形截面转 90°，其余转 180°</span><br>打乱后首次转层开始计时，首次还原停止</small></div>
 <p class="help-note help-undo" data-for="undo">撤销</p>
 <p class="help-note help-redo" data-for="redo">重做</p>
 <p class="help-note help-shuffle" data-for="shuffle">打乱</p>
@@ -44,4 +46,4 @@
 <p class="help-note help-align" data-for="align-options">角度对齐选项</p>
 </dialog>
 <div id="toast" role="status"></div>
-<script src="model.js"></script><script src="gear.js"></script><script src="polyhedra.js"></script><script src="alignment.js"></script><script src="types.js"></script><script src="game.js"></script></body></html>
+<script src="model.js"></script><script src="gear.js"></script><script src="polyhedra.js"></script><script src="alignment.js"></script><script src="types.js"></script><script src="clock-model.js"></script><script src="clock.js"></script><script src="thumbnails.js"></script><script src="session.js"></script><script src="game.js"></script></body></html>

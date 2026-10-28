@@ -1,8 +1,10 @@
 'use strict';
 function syncTypeUI(){
- syncAlignmentUI();
+ if(!menuDraft){syncAlignmentUI();syncClockUI();}else syncClockMenu();
+ const selected=menuDraft?.puzzleType||puzzleType,selectedOrder=menuDraft?.order??order;
  // Face stickers; octahedron and icosahedron show the whole solid with filled faces.
  const icons={
+ "clock":clockIcon(),
  "gear":GearCube.faceIcon(),
  "cuboid": "M2 2h6v6h-6ZM9 2h6v6h-6ZM16 2h6v6h-6ZM2 9h6v6h-6ZM9 9h6v6h-6ZM16 9h6v6h-6ZM2 16h6v6h-6ZM9 16h6v6h-6ZM16 16h6v6h-6Z",
  "pyraminx": "M5.8 15.16L8.67 20.12L11.53 15.16ZM5.33 15.43L2.47 20.39L8.2 20.39ZM15.33 20.12L18.2 15.16L12.47 15.16ZM9.13 20.39L14.87 20.39L12 15.43ZM15.8 20.39L21.53 20.39L18.67 15.43ZM9.13 9.38L12 14.35L14.87 9.38ZM8.67 9.65L5.8 14.62L11.53 14.62ZM12.47 14.62L18.2 14.62L15.33 9.65ZM12 3.88L9.13 8.84L14.87 8.84Z",
@@ -16,18 +18,18 @@ function syncTypeUI(){
  if(!group.children.length){Object.entries(typeNames).forEach(([type,name],i)=>{
   const label=document.createElement('label');label.title=name;const input=document.createElement('input');input.type='radio';input.name='puzzle-type';input.value=type;input.setAttribute('aria-label',name);
   const span=document.createElement('span');span.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="${icons[type]}"/></svg>`;label.append(input,span);group.append(label);
-  input.onchange=()=>{if(busy()){syncTypeUI();return;}save();puzzleType=type;order=type==='skewb'?2:3;snap=null;camera=pose(3);zoom=1;reset();snapView();};
+  input.onchange=()=>{if(!menuDraft)return;menuDraft.puzzleType=type;menuDraft.order=type===puzzleType?order:type==='skewb'?2:3;syncTypeUI();};
  });}
  group.style.setProperty('--count',Object.keys(typeNames).length);
- group.style.setProperty('--index',Object.keys(typeNames).indexOf(puzzleType));group.querySelector(`input[value="${puzzleType}"]`).checked=true;
- $('type-label').textContent='类型';document.title=typeNames[puzzleType];canvas.setAttribute('aria-label',`${typeNames[puzzleType]}；拖动魔方块转层，拖动空白处调整视角。`);
- const cuboid=puzzleType==='cuboid',hasOrder=!cuboid&&P.orders[puzzleType].length>0;
- $('dimensions').hidden=!cuboid&&!hasOrder;document.querySelector('.dimensions').hidden=!cuboid;$('order-row').hidden=!hasOrder;
- $('size-legend').textContent=cuboid?'尺寸':'阶数';$('dimensions').querySelector('button').textContent=cuboid?'应用尺寸并复原':'应用阶数并复原';
- if(hasOrder){const track=$('order-track'),values=P.orders[puzzleType];track.replaceChildren();track.style.setProperty('--count',values.length);track.style.setProperty('--index',values.indexOf(order));
-  values.forEach((n,i)=>{const label=document.createElement('label'),input=document.createElement('input'),span=document.createElement('span');input.type='radio';input.name='order';input.value=n;input.checked=n===order;span.textContent=n;input.onchange=()=>track.style.setProperty('--index',i);label.append(input,span);track.append(label);});
+ group.style.setProperty('--index',Object.keys(typeNames).indexOf(selected));group.querySelector(`input[value="${selected}"]`).checked=true;
+ $('type-label').textContent='类型';if(!menuDraft)document.title=typeNames[puzzleType];canvas.setAttribute('aria-label',`${typeNames[puzzleType]}；拖动魔方块转层，拖动空白处调整视角。`);
+ const cuboid=selected==='cuboid',clock=selected==='clock',hasOrder=!cuboid&&!clock&&P.orders[selected].length>0;
+ $('dimensions').hidden=!cuboid&&!clock&&!hasOrder;document.querySelector('.dimensions').hidden=!cuboid;$('order-row').hidden=!hasOrder;
+ $('size-legend').textContent=(cuboid||clock)?'尺寸':'阶数';
+ if(hasOrder){const track=$('order-track'),values=P.orders[selected];track.replaceChildren();track.style.setProperty('--count',values.length);track.style.setProperty('--index',values.indexOf(selectedOrder));
+  values.forEach((n,i)=>{const label=document.createElement('label'),input=document.createElement('input'),span=document.createElement('span');input.type='radio';input.name='order';input.value=n;input.checked=n===selectedOrder;span.textContent=n;input.onchange=()=>{track.style.setProperty('--index',i);if(menuDraft)menuDraft.order=n;};label.append(input,span);track.append(label);});
  }
- $('turn-help').textContent={cuboid:'正方形截面转 90°，其余转 180°',pyraminx:'沿顶点转轴转动 120°',megaminx:'绕面中心转动 72°',skewb:'沿对角转轴转动 120°',octahedron:'绕三角形面中心转动 120°',icosahedron:'绕顶点转动 72°',gear:'外层转 180°，中层联动 90°，齿轮同步自转',sq1:'上下层转 30°；中层翻转 180°，切面被阻挡时不可翻转'}[puzzleType];
+ $('turn-help').textContent={clock:'点击销钉切换联动区域；所有指针指向 12 点即还原',cuboid:'正方形截面转 90°，其余转 180°',pyraminx:'沿顶点转轴转动 120°',megaminx:'绕面中心转动 72°',skewb:'沿对角转轴转动 120°',octahedron:'绕三角形面中心转动 120°',icosahedron:'绕顶点转动 72°',gear:'外层转 180°，中层联动 90°，齿轮同步自转',sq1:'上下层转 30°；中层翻转 180°，切面被阻挡时不可翻转'}[puzzleType];
 }
 function renderPoly(){
  const data=[];polygons=[];const turn=animation||drag?.turn,c=P.config(puzzleType,order),ids=turn?new Set(P.selection(pieces,puzzleType,order,turn.axis,turn.layer)||[]):null;

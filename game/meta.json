@@ -1,6 +1,34 @@
 [
   {
-    "game": "7_wonders_duel"
+    "game": "cube",
+    "title": "魔方"
+  },
+  {
+    "game": "beads"
+  },
+  {
+    "game": "beads2",
+    "title": "匈牙利环"
+  },
+  {
+    "game": "lights_out",
+    "title": "关灯"
+  },
+  {
+    "game": "mastermind",
+    "title": "猜颜色"
+  },
+  {
+    "game": "slide",
+    "title": "滑动拼图"
+  },
+  {
+    "game": "tents_and_trees",
+    "title": "帐篷与树"
+  },
+  {
+    "game": "polyomino",
+    "title": "多米诺拼图"
   },
   {
     "game": "aeroplane_chess",
@@ -9,13 +37,6 @@
   {
     "game": "backgammon",
     "title": "双陆棋"
-  },
-  {
-    "game": "beads"
-  },
-  {
-    "game": "beads2",
-    "title": "匈牙利环"
   },
   {
     "game": "blokus"
@@ -41,12 +62,6 @@
     "title": "点格棋"
   },
   {
-    "game": "frosthaven"
-  },
-  {
-    "game": "gloomhaven"
-  },
-  {
     "game": "gomoku",
     "title": "五子棋"
   },
@@ -55,46 +70,42 @@
     "title": "昆虫棋"
   },
   {
-    "game": "jaipur",
-    "title": "斋普尔"
+    "game": "othello",
+    "title": "黑白棋"
   },
   {
-    "game": "keep_talking_and_nobody_explodes"
-  },
-  {
-    "game": "lights_out",
-    "title": "关灯"
-  },
-  {
-    "game": "magic_clock",
-    "title": "魔表"
-  },
-  {
-    "game": "mastermind",
-    "title": "猜颜色"
-  },
-  {
-    "game": "megaminx",
-    "title": "五魔方"
+    "game": "quoridor"
   },
   {
     "game": "monopoly",
     "title": "大富翁"
   },
   {
-    "game": "othello",
-    "title": "黑白棋"
+    "game": "jaipur",
+    "title": "斋普尔"
   },
   {
     "game": "patchwork",
     "title": "拼布艺术"
   },
   {
-    "game": "polyomino",
-    "title": "多米诺拼图"
+    "game": "splendor_duel",
+    "title": "璀璨宝石·对决"
   },
   {
-    "game": "quoridor"
+    "game": "tacta"
+  },
+  {
+    "game": "7_wonders_duel"
+  },
+  {
+    "game": "frosthaven"
+  },
+  {
+    "game": "gloomhaven"
+  },
+  {
+    "game": "keep_talking_and_nobody_explodes"
   },
   {
     "game": "radlands"
@@ -113,28 +124,13 @@
     "game": "sleeping_gods"
   },
   {
-    "game": "slide",
-    "title": "滑动拼图"
-  },
-  {
     "game": "space_rescue"
   },
   {
     "game": "spirit_island"
   },
   {
-    "game": "splendor_duel",
-    "title": "璀璨宝石·对决"
-  },
-  {
-    "game": "tacta"
-  },
-  {
     "game": "targi"
-  },
-  {
-    "game": "tents_and_trees",
-    "title": "帐篷与树"
   },
   {
     "game": "toy_battle"

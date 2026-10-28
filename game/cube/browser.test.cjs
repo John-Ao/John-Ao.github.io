@@ -16,7 +16,7 @@ await page.locator('#redo').click();await page.waitForTimeout(260);assert.equal(
 await page.reload();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>cursor),1);
 await page.locator('#align-options button').nth(0).click();await page.mouse.move(40,200);await page.mouse.down();await page.mouse.move(160,245,{steps:8});await page.mouse.up();await page.waitForTimeout(300);assert.notEqual(await page.evaluate(()=>JSON.stringify(camera)),initial);
 for(let i=0;i<4;i++){await page.locator('#align-options button').nth(i).click();await page.waitForTimeout(280);assert.equal(await page.evaluate(()=>align),i);}
-await page.locator('#menu').click();await page.locator('#size-x input[value="2"]').check();await page.locator('#size-y input[value="3"]').check();await page.locator('#size-z input[value="4"]').check();await page.locator('#dimensions button[type=submit]').click();await page.getByRole('button',{name:'确认',exact:true}).click();assert.deepEqual(await page.evaluate(()=>size),[3,2,4]);
+await page.locator('#menu').click();await page.locator('#size-x input[value="2"]').check();await page.locator('#size-y input[value="3"]').check();await page.locator('#size-z input[value="4"]').check();await page.locator('#close').click();await page.waitForTimeout(80);if(await page.getByRole('button',{name:'否',exact:true}).isVisible())await page.getByRole('button',{name:'否',exact:true}).click();assert.deepEqual(await page.evaluate(()=>size),[3,2,4]);
 await page.evaluate(()=>{camera=pose(1);dirty=true;});await page.waitForTimeout(50);
 const rect=await page.evaluate(()=>{const p=project([-.5,0,2]);return [p[0],p[1]+canvas.getBoundingClientRect().top];});
 await page.mouse.move(...rect);await page.mouse.down();await page.mouse.move(rect[0]+110,rect[1],{steps:8});await page.mouse.up();await page.waitForTimeout(250);assert.equal(await page.evaluate(()=>cursor),1);assert.equal(await page.evaluate(()=>M.step(size,moves[0][0])),Math.PI);
@@ -70,7 +70,7 @@ await page.setViewportSize({width:320,height:740});
 await page.locator('#menu').click();
 for(const a of ['x','y','z'])await page.locator(`#size-${a} input[value="9"]`).check();
 assert(await page.evaluate(()=>document.querySelector('.dimensions').scrollWidth<=document.querySelector('.dimensions').clientWidth));
-await page.locator('#dimensions button[type=submit]').click();await page.getByRole('button',{name:'确认',exact:true}).click();
+await page.locator('#close').click();await page.waitForTimeout(80);if(await page.getByRole('button',{name:'否',exact:true}).isVisible())await page.getByRole('button',{name:'否',exact:true}).click();
 assert.deepEqual(await page.evaluate(()=>size),[9,9,9]);
 await page.evaluate(()=>{M.turn(pieces,size,0,4,1);moves=[[0,4,1]];cursor=1;save();});
 const shared=await page.evaluate(()=>({url:shareURL(),state:JSON.stringify(pieces)}));

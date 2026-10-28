@@ -22,7 +22,7 @@ function syncTypeUI(){
  });}
  group.style.setProperty('--count',Object.keys(typeNames).length);
  group.style.setProperty('--index',Object.keys(typeNames).indexOf(selected));group.querySelector(`input[value="${selected}"]`).checked=true;
- $('type-label').textContent='类型';if(!menuDraft)document.title=typeNames[puzzleType];canvas.setAttribute('aria-label',`${typeNames[puzzleType]}；拖动魔方块转层，拖动空白处调整视角。`);
+ $('type-label').textContent='类型';canvas.setAttribute('aria-label',`${typeNames[puzzleType]}；拖动魔方块转层，拖动空白处调整视角。`);
  const cuboid=selected==='cuboid',clock=selected==='clock',hasOrder=!cuboid&&!clock&&P.orders[selected].length>0;
  $('dimensions').hidden=!cuboid&&!clock&&!hasOrder;document.querySelector('.dimensions').hidden=!cuboid;$('order-row').hidden=!hasOrder;
  $('size-legend').textContent=(cuboid||clock)?'尺寸':'阶数';
@@ -80,8 +80,7 @@ function skewbDiagonalCandidates(hit,candidates,config,inner){
   if(Math.abs(P.dot(vertex,n)-1)>1e-5)continue;
   // The cap parallel to the slice duplicates its direction; keep the slice.
   if(Math.hypot(...P.cross(tangent,P.cross(config.axes[axis],n)))<1e-6)continue;
-  const layers=candidates.filter(c=>c.axis===axis&&c.layer<config.cuts.length);
-  layers.sort((a,b)=>config.cuts[b.layer]-config.cuts[a.layer]);
+  const layers=candidates.filter(c=>c.axis===axis&&c.layer===0);
   if(layers.length)caps.push(layers[0]);
  }
  if(caps.length!==2)return null;
@@ -94,7 +93,7 @@ function skewbClickCandidates(hit,candidates,config,track,previous){
  // Keep every inner axis eligible; the swipe direction selects among them.
  // Opposite axes describe the same slices with reversed turn directions.
  if(!corner){
-  const inner=candidates.filter(c=>c.layer>=config.cuts.length);
+  const inner=candidates.filter(c=>c.layer>0);
   if(inner.length){
    const unique=inner.filter(c=>c.axis<config.axes.length/2);
    return skewbDiagonalCandidates(hit,candidates,config,unique)||unique;
@@ -116,7 +115,7 @@ function skewbClickCandidates(hit,candidates,config,track,previous){
  }
  if(!nearest)return [];
  const aligned=candidates.filter(c=>c.axis===nearest.axis);
- const inner=aligned.filter(c=>c.layer>=config.cuts.length);
+ const inner=aligned.filter(c=>c.layer>0);
  return inner.length?inner:aligned;
 }
 function pyraminxClickCandidates(hit,candidates,config){
@@ -126,12 +125,10 @@ function pyraminxClickCandidates(hit,candidates,config){
  return candidates.filter(c=>Math.abs(P.dot(config.axes[c.axis],hit.normal))<1-1e-5);
 }
 function octahedronClickCandidates(hit,candidates,config){
- // Keep legacy multi-layer caps replayable, but gestures select disjoint
- // slices. The central slab has identical membership on opposite axes.
+ // The central slab has identical membership on opposite axes.
  return candidates.filter(({axis,layer})=>
   Math.abs(P.dot(config.axes[axis],hit.normal))<1-1e-5&&
-  (layer===0||layer>=config.cuts.length)&&
-  (order%2===0||layer!==config.cuts.length||axis<config.axes.length/2));
+  (order%2===0||layer!==1||axis<config.axes.length/2));
 }
 
 function megaminxClickCandidates(hit,candidates,config){
@@ -174,5 +171,5 @@ function updatePolyDrag(){
   // At a shared boundary prefer the smaller independently turning cap.
   if(!best||score>best.score+1e-6||(Math.abs(score-best.score)<1e-6&&count<best.count))best={axis,layer,tangent,score,count};
  }
- drag.turn=best?{...best,angle:Math.max(-1,Math.min(1,(track.x*best.tangent[0]+track.y*best.tangent[1])/Math.max(70,Math.min(width,height)*.22)))*turnStep(best.axis)}:null;dirty=true;
+ drag.turn=best?{...best,angle:dragTurnAngle(best.axis,track.x*best.tangent[0]+track.y*best.tangent[1])}:null;dirty=true;
 }

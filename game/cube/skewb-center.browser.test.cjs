@@ -27,8 +27,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
   assert.deepEqual(await page.evaluate(()=>moves[0].slice(0,2)),[swipe.axis,swipe.layer]);assert.equal(await page.evaluate(()=>cursor),1);assert.equal(await page.evaluate(()=>moves[0][2]),1);
   await page.locator('#undo').click();await page.waitForFunction(()=>!animation);assert(await page.evaluate(()=>isSolved()));
   await page.locator('#redo').click();await page.waitForFunction(()=>!animation);assert.equal(await page.evaluate(()=>cursor),1);
-  const shared=await page.evaluate(()=>shareURL());await page.reload();assert.equal(await page.evaluate(()=>cursor),1);assert.equal(await page.evaluate(()=>moves[0][1]),swipe.layer);
-  await page.goto('about:blank');await page.goto(shared);await page.waitForFunction(()=>!location.hash);assert.equal(await page.evaluate(()=>cursor),1);assert.equal(await page.evaluate(()=>moves[0][1]),swipe.layer);
+  const expected=await page.evaluate(()=>boardState()),shared=await page.evaluate(()=>shareURL());await page.reload();assert.equal(await page.evaluate(()=>cursor),0);assert.equal(await page.evaluate(()=>boardState()),expected);
+  await page.goto('about:blank');await page.goto(shared);await page.waitForFunction(()=>!location.hash);assert.equal(await page.evaluate(()=>cursor),0);assert.equal(await page.evaluate(()=>boardState()),expected);
   assert.deepEqual(errors,[]);console.log('PASS skewb 2 browser: cross-region center drag, undo/redo, reload and share');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1);});

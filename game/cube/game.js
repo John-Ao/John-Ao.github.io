@@ -1,20 +1,20 @@
 'use strict';
 const M=Cuboid,$=id=>document.getElementById(id),canvas=$('puzzle'),gl=canvas.getContext('webgl',{antialias:true,alpha:true});
-const P=PolyPuzzle,STICKER_INSET=1.6;
+const P=PolyPuzzle,STICKER_INSET=1.6,SHUFFLE_STEPS=997;
 let puzzleType='cuboid',order=3;
 const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方',gear:'齿轮魔方',clock:'魔表'};
 function createPuzzle(){return puzzleType==='clock'?ClockPuzzle.fresh(...clockSize):puzzleType==='cuboid'?M.create(size):P.create(puzzleType,order);}
 function turnStep(axis){return puzzleType==='cuboid'?M.step(size,axis):P.step(puzzleType,order,axis);}
 function applyTurn(target,axis,layer,dir){if(puzzleType==='clock')ClockPuzzle.move(target,axis,layer,dir);else if(puzzleType==='cuboid')M.turn(target,size,axis,layer,dir);else P.turn(target,puzzleType,order,axis,layer,dir);}
 function isSolved(){return puzzleType==='clock'?ClockPuzzle.solved(pieces):puzzleType==='cuboid'?M.solved(pieces):P.solved(pieces,puzzleType,order);}
-const KEY='cuboid.session.v1',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55','#a979ce','#55c4c4','#eaa6c3','#b1cb67','#927454','#a1b8de','#d84fa3','#258880','#8b67dd','#f4b947','#abc5ec','#a24636','#b9d4a0','#e8b49a'];
+const KEY='cube.session',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55','#a979ce','#55c4c4','#eaa6c3','#b1cb67','#927454','#a1b8de','#d84fa3','#258880','#8b67dd','#f4b947','#abc5ec','#a24636','#b9d4a0','#e8b49a'];
 let clockSize=[3,3],clockPrefs={mode:'drag',layout:'auto'},menuDraft=null;
 let currentRun=newRun(),records=loadRecords();
-let size=[3,3,3],pieces=M.create(size),moves=[],cursor=0,align=3,zoom=1,theme='day',dim=false;
+let size=[3,3,3],pieces=M.create(size),moves=[],initialState=null,cursor=0,align=3,zoom=1,theme='day',dim=false;
 let camera=pose(3),width=1,height=1,scale=1,polygons=[],dirty=true,drag=null,animation=null,snap=null;
 let elapsed=0,running=false,lastTick=performance.now(),saveAt=0,toastTimer;
 const pointers=new Map();
-let pinch=null;
+let pinch=null,shuffleRecording=null,shuffling=false;
 function pose(mode){
  const yaw=mode===3?Math.PI/4:0,pitch=mode===3?Math.atan(1/Math.sqrt(2)):mode===2?Math.atan(.5):0;
  return M.axes.map(v=>M.rotate(M.rotate(v,0,-pitch),1,yaw));
@@ -24,70 +24,46 @@ function view(v){return camera.map(row=>M.dot(row,v));}
 function cameraDistance(){return (puzzleType==='cuboid'?Math.hypot(...size):5)*1.8;}
 function project(v){const q=view(v),perspective=cameraDistance()/(cameraDistance()-q[2]);return [width/2+q[0]*scale*perspective,height/2-q[1]*scale*perspective,q[2]];}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),2400);$('status').textContent=message;}
-function busy(){return !!animation||!!drag||!!pinch||!!clockDrag;}
-function controls(){ $('undo').disabled=busy()||cursor===0;$('redo').disabled=busy()||cursor===moves.length; }
-function snapshot(){return structuredClone({geometryVersion:3,pyraminxLayers:true,puzzleType,order,size,clockSize,clockPrefs,moves,cursor,camera,align,zoom,theme,dim,elapsed,running,run:currentRun});}
+function busy(){return shuffling||!!animation||!!drag||!!pinch||!!clockDrag;}
+function controls(){
+ $('undo').disabled=busy()||(shuffleRecording?shuffleRecording.operations.length===0:cursor===0);
+ $('redo').disabled=!!shuffleRecording||busy()||cursor===moves.length;
+ for(const id of ['menu','shuffle','reset','timer-control'])$(id).disabled=!!shuffleRecording||shuffling;
+ $('record-finish').disabled=busy()||!shuffleRecording?.operations.length;
+ if(shuffleRecording)$('record-count').textContent=`${new Set(shuffleRecording.operations.map(m=>m.join())).size} 种操作`;
+}
+function boardState(){return CubeState.encode({puzzleType,order,size,clockSize,pieces});}
+function snapshot(){return structuredClone({state:boardState(),initial:initialState,clockPrefs,camera,align,zoom,theme,dim,elapsed,running,run:currentRun});}
 function save(){
+ if(shuffleRecording||shuffling)return;
  rememberRun();
  try{localStorage.setItem(KEY,JSON.stringify(snapshot()));localStorage.setItem(HISTORY_KEY,JSON.stringify(records));}catch{toast('无法保存进度：浏览器存储不可用');}
 }
 function restore(shared){
  try{
   const s=shared||JSON.parse(localStorage.getItem(KEY));if(!s)return;
-  if(!M.validSize(s.size)||!Array.isArray(s.moves)||s.moves.length>100000||!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>s.moves.length)throw Error();
-  const nextType=s.puzzleType||'cuboid',legacySkewb=nextType==='skewb'&&(s.geometryVersion??1)<3,nextOrder=legacySkewb?(s.order??3)-1:(s.order??3);
-  if(nextType==='clock'){if(!ClockPuzzle.validSize(s.clockSize))throw Error();}else if(nextType!=='cuboid'&&!P.valid(nextType,nextOrder))throw Error();
-  if((s.geometryVersion??1)>3)throw Error();
-  if(legacySkewb&&nextOrder>2&&s.moves.length){
-   if(shared){toast('旧版高阶斜转分享包含过顶点切割，无法载入新模型');return;}
-   localStorage.setItem(KEY+'.skewb-vertex-cut-backup',JSON.stringify(s));
-   s.moves=[];s.cursor=0;s.elapsed=0;s.running=false;
-   toast('斜转已取消过顶点切割，旧局面已备份并复原');
-  }
-  if(nextType==='icosahedron'&&(s.geometryVersion??1)<2&&s.moves.length){
-   if(shared){toast('旧版二十面体分享使用转面规则，无法载入转角模型');return;}
-   localStorage.setItem(KEY+'.icosahedron-face-backup',JSON.stringify(s));
-   s.moves=[];s.cursor=0;s.elapsed=0;s.running=false;
-   toast('二十面体已更新为转角，旧转面局面已备份并复原');
-  }
-  // Legacy pyramid moves rotated every slice between the cut and the tip.
-  // Expand them into disjoint slices to preserve the saved position and redo.
-  if(nextType==='pyraminx'&&!s.pyraminxLayers){
-   const expanded=[];let expandedCursor=0;
-   s.moves.forEach((move,i)=>{
-    if(!Array.isArray(move)||move.length!==3)throw Error();
-    const [a,l,d]=move;
-    if(!Number.isInteger(a)||a<0||a>=4||!Number.isInteger(l)||l<0||l>=nextOrder-1||![-1,1].includes(d))throw Error();
-    for(let slice=l;slice<nextOrder-1;slice++)expanded.push([a,slice,d]);
-    if(i<s.cursor)expandedCursor=expanded.length;
-   });
-   s.moves=expanded;s.cursor=expandedCursor;
-  }
-  const restored=nextType==='clock'?ClockPuzzle.fresh(...s.clockSize):nextType==='cuboid'?M.create(s.size):P.create(nextType,nextOrder);
-  const replay=(a,l,d)=>{if(nextType==='clock')ClockPuzzle.move(restored,a,l,d);else if(nextType==='cuboid')M.turn(restored,s.size,a,l,d);else P.turn(restored,nextType,nextOrder,a,l,d);};
-  for(const move of s.moves){if(!Array.isArray(move)||move.length!==3)throw Error();replay(...move);}
-  for(let i=s.moves.length-1;i>=s.cursor;i--){const [a,l,d]=s.moves[i];replay(a,l,-d);}
-  if(ClockPuzzle.validSize(s.clockSize))clockSize=s.clockSize;
-  if(['drag','buttons'].includes(s.clockPrefs?.mode)&&['auto','horizontal','vertical'].includes(s.clockPrefs?.layout))clockPrefs=s.clockPrefs;
-  puzzleType=nextType;order=nextOrder;size=s.size;pieces=restored;moves=s.moves;cursor=s.cursor;
-  if(Array.isArray(s.camera)&&s.camera.length===3&&s.camera.every(r=>Array.isArray(r)&&r.length===3&&r.every(Number.isFinite)&&Math.abs(M.dot(r,r)-1)<.001)&&Math.abs(M.dot(M.cross(s.camera[0],s.camera[1]),s.camera[2])-1)<.001)camera=s.camera;
-  if([0,1,2,3].includes(s.align))align=s.align;
-  if(Number.isFinite(s.zoom))zoom=Math.max(.55,Math.min(1.8,s.zoom));
-  theme=s.theme==='night'?'night':'day';dim=s.dim===true;elapsed=Number.isFinite(s.elapsed)?Math.max(0,s.elapsed):0;
-  currentRun=validRun(s.run)?structuredClone(s.run):newRun();running=currentRun.phase==='running'&&s.running===true;
+  const board=CubeState.decode(s.state),initial=CubeState.decode(s.initial);
+  if(board.puzzleType!==initial.puzzleType||board.order!==initial.order||board.size.join()!==initial.size.join()||board.clockSize.join()!==initial.clockSize.join()||!validRun(s.run))throw Error();
+  if(!['drag','buttons'].includes(s.clockPrefs?.mode)||!['auto','horizontal','vertical'].includes(s.clockPrefs?.layout)||
+   ![0,1,2,3].includes(s.align)||!['day','night'].includes(s.theme)||typeof s.dim!=='boolean'||typeof s.running!=='boolean'||
+   !Number.isFinite(s.elapsed)||s.elapsed<0||!Number.isFinite(s.zoom)||s.zoom<.55||s.zoom>1.8||
+   !Array.isArray(s.camera)||s.camera.length!==3||!s.camera.every(r=>Array.isArray(r)&&r.length===3&&r.every(Number.isFinite)&&Math.abs(M.dot(r,r)-1)<.001)||
+   Math.abs(M.dot(M.cross(s.camera[0],s.camera[1]),s.camera[2])-1)>.001)throw Error();
+  puzzleType=board.puzzleType;order=board.order;size=board.size;clockSize=board.clockSize;pieces=board.pieces;initialState=s.initial;moves=[];cursor=0;
+  clockPrefs=s.clockPrefs;camera=s.camera;align=s.align;zoom=s.zoom;theme=s.theme;dim=s.dim;elapsed=s.elapsed;
+  currentRun=structuredClone(s.run);running=currentRun.phase==='running'&&s.running;
+  if(currentRun.phase==='running'&&isSolved())completeRun();
   return true;
- }catch{toast(shared?'分享链接无效，已保留本地局面':'存档无效，已使用新魔方');}
+ }catch{toast(shared?'状态无效，已保留当前局面':'存档无效，已使用新魔方');}
 }
-restore();
+initialState=boardState();restore();
 if(location.hash.startsWith('#cube=')){
- try{const shared=JSON.parse(decodeURIComponent(location.hash.slice(6)));if(shared.v!==1)throw Error();restore({...shared,run:shared.run?{...shared.run,id:newRun().id,recorded:false}:undefined,theme,dim,running:false});}
+ try{const state=location.hash.slice(6);CubeState.decode(state);restore({...snapshot(),state,initial:state,elapsed:0,running:false,run:newRun()});}
  catch{toast('分享链接无效，已保留本地局面');}
- // Consume the import once so reload restores subsequent local progress.
- save();
- history.replaceState(null,'',location.pathname+location.search);
+ save();history.replaceState(null,'',location.pathname+location.search);
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#cube='))location.reload();});
-function shareURL(){const url=new URL(location.href),state=snapshot();state.run={...state.run,recorded:false};url.hash='cube='+encodeURIComponent(JSON.stringify({...state,v:1,running:false}));return url.href;}
+function shareURL(){const url=new URL(location.href);url.hash='cube='+boardState();return url.href;}
 
 if(!gl){$('status').textContent='浏览器不支持 WebGL';throw Error('WebGL unavailable');}
 function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
@@ -156,14 +132,41 @@ function snapView(){
  snap={from:camera.map(r=>r.slice()),to:best,start:performance.now()};dirty=true;
 }
 function normalize(v){const length=Math.hypot(...v);return v.map(n=>n/length);}
-function animateTurn(axis,layer,dir,from=0,commit=true,kind='manual'){
+function dragRadiansPerPixel(axis){return turnStep(axis)/(2*Math.max(70,Math.min(width,height)*.22));}
+function dragTurnAngle(axis,distance){
+ const angle=distance*dragRadiansPerPixel(axis);
+ const limit=turnStep(axis);
+ return Math.max(-limit,Math.min(limit,angle));
+}
+function releaseVelocity(d){
+ const samples=d.velocitySamples||[],last=samples.at(-1);
+ if(!last||!d.turn)return 0;
+ const first=samples.find(s=>s.time>=last.time-80);
+ if(!first||last.time<=first.time)return 0;
+ const pixels=((last.x-first.x)*d.turn.tangent[0]+(last.y-first.y)*d.turn.tangent[1])/(last.time-first.time);
+ return pixels*dragRadiansPerPixel(d.turn.axis);
+}
+function turnAnimationAngle(a,t){
+ const delta=a.to-a.from,impulse=(a.velocity||0)*a.duration;
+ // Preserve the release derivative, but dissipate fast flicks early so they
+ // cannot overshoot the target. Both terms finish with zero velocity.
+ const decay=Math.max(2,2*Math.abs(impulse)/Math.max(Math.abs(delta),.001));
+ const coast=impulse/(decay+1);
+ return a.from+coast*(1-(1-t)**(decay+1))+(delta-coast)*t*t*(3-2*t);
+}
+function animateTurn(axis,layer,dir,from=0,commit=true,kind='manual',velocity=0){
  if(puzzleType==='clock'){finishTurn({axis,layer,dir,commit,kind});return;}
  const to=commit?turnStep(axis)*dir:0;
- animation={axis,layer,dir,angle:from,from,to,start:performance.now(),duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:180,commit,kind};controls();dirty=true;
+ animation={axis,layer,dir,angle:from,from,to,velocity,start:performance.now(),duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:400,commit,kind};controls();dirty=true;
 }
 function finishTurn(a){
  if(a.commit){
   applyTurn(pieces,a.axis,a.layer,a.dir);
+  if(shuffleRecording){
+   if(a.kind==='record-undo')shuffleRecording.operations.pop();
+   else if(a.kind==='manual')shuffleRecording.operations.push([a.axis,a.layer,a.dir]);
+   animation=null;controls();dirty=true;return;
+  }
   if(a.kind==='manual'){moves=moves.slice(0,cursor);moves.push([a.axis,a.layer,a.dir]);cursor++;}
   if(a.kind==='undo')cursor--;if(a.kind==='redo')cursor++;
   if(puzzleType!=='clock'||a.axis!==2)advanceRun();
@@ -175,9 +178,9 @@ canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0&&e.pointerType==='mouse')return;
  pointers.set(e.pointerId,localPoint(e));canvas.setPointerCapture(e.pointerId);
  if(pointers.size>1){cancelDrag();snap=null;if(pointers.size===2&&!$('modal').open)startPinch();return;}
- if(animation||$('modal').open)return;
+ if(animation||shuffling||$('modal').open)return;
  snap=null;if(dirty)render();const [x,y]=localPoint(e);
- drag={id:e.pointerId,x,y,lastX:x,lastY:y,hit:hitTest(x,y),turn:null,track:M.createTrajectory(),moved:false};controls();
+ drag={id:e.pointerId,x,y,lastX:x,lastY:y,hit:hitTest(x,y),turn:null,track:M.createTrajectory(),velocitySamples:[{x,y,time:e.timeStamp}],moved:false};controls();
 });
 function startPinch(){
  const [a,b]=[...pointers.values()];
@@ -208,6 +211,9 @@ function updatePuzzleDrag(e){
  const samples=e.getCoalescedEvents?.()||[];
  for(const sample of [...samples,e]){
   const [x,y]=localPoint(sample);M.extendTrajectory(drag.track,x-drag.x,y-drag.y);
+  const history=drag.velocitySamples??=[];
+  if(!history.length||sample.timeStamp>history.at(-1).time)history.push({x,y,time:sample.timeStamp});
+  while(history.length>2&&history[0].time<sample.timeStamp-100)history.shift();
  }
  if(puzzleType!=='cuboid'){updatePolyDrag();return;}
  const faceCenter=drag.hit.piece.p.map((v,i)=>v+drag.hit.normal[i]*.5);
@@ -215,7 +221,7 @@ function updatePuzzleDrag(e){
  drag.turn=choice?{...choice,layer:drag.hit.piece.p[choice.axis],angle:0}:null;
  if(drag.turn){
   const t=drag.turn,distance=drag.track.x*t.tangent[0]+drag.track.y*t.tangent[1];
-  t.angle=Math.max(-1,Math.min(1,distance/Math.max(70,Math.min(width,height)*.22)))*turnStep(t.axis);
+  t.angle=dragTurnAngle(t.axis,distance);
  }
  dirty=true;
 }
@@ -225,13 +231,13 @@ function release(e,cancelled){
  if(cancelled){cancelDrag();return;}
  if(drag.hit&&e.type==='pointerup')updatePuzzleDrag(e);
  const d=drag;drag=null;
- if(d.turn){const t=d.turn;animateTurn(t.axis,t.layer,t.angle<0?-1:1,t.angle,Math.abs(t.angle)>turnStep(t.axis)*.16);}
+ if(d.turn){const t=d.turn;animateTurn(t.axis,t.layer,t.angle<0?-1:1,t.angle,Math.abs(t.angle)>turnStep(t.axis)*.16,'manual',releaseVelocity(d));}
  else if(!d.hit&&d.moved){snapView();save();}
  controls();
 }
 canvas.addEventListener('pointerup',e=>release(e,false));canvas.addEventListener('pointercancel',e=>release(e,true));canvas.addEventListener('lostpointercapture',e=>{if(pointers.has(e.pointerId))release(e,true);});
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(busy())return;zoom=Math.max(.55,Math.min(1.8,zoom*Math.exp(-e.deltaY*.001)));dirty=true;save();},{passive:false});
-$('undo').onclick=()=>{if(busy()||!cursor)return;const [a,l,d]=moves[cursor-1];animateTurn(a,l,-d,0,true,'undo');};
+$('undo').onclick=()=>{if(busy())return;if(shuffleRecording){const move=shuffleRecording.operations.at(-1);if(move)animateTurn(move[0],move[1],-move[2],0,true,'record-undo');return;}if(!cursor)return;const [a,l,d]=moves[cursor-1];animateTurn(a,l,-d,0,true,'undo');};
 $('redo').onclick=()=>{if(busy()||cursor===moves.length)return;const [a,l,d]=moves[cursor];animateTurn(a,l,d,0,true,'redo');};
 function themeUpdate(){document.body.dataset.theme=dim?'dim':theme;$('theme').setAttribute('aria-label',theme==='day'?'切换至夜间模式':'切换至日间模式');$('theme').title=$('theme').getAttribute('aria-label');$('theme').setAttribute('aria-pressed',String(theme==='night'));$('dim').setAttribute('aria-pressed',String(dim));dirty=true;}
 $('theme').onclick=()=>{theme=theme==='day'?'night':'day';dim=false;themeUpdate();save();};
@@ -255,16 +261,68 @@ function confirmAction(title,message,action){
  for(const [label,fn]of [['取消',()=>$('modal').close()],['确认',()=>{action();$('modal').close();}]]){const b=document.createElement('button');b.textContent=label;b.onclick=fn;buttons.append(b);}
  box.append(p,buttons);openDialog(title,box);
 }
-function reset(next=size){save();currentRun=newRun();size=next.slice();pieces=createPuzzle();moves=[];cursor=0;animation=null;drag=null;elapsed=0;running=false;controls();dirty=true;syncSizes();save();}
+function reset(next=size){currentRun=newRun();size=next.slice();pieces=createPuzzle();moves=[];initialState=boardState();cursor=0;animation=null;drag=null;elapsed=0;running=false;controls();dirty=true;syncSizes();save();}
 $('reset').onclick=()=>{if(!busy())confirmAction('复原','复原当前魔方？',()=>{pieces=createPuzzle();moves=[];cursor=0;completeRun();controls();dirty=true;save();});};
-$('shuffle').onclick=()=>{if(busy())return;confirmAction('打乱','打乱当前魔方并清零计时？',()=>{
- reset();
- if(puzzleType==='clock'){shuffleClock();beginRun();return;}
- if(puzzleType!=='cuboid'){let previous='';for(let i=0;i<60;i++){let choices=P.legalMoves(pieces,puzzleType,order).filter(m=>m.join()!==previous);if(!choices.length)choices=P.legalMoves(pieces,puzzleType,order);const [a,l]=choices[Math.floor(Math.random()*choices.length)],d=Math.random()<.5?-1:1;applyTurn(pieces,a,l,d);moves.push([a,l,d]);previous=[a,l].join();}cursor=moves.length;controls();dirty=true;beginRun();return;}
- let previous=-1;
- for(let i=0;i<60;i++){let axis;do{axis=Math.floor(Math.random()*3);}while(axis===previous);previous=axis;const layer=Math.floor(Math.random()*size[axis])-(size[axis]-1)/2,dir=Math.random()<.5?-1:1;M.turn(pieces,size,axis,layer,dir);moves.push([axis,layer,dir]);}
+async function performShuffle(allowed=null){
+ save();reset();shuffling=true;controls();$('shuffle-progress').hidden=false;
+ $('shuffle-progress').textContent=`正在打乱 0 / ${SHUFFLE_STEPS}`;
+ // Scramble a lightweight geometric model; rebuild display meshes once.
+ // Selection needs only unique vertices (or gear positions), not triangles.
+ const work=puzzleType==='clock'?structuredClone(pieces):pieces.map(p=>{
+  const copy={...p,frame:p.frame.map(v=>v.slice())};
+  if(p.p)copy.p=p.p.slice();if(p.anchor)copy.anchor=p.anchor.slice();
+  if(p.stickers)copy.stickers=[];
+  if(p.faces){const vertices=new Map();if(puzzleType!=='gear')for(const f of p.faces)for(const v of f.points)vertices.set(v.map(x=>Math.round(x*1e8)).join(),v.slice());copy.faces=vertices.size?[{color:-1,points:[...vertices.values()]}]:[];}
+  return copy;
+ });
+ let previous='',blocked=false,nextYield=performance.now()+12;
+ const pairs=puzzleType==='cuboid'?M.axes.flatMap((_,axis)=>Array.from({length:size[axis]},(_,j)=>[axis,j-(size[axis]-1)/2])):
+  puzzleType==='clock'?[...pieces.pins.map((_,i)=>[2,i]),...[0,1].flatMap(a=>[0,1,2,3].map(l=>[a,l]))]:
+  P.config(puzzleType,order).axes.flatMap((_,a)=>Array.from({length:P.layerCount(puzzleType,order)},(_,l)=>[a,l]));
+ const candidates=allowed||pairs.flatMap(([a,l])=>[[a,l,1],[a,l,-1]]);
+ function pick(pool){
+  pool=pool.slice();while(pool.length){const i=Math.floor(Math.random()*pool.length),move=pool.splice(i,1)[0];
+   if(['cuboid','clock'].includes(puzzleType)||P.selection(work,puzzleType,order,move[0],move[1]))return move;
+  }
+ }
+ try{
+  for(let i=0;i<SHUFFLE_STEPS;i++){
+   const alternatives=candidates.filter(m=>m.slice(0,2).join()!==previous),move=pick(alternatives)||pick(candidates);
+   if(!move){blocked=true;break;}
+   applyTurn(work,...move);moves.push(move.slice());previous=move.slice(0,2).join();
+   if(performance.now()>=nextYield){$('shuffle-progress').textContent=`正在打乱 ${i+1} / ${SHUFFLE_STEPS}`;dirty=true;await new Promise(requestAnimationFrame);nextYield=performance.now()+12;}
+  }
+  pieces=CubeState.decode(CubeState.encode({puzzleType,order,size,clockSize,pieces:work})).pieces;
+ }finally{shuffling=false;$('shuffle-progress').hidden=true;}
  cursor=moves.length;controls();dirty=true;beginRun();
- });};
+ if(blocked)toast(`许可操作已被阻挡，完成 ${moves.length} 步`);
+ else if(isSolved())toast(`已完成 ${SHUFFLE_STEPS} 步，局面回到复原状态`);
+}
+
+function beginShuffleRecording(){
+ save();shuffleRecording={snapshot:snapshot(),moves:structuredClone(moves),cursor,operations:[]};running=false;menuDraft=null;
+ $('modal').close();$('shuffle-recorder').hidden=false;controls();canvas.focus();
+}
+function leaveShuffleRecording(){
+ const recording=shuffleRecording;cancelClockDrag();shuffleRecording=null;animation=null;drag=null;
+ restore({...recording.snapshot,run:newRun(),running:false});currentRun=recording.snapshot.run;running=recording.snapshot.running;
+ moves=recording.moves;cursor=recording.cursor;lastTick=performance.now();$('shuffle-recorder').hidden=true;controls();dirty=true;
+ return recording.operations;
+}
+$('record-finish').onclick=()=>{
+ if(busy()||!shuffleRecording?.operations.length)return;
+ const operations=leaveShuffleRecording(),allowed=[...new Map(operations.map(m=>[m.join(),m])).values()];
+ performShuffle(allowed);
+};
+$('record-cancel').onclick=()=>{if(!shuffleRecording)return;leaveShuffleRecording();save();};
+$('shuffle').onclick=()=>{
+ if(busy()||shuffleRecording)return;
+ const box=document.createElement('div');box.className='dialog-actions';
+ for(const [label,action] of [['打乱',()=>{performShuffle();$('modal').close();}],['受限打乱',beginShuffleRecording],['取消',()=>$('modal').close()]]){
+  const button=document.createElement('button');button.textContent=label;button.onclick=action;box.append(button);
+ }
+ openDialog('打乱',box);
+};
 // Menu X/Y/Z mean height/width/depth; geometry remains right/up/front.
 const dimensionAxes=[1,0,2];
 function syncSizes(){syncTypeUI();['x','y','z'].forEach((a,i)=>{const value=(menuDraft?.size||size)[dimensionAxes[i]],group=$('size-'+a);group.querySelector(`input[value="${value}"]`).checked=true;group.style.setProperty('--index',value-1);});}
@@ -282,8 +340,8 @@ function cubeIcon(mode){
 }
 $('timer-control').onclick=()=>{if(busy())return;const box=document.createElement('div');box.className='dialog-actions';
  const toggle=document.createElement('button');toggle.textContent=running?'暂停':currentRun.phase==='running'?'继续':'开始';
- toggle.onclick=()=>{if(currentRun.phase==='running')running=!running;else{if(currentRun.phase!=='ready'){save();currentRun=newRun();elapsed=0;}currentRun.phase='running';currentRun.recorded=true;running=true;}lastTick=performance.now();$('modal').close();save();};
- const clear=document.createElement('button');clear.textContent='清零';clear.onclick=()=>{save();currentRun=newRun();elapsed=0;running=false;$('modal').close();save();};box.append(toggle,clear);openDialog('计时',box);
+ toggle.onclick=()=>{if(currentRun.phase==='running')running=!running;else{if(currentRun.phase!=='ready'){save();currentRun=newRun();initialState=boardState();elapsed=0;}currentRun.phase='running';currentRun.recorded=true;running=true;}lastTick=performance.now();$('modal').close();save();};
+ const clear=document.createElement('button');clear.textContent='清零';clear.onclick=()=>{save();currentRun=newRun();initialState=boardState();elapsed=0;running=false;$('modal').close();save();};box.append(toggle,clear);openDialog('计时',box);
 };
 function layoutHelp(){
  for(const note of $('help-overlay').querySelectorAll('[data-for]')){
@@ -300,7 +358,7 @@ window.addEventListener('pagehide',save);
 function frame(now){
  if(running&&!document.hidden&&!$('modal').open&&!$('help-overlay').open)elapsed+=now-lastTick;lastTick=now;
  const ms=Math.floor(elapsed);$('timer').textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0');$('ms').textContent='.'+String(ms%1000).padStart(3,'0');
- if(animation){const a=animation,t=a.duration?Math.min(1,(now-a.start)/a.duration):1;a.angle=a.from+(a.to-a.from)*(1-(1-t)**3);dirty=true;if(t===1)finishTurn(a);}
+ if(animation){const a=animation,t=a.duration?Math.min(1,(now-a.start)/a.duration):1;a.angle=turnAnimationAngle(a,t);dirty=true;if(t===1)finishTurn(a);}
  if(snap){const t=Math.min(1,(now-snap.start)/240),e=t*t*(3-2*t),rows=snap.from.map((r,i)=>r.map((v,j)=>v+(snap.to[i][j]-v)*e));camera=[normalize(rows[0]),null,null];camera[2]=normalize(M.cross(camera[0],rows[1]));camera[1]=M.cross(camera[2],camera[0]);dirty=true;if(t===1){camera=snap.to;snap=null;save();}}
  if(dirty)render();if(now-saveAt>2000){saveAt=now;if(running)save();}requestAnimationFrame(frame);
 }

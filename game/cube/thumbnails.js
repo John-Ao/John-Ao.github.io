@@ -1,15 +1,9 @@
 'use strict';
 // Rebuild records independently so previews never replace the active puzzle.
-function historyModel(record){
- const type=record.puzzleType,model=type==='clock'?ClockPuzzle.fresh(...record.clockSize):type==='cuboid'?M.create(record.size):P.create(type,record.order);
- for(const [a,l,d] of record.moves.slice(0,record.cursor)){
-  if(type==='clock')ClockPuzzle.move(model,a,l,d);else if(type==='cuboid')M.turn(model,record.size,a,l,d);else P.turn(model,type,record.order,a,l,d);
- }
- return model;
-}
+function historyModel(record){return CubeState.decode(record.final).pieces;}
 function drawHistoryThumbnail(target,record){
  const ctx=target.getContext('2d'),size=target.width;ctx.clearRect(0,0,size,size);
- const model=historyModel(record);
+ const state=CubeState.decode(record.final),model=state.pieces;record=state;
  if(record.puzzleType==='clock'){drawClockThumbnail(ctx,size,model);return;}
  let faces;
  if(record.puzzleType==='cuboid'){

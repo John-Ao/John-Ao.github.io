@@ -1,29 +1,29 @@
 'use strict';
-const HISTORY_KEY='cuboid.history.v1';
-function newRun(){return {id:globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`,created:Date.now(),phase:'idle',recorded:false};}
-function validRun(run){return run&&typeof run.id==='string'&&Number.isFinite(run.created)&&['idle','ready','running','solved'].includes(run.phase)&&typeof run.recorded==='boolean';}
-function loadRecords(){try{const data=JSON.parse(localStorage.getItem(HISTORY_KEY));return Array.isArray(data)?data.filter(r=>validRun(r.run)&&r.id===r.run.id&&Array.isArray(r.moves)&&Number.isFinite(r.updated)):[];}catch{return [];}}
+const HISTORY_KEY='cube.history';
+function newRun(){return {phase:'idle',recorded:false,savedAt:null,sealed:false};}
+function validRun(run){return run&&['idle','ready','running','solved'].includes(run.phase)&&typeof run.recorded==='boolean'&&typeof run.sealed==='boolean'&&(run.savedAt===null||Number.isFinite(run.savedAt));}
+function loadRecords(){try{const data=JSON.parse(localStorage.getItem(HISTORY_KEY));return Array.isArray(data)?data.filter(r=>typeof r.initial==='string'&&typeof r.final==='string'&&Number.isFinite(r.elapsed)&&Number.isFinite(r.savedAt)):[];}catch{return [];}}
 function rememberRun(){
- if(!currentRun.recorded)return;
- const previous=records.find(r=>r.id===currentRun.id);
- // The first solved snapshot is immutable; later play belongs to no timed run.
- if(previous?.run.phase==='solved')return;
- const record={...snapshot(),id:currentRun.id,created:currentRun.created,updated:Date.now(),favorite:previous?.favorite===true};
- records=records.filter(r=>r.id!==record.id);records.unshift(record);
- let count=0;records=records.filter(r=>r.favorite||count++<100);
+ if(!currentRun.recorded||currentRun.sealed)return;
+ const previous=currentRun.savedAt;
+ const final=boardState(),existing=records.find(r=>r.savedAt===previous);
+ if(existing&&existing.initial===initialState&&existing.final===final&&existing.elapsed===elapsed)return;
+ const savedAt=records.reduce((time,r)=>Math.max(time,r.savedAt+1),Date.now());
+ const record={initial:initialState,final,elapsed,savedAt};
+ records=records.filter(r=>r.savedAt!==previous);records.unshift(record);currentRun.savedAt=savedAt;
 }
-function beginRun(){currentRun=newRun();currentRun.phase='ready';currentRun.recorded=true;elapsed=0;running=false;lastTick=performance.now();save();}
+function beginRun(){currentRun=newRun();currentRun.phase='ready';currentRun.recorded=true;initialState=boardState();elapsed=0;running=false;lastTick=performance.now();save();}
 function advanceRun(){
  if(currentRun.phase==='ready'){currentRun.phase='running';running=true;lastTick=performance.now();}
  if(isSolved())completeRun();
 }
 function completeRun(){
  if(!['ready','running'].includes(currentRun.phase))return;
- running=false;currentRun.phase='solved';rememberRun();toast('已还原');
+ running=false;currentRun.phase='solved';rememberRun();currentRun.sealed=true;toast('已还原');
 }
-function favoriteCurrent(){
- if(currentRun.phase==='solved'){currentRun=newRun();currentRun.recorded=true;}
- currentRun.recorded=true;rememberRun();const record=records.find(r=>r.id===currentRun.id);if(record)record.favorite=true;save();
+function saveCurrent(){
+ if(currentRun.sealed){currentRun=newRun();initialState=boardState();}
+ currentRun.recorded=true;save();
 }
 function settingsSnapshot(){return structuredClone({puzzleType,order,size,clockSize,clockPrefs});}
 function puzzleSettingsDiffer(next){
@@ -38,25 +38,34 @@ function finishMenuChanges(){
  };
  if(changed&&!isSolved()){
   const box=document.createElement('div'),p=document.createElement('p'),actions=document.createElement('div');p.textContent='是否保存当前状态';actions.className='dialog-actions';
-  for(const [label,keep] of [['是',true],['否',false]]){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{if(keep)favoriteCurrent();apply();$('modal').close();};actions.append(b);}
+  for(const [label,keep] of [['是',true],['否',false]]){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{if(keep)saveCurrent();apply();$('modal').close();};actions.append(b);}
   box.append(p,actions);openDialog('保存当前状态',box);
  }else apply();
 }
 function formatTime(ms){const value=Math.floor(ms);return `${String(Math.floor(value/60000)).padStart(2,'0')}:${String(Math.floor(value/1000)%60).padStart(2,'0')}.${String(value%1000).padStart(3,'0')}`;}
+function loadRecord(record,restart=false){
+ save();menuDraft=null;
+ const state=restart?record.initial:record.final;
+ if(!restore({...snapshot(),state,initial:record.initial,elapsed:restart?0:record.elapsed,running:false,run:newRun()}))return;
+ snap=null;animation=null;drag=null;
+ if(restart)beginRun();
+ syncSizes();controls();dirty=true;save();$('modal').close();
+}
 function showRecords(){
- historyThumbnailObserver.disconnect();save();const box=document.createElement('div'),note=document.createElement('p');note.textContent=`${records.length} 条记录 · 未收藏最多保留 100 条，收藏不自动清理`;box.append(note);
+ historyThumbnailObserver.disconnect();save();const box=document.createElement('div');
  const list=document.createElement('div');list.className='history-list';
- for(const record of [...records].sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated)){
-  const row=document.createElement('div'),item=document.createElement('button'),star=document.createElement('button');row.className='history-row';item.className='history-item';
+ for(const record of [...records].sort((a,b)=>b.savedAt-a.savedAt)){
+  let info;try{info=CubeState.describe(record.final);}catch{continue;}
+  const row=document.createElement('div'),item=document.createElement('button'),retry=document.createElement('button');row.className='history-row';item.className='history-item';
   const title=document.createElement('span'),time=document.createElement('span'),date=document.createElement('small');
-  const dimensions=record.puzzleType==='cuboid'?record.size.join(' × '):record.puzzleType==='clock'?record.clockSize.join(' × '):['sq1','gear'].includes(record.puzzleType)?'':`${record.order} 阶`;
-  title.textContent=`${typeNames[record.puzzleType]} ${dimensions} · ${{idle:'未开始',ready:'待开始',running:'进行中',solved:'已还原'}[record.run.phase]}`;
-  time.textContent=formatTime(record.elapsed);date.textContent=new Date(record.created).toLocaleString('zh-CN',{hour12:false});
-  const thumbnail=document.createElement('canvas'),details=document.createElement('span');thumbnail.width=thumbnail.height=128;thumbnail.className='history-thumbnail';thumbnail.setAttribute('aria-hidden','true');details.className='history-details';details.append(title,time,date);item.append(thumbnail,details);historyThumbnails.set(thumbnail,record);historyThumbnailObserver.observe(thumbnail);item.setAttribute('aria-current',String(record.id===currentRun.id));
-  item.onclick=()=>{save();menuDraft=null;if(restore({...structuredClone(record),theme,dim})){snap=null;animation=null;drag=null;syncSizes();controls();dirty=true;save();$('modal').close();}};
-  star.textContent=record.favorite?'★':'☆';star.className='history-star';star.setAttribute('aria-label',record.favorite?'取消收藏':'收藏');star.setAttribute('aria-pressed',String(record.favorite));star.dataset.favorite=record.id;
-  star.onclick=()=>{record.favorite=!record.favorite;const live=records.find(r=>r.id===record.id);if(live)live.favorite=record.favorite;save();showRecords();[...$('dialog-content').querySelectorAll('[data-favorite]')].find(el=>el.dataset.favorite===record.id)?.focus();};
-  row.append(item,star);list.append(row);
+  const dimensions=info.puzzleType==='cuboid'?info.size.join(' × '):info.puzzleType==='clock'?info.clockSize.join(' × '):['sq1','gear'].includes(info.puzzleType)?'':`${info.order} 阶`;
+  title.textContent=`${typeNames[info.puzzleType]} ${dimensions}`;
+  time.textContent=formatTime(record.elapsed);date.textContent=new Date(record.savedAt).toLocaleString('zh-CN',{hour12:false});
+  const thumbnail=document.createElement('canvas'),details=document.createElement('span');thumbnail.width=thumbnail.height=128;thumbnail.className='history-thumbnail';thumbnail.setAttribute('aria-hidden','true');details.className='history-details';details.append(title,time,date);item.append(thumbnail,details);historyThumbnails.set(thumbnail,record);historyThumbnailObserver.observe(thumbnail);
+  item.onclick=()=>loadRecord(record);
+  retry.textContent='重新挑战';retry.className='history-retry';retry.onclick=()=>loadRecord(record,true);
+  row.append(item,retry);list.append(row);
  }
+ if(!records.length){const empty=document.createElement('p');empty.textContent='暂无存档';box.append(empty);}
  box.append(list);openDialog('历史记录',box);
 }

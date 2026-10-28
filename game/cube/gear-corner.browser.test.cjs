@@ -4,6 +4,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  const page=await browser.newPage({viewport:{width:600,height:800}});
  await page.goto(process.env.CUBE_URL||'http://127.0.0.1:18765/game/cube/');
  await page.locator('#menu').click();await page.locator('#puzzle-types input[value="gear"]').check();await page.locator('#close').click();
+ await page.waitForFunction(()=>puzzleType==='gear');
  const swipe=await page.evaluate(()=>{
   render();
   for(const face of polygons){

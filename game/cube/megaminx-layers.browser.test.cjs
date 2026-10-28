@@ -29,9 +29,13 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
   await page.mouse.move(...swipe.start);await page.mouse.down();await page.mouse.move(swipe.start[0]+swipe.delta[0],swipe.start[1]+swipe.delta[1],{steps:12});await page.mouse.up();
   await page.waitForFunction(()=>cursor===1&&!animation);
   assert.equal(await page.evaluate(()=>moves[0][1]),swipe.layer);
-  const shared=await page.evaluate(()=>shareURL());await page.reload();assert.equal(await page.evaluate(()=>moves[0][1]),swipe.layer);
-  await page.goto(shared);await page.waitForFunction(()=>!location.hash);assert.equal(await page.evaluate(()=>cursor),1);
+  const expected=await page.evaluate(()=>boardState()),lastMove=await page.evaluate(()=>moves.at(-1)),shared=await page.evaluate(()=>shareURL());
   await page.locator('#undo').click();await page.waitForFunction(()=>!animation&&cursor===0);assert(await page.evaluate(()=>isSolved()));
+  await page.locator('#redo').click();await page.waitForFunction(()=>!animation&&cursor===1);
+  await page.reload();assert.equal(await page.evaluate(()=>boardState()),expected);assert.equal(await page.evaluate(()=>cursor),0);
+  await page.goto(shared);await page.waitForFunction(()=>!location.hash);assert.equal(await page.evaluate(()=>boardState()),expected);assert.equal(await page.evaluate(()=>cursor),0);
+  await page.evaluate(([axis,layer,dir])=>finishTurn({axis,layer,dir:-dir,commit:true,kind:'manual'}),lastMove);assert(await page.evaluate(()=>isSolved()));
+
  }
  await browser.close();console.log('PASS megaminx 4–7: real inner-layer drag, reload, share and undo');
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -1,5 +1,20 @@
 const assert=require('node:assert/strict'),P=require('./polyhedra'),G=require('./gear');
 assert.deepEqual(P.orders.gear,[]);
+// Remove the middle slice's orbit and measure the signed radial spin.
+// Cycle/inverse tests alone cannot detect a consistently reversed gear.
+for(let axis=0;axis<6;axis++)for(const dir of [-1,1]){
+ const n=G.config.axes[axis],pieces=G.create();
+ for(const piece of pieces.filter(p=>p.kind==='gear'&&P.dot(p.p,n)===0)){
+  const center=piece.p.map(x=>x*.79),radial=P.norm(piece.p);
+  const point=center.map((x,i)=>x+n[i]);
+  for(const angle of [dir*Math.PI/4,dir*Math.PI]){
+   const local=P.sub(P.rotate(G.preview(piece,point,axis,angle),n,-angle/2),center);
+   const spin=Math.atan2(P.dot(radial,P.cross(n,local)),P.dot(n,local));
+   assert(Math.abs(spin+angle/3)<1e-8,'middle gears must spin in the opposite direction');
+  }
+ }
+}
+console.log('PASS gear spin direction: all six axes, both directions, partial and full turns');
 for(let axis=0;axis<6;axis++){
  const pieces=P.create('gear'),original=structuredClone(pieces);
  assert.equal(pieces.filter(p=>p.kind==='gear').length,12);
@@ -77,10 +92,28 @@ for(const state of [0,1]){
   for(const face of piece.faces.filter(f=>f.color>=0)){
    const normal=P.norm(P.cross(P.sub(face.points[1],face.points[0]),P.sub(face.points[2],face.points[0])));
    const axes=G.dragAxes(piece,normal);
-   assert.equal(axes.length,2);
+   assert.equal(axes.length,G.config.axes.filter(n=>P.dot(piece.p,n)===1&&Math.abs(P.dot(normal,n))<.9).length);
+   if(!state)assert.equal(axes.length,1,'a solved edge has only one eligible side face');
+   assert(axes.every(axis=>Math.abs(P.dot(normal,G.config.axes[axis]))<.9),'edge gestures exclude the touched face');
    assert(axes.every(axis=>P.dot(piece.p,G.config.axes[axis])===1),'edge gestures only select an outer layer containing the edge');
    assert(axes.every(axis=>G.selection(pieces,axis,0).includes(piece.id)));
   }
  }
 }
-console.log('PASS gear edge gestures: only outer-layer axes, before and after mixed turns');
+console.log('PASS gear edge gestures: only side layers containing the edge, before and after mixed turns');
+
+// Opposite face turns cancel the middle gears' spin and rotate the whole
+// solved cube. This is reachable through ordinary moves, not camera motion.
+for(const axis of [0,2,4])for(const dir of [-1,1]){
+ const pieces=G.create();
+ G.turn(pieces,axis,0,dir);assert(!G.solved(pieces));
+ G.turn(pieces,axis+1,0,-dir);assert(G.solved(pieces),'opposite turns produce a reoriented solved cube');
+ G.turn(pieces,(axis+2)%6,0,1);assert(!G.solved(pieces),'an extra turn must not be solved');
+ G.turn(pieces,(axis+2)%6,0,-1);assert(G.solved(pieces));
+ // Four turns restore all positions but leave the middle gears out of phase.
+ for(let i=0;i<4;i++)G.turn(pieces,axis,0,1);
+ assert(!G.solved(pieces),'gear phase matters even when positions are restored');
+ for(let i=0;i<8;i++)G.turn(pieces,axis,0,1);
+ assert(G.solved(pieces));
+}
+console.log('PASS gear solved state: reorientation by legal moves, both directions, gear phase and inverse');

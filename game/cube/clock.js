@@ -48,16 +48,8 @@ function fitClock(){
  root.style.setProperty('--clock-pin',Math.max(16,44*scale)+'px');
  root.style.setProperty('--clock-width',w*scale+'px');root.style.setProperty('--clock-height',h*scale+'px');
 }
-function clockMove(axis,layer,amount){if(puzzleType!=='clock'||$('modal').open||$('help-overlay').open)return;finishTurn({axis,layer,dir:amount,commit:true,kind:'manual'});}
+function clockMove(axis,layer,amount){if(puzzleType!=='clock'||shuffling||$('modal').open||$('help-overlay').open)return;finishTurn({axis,layer,dir:amount,commit:true,kind:'manual'});}
 function cancelClockDrag(){clockDrag=null;controls();}
-function shuffleClock(){
- for(let i=0;i<40;i++){
-  pieces.pins.forEach((_,p)=>{if(Math.random()<.5){ClockPuzzle.move(pieces,2,p,1);moves.push([2,p,1]);}});
-  const move=[Math.random()<.5?0:1,Math.floor(Math.random()*4),1+Math.floor(Math.random()*11)];ClockPuzzle.move(pieces,...move);moves.push(move);
- }
- if(ClockPuzzle.solved(pieces)){ClockPuzzle.move(pieces,0,0,1);moves.push([0,0,1]);}
- cursor=moves.length;controls();dirty=true;save();
-}
 function initClockEvents(){
  const root=$('clock-boards');
  root.addEventListener('click',e=>{const b=e.target.closest('.pin');if(!b)return;const side=+b.closest('.board').dataset.side,p=+b.dataset.pin;clockMove(2,side?ClockPuzzle.mirror(p,pieces.width-1):p,1);});

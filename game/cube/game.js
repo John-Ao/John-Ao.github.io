@@ -1,8 +1,8 @@
 'use strict';
 const M=Cuboid,$=id=>document.getElementById(id),canvas=$('puzzle'),gl=canvas.getContext('webgl',{antialias:true,alpha:true});
-const P=PolyPuzzle;
+const P=PolyPuzzle,STICKER_INSET=1.6;
 let puzzleType='cuboid',order=3;
-const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方'};
+const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方',gear:'齿轮魔方'};
 function createPuzzle(){return puzzleType==='cuboid'?M.create(size):P.create(puzzleType,order);}
 function turnStep(axis){return puzzleType==='cuboid'?M.step(size,axis):P.step(puzzleType,order,axis);}
 function applyTurn(target,axis,layer,dir){if(puzzleType==='cuboid')M.turn(target,size,axis,layer,dir);else P.turn(target,puzzleType,order,axis,layer,dir);}
@@ -25,14 +25,40 @@ function toast(message){$('toast').textContent=message;$('toast').classList.add(
 function busy(){return !!animation||!!drag||!!pinch;}
 function controls(){ $('undo').disabled=busy()||cursor===0;$('redo').disabled=busy()||cursor===moves.length; }
 function save(){
- try{localStorage.setItem(KEY,JSON.stringify({puzzleType,order,size,moves,cursor,camera,align,zoom,theme,dim,elapsed,running}));}catch{toast('无法保存进度：浏览器存储不可用');}
+ try{localStorage.setItem(KEY,JSON.stringify({geometryVersion:3,pyraminxLayers:true,puzzleType,order,size,moves,cursor,camera,align,zoom,theme,dim,elapsed,running}));}catch{toast('无法保存进度：浏览器存储不可用');}
 }
 function restore(shared){
  try{
   const s=shared||JSON.parse(localStorage.getItem(KEY));if(!s)return;
   if(!M.validSize(s.size)||!Array.isArray(s.moves)||s.moves.length>100000||!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>s.moves.length)throw Error();
-  const nextType=s.puzzleType||'cuboid',nextOrder=s.order??3;
+  const nextType=s.puzzleType||'cuboid',legacySkewb=nextType==='skewb'&&(s.geometryVersion??1)<3,nextOrder=legacySkewb?(s.order??3)-1:(s.order??3);
   if(nextType!=='cuboid'&&!P.valid(nextType,nextOrder))throw Error();
+  if((s.geometryVersion??1)>3)throw Error();
+  if(legacySkewb&&nextOrder>2&&s.moves.length){
+   if(shared){toast('旧版高阶斜转分享包含过顶点切割，无法载入新模型');return;}
+   localStorage.setItem(KEY+'.skewb-vertex-cut-backup',JSON.stringify(s));
+   s.moves=[];s.cursor=0;s.elapsed=0;s.running=false;
+   toast('斜转已取消过顶点切割，旧局面已备份并复原');
+  }
+  if(nextType==='icosahedron'&&(s.geometryVersion??1)<2&&s.moves.length){
+   if(shared){toast('旧版二十面体分享使用转面规则，无法载入转角模型');return;}
+   localStorage.setItem(KEY+'.icosahedron-face-backup',JSON.stringify(s));
+   s.moves=[];s.cursor=0;s.elapsed=0;s.running=false;
+   toast('二十面体已更新为转角，旧转面局面已备份并复原');
+  }
+  // Legacy pyramid moves rotated every slice between the cut and the tip.
+  // Expand them into disjoint slices to preserve the saved position and redo.
+  if(nextType==='pyraminx'&&!s.pyraminxLayers){
+   const expanded=[];let expandedCursor=0;
+   s.moves.forEach((move,i)=>{
+    if(!Array.isArray(move)||move.length!==3)throw Error();
+    const [a,l,d]=move;
+    if(!Number.isInteger(a)||a<0||a>=4||!Number.isInteger(l)||l<0||l>=nextOrder-1||![-1,1].includes(d))throw Error();
+    for(let slice=l;slice<nextOrder-1;slice++)expanded.push([a,slice,d]);
+    if(i<s.cursor)expandedCursor=expanded.length;
+   });
+   s.moves=expanded;s.cursor=expandedCursor;
+  }
   const restored=nextType==='cuboid'?M.create(s.size):P.create(nextType,nextOrder);
   const replay=(a,l,d)=>{if(nextType==='cuboid')M.turn(restored,s.size,a,l,d);else P.turn(restored,nextType,nextOrder,a,l,d);};
   for(const move of s.moves){if(!Array.isArray(move)||move.length!==3)throw Error();replay(...move);}
@@ -53,7 +79,7 @@ if(location.hash.startsWith('#cube=')){
  history.replaceState(null,'',location.pathname+location.search);
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#cube='))location.reload();});
-function shareURL(){const url=new URL(location.href);url.hash='cube='+encodeURIComponent(JSON.stringify({v:1,puzzleType,order,size,moves,cursor,camera,align,zoom,elapsed}));return url.href;}
+function shareURL(){const url=new URL(location.href);url.hash='cube='+encodeURIComponent(JSON.stringify({v:1,geometryVersion:3,pyraminxLayers:true,puzzleType,order,size,moves,cursor,camera,align,zoom,elapsed}));return url.href;}
 
 if(!gl){$('status').textContent='浏览器不支持 WebGL';throw Error('WebGL unavailable');}
 function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
@@ -77,15 +103,15 @@ function render(){
   const active=turn&&M.inLayer(piece,turn.axis,turn.layer),rot=v=>active?M.rotate(v,turn.axis,turn.angle):v;
   for(let axis=0;axis<3;axis++)for(const sign of [-1,1]){
    const normal=M.axes[axis].map(n=>n*sign),n=rot(normal);
-   const center=rot(piece.p.map((p,i)=>p+normal[i]*.498));
+   const center=rot(piece.p.map((p,i)=>p+normal[i]*.5));
    if(M.dot(n,camera[2].map((v,i)=>v*cameraDistance()-center[i]))<.00001)continue;
    const u=M.axes[(axis+1)%3],v=M.axes[(axis+2)%3];
    const face=(half,depth)=>[[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>rot(piece.p.map((p,i)=>p+normal[i]*depth+u[i]*a*half+v[i]*b*half)));
-   const body=face(.498,.498),sticker=piece.stickers.find(s=>M.dot(s.n,normal)>.99);
+   const body=face(.5,.5),sticker=piece.stickers.find(s=>M.dot(s.n,normal)>.99);
    const light=(.78+.22*Math.max(0,M.dot(camera[2],n)))*(dim?.42:1);
-   function quad(vertices,color){const tint=color.map(c=>c*light),screen=vertices.map(project);for(const i of [0,1,2,0,2,3])data.push((screen[i][0]/width)*2-1,1-screen[i][1]/height*2,1-2*cameraDistance()/(4*(cameraDistance()-screen[i][2])),...tint);return screen;}
-   const screen=quad(body,[.055,.062,.07]);
-   if(sticker)quad(face(.455,.501),rgb(colors[sticker.color]));
+   function polygon(screen,color,bias=0){const tint=color.map(c=>c*light);for(let j=1;j<screen.length-1;j++)for(const i of [0,j,j+1])data.push((screen[i][0]/width)*2-1,1-screen[i][1]/height*2,1-2*cameraDistance()/(4*(cameraDistance()-screen[i][2]))-bias,...tint);}
+   const screen=body.map(project);polygon(screen,[.055,.062,.07]);
+   if(sticker)polygon(P.insetFace(body,STICKER_INSET/scale).map(project),rgb(colors[sticker.color]),.0005);
    polygons.push({screen,world:body,piece,normal});
   }
  }

@@ -35,47 +35,40 @@ for(const order of P.orders.skewb){
    if(corner){
     const axis=config.axes.findIndex(n=>n.every((x,i)=>Math.sign(x)===Math.sign(corner[i])));
     for(const face of piece.faces.filter(f=>f.color>=0))check(pieces,order,piece,face,P.average(face.points),axis);
-   }else if(order===2){
-    const face=piece.faces.find(f=>f.color>=0),center=P.average(face.points);
-    const normal=P.norm(P.cross(P.sub(face.points[1],face.points[0]),P.sub(face.points[2],face.points[0])));
-    for(let axis=0;axis<8;axis++){
-     const corner=config.axes[axis].map(Math.sign);if(Math.abs(P.dot(corner,normal)-1)>1e-5)continue;
-     const point=center.map((x,i)=>x+.35*(corner[i]-x));
-     check(pieces,order,piece,face,point,axis);
-    }
    }
   }
  }
 }
-console.log('PASS skewb click targeting: '+checked+' checks; corner ownership, all four center regions, both signs, orders 2–7 and turned states');
-// Check the whole center diamond, especially near its dividing lines.
-// The four regions must be unchanged under any screen projection.
+console.log('PASS skewb corners: '+checked+' checks, both signs, orders 2–7 and turned states');
+// Eight sectors select a perpendicular axis and its rotation sign.
 {
- const pieces=P.create('skewb',2),config=P.config('skewb',2);
- const projections=[
-  p=>[p[0],p[1]],
-  p=>[(p[0]-.7*p[2])/(4-p[0]-p[2]),(p[1]-.8*p[2])/(4-p[0]-p[2])],
-  p=>[-p[2]*100,p[0]*.01+p[1]*100]
- ];
- let regions=0;
+ const pieces=P.create('skewb',2),config=P.config('skewb',2);let checked=0;
+ Object.assign(context,{order:2,pieces});
  for(let state=0;state<2;state++){
   if(state)P.turn(pieces,'skewb',2,5,0,-1);
   for(const piece of pieces){
    const faces=piece.faces.filter(f=>f.color>=0);if(faces.length!==1)continue;
    const face=faces[0],normal=P.norm(P.cross(P.sub(face.points[1],face.points[0]),P.sub(face.points[2],face.points[0])));
    const fixed=normal.findIndex(x=>Math.abs(x)>.9),u=(fixed+1)%3,v=(fixed+2)%3;
-   const candidates=P.legalMoves(pieces,'skewb',2).filter(([a,l])=>P.selection(pieces,'skewb',2,a,l).includes(piece.id)).map(([axis,layer])=>({axis,layer}));
-   for(const x of [-.6,-.1,-.001,.001,.1,.6])for(const y of [-.3,-.001,.001,.3]){
-    const point=normal.slice();point[u]=x;point[v]=y;
-    const expected=config.axes.findIndex(n=>Math.sign(n[fixed])===Math.sign(normal[fixed])&&Math.sign(n[u])===Math.sign(x)&&Math.sign(n[v])===Math.sign(y));
-    for(const project of projections){
-     context.project=project;
-     const selected=context.skewbClickCandidates({piece,point,normal},candidates,config);
-     assert(selected.length);assert(selected.every(c=>c.axis===expected),'center quadrant is fixed in face space');
-     regions++;
+   for(const tilt of [0,.5,-.5]){
+    context.project=p=>{const d=5-tilt*p[u]-.3*p[v];return [195+400*(p[u]+.2*p[v])/d,350-400*(p[v]-.1*p[u])/d];};
+    for(let axis=0;axis<8;axis++){
+     const vertex=config.axes[axis].map(Math.sign);if(P.dot(vertex,normal)<.9)continue;
+     const radial=P.norm(P.sub(vertex,normal)),tangent=P.norm(P.cross(config.axes[axis],normal));
+     for(const sign of [-1,1])for(const ratio of [.1,.41421356237,.9]){
+      // The 0.414 ratio is 22.5 degrees from the perpendicular: sectors 2–3 / 7–8.
+      const end=normal.map((x,i)=>x+.4*(ratio*radial[i]+sign*tangent[i]));
+      const a=context.project(normal),b=context.project(end),track={x:b[0]-a[0],y:b[1]-a[1]};
+      for(const x of [-.3,0,.3])for(const y of [-.3,0,.3]){
+       const point=normal.slice();point[u]=x;point[v]=y;
+       context.drag={hit:{piece,point,normal},track};vm.runInContext('updatePolyDrag()',context);
+       assert.equal(context.drag.turn?.axis,axis,'perpendicular sector selects the same axis at every start point');
+       assert.equal(Math.sign(context.drag.turn.angle),sign,'both perpendicular sectors use opposite rotation signs');checked++;
+      }
+     }
     }
    }
   }
  }
- console.log('PASS center regions: '+regions+' checks near boundaries, multiple cameras, all six faces and turned states');
+ console.log('PASS center perpendicular sectors: '+checked+' axis/sign checks, all eight sectors, translated starts, perspective and turned states');
 }

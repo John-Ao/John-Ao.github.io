@@ -27,13 +27,13 @@ for(const a of [-1,1])for(const b of [-1,1])icosa.push(norm([0,a/phi,b*phi]),nor
 const icoVertices=unique(shell(icosa).flatMap(f=>f.points)),icoAxes=icoVertices.map(norm);
 const icoRadius=Math.hypot(...icoVertices[0]);
 const icoAdjacent=Math.max(...icoVertices.slice(1).map(v=>dot(v,icoAxes[0])));
-const orders={pyraminx:[2,3,4,5],megaminx:[2,3,4,5,6,7],skewb:[2,3,4,5,6,7],octahedron:[3,5],icosahedron:[3,5],sq1:[],gear:[]};
+const orders={pyraminx:[2,3,4,5],megaminx:[2,3,4,5,6,7],skewb:[2,3,4,5,6,7],octahedron:[3,4,5,6],icosahedron:[3,4,5,6],sq1:[],gear:[]};
 function valid(type,order){return Object.hasOwn(orders,type)&&(orders[type].length?orders[type].includes(order):order===3);}
 function config(type,order){if(!valid(type,order))throw Error('无效魔方类型或阶数');
  if(type==='gear')return Gear.config;
  if(type==='pyraminx')return {normals:tetra.map(n=>mul(n,-1)),axes:tetra,cuts:Array.from({length:order-1},(_,i)=>-1+4*(i+1)/order),step:TAU/3};
  if(type==='megaminx'&&order%2===0)return {normals:mega,axes:mega,cuts:Array.from({length:order/2},(_,i)=>1-(i+1)*.4/(order/2)),step:TAU/5};
- if(type==='megaminx')return {normals:mega,axes:mega,cuts:Array.from({length:(order-1)/2},(_,i)=>1-(i+1)*(1-Math.sqrt(5)/3)/((order-1)/2)),step:TAU/5};
+ if(type==='megaminx')return {normals:mega,axes:mega,cuts:Array.from({length:(order-1)/2},(_,i)=>1-(i+1)*(3-Math.sqrt(5))/order),step:TAU/5};
  if(type==='skewb'){
   // Keep cuts strictly between the cube-vertex levels ±1/sqrt(3).
   // End segments are half the width of interior segments. The 2nd order
@@ -45,9 +45,9 @@ function config(type,order){if(!valid(type,order))throw Error('无效魔方类�
   return {normals:cubeNormals,axes:[...tetra,...tetra.map(n=>mul(n,-1))],cuts,step:TAU/3};
  }
  // On each triangular face, intersections divide every edge into equal parts.
- if(type==='octahedron')return {normals:octa,axes:octa,cuts:Array.from({length:(order-1)/2},(_,i)=>1-2*(i+1)/order),step:TAU/3};
+ if(type==='octahedron')return {normals:octa,axes:octa,cuts:Array.from({length:Math.floor(order/2)},(_,i)=>1-2*(i+1)/order),step:TAU/3};
  if(type==='icosahedron')return {normals:icosa,axes:icoAxes,cuts:Array.from({length:order-1},(_,i)=>icoRadius-(icoRadius-icoAdjacent)*(i+1)/order),step:TAU/5};
- return {normals:cubeNormals,axes:[[0,1,0],[0,-1,0],[1,0,0]],cuts:[.5],step:Math.PI/6};
+ return {normals:cubeNormals,axes:[[0,1,0],[0,-1,0],[Math.cos(Math.PI/12),0,Math.sin(Math.PI/12)]],cuts:[1/3],step:Math.PI/6};
 }
 // Even minxes divide each face into five corner kites, then subdivide each
 // kite into an m x m grid. Shared edge/corner tiles form one physical piece.
@@ -82,17 +82,25 @@ function create(type,order=type==='skewb'?2:3){
 const c=config(type,order);let cells=[shell(c.normals)];
  if(type==='sq1'){
   const body=cells[0];cells=[];
-  for(const sign of [-1,1]){let angle=0;for(let i=0;i<8;i++){const next=angle+(i%2?1:2)*Math.PI/6;
-   let fs=clip(body,[0,-sign,0],-.5);fs=clip(fs,[Math.sin(angle),0,-Math.cos(angle)],0);fs=clip(fs,[-Math.sin(next),0,Math.cos(next)],0);cells.push(fs);angle=next;
+  for(const sign of [-1,1]){let angle=Math.PI/12;for(let i=0;i<8;i++){const next=angle+(i%2?1:2)*Math.PI/6;
+   let fs=clip(body,[0,-sign,0],-1/3);fs=clip(fs,[Math.sin(angle),0,-Math.cos(angle)],0);fs=clip(fs,[-Math.sin(next),0,Math.cos(next)],0);cells.push(fs);angle=next;
   }}
-  let mid=clip(clip(body,[0,1,0],.5),[0,-1,0],.5);for(const sign of [-1,1])cells.push(clip(mid,[sign,0,0],0));
+  let mid=clip(clip(body,[0,1,0],1/3),[0,-1,0],1/3);for(const sign of [-1,1])cells.push(clip(mid,mul(c.axes[2],sign),0));
  }else for(const n of c.axes)for(const d of c.cuts){const next=[];for(const fs of cells){const ds=fs.flatMap(f=>f.points.map(p=>dot(p,n)-d));if(Math.min(...ds)<-EPS&&Math.max(...ds)>EPS)next.push(clip(fs,n,d),clip(fs,mul(n,-1),-d));else next.push(fs);}cells=next;}
  return cells.filter(fs=>fs.some(f=>f.color>=0)).map((faces,id)=>({id,faces}));
 }
-function selection(pieces,type,order,axis,layer){if(type==='gear')return Gear.selection(pieces,axis,layer);const c=config(type,order);if(!Number.isInteger(axis)||axis<0||axis>=c.axes.length||!Number.isInteger(layer)||layer<0||layer>=(type==='sq1'?1:type==='pyraminx'?order:c.cuts.length))return null;
- if(type==='pyraminx'){
-  const n=c.axes[axis],low=layer===order-1?-1:c.cuts[layer],high=layer===order-1?c.cuts[0]:(c.cuts[layer+1]??3),ids=[];
+function layerCount(type,order){return type==='sq1'?1:type==='pyraminx'?order:config(type,order).cuts.length+(type==='skewb'?order-2:type==='octahedron'?config(type,order).cuts.length-(order%2===0?1:0):0);}
+function selection(pieces,type,order,axis,layer){if(type==='gear')return Gear.selection(pieces,axis,layer);const c=config(type,order);if(!Number.isInteger(axis)||axis<0||axis>=c.axes.length||!Number.isInteger(layer)||layer<0||layer>=layerCount(type,order))return null;
+ if(['megaminx','icosahedron'].includes(type)||type==='pyraminx'||(['skewb','octahedron'].includes(type)&&layer>=c.cuts.length)){
+  // Append independent inner slices without changing legacy cap indices.
+  const cuts=c.cuts.slice().sort((a,b)=>a-b),slice=layer-c.cuts.length;
+  const n=c.axes[axis],low=['megaminx','icosahedron'].includes(type)?c.cuts[layer]:type==='octahedron'?(order%2===0?cuts[slice]:slice===0?-cuts[0]:cuts[slice-1]):type==='skewb'?cuts[slice]:layer===order-1?-1:c.cuts[layer],high=['megaminx','icosahedron'].includes(type)?(layer===0?Infinity:c.cuts[layer-1]):type==='octahedron'?cuts[slice+(order%2===0?1:0)]:type==='skewb'?cuts[slice+1]:layer===order-1?c.cuts[0]:(c.cuts[layer+1]??3),ids=[];
   for(const p of pieces){
+   if(p.anchor){
+    const height=dot(p.anchor,n);
+    if((!['megaminx','icosahedron'].includes(type)&&slice===0?height>=low-EPS:height>low+EPS)&&height<=high+EPS)ids.push(p.id);
+    continue;
+   }
    const heights=p.faces.flatMap(f=>f.points.map(v=>dot(v,n))),min=Math.min(...heights),max=Math.max(...heights);
    if(max<=low+EPS||min>=high-EPS)continue;
    if(min<low-EPS||max>high+EPS)return null;
@@ -100,13 +108,13 @@ function selection(pieces,type,order,axis,layer){if(type==='gear')return Gear.se
   }
   return ids.length?ids:null;
  }
- const n=c.axes[axis],d=type==='sq1'?(axis===2?0:.5):c.cuts[layer],ids=[];
+ const n=c.axes[axis],d=type==='sq1'?(axis===2?0:1/3):c.cuts[layer],ids=[];
  for(const p of pieces){if(p.anchor){if(dot(p.anchor,n)>d+EPS)ids.push(p.id);continue;}const ds=p.faces.flatMap(f=>f.points.map(v=>dot(v,n)-d));if(Math.max(...ds)<=EPS)continue;if(Math.min(...ds)<-EPS)return null;ids.push(p.id);}return ids.length?ids:null;
 }
 function step(type,order,axis){return type==='sq1'&&axis===2?Math.PI:config(type,order).step;}
 function turn(pieces,type,order,axis,layer,dir){if(type==='gear'){Gear.turn(pieces,axis,layer,dir);return;}const ids=selection(pieces,type,order,axis,layer);if(!ids||![-1,1].includes(dir))throw Error('当前切面被块阻挡');const set=new Set(ids),c=config(type,order);for(const p of pieces)if(set.has(p.id)){const angle=step(type,order,axis)*dir;if(p.anchor)p.anchor=rotate(p.anchor,c.axes[axis],angle);for(const f of p.faces)f.points=f.points.map(v=>rotate(v,c.axes[axis],angle));}}
 function solved(pieces,type,order){if(type==='gear')return Gear.solved(pieces);const ns=config(type,order).normals;return pieces.every(p=>p.faces.every(f=>f.color<0||f.points.every(v=>Math.abs(dot(v,ns[f.color])-1)<1e-5)));}
-function legalMoves(pieces,type,order){const c=config(type,order),out=[];for(let a=0;a<c.axes.length;a++)for(let l=0;l<(type==='sq1'?1:type==='pyraminx'?order:c.cuts.length);l++)if(selection(pieces,type,order,a,l))out.push([a,l]);return out;}
+function legalMoves(pieces,type,order){const c=config(type,order),out=[];for(let a=0;a<c.axes.length;a++)for(let l=0;l<layerCount(type,order);l++)if(selection(pieces,type,order,a,l))out.push([a,l]);return out;}
 // Offset every projected edge inward by the same CSS-pixel distance. Clipping
 // may remove a tiny sticker entirely; never replace it with a scaled polygon.
 function insetProjected(points,distance,cameraDistance=Infinity){
@@ -142,5 +150,13 @@ function insetFace(points,distance){
  const v=cross(normal,u),flat=points.map(p=>{const q=sub(p,origin);return [dot(q,u),dot(q,v)];});
  return insetProjected(flat,distance).map(([x,y])=>add(origin,add(mul(u,x),mul(v,y))));
 }
-const api={insetFace,insetProjected,shell,orders,valid,config,create,selection,step,turn,solved,legalMoves,rotate,average,norm,cross,sub,dot};if(typeof module!=='undefined')module.exports=api;else root.PolyPuzzle=api;
+// Share one six-face palette: -X green, +X blue, -Y yellow, +Y white,
+// -Z orange, +Z red. Geometric face IDs remain unchanged.
+function stickerColorIndex(type,color){
+ if(color<0)return color;
+ if(type==='cuboid')return [3,2,0,1,4,5][color];
+ if(['skewb','sq1','gear'].includes(type))return [3,2,0,1,4,5][color^1];
+ return color;
+}
+const api={stickerColorIndex,layerCount,insetFace,insetProjected,shell,orders,valid,config,create,selection,step,turn,solved,legalMoves,rotate,average,norm,cross,sub,dot};if(typeof module!=='undefined')module.exports=api;else root.PolyPuzzle=api;
 })(globalThis);

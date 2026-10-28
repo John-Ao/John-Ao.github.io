@@ -5,7 +5,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
   const page=await browser.newPage({viewport:{width:390,height:844}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(process.env.CUBE_URL||'http://127.0.0.1:18765/game/cube/');
   await page.locator('#menu').click();await page.locator('#puzzle-types input[value="skewb"]').check();
-  await page.locator('#order-track input[value="3"]').check();await page.locator('#dimensions button').click();await page.getByRole('button',{name:'确认',exact:true}).click();
+  await page.locator('#order-track input[value="3"]').check();await page.locator('#close').click();await page.waitForTimeout(80);if(await page.getByRole('button',{name:'否',exact:true}).isVisible())await page.getByRole('button',{name:'否',exact:true}).click();
   await page.waitForFunction(()=>!snap&&!animation);
   const swipe=await page.evaluate(()=>{
    render();const c=P.config(puzzleType,order),legal=P.legalMoves(pieces,puzzleType,order).map(([axis,layer])=>({axis,layer}));

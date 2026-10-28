@@ -2,12 +2,14 @@
 const M=Cuboid,$=id=>document.getElementById(id),canvas=$('puzzle'),gl=canvas.getContext('webgl',{antialias:true,alpha:true});
 const P=PolyPuzzle,STICKER_INSET=1.6;
 let puzzleType='cuboid',order=3;
-const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方',gear:'齿轮魔方'};
-function createPuzzle(){return puzzleType==='cuboid'?M.create(size):P.create(puzzleType,order);}
+const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方',gear:'齿轮魔方',clock:'魔表'};
+function createPuzzle(){return puzzleType==='clock'?ClockPuzzle.fresh(...clockSize):puzzleType==='cuboid'?M.create(size):P.create(puzzleType,order);}
 function turnStep(axis){return puzzleType==='cuboid'?M.step(size,axis):P.step(puzzleType,order,axis);}
-function applyTurn(target,axis,layer,dir){if(puzzleType==='cuboid')M.turn(target,size,axis,layer,dir);else P.turn(target,puzzleType,order,axis,layer,dir);}
-function isSolved(){return puzzleType==='cuboid'?M.solved(pieces):P.solved(pieces,puzzleType,order);}
+function applyTurn(target,axis,layer,dir){if(puzzleType==='clock')ClockPuzzle.move(target,axis,layer,dir);else if(puzzleType==='cuboid')M.turn(target,size,axis,layer,dir);else P.turn(target,puzzleType,order,axis,layer,dir);}
+function isSolved(){return puzzleType==='clock'?ClockPuzzle.solved(pieces):puzzleType==='cuboid'?M.solved(pieces):P.solved(pieces,puzzleType,order);}
 const KEY='cuboid.session.v1',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55','#a979ce','#55c4c4','#eaa6c3','#b1cb67','#927454','#a1b8de','#d84fa3','#258880','#8b67dd','#f4b947','#abc5ec','#a24636','#b9d4a0','#e8b49a'];
+let clockSize=[3,3],clockPrefs={mode:'drag',layout:'auto'},menuDraft=null;
+let currentRun=newRun(),records=loadRecords();
 let size=[3,3,3],pieces=M.create(size),moves=[],cursor=0,align=3,zoom=1,theme='day',dim=false;
 let camera=pose(3),width=1,height=1,scale=1,polygons=[],dirty=true,drag=null,animation=null,snap=null;
 let elapsed=0,running=false,lastTick=performance.now(),saveAt=0,toastTimer;
@@ -22,17 +24,19 @@ function view(v){return camera.map(row=>M.dot(row,v));}
 function cameraDistance(){return (puzzleType==='cuboid'?Math.hypot(...size):5)*1.8;}
 function project(v){const q=view(v),perspective=cameraDistance()/(cameraDistance()-q[2]);return [width/2+q[0]*scale*perspective,height/2-q[1]*scale*perspective,q[2]];}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),2400);$('status').textContent=message;}
-function busy(){return !!animation||!!drag||!!pinch;}
+function busy(){return !!animation||!!drag||!!pinch||!!clockDrag;}
 function controls(){ $('undo').disabled=busy()||cursor===0;$('redo').disabled=busy()||cursor===moves.length; }
+function snapshot(){return structuredClone({geometryVersion:3,pyraminxLayers:true,puzzleType,order,size,clockSize,clockPrefs,moves,cursor,camera,align,zoom,theme,dim,elapsed,running,run:currentRun});}
 function save(){
- try{localStorage.setItem(KEY,JSON.stringify({geometryVersion:3,pyraminxLayers:true,puzzleType,order,size,moves,cursor,camera,align,zoom,theme,dim,elapsed,running}));}catch{toast('无法保存进度：浏览器存储不可用');}
+ rememberRun();
+ try{localStorage.setItem(KEY,JSON.stringify(snapshot()));localStorage.setItem(HISTORY_KEY,JSON.stringify(records));}catch{toast('无法保存进度：浏览器存储不可用');}
 }
 function restore(shared){
  try{
   const s=shared||JSON.parse(localStorage.getItem(KEY));if(!s)return;
   if(!M.validSize(s.size)||!Array.isArray(s.moves)||s.moves.length>100000||!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>s.moves.length)throw Error();
   const nextType=s.puzzleType||'cuboid',legacySkewb=nextType==='skewb'&&(s.geometryVersion??1)<3,nextOrder=legacySkewb?(s.order??3)-1:(s.order??3);
-  if(nextType!=='cuboid'&&!P.valid(nextType,nextOrder))throw Error();
+  if(nextType==='clock'){if(!ClockPuzzle.validSize(s.clockSize))throw Error();}else if(nextType!=='cuboid'&&!P.valid(nextType,nextOrder))throw Error();
   if((s.geometryVersion??1)>3)throw Error();
   if(legacySkewb&&nextOrder>2&&s.moves.length){
    if(shared){toast('旧版高阶斜转分享包含过顶点切割，无法载入新模型');return;}
@@ -59,27 +63,31 @@ function restore(shared){
    });
    s.moves=expanded;s.cursor=expandedCursor;
   }
-  const restored=nextType==='cuboid'?M.create(s.size):P.create(nextType,nextOrder);
-  const replay=(a,l,d)=>{if(nextType==='cuboid')M.turn(restored,s.size,a,l,d);else P.turn(restored,nextType,nextOrder,a,l,d);};
+  const restored=nextType==='clock'?ClockPuzzle.fresh(...s.clockSize):nextType==='cuboid'?M.create(s.size):P.create(nextType,nextOrder);
+  const replay=(a,l,d)=>{if(nextType==='clock')ClockPuzzle.move(restored,a,l,d);else if(nextType==='cuboid')M.turn(restored,s.size,a,l,d);else P.turn(restored,nextType,nextOrder,a,l,d);};
   for(const move of s.moves){if(!Array.isArray(move)||move.length!==3)throw Error();replay(...move);}
   for(let i=s.moves.length-1;i>=s.cursor;i--){const [a,l,d]=s.moves[i];replay(a,l,-d);}
+  if(ClockPuzzle.validSize(s.clockSize))clockSize=s.clockSize;
+  if(['drag','buttons'].includes(s.clockPrefs?.mode)&&['auto','horizontal','vertical'].includes(s.clockPrefs?.layout))clockPrefs=s.clockPrefs;
   puzzleType=nextType;order=nextOrder;size=s.size;pieces=restored;moves=s.moves;cursor=s.cursor;
   if(Array.isArray(s.camera)&&s.camera.length===3&&s.camera.every(r=>Array.isArray(r)&&r.length===3&&r.every(Number.isFinite)&&Math.abs(M.dot(r,r)-1)<.001)&&Math.abs(M.dot(M.cross(s.camera[0],s.camera[1]),s.camera[2])-1)<.001)camera=s.camera;
   if([0,1,2,3].includes(s.align))align=s.align;
   if(Number.isFinite(s.zoom))zoom=Math.max(.55,Math.min(1.8,s.zoom));
-  theme=s.theme==='night'?'night':'day';dim=s.dim===true;elapsed=Number.isFinite(s.elapsed)?Math.max(0,s.elapsed):0;running=s.running===true;
+  theme=s.theme==='night'?'night':'day';dim=s.dim===true;elapsed=Number.isFinite(s.elapsed)?Math.max(0,s.elapsed):0;
+  currentRun=validRun(s.run)?structuredClone(s.run):newRun();running=currentRun.phase==='running'&&s.running===true;
+  return true;
  }catch{toast(shared?'分享链接无效，已保留本地局面':'存档无效，已使用新魔方');}
 }
 restore();
 if(location.hash.startsWith('#cube=')){
- try{const shared=JSON.parse(decodeURIComponent(location.hash.slice(6)));if(shared.v!==1)throw Error();restore({...shared,theme,dim,running:false});}
+ try{const shared=JSON.parse(decodeURIComponent(location.hash.slice(6)));if(shared.v!==1)throw Error();restore({...shared,run:shared.run?{...shared.run,id:newRun().id,recorded:false}:undefined,theme,dim,running:false});}
  catch{toast('分享链接无效，已保留本地局面');}
  // Consume the import once so reload restores subsequent local progress.
  save();
  history.replaceState(null,'',location.pathname+location.search);
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#cube='))location.reload();});
-function shareURL(){const url=new URL(location.href);url.hash='cube='+encodeURIComponent(JSON.stringify({v:1,geometryVersion:3,pyraminxLayers:true,puzzleType,order,size,moves,cursor,camera,align,zoom,elapsed}));return url.href;}
+function shareURL(){const url=new URL(location.href),state=snapshot();state.run={...state.run,recorded:false};url.hash='cube='+encodeURIComponent(JSON.stringify({...state,v:1,running:false}));return url.href;}
 
 if(!gl){$('status').textContent='浏览器不支持 WebGL';throw Error('WebGL unavailable');}
 function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
@@ -94,6 +102,7 @@ function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixe
 new ResizeObserver(resize).observe(canvas);
 function rgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);}
 function render(){
+ if(puzzleType==='clock'){renderClock();dirty=false;return;}
  scale=Math.min(width,height)*.72/(puzzleType==='cuboid'?Math.hypot(...size):puzzleType==='pyraminx'?5:3.5)*zoom;
  gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
  if(puzzleType!=='cuboid'){renderPoly();dirty=false;return;}
@@ -138,7 +147,7 @@ function hitTest(x,y){
  return {piece,point,normal:M.axes[axis].map(n=>n*sign)};
 }
 function snapView(){
- if(!align)return;
+ if(puzzleType==='clock'||!align)return;
  let best=null,score=-Infinity;
  for(const candidate of alignmentCandidates(align)){
   const s=candidate.reduce((sum,row,i)=>sum+M.dot(row,camera[i]),0);
@@ -148,15 +157,16 @@ function snapView(){
 }
 function normalize(v){const length=Math.hypot(...v);return v.map(n=>n/length);}
 function animateTurn(axis,layer,dir,from=0,commit=true,kind='manual'){
+ if(puzzleType==='clock'){finishTurn({axis,layer,dir,commit,kind});return;}
  const to=commit?turnStep(axis)*dir:0;
  animation={axis,layer,dir,angle:from,from,to,start:performance.now(),duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:180,commit,kind};controls();dirty=true;
 }
 function finishTurn(a){
  if(a.commit){
   applyTurn(pieces,a.axis,a.layer,a.dir);
-  if(a.kind==='manual'){moves=moves.slice(0,cursor);moves.push([a.axis,a.layer,a.dir]);cursor++;running=true;}
+  if(a.kind==='manual'){moves=moves.slice(0,cursor);moves.push([a.axis,a.layer,a.dir]);cursor++;}
   if(a.kind==='undo')cursor--;if(a.kind==='redo')cursor++;
-  if(isSolved()){running=false;if(a.kind==='manual')toast('已还原');}
+  if(puzzleType!=='clock'||a.axis!==2)advanceRun();
  }
  animation=null;controls();save();dirty=true;
 }
@@ -209,7 +219,7 @@ function updatePuzzleDrag(e){
  }
  dirty=true;
 }
-function cancelDrag(){if(drag?.turn){const t=drag.turn;animateTurn(t.axis,t.layer,1,t.angle,false);}drag=null;controls();dirty=true;}
+function cancelDrag(){cancelClockDrag();if(drag?.turn){const t=drag.turn;animateTurn(t.axis,t.layer,1,t.angle,false);}drag=null;controls();dirty=true;}
 function release(e,cancelled){
  pointers.delete(e.pointerId);if(pinch){if(pointers.size>=2)startPinch();else{pinch=null;save();controls();}return;}if(!drag||drag.id!==e.pointerId)return;
  if(cancelled){cancelDrag();return;}
@@ -236,30 +246,32 @@ $('share').onclick=()=>{
  button.onclick=async()=>{try{await navigator.clipboard.writeText(input.value);toast('链接已复制');}catch{input.focus();input.select();toast('请手动复制链接');}};
  input.onclick=()=>input.select();box.append(input,button);openDialog('分享当前局面',box);
 };
-$('menu').onclick=()=>{if(animation)return;syncSizes();openDialog('菜单');};
+$('menu').onclick=()=>{if(animation)return;menuDraft=settingsSnapshot();syncSizes();openDialog('菜单');};
 $('close').onclick=()=>$('modal').close();
 $('modal').addEventListener('click',e=>{if(e.target===$('modal')){const r=$('modal').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('modal').close();}});
-$('modal').addEventListener('close',()=>{lastTick=performance.now();save();});
+$('modal').addEventListener('close',()=>{lastTick=performance.now();if(menuDraft)finishMenuChanges();save();});
 function confirmAction(title,message,action){
  const box=document.createElement('div'),p=document.createElement('p'),buttons=document.createElement('div');p.textContent=message;buttons.className='dialog-actions';
  for(const [label,fn]of [['取消',()=>$('modal').close()],['确认',()=>{action();$('modal').close();}]]){const b=document.createElement('button');b.textContent=label;b.onclick=fn;buttons.append(b);}
  box.append(p,buttons);openDialog(title,box);
 }
-function reset(next=size){size=next.slice();pieces=createPuzzle();moves=[];cursor=0;animation=null;drag=null;elapsed=0;running=false;controls();dirty=true;syncSizes();save();}
-$('reset').onclick=()=>{if(!busy())confirmAction('复原','复原当前魔方并清零计时？',()=>reset());};
+function reset(next=size){save();currentRun=newRun();size=next.slice();pieces=createPuzzle();moves=[];cursor=0;animation=null;drag=null;elapsed=0;running=false;controls();dirty=true;syncSizes();save();}
+$('reset').onclick=()=>{if(!busy())confirmAction('复原','复原当前魔方？',()=>{pieces=createPuzzle();moves=[];cursor=0;completeRun();controls();dirty=true;save();});};
 $('shuffle').onclick=()=>{if(busy())return;confirmAction('打乱','打乱当前魔方并清零计时？',()=>{
  reset();
- if(puzzleType!=='cuboid'){let previous='';for(let i=0;i<60;i++){let choices=P.legalMoves(pieces,puzzleType,order).filter(m=>m.join()!==previous);if(!choices.length)choices=P.legalMoves(pieces,puzzleType,order);const [a,l]=choices[Math.floor(Math.random()*choices.length)],d=Math.random()<.5?-1:1;applyTurn(pieces,a,l,d);moves.push([a,l,d]);previous=[a,l].join();}cursor=moves.length;controls();dirty=true;save();return;}
+ if(puzzleType==='clock'){shuffleClock();beginRun();return;}
+ if(puzzleType!=='cuboid'){let previous='';for(let i=0;i<60;i++){let choices=P.legalMoves(pieces,puzzleType,order).filter(m=>m.join()!==previous);if(!choices.length)choices=P.legalMoves(pieces,puzzleType,order);const [a,l]=choices[Math.floor(Math.random()*choices.length)],d=Math.random()<.5?-1:1;applyTurn(pieces,a,l,d);moves.push([a,l,d]);previous=[a,l].join();}cursor=moves.length;controls();dirty=true;beginRun();return;}
  let previous=-1;
  for(let i=0;i<60;i++){let axis;do{axis=Math.floor(Math.random()*3);}while(axis===previous);previous=axis;const layer=Math.floor(Math.random()*size[axis])-(size[axis]-1)/2,dir=Math.random()<.5?-1:1;M.turn(pieces,size,axis,layer,dir);moves.push([axis,layer,dir]);}
- cursor=moves.length;controls();dirty=true;save();
+ cursor=moves.length;controls();dirty=true;beginRun();
  });};
 // Menu X/Y/Z mean height/width/depth; geometry remains right/up/front.
 const dimensionAxes=[1,0,2];
-function syncSizes(){syncTypeUI();['x','y','z'].forEach((a,i)=>{const value=size[dimensionAxes[i]],group=$('size-'+a);group.querySelector(`input[value="${value}"]`).checked=true;group.style.setProperty('--index',value-1);});}
-for(const a of ['x','y','z'])$('size-'+a).addEventListener('change',e=>{$('size-'+a).style.setProperty('--index',Number(e.target.value)-1);});
+function syncSizes(){syncTypeUI();['x','y','z'].forEach((a,i)=>{const value=(menuDraft?.size||size)[dimensionAxes[i]],group=$('size-'+a);group.querySelector(`input[value="${value}"]`).checked=true;group.style.setProperty('--index',value-1);});}
+for(const a of ['x','y','z'])$('size-'+a).addEventListener('change',e=>{$('size-'+a).style.setProperty('--index',Number(e.target.value)-1);if(menuDraft)menuDraft.size[dimensionAxes[['x','y','z'].indexOf(a)]]=Number(e.target.value);});
 syncSizes();
-$('dimensions').onsubmit=e=>{e.preventDefault();if(puzzleType!=='cuboid'){const next=Number($('order-track').querySelector('input:checked').value);confirmAction('应用阶数',`将${typeNames[puzzleType]}设为 ${next} 阶并复原？`,()=>{order=next;reset();});return;}const dimensions=['x','y','z'].map(a=>Number($('size-'+a).querySelector('input:checked').value)),next=dimensionAxes.map(i=>dimensions[i]);if(M.validSize(next))confirmAction('应用尺寸',`将魔方设为 ${dimensions.join(' × ')} 并复原？`,()=>reset(next));};
+$('dimensions').onsubmit=e=>e.preventDefault();
+$('history-open').onclick=showRecords;
 function cubeIcon(mode){
  const basis=pose(mode===0?3:mode),vertices=[];for(const x of [-1,1])for(const y of [-1,1])for(const z of [-1,1])vertices.push([x,y,z]);
  let paths='';vertices.forEach((v,i)=>vertices.forEach((w,j)=>{if(j<=i||v.filter((n,k)=>n!==w[k]).length!==1)return;
@@ -268,7 +280,11 @@ function cubeIcon(mode){
  }));
  return `<svg viewBox="0 0 48 48" aria-hidden="true">${paths}${mode===0?'<path d="M6 42L42 6" stroke-width="3"/>':''}</svg>`;
 }
-$('timer-control').onclick=()=>{if(busy())return;const box=document.createElement('div');box.className='dialog-actions';for(const label of [running?'暂停':'开始','清零']){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{if(label==='清零'){elapsed=0;running=false;}else running=!running;$('modal').close();save();};box.append(b);}openDialog('计时',box);};
+$('timer-control').onclick=()=>{if(busy())return;const box=document.createElement('div');box.className='dialog-actions';
+ const toggle=document.createElement('button');toggle.textContent=running?'暂停':currentRun.phase==='running'?'继续':'开始';
+ toggle.onclick=()=>{if(currentRun.phase==='running')running=!running;else{if(currentRun.phase!=='ready'){save();currentRun=newRun();elapsed=0;}currentRun.phase='running';currentRun.recorded=true;running=true;}lastTick=performance.now();$('modal').close();save();};
+ const clear=document.createElement('button');clear.textContent='清零';clear.onclick=()=>{save();currentRun=newRun();elapsed=0;running=false;$('modal').close();save();};box.append(toggle,clear);openDialog('计时',box);
+};
 function layoutHelp(){
  for(const note of $('help-overlay').querySelectorAll('[data-for]')){
   const target=$(note.dataset.for).getBoundingClientRect();

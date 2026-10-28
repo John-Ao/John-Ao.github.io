@@ -1,6 +1,7 @@
 const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),P=require('./polyhedra');
 const context=vm.createContext({P,Math,puzzleType:'octahedron',width:390,height:700,dirty:false,turnStep:()=>2*Math.PI/3});
 vm.runInContext(fs.readFileSync(__dirname+'/types.js','utf8'),context);
+const dragCode=fs.readFileSync(__dirname+'/game.js','utf8');vm.runInContext(dragCode.slice(dragCode.indexOf('function dragRadiansPerPixel'),dragCode.indexOf('function releaseVelocity')),context);
 let checks=0,middleChecks=0;
 for(const order of P.orders.octahedron){
  const pieces=P.create('octahedron',order),config=P.config('octahedron',order);
@@ -29,7 +30,7 @@ for(const order of P.orders.octahedron){
       assert(Math.abs(context.drag.turn.angle)>0);
       const selected=P.selection(pieces,'octahedron',order,context.drag.turn.axis,context.drag.turn.layer);
       assert.deepEqual(selected.slice().sort((a,b)=>a-b),candidate.ids.slice().sort((a,b)=>a-b),'gesture selects this slice alone');
-      if(candidate.layer===config.cuts.length)middleChecks++;
+      if(candidate.layer===1)middleChecks++;
       checks++;
      }
     }

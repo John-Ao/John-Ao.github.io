@@ -29,5 +29,5 @@ const assert=require('node:assert/strict');
    await page.locator('#help').click();assert.equal(await page.locator('.help-align').textContent(),'角度对齐选项');await page.keyboard.press('Escape');
   }
  }
- assert.deepEqual(errors,[]);await browser.close();console.log('PASS: per-type options/icons, tetrahedron 1/2/3 visible faces, face-normal alignment, orbit snapping, disabled snapping, reload and legacy mode normalization.');
+ assert.deepEqual(errors,[]);await browser.close();console.log('PASS: per-type options/icons, tetrahedron 1/2/3 visible faces, face-normal alignment, orbit snapping, disabled snapping, reload and type-specific alignment.');
 })().catch(e=>{console.error(e);process.exit(1);});

@@ -6,6 +6,8 @@ const add=(a,b)=>a.map((v,i)=>v+b[i]),sub=(a,b)=>a.map((v,i)=>v-b[i]),mul=(a,s)=
 const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm=v=>mul(v,1/Math.hypot(...v));
 const basis=[[1,0,0],[0,1,0],[0,0,1]],axes=basis.flatMap(v=>[v,mul(v,-1)]);
 const rotate=(v,n,a)=>add(add(mul(v,Math.cos(a)),mul(cross(n,v),Math.sin(a))),mul(n,dot(n,v)*(1-Math.cos(a))));
+// Sink each shell into the core so gaps reveal solid black side walls.
+const innerPoint=v=>mul(norm(v),.78);
 // Rounded notches and lobes on the three exposed faces of each corner.
 function cornerOutline(){
  const points=[[1,1],[.44,1]];
@@ -52,7 +54,7 @@ function shapedBlock(p,corner){
   const orient=points=>{if(dot(cross(sub(points[1],points[0]),sub(points[2],points[0])),normal)<0)points.reverse();return points;};
   for(const tri of triangles(outline))faces.push({color:-1,points:orient(tri.map(i=>at(outline[i])))});
   for(const tri of triangles(paint))faces.push({color:axis*2+(p[axis]<0?1:0),stickerMesh:true,points:orient(tri.map(i=>at(paint[i],-.001)))});
-  for(let i=0;i<outline.length;i++){const a=outline[i],b=outline[(i+1)%outline.length];const wall=[at(a),at(a,.15),at(b,.15),at(b)];if(p[axis]*(corner?p[u]*p[v]:1)<0)wall.reverse();faces.push({color:-1,points:wall});}
+  for(let i=0;i<outline.length;i++){const a=at(outline[i]),b=at(outline[(i+1)%outline.length]);const wall=[a,innerPoint(a),innerPoint(b),b];if(p[axis]*(corner?p[u]*p[v]:1)<0)wall.reverse();faces.push({color:-1,points:wall});}
  }
  return faces;
 }
@@ -94,8 +96,8 @@ function wheel(p){
   const paint=q=>[q[0],q[1]*.96+side*.008];
   faces.push({color:faceAxis*2+(p[faceAxis]<0?1:0),stickerMesh:true,
    points:orient([surface([0,side*.008],-.001),surface(paint(inset[i]),-.001),surface(paint(inset[j]),-.001)],outward)});
-  faces.push({color:-1,points:orient([surface(a),surface(a,.14),surface(b,.14),surface(b)],add(mul(u,(a[0]+b[0])/2),mul(v,(a[1]+b[1])/2)))});
-  faces.push({color:-1,points:orient([surface([0,0],.14),surface(b,.14),surface(a,.14)],mul(n,-1))});
+  faces.push({color:-1,points:orient([surface(a),innerPoint(surface(a)),innerPoint(surface(b)),surface(b)],add(mul(u,(a[0]+b[0])/2),mul(v,(a[1]+b[1])/2)))});
+  faces.push({color:-1,points:orient([mul(n,.78),innerPoint(surface(b)),innerPoint(surface(a))],mul(n,-1))});
  }
  return faces;
 }
@@ -106,7 +108,8 @@ function create(){const pieces=[];for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)fo
 }return pieces;}
 function valid(axis,layer){return Number.isInteger(axis)&&axis>=0&&axis<6&&layer===0;}
 function selection(pieces,axis,layer){return valid(axis,layer)?pieces.filter(p=>dot(p.p,axes[axis])>=0).map(p=>p.id):null;}
-function motion(piece,axis,angle){const n=axes[axis],level=dot(piece.p,n);return {n,level,orbit:level>0?angle:level===0?angle/2:0,spin:level===0&&piece.kind==='gear'?angle/3:0};}
+// Meshing reverses the middle gears' spin about their outward radial axes.
+function motion(piece,axis,angle){const n=axes[axis],level=dot(piece.p,n);return {n,level,orbit:level>0?angle:level===0?angle/2:0,spin:level===0&&piece.kind==='gear'?-angle/3:0};}
 function preview(piece,point,axis,angle){
  const m=motion(piece,axis,angle);let v=point;
  if(m.spin){const center=mul(piece.p,.79);v=add(center,rotate(sub(v,center),norm(piece.p),m.spin));}
@@ -120,7 +123,15 @@ function turn(pieces,axis,layer,dir){
   p.p=rotate(p.p,m.n,m.orbit).map(Math.round);
  }
 }
-function solved(pieces){return pieces.every(p=>p.p.every((v,i)=>v===p.home[i])&&(p.kind==='center'||p.frame.every((v,i)=>v.every((x,j)=>Math.abs(x-basis[i][j])<1e-6))));}
+function solved(pieces){
+ // Compare with one common cube orientation, not the initial world axes.
+ // Gear phases still have to match; center rotation is visually symmetric.
+ const frame=pieces.find(p=>p.kind==='corner')?.frame;if(!frame)return false;
+ const close=(a,b)=>a.every((v,i)=>Math.abs(v-b[i])<1e-6);
+ const oriented=v=>basis.map((_,i)=>v.reduce((sum,x,j)=>sum+x*frame[j][i],0));
+ return pieces.every(p=>close(p.p,oriented(p.home))&&
+  (p.kind==='center'||p.frame.every((v,i)=>close(v,frame[i]))));
+}
 // A stationary spherical core stays inside every moving shell; unlike a
 // face-sized backing plate it cannot sweep through the neighbouring layers.
 const core={core:true,faces:[]};
@@ -132,7 +143,7 @@ for(let lat=0;lat<16;lat++)for(let lon=0;lon<32;lon++){
  core.faces.push({color:-1,points});
 }
 function dragAxes(piece,normal){
- return axes.map((_,i)=>i).filter(i=>piece.kind==='gear'?dot(piece.p,axes[i])>.5:Math.abs(dot(axes[i],normal))<.9);
+ return axes.map((_,i)=>i).filter(i=>dot(piece.p,axes[i])>.5&&Math.abs(dot(axes[i],normal))<.9);
 }
 const api={core,dragAxes,faceIcon,create,selection,turn,solved,preview,config:{normals:axes,axes,cuts:[0],step:Math.PI}};
 if(typeof module!=='undefined')module.exports=api;else root.GearCube=api;

@@ -1,7 +1,4 @@
-const assert=require('node:assert/strict'),C=require('./clock-model.js'),legacy=require('../magic_clock/model.js');
-for(let mask=0;mask<16;mask++)for(let side=0;side<2;side++)for(let wheel=0;wheel<4;wheel++){
- const a=C.fresh(),b=legacy.fresh();a.pins=b.pins=Array.from({length:4},(_,p)=>!!(mask&(1<<p)));C.turn(a,side,wheel,1);legacy.turn(b,side,wheel,1);assert.deepEqual(a.faces,b.faces);
-}
+const assert=require('node:assert/strict'),C=require('./clock-model.js');
 for(let w=2;w<=6;w++)for(let h=2;h<=6;h++){
  const s=C.fresh(w,h),original=JSON.stringify(s),moves=[];
  for(let i=0;i<100;i++){const move=i%3===0?[2,i%s.pins.length,1]:[i%2,i%4,1+i%11];C.move(s,...move);moves.push(move);
@@ -10,4 +7,16 @@ for(let w=2;w<=6;w++)for(let h=2;h<=6;h++){
  const all=C.fresh(w,h);C.turn(all,0,0,1);assert(all.faces[0].every(n=>n===1));
 }
 for(const size of [[1,3],[7,3],[2.5,3],[3,NaN]])assert.throws(()=>C.fresh(...size));
-console.log('PASS: legacy 3×3 compatibility, all 25 sizes, mirrored corners, inverse replay and validation');
+console.log('PASS: all 25 sizes, mirrored corners, inverse replay and validation');
+
+for(let w=2;w<=6;w++)for(let h=2;h<=6;h++){
+ const state=C.fresh(w,h);
+ assert(C.solved(state));
+ for(let i=0;i<state.pins.length;i++)C.move(state,2,i,1);
+ assert(C.solved(state),'pin positions do not affect a solved clock');
+ for(let face=0;face<2;face++)for(let dial=0;dial<w*h;dial++){
+  state.faces[face][dial]=1;assert(!C.solved(state),'every dial on both sides must point to twelve');
+  state.faces[face][dial]=0;assert(C.solved(state));
+ }
+}
+console.log('PASS clock solved state: all 25 dimensions, both faces, every dial and pin independence');

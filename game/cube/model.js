@@ -11,7 +11,7 @@ function create(size){
  for(let x=0;x<size[0];x++)for(let y=0;y<size[1];y++)for(let z=0;z<size[2];z++){
   const grid=[x,y,z],p=grid.map((n,i)=>n-(size[i]-1)/2),stickers=[];
   for(let a=0;a<3;a++)for(const sign of [-1,1])if(grid[a]===(sign<0?0:size[a]-1))stickers.push({n:axes[a].map(v=>v*sign),color:a*2+(sign>0?1:0)});
-  pieces.push({id:pieces.length,p,stickers});
+  pieces.push({id:pieces.length,p,stickers,frame:axes.map(v=>v.slice())});
  }
  return pieces;
 }
@@ -20,7 +20,7 @@ function inLayer(piece,axis,layer){return Math.abs(piece.p[axis]-layer)<1e-6;}
 function turn(pieces,size,axis,layer,dir){
  if(!Number.isInteger(axis)||axis<0||axis>2||![-1,1].includes(dir)||!Number.isInteger(layer+(size[axis]-1)/2)||Math.abs(layer)>(size[axis]-1)/2)throw Error('无效转层');
  const angle=step(size,axis)*dir,clean=v=>v.map(x=>Math.round(x*2)/2);
- for(const piece of pieces)if(inLayer(piece,axis,layer)){piece.p=clean(rotate(piece.p,axis,angle));piece.stickers.forEach(s=>s.n=clean(rotate(s.n,axis,angle)));}
+ for(const piece of pieces)if(inLayer(piece,axis,layer)){piece.p=clean(rotate(piece.p,axis,angle));piece.frame=piece.frame.map(v=>clean(rotate(v,axis,angle)));piece.stickers.forEach(s=>s.n=clean(rotate(s.n,axis,angle)));}
 }
 function solved(pieces){const faces=new Map();for(const p of pieces)for(const s of p.stickers){const key=s.n.join(',');if(faces.has(key)&&faces.get(key)!==s.color)return false;faces.set(key,s.color);}return true;}
 // The two axes tangent to the touched face give the layers that can follow a swipe.

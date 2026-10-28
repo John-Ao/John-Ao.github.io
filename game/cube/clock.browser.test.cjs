@@ -22,7 +22,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  for(const [w,h] of [[2,6],[6,2],[6,6]]){
   await page.locator('#menu').click();await page.locator(`#clock-length input[value="${w}"]`).check();await page.locator(`#clock-width input[value="${h}"]`).check();await page.locator('#close').click();await page.waitForTimeout(80);if(await page.getByRole('button',{name:'否',exact:true}).isVisible())await page.getByRole('button',{name:'否',exact:true}).click();await page.waitForFunction(n=>document.querySelectorAll('.pointer').length===n,w*h*2);
   assert.deepEqual(await page.evaluate(()=>clockSize),[w,h]);assert.equal(await page.locator('.pin').count(),(w-1)*(h-1)*2);
-  await page.locator('#shuffle').click();await page.getByRole('button',{name:'确认',exact:true}).click();assert(!await page.evaluate(()=>isSolved()));
+  await page.locator('#shuffle').click();await page.locator('#dialog-content').getByRole('button',{name:'打乱',exact:true}).click();await page.waitForFunction(()=>!shuffling);assert(!await page.evaluate(()=>isSolved()));
   await page.locator('#reset').click();await page.getByRole('button',{name:'确认',exact:true}).click();assert(await page.evaluate(()=>isSolved()));
  }
  await page.locator('#menu').click();await page.locator('#clock-interaction').selectOption('buttons');await page.locator('#close').click();await page.waitForFunction(()=>document.querySelectorAll('.arc-button').length===16);await page.locator('.arc-button').first().click();assert.equal(await page.evaluate(()=>cursor),1);

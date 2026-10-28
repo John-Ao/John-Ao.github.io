@@ -1,12 +1,13 @@
 const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),P=require('./polyhedra');
 const context=vm.createContext({P,Math,puzzleType:'skewb',width:390,height:700,dirty:false,turnStep:()=>2*Math.PI/3});
 vm.runInContext(fs.readFileSync(__dirname+'/types.js','utf8'),context);
+const dragCode=fs.readFileSync(__dirname+'/game.js','utf8');vm.runInContext(dragCode.slice(dragCode.indexOf('function dragRadiansPerPixel'),dragCode.indexOf('function releaseVelocity')),context);
 for(const order of [3,4,5,6,7]){
  let directionChanges=0;
  const pieces=P.create('skewb',order),config=P.config('skewb',order),cuts=config.cuts.slice().sort((a,b)=>a-b);
  Object.assign(context,{order,pieces});
  for(let axis=0;axis<8;axis++)for(let slice=0;slice<order-2;slice++){
-  const layer=config.cuts.length+slice,ids=P.selection(pieces,'skewb',order,axis,layer);
+  const layer=1+slice,ids=P.selection(pieces,'skewb',order,axis,layer);
   assert(ids?.length);
   const expected=pieces.filter(p=>{const h=P.dot(P.average(p.faces.flatMap(f=>f.points)),config.axes[axis]);return h>cuts[slice]&&h<cuts[slice+1];}).map(p=>p.id);
   assert.deepEqual(ids,expected,'select only the region between consecutive cuts');
@@ -17,7 +18,7 @@ for(const order of [3,4,5,6,7]){
  }
  // Exercise actual gesture selection on all visible stickers, before and after turns.
  for(let state=0;state<2;state++){
-  if(state)P.turn(pieces,'skewb',order,0,config.cuts.length,1);
+  if(state)P.turn(pieces,'skewb',order,0,1,1);
   const legal=P.legalMoves(pieces,'skewb',order).map(([axis,layer])=>({axis,layer,ids:P.selection(pieces,'skewb',order,axis,layer)})),reached=new Set();
   for(const piece of pieces)for(const face of piece.faces.filter(f=>f.color>=0)){
    const center=P.average(face.points),normal=P.norm(P.cross(P.sub(face.points[1],face.points[0]),P.sub(face.points[2],face.points[0])));
@@ -25,7 +26,7 @@ for(const order of [3,4,5,6,7]){
    context.project=p=>[195+100*P.dot(p,u),350-100*P.dot(p,v)];
    for(const point of [center,...face.points.map(p=>p.map((x,i)=>.8*x+.2*center[i]))]){
     const hit={piece,normal,point},eligible=context.skewbClickCandidates(hit,legal.filter(c=>c.ids.includes(piece.id)),config);
-    const inner=eligible.filter(c=>c.layer>=config.cuts.length);
+    const inner=eligible.filter(c=>c.layer>0);
     if(inner.length)assert.deepEqual(Array.from(eligible,c=>[c.axis,c.layer]),Array.from(context.skewbClickCandidates({...hit,point:center},legal.filter(c=>c.ids.includes(piece.id)),config),c=>[c.axis,c.layer]),'click position does not choose the inner axis');
     const chosen=new Set();
     context.drag={hit,polyCandidates:legal.filter(c=>c.ids.includes(piece.id)).map(c=>({...c,count:c.ids.length}))};

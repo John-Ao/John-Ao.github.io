@@ -9,10 +9,10 @@ assert.equal(await page.evaluate(()=>gl.getError()),0);
 const initial=await page.evaluate(()=>JSON.stringify(camera));
 // Hit the center of a front sticker; rightward drag must turn Y, never orbit.
 const pt=await page.evaluate(()=>{const p=pieces.find(p=>p.p.join(',')==='0,0,1');const q=project([0,0,1.5]);return [q[0],q[1]+canvas.getBoundingClientRect().top];});
-await page.mouse.move(...pt);await page.mouse.down();await page.mouse.move(pt[0]+110,pt[1],{steps:8});await page.mouse.up();await page.waitForTimeout(260);
+await page.mouse.move(...pt);await page.mouse.down();await page.mouse.move(pt[0]+110,pt[1],{steps:8});await page.mouse.up();await page.waitForFunction(()=>!animation);
 assert.equal(await page.evaluate(()=>cursor),1);assert.equal(await page.evaluate(()=>moves[0][0]),1);assert.equal(await page.evaluate(()=>JSON.stringify(camera)),initial);
-await page.locator('#undo').click();await page.waitForTimeout(260);assert(await page.evaluate(()=>M.solved(pieces)));
-await page.locator('#redo').click();await page.waitForTimeout(260);assert.equal(await page.evaluate(()=>cursor),1);
+await page.locator('#undo').click();await page.waitForFunction(()=>!animation);assert(await page.evaluate(()=>M.solved(pieces)));
+await page.locator('#redo').click();await page.waitForFunction(()=>!animation);assert.equal(await page.evaluate(()=>cursor),1);
 await page.reload();await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>cursor),1);
 await page.locator('#align-options button').nth(0).click();await page.mouse.move(40,200);await page.mouse.down();await page.mouse.move(160,245,{steps:8});await page.mouse.up();await page.waitForTimeout(300);assert.notEqual(await page.evaluate(()=>JSON.stringify(camera)),initial);
 for(let i=0;i<4;i++){await page.locator('#align-options button').nth(i).click();await page.waitForTimeout(280);assert.equal(await page.evaluate(()=>align),i);}
@@ -79,7 +79,7 @@ assert.equal(await page.getByLabel('分享链接',{exact:true}).inputValue(),sha
 await page.goto('about:blank');await page.goto(shared.url);await page.waitForTimeout(250);
 assert.equal(await page.evaluate(()=>JSON.stringify(pieces)),shared.state);
 assert.equal(await page.evaluate(()=>running),false);
-await page.locator('#undo').click();await page.waitForTimeout(260);await page.reload();await page.waitForTimeout(200);
+assert(await page.locator('#undo').isDisabled());await page.reload();await page.waitForTimeout(200);
 assert.equal(await page.evaluate(()=>cursor),0);
 await page.evaluate(()=>{reset([3,3,3]);camera=pose(1);zoom=1;render();});
 const touch=await page.context().newCDPSession(page);

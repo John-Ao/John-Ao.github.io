@@ -1,11 +1,12 @@
 const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),P=require('./polyhedra');
 const context=vm.createContext({P,Math,puzzleType:'skewb',width:390,height:700,dirty:false,turnStep:()=>2*Math.PI/3});
 vm.runInContext(fs.readFileSync(__dirname+'/types.js','utf8'),context);
+const dragCode=fs.readFileSync(__dirname+'/game.js','utf8');vm.runInContext(dragCode.slice(dragCode.indexOf('function dragRadiansPerPixel'),dragCode.indexOf('function releaseVelocity')),context);
 let checks=0;
 for(const order of [3,4,5,6,7]){
  const pieces=P.create('skewb',order),config=P.config('skewb',order);Object.assign(context,{pieces,order});let diagonals=0;
  for(let state=0;state<2;state++){
-  if(state)P.turn(pieces,'skewb',order,0,config.cuts.length,1);
+  if(state)P.turn(pieces,'skewb',order,0,1,1);
   const legal=P.legalMoves(pieces,'skewb',order).map(([axis,layer])=>({axis,layer,ids:P.selection(pieces,'skewb',order,axis,layer)}));
   for(const piece of pieces){
    const faces=piece.faces.filter(f=>f.color>=0);if(faces.length!==1)continue;
@@ -13,7 +14,7 @@ for(const order of [3,4,5,6,7]){
    const candidates=legal.filter(c=>c.ids.includes(piece.id)).map(c=>({...c,count:c.ids.length}));
    const eligible=context.skewbClickCandidates(hit,candidates,config);
    if(!eligible.some(c=>c.gesturePoint))continue;
-   assert.equal(eligible.length,3);assert.equal(eligible.filter(c=>c.layer>=config.cuts.length).length,1);diagonals++;
+   assert.equal(eligible.length,3);assert.equal(eligible.filter(c=>c.layer>0).length,1);diagonals++;
    const u=P.norm(P.sub(face.points[1],point)),v=P.cross(normal,u);
    for(const tilt of [0,.4,-.4]){
     context.project=p=>{const d=6-tilt*P.dot(p,u)-.2*P.dot(p,v);return [195+500*P.dot(p,u)/d,350-500*P.dot(p,v)/d];};

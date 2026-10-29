@@ -1,0 +1,15 @@
+KataGo upstream commit: d91ea855110dae533f0aada947b2b7d78cc8a4e1
+b6.bin.gz https://raw.githubusercontent.com/lightvector/KataGo/d91ea855110dae533f0aada947b2b7d78cc8a4e1/cpp/tests/models/g170-b6c96-s175395328-d26788732.bin.gz
+b10.bin.gz https://raw.githubusercontent.com/lightvector/KataGo/d91ea855110dae533f0aada947b2b7d78cc8a4e1/cpp/tests/models/g170e-b10c128-s1141046784-d204142634.bin.gz
+These historical g170/g170e networks are distributed in the pinned KataGo repository; its license is preserved in ../vendor/KATAGO-LICENSE.txt.
+
+SHA256:
+f5d32604e3675c480c7c8f6aa579a1ea857135628a0afccc8fa56330fbacd38d  b6.bin.gz
+1a8e05a4ea3fca20dab79410cbb566c760767fcdd2fa0b701cfe259a84cc8b04  b10.bin.gz
+
+b18.bin.gz: kata1-b18c384nbt-s9996604416-d4316597426
+Official: https://media.katagotraining.org/uploaded/networks/models/kata1/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+Downloaded from pinned KaTrain distribution: https://raw.githubusercontent.com/sanderland/katrain/5ccab8e2eedcd046219f8b848ab05ef0d8cec289/katrain/models/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+License: KATAGO-NETWORK-LICENSE.txt
+SHA256: 9d7a6afed8ff5b74894727e156f04f0cd36060a24824892008fbb6e0cba51f1d  b18.bin.gz
+Official download verified byte-identical to the pinned KaTrain copy.

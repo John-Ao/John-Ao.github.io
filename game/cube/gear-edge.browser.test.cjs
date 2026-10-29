@@ -28,7 +28,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  await page.mouse.up();
  const completion=await page.evaluate(()=>animation&&({from:animation.from,to:animation.to,commit:animation.commit,duration:animation.duration}));
  assert(completion?.commit);
- assert.equal(completion.duration,400);
+ assert(completion.duration>0&&completion.duration<=180);
  assert.equal(completion.from,preview.angle);
  assert.equal(Math.abs(completion.to),Math.PI,'release completes the full gear half turn');
  await page.waitForFunction(()=>cursor===1&&!animation);

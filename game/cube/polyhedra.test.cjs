@@ -3,7 +3,7 @@ let seed=314159;const random=()=>((seed=(1664525*seed+1013904223)>>>0)/2**32);
 for(const type of Object.keys(P.orders).filter(type=>type!=='gear'))for(const order of P.orders[type].length?P.orders[type]:[3]){
  const pieces=P.create(type,order),original=JSON.parse(JSON.stringify(pieces));assert(P.solved(pieces,type,order));
  for(const [axis,layer] of P.legalMoves(pieces,type,order)){
-  const count=Math.round(2*Math.PI/P.step(type,order,axis));for(let i=0;i<count;i++)P.turn(pieces,type,order,axis,layer,1);assert(P.solved(pieces,type,order));
+  const count=Math.round(2*Math.PI/P.step(type,order,axis,layer));for(let i=0;i<count;i++)P.turn(pieces,type,order,axis,layer,1);assert(P.solved(pieces,type,order));
  }
  for(const piece of pieces){const edges=new Map();for(const face of piece.faces)face.points.forEach((a,i)=>{const b=face.points[(i+1)%face.points.length],key=[a,b].map(v=>v.map(x=>Math.round(x*1e5)).join()).sort().join('|');edges.set(key,(edges.get(key)||0)+1);});assert([...edges.values()].every(n=>n===2),'each piece has a closed shell');}
  const moves=[];for(let i=0;i<60;i++){const choices=P.legalMoves(pieces,type,order),move=[...choices[Math.floor(random()*choices.length)],random()<.5?-1:1];P.turn(pieces,type,order,...move);moves.push(move);}

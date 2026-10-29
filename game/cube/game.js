@@ -2,9 +2,9 @@
 const M=Cuboid,$=id=>document.getElementById(id),canvas=$('puzzle'),gl=canvas.getContext('webgl',{antialias:true,alpha:true});
 const P=PolyPuzzle,STICKER_INSET=1.6,SHUFFLE_STEPS=997;
 let puzzleType='cuboid',order=3;
-const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方',gear:'齿轮魔方',clock:'魔表'};
+const typeNames={cuboid:'长方体魔方',pyraminx:'金字塔魔方',skewb:'斜转魔方',megaminx:'五魔方',sq1:'SQ-1',octahedron:'八面体魔方',icosahedron:'二十面体魔方',gear:'齿轮魔方',clock:'魔表',helicopter:'直升机魔方',mixup:'混元魔方'};
 function createPuzzle(){return puzzleType==='clock'?ClockPuzzle.fresh(...clockSize):puzzleType==='cuboid'?M.create(size):P.create(puzzleType,order);}
-function turnStep(axis){return puzzleType==='cuboid'?M.step(size,axis):P.step(puzzleType,order,axis);}
+function turnStep(axis,layer=0){return puzzleType==='cuboid'?M.step(size,axis):P.step(puzzleType,order,axis,layer);}
 function applyTurn(target,axis,layer,dir){if(puzzleType==='clock')ClockPuzzle.move(target,axis,layer,dir);else if(puzzleType==='cuboid')M.turn(target,size,axis,layer,dir);else P.turn(target,puzzleType,order,axis,layer,dir);}
 function isSolved(){return puzzleType==='clock'?ClockPuzzle.solved(pieces):puzzleType==='cuboid'?M.solved(pieces):P.solved(pieces,puzzleType,order);}
 const KEY='cube.session',colors=['#f1d64e','#f3f1e9','#548bd4','#549d70','#ef9142','#df4e55','#a979ce','#55c4c4','#eaa6c3','#b1cb67','#927454','#a1b8de','#d84fa3','#258880','#8b67dd','#f4b947','#abc5ec','#a24636','#b9d4a0','#e8b49a'];
@@ -132,10 +132,10 @@ function snapView(){
  snap={from:camera.map(r=>r.slice()),to:best,start:performance.now()};dirty=true;
 }
 function normalize(v){const length=Math.hypot(...v);return v.map(n=>n/length);}
-function dragRadiansPerPixel(axis){return turnStep(axis)/(2*Math.max(70,Math.min(width,height)*.22));}
-function dragTurnAngle(axis,distance){
- const angle=distance*dragRadiansPerPixel(axis);
- const limit=turnStep(axis);
+function dragRadiansPerPixel(axis,layer=0){return turnStep(axis,layer)/(2*Math.max(70,Math.min(width,height)*.22));}
+function dragTurnAngle(axis,distance,layer=0){
+ const angle=distance*dragRadiansPerPixel(axis,layer);
+ const limit=turnStep(axis,layer);
  return Math.max(-limit,Math.min(limit,angle));
 }
 function releaseVelocity(d){
@@ -144,10 +144,12 @@ function releaseVelocity(d){
  const first=samples.find(s=>s.time>=last.time-80);
  if(!first||last.time<=first.time)return 0;
  const pixels=((last.x-first.x)*d.turn.tangent[0]+(last.y-first.y)*d.turn.tangent[1])/(last.time-first.time);
- return pixels*dragRadiansPerPixel(d.turn.axis);
+ return pixels*dragRadiansPerPixel(d.turn.axis,d.turn.layer);
 }
 function turnAnimationAngle(a,t){
- const delta=a.to-a.from,impulse=(a.velocity||0)*a.duration;
+ const delta=a.to-a.from;
+ if(Math.abs(delta)<1e-9)return a.to;
+ const impulse=(a.velocity||0)*a.duration;
  // Preserve the release derivative, but dissipate fast flicks early so they
  // cannot overshoot the target. Both terms finish with zero velocity.
  const decay=Math.max(2,2*Math.abs(impulse)/Math.max(Math.abs(delta),.001));
@@ -156,8 +158,10 @@ function turnAnimationAngle(a,t){
 }
 function animateTurn(axis,layer,dir,from=0,commit=true,kind='manual',velocity=0){
  if(puzzleType==='clock'){finishTurn({axis,layer,dir,commit,kind});return;}
- const to=commit?turnStep(axis)*dir:0;
- animation={axis,layer,dir,angle:from,from,to,velocity,start:performance.now(),duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:400,commit,kind};controls();dirty=true;
+ const step=turnStep(axis,layer),to=commit?step*dir:0,remaining=Math.abs(to-from);
+ if(remaining<1e-9){finishTurn({axis,layer,dir,commit,kind});return;}
+ const duration=matchMedia('(prefers-reduced-motion: reduce)').matches?0:180*Math.min(1,Math.sqrt(remaining/step));
+ animation={axis,layer,dir,angle:from,from,to,velocity,start:performance.now(),duration,commit,kind};controls();dirty=true;
 }
 function finishTurn(a){
  if(a.commit){
@@ -231,7 +235,10 @@ function release(e,cancelled){
  if(cancelled){cancelDrag();return;}
  if(drag.hit&&e.type==='pointerup')updatePuzzleDrag(e);
  const d=drag;drag=null;
- if(d.turn){const t=d.turn;animateTurn(t.axis,t.layer,t.angle<0?-1:1,t.angle,Math.abs(t.angle)>turnStep(t.axis)*.16,'manual',releaseVelocity(d));}
+ if(d.turn){const t=d.turn,step=turnStep(t.axis,t.layer),amounts=puzzleType==='helicopter'?P.turnStops(pieces,puzzleType,order,t.axis,t.layer).filter(n=>n*(t.angle<0?-1:1)>0):[t.angle<0?-1:1];
+  const amount=amounts.reduce((best,n)=>Math.abs(t.angle/step-n)<Math.abs(t.angle/step-best)?n:best);
+  animateTurn(t.axis,t.layer,amount,t.angle,Math.abs(t.angle)>step*.16,'manual',releaseVelocity(d));
+ }
  else if(!d.hit&&d.moved){snapView();save();}
  controls();
 }
@@ -272,14 +279,14 @@ async function performShuffle(allowed=null){
   const copy={...p,frame:p.frame.map(v=>v.slice())};
   if(p.p)copy.p=p.p.slice();if(p.anchor)copy.anchor=p.anchor.slice();
   if(p.stickers)copy.stickers=[];
-  if(p.faces){const vertices=new Map();if(puzzleType!=='gear')for(const f of p.faces)for(const v of f.points)vertices.set(v.map(x=>Math.round(x*1e8)).join(),v.slice());copy.faces=vertices.size?[{color:-1,points:[...vertices.values()]}]:[];}
+  if(p.faces){const vertices=new Map();if(puzzleType!=='gear')for(const f of p.faces.filter(f=>puzzleType!=='mixup'||f.color>=0))for(const v of f.points)vertices.set(v.map(x=>Math.round(x*1e8)).join(),v.slice());copy.faces=vertices.size?[{color:puzzleType==='mixup'?0:-1,points:[...vertices.values()]}]:[];}
   return copy;
  });
  let previous='',blocked=false,nextYield=performance.now()+12;
  const pairs=puzzleType==='cuboid'?M.axes.flatMap((_,axis)=>Array.from({length:size[axis]},(_,j)=>[axis,j-(size[axis]-1)/2])):
   puzzleType==='clock'?[...pieces.pins.map((_,i)=>[2,i]),...[0,1].flatMap(a=>[0,1,2,3].map(l=>[a,l]))]:
   P.config(puzzleType,order).axes.flatMap((_,a)=>Array.from({length:P.layerCount(puzzleType,order)},(_,l)=>[a,l]));
- const candidates=allowed||pairs.flatMap(([a,l])=>[[a,l,1],[a,l,-1]]);
+ const candidates=allowed||pairs.flatMap(([a,l])=>(puzzleType==='helicopter'?P.turnAmounts(puzzleType):[1]).flatMap(n=>[[a,l,n],[a,l,-n]]));
  function pick(pool){
   pool=pool.slice();while(pool.length){const i=Math.floor(Math.random()*pool.length),move=pool.splice(i,1)[0];
    if(['cuboid','clock'].includes(puzzleType)||P.selection(work,puzzleType,order,move[0],move[1]))return move;

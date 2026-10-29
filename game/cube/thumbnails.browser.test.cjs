@@ -21,6 +21,6 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  await page.screenshot({path:'/tmp/cube-history-thumbnails.png'});
  await page.setViewportSize({width:320,height:740});assert(await page.evaluate(()=>document.querySelector('#modal').scrollWidth<=document.querySelector('#modal').clientWidth));
  await page.locator('.history-item').last().scrollIntoViewIfNeeded();await page.waitForTimeout(100);assert(await page.locator('.history-thumbnail').last().evaluate(c=>c.getContext('2d').getImageData(0,0,128,128).data.some(n=>n)));await page.screenshot({path:'/tmp/cube-history-clock-thumbnail.png'});
- assert.deepEqual(errors,[]);console.log('PASS: all nine types, initial/final-specific thumbnails, rectangular clock, no active-state mutation, lazy rendering and mobile layout');
+ assert.deepEqual(errors,[]);console.log('PASS: all puzzle types, initial/final-specific thumbnails, rectangular clock, no active-state mutation, lazy rendering and mobile layout');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1);});

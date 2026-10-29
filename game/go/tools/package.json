@@ -1,0 +1,1 @@
+{"name":"go-browser-engine-build","private":true,"type":"module","scripts":{"build":"node build.mjs"},"dependencies":{"@tensorflow/tfjs":"4.22.0","@tensorflow/tfjs-backend-wasm":"4.22.0","@tensorflow/tfjs-backend-webgpu":"4.22.0","pako":"2.1.0"},"devDependencies":{"esbuild":"0.25.12","vitest":"3.2.4"}}

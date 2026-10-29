@@ -42,13 +42,13 @@ fieldset>button{width:100%}#align-options{position:fixed;z-index:2;bottom:max(6p
 
 [hidden]{display:none!important}
 .type-setting{display:grid;gap:8px;margin-bottom:8px;font-size:14px}
-.type-track{--count:8;--index:0;grid-template-columns:repeat(var(--count),1fr);width:100%}
-.type-track::before{width:calc((100% - 6px)/var(--count));transform:translateX(calc(var(--index)*100%))}
+.type-track{grid-template-columns:repeat(6,1fr);width:100%}
+.type-track::before{display:none}
 .type-track label{position:relative;min-width:0;text-align:center}
 .type-track input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer}
 .type-track span{display:flex;align-items:center;justify-content:center;min-height:44px;pointer-events:none}
 .type-track svg{width:30px;height:30px;fill:currentColor;stroke:none}
-.type-track input:checked+span{color:var(--bg)}
+.type-track input:checked+span{color:var(--bg);background:var(--accent);border-radius:8px}
 .type-track input:focus-visible+span{outline:3px solid var(--highlight);border-radius:8px}
 #order-track{grid-template-columns:repeat(var(--count),1fr)}
 #order-track::before{width:calc((100% - 6px)/var(--count))}
@@ -109,3 +109,5 @@ body[data-theme=dim] #clock-boards{opacity:.45}
 #shuffle-recorder{position:fixed;z-index:5;left:50%;bottom:calc(max(6px,env(safe-area-inset-bottom)) + 104px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:12px 16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:0 4px 24px #0002;text-align:center}#shuffle-recorder[hidden]{display:none}#shuffle-recorder p{margin:0 0 4px;color:var(--ink)}#record-count{font-size:12px;color:var(--muted)}#shuffle-recorder>div{display:flex;gap:8px;margin-top:8px}#shuffle-recorder button{padding:8px 12px;flex:1;white-space:nowrap}
 
 #shuffle-progress{position:fixed;z-index:5;left:50%;bottom:110px;transform:translateX(-50%);padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-size:14px;white-space:nowrap}#shuffle-progress[hidden]{display:none}
+
+@media(max-width:360px){.type-track{grid-template-columns:repeat(5,1fr)}}

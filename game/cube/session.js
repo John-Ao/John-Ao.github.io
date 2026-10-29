@@ -58,7 +58,7 @@ function showRecords(){
   let info;try{info=CubeState.describe(record.final);}catch{continue;}
   const row=document.createElement('div'),item=document.createElement('button'),retry=document.createElement('button');row.className='history-row';item.className='history-item';
   const title=document.createElement('span'),time=document.createElement('span'),date=document.createElement('small');
-  const dimensions=info.puzzleType==='cuboid'?info.size.join(' × '):info.puzzleType==='clock'?info.clockSize.join(' × '):['sq1','gear'].includes(info.puzzleType)?'':`${info.order} 阶`;
+  const dimensions=info.puzzleType==='cuboid'?info.size.join(' × '):info.puzzleType==='clock'?info.clockSize.join(' × '):['sq1','gear','helicopter','mixup'].includes(info.puzzleType)?'':`${info.order} 阶`;
   title.textContent=`${typeNames[info.puzzleType]} ${dimensions}`;
   time.textContent=formatTime(record.elapsed);date.textContent=new Date(record.savedAt).toLocaleString('zh-CN',{hour12:false});
   const thumbnail=document.createElement('canvas'),details=document.createElement('span');thumbnail.width=thumbnail.height=128;thumbnail.className='history-thumbnail';thumbnail.setAttribute('aria-hidden','true');details.className='history-details';details.append(title,time,date);item.append(thumbnail,details);historyThumbnails.set(thumbnail,record);historyThumbnailObserver.observe(thumbnail);

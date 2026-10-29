@@ -1,9 +1,14 @@
 'use strict';
+function polyFaceIcon(type){
+ return P.create(type,3).flatMap(p=>p.faces.filter(f=>f.color===4)).map(f=>{const points=P.insetFace(f.points,.035);return points.length?'M'+points.map(v=>`${12+v[0]*10} ${12-v[1]*10}`).join('L')+'Z':'';}).join('');
+}
 function syncTypeUI(){
  if(!menuDraft){syncAlignmentUI();syncClockUI();}else syncClockMenu();
  const selected=menuDraft?.puzzleType||puzzleType,selectedOrder=menuDraft?.order??order;
  // Face stickers; octahedron and icosahedron show the whole solid with filled faces.
  const icons={
+ "helicopter":polyFaceIcon('helicopter'),
+ "mixup":polyFaceIcon('mixup'),
  "clock":clockIcon(),
  "gear":GearCube.faceIcon(),
  "cuboid": "M2 2h6v6h-6ZM9 2h6v6h-6ZM16 2h6v6h-6ZM2 9h6v6h-6ZM9 9h6v6h-6ZM16 9h6v6h-6ZM2 16h6v6h-6ZM9 16h6v6h-6ZM16 16h6v6h-6Z",
@@ -29,7 +34,7 @@ function syncTypeUI(){
  if(hasOrder){const track=$('order-track'),values=P.orders[selected];track.replaceChildren();track.style.setProperty('--count',values.length);track.style.setProperty('--index',values.indexOf(selectedOrder));
   values.forEach((n,i)=>{const label=document.createElement('label'),input=document.createElement('input'),span=document.createElement('span');input.type='radio';input.name='order';input.value=n;input.checked=n===selectedOrder;span.textContent=n;input.onchange=()=>{track.style.setProperty('--index',i);if(menuDraft)menuDraft.order=n;};label.append(input,span);track.append(label);});
  }
- $('turn-help').textContent={clock:'点击销钉切换联动区域；所有指针指向 12 点即还原',cuboid:'正方形截面转 90°，其余转 180°',pyraminx:'沿顶点转轴转动 120°',megaminx:'绕面中心转动 72°',skewb:'沿对角转轴转动 120°',octahedron:'绕三角形面中心转动 120°',icosahedron:'绕顶点转动 72°',gear:'外层转 180°，中层联动 90°，齿轮同步自转',sq1:'上下层转 30°；中层翻转 180°，切面被阻挡时不可翻转'}[puzzleType];
+ $('turn-help').textContent={clock:'点击销钉切换联动区域；所有指针指向 12 点即还原',cuboid:'正方形截面转 90°，其余转 180°',pyraminx:'沿顶点转轴转动 120°',megaminx:'绕面中心转动 72°',skewb:'沿对角转轴转动 120°',octahedron:'绕三角形面中心转动 120°',icosahedron:'绕顶点转动 72°',gear:'外层转 180°，中层联动 90°，齿轮同步自转',helicopter:'绕棱转动，松手吸附至切面对齐角度；切面被阻挡时不可转动',mixup:'外层转 90°，中层转 45°；中心块与棱块可以互换位置',sq1:'上下层转 30°；中层翻转 180°，切面被阻挡时不可翻转'}[puzzleType];
 }
 function renderPoly(){
  const data=[];polygons=[];const turn=animation||drag?.turn,c=P.config(puzzleType,order),ids=turn?new Set(P.selection(pieces,puzzleType,order,turn.axis,turn.layer)||[]):null;
@@ -171,5 +176,5 @@ function updatePolyDrag(){
   // At a shared boundary prefer the smaller independently turning cap.
   if(!best||score>best.score+1e-6||(Math.abs(score-best.score)<1e-6&&count<best.count))best={axis,layer,tangent,score,count};
  }
- drag.turn=best?{...best,angle:dragTurnAngle(best.axis,track.x*best.tangent[0]+track.y*best.tangent[1])}:null;dirty=true;
+ drag.turn=best?{...best,angle:dragTurnAngle(best.axis,track.x*best.tangent[0]+track.y*best.tangent[1],best.layer)}:null;dirty=true;
 }

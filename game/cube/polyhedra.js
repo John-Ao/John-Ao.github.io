@@ -27,10 +27,14 @@ for(const a of [-1,1])for(const b of [-1,1])icosa.push(norm([0,a/phi,b*phi]),nor
 const icoVertices=unique(shell(icosa).flatMap(f=>f.points)),icoAxes=icoVertices.map(norm);
 const icoRadius=Math.hypot(...icoVertices[0]);
 const icoAdjacent=Math.max(...icoVertices.slice(1).map(v=>dot(v,icoAxes[0])));
-const orders={pyraminx:[2,3,4,5],megaminx:[2,3,4,5,6,7],skewb:[2,3,4,5,6,7],octahedron:[3,4,5,6],icosahedron:[3,4,5,6],sq1:[],gear:[]};
+const helicopterAxes=[];for(let zero=0;zero<3;zero++)for(const a of [-1,1])for(const b of [-1,1]){const n=[0,0,0];n[(zero+1)%3]=a;n[(zero+2)%3]=b;helicopterAxes.push(norm(n));}
+const JUMBLE=Math.acos(1/3),MIXUP_CUT=Math.SQRT2-1;
+const orders={pyraminx:[2,3,4,5],megaminx:[2,3,4,5,6,7],skewb:[2,3,4,5,6,7],octahedron:[3,4,5,6],icosahedron:[3,4,5,6],sq1:[],gear:[],helicopter:[],mixup:[]};
 function valid(type,order){return Object.hasOwn(orders,type)&&(orders[type].length?orders[type].includes(order):order===3);}
 function config(type,order){if(!valid(type,order))throw Error('无效魔方类型或阶数');
  if(type==='gear')return Gear.config;
+ if(type==='helicopter')return {normals:cubeNormals,axes:helicopterAxes,cuts:[Math.SQRT1_2],step:Math.PI};
+ if(type==='mixup')return {normals:cubeNormals,axes:cubeNormals,cuts:[MIXUP_CUT],step:Math.PI/2};
  if(type==='pyraminx')return {normals:tetra.map(n=>mul(n,-1)),axes:tetra,cuts:Array.from({length:order-1},(_,i)=>-1+4*(i+1)/order),step:TAU/3};
  if(type==='megaminx'&&order%2===0)return {normals:mega,axes:mega,cuts:Array.from({length:order/2},(_,i)=>1-(i+1)*.4/(order/2)),step:TAU/5};
  if(type==='megaminx')return {normals:mega,axes:mega,cuts:Array.from({length:(order-1)/2},(_,i)=>1-(i+1)*(3-Math.sqrt(5))/order),step:TAU/5};
@@ -84,15 +88,23 @@ const c=config(type,order);let cells=[shell(c.normals)];
   }}
   let mid=clip(clip(body,[0,1,0],1/3),[0,-1,0],1/3);for(const sign of [-1,1])cells.push(clip(mid,mul(c.axes[2],sign),0));
  }else for(const n of c.axes)for(const d of c.cuts){const next=[];for(const fs of cells){const ds=fs.flatMap(f=>f.points.map(p=>dot(p,n)-d));if(Math.min(...ds)<-EPS&&Math.max(...ds)>EPS)next.push(clip(fs,n,d),clip(fs,mul(n,-1),-d));else next.push(fs);}cells=next;}
+ // Mixup's moving shell is supported radially. Rectangular internal cubies
+ // would overlap when centers exchange with edges after a 45-degree turn.
+ if(type==='mixup')cells=cells.map(fs=>{
+  const outer=fs.filter(f=>f.color>=0),edges=new Map(),key=v=>v.map(x=>Math.round(x*1e8)).join();
+  for(const f of outer)f.points.forEach((a,i)=>{const b=f.points[(i+1)%f.points.length],k=[key(a),key(b)].sort().join('|');if(edges.has(k))edges.delete(k);else edges.set(k,[a,b]);});
+  return [...outer,...[...edges.values()].map(([a,b])=>({color:-1,points:[b,a,[0,0,0]]}))];
+ });
  return cells.filter(fs=>fs.some(f=>f.color>=0)).map((faces,id)=>({id,faces,frame:[[1,0,0],[0,1,0],[0,0,1]]}));
 }
-function layerCount(type,order){return type==='sq1'?1:type==='pyraminx'?order:type==='skewb'?order-1:type==='octahedron'?Math.ceil(order/2):config(type,order).cuts.length;}
+function layerCount(type,order){return type==='mixup'?2:type==='sq1'?1:type==='pyraminx'?order:type==='skewb'?order-1:type==='octahedron'?Math.ceil(order/2):config(type,order).cuts.length;}
 function selection(pieces,type,order,axis,layer){
  if(type==='gear')return Gear.selection(pieces,axis,layer);
  const c=config(type,order);
  if(!Number.isInteger(axis)||axis<0||axis>=c.axes.length||!Number.isInteger(layer)||layer<0||layer>=layerCount(type,order))return null;
  const n=c.axes[axis],cuts=c.cuts.slice().sort((a,b)=>a-b);let low,high=Infinity;
  if(type==='sq1')low=axis===2?0:1/3;
+ else if(type==='mixup'){low=layer===0?MIXUP_CUT:-MIXUP_CUT;high=layer===0?Infinity:MIXUP_CUT;}
  else if(['megaminx','icosahedron'].includes(type)){low=c.cuts[layer];if(layer)high=c.cuts[layer-1];}
  else if(type==='pyraminx'){low=layer===order-1?-1:c.cuts[layer];high=layer===order-1?c.cuts[0]:(c.cuts[layer+1]??3);}
  else if(layer===0)low=cuts.at(-1);
@@ -101,7 +113,8 @@ function selection(pieces,type,order,axis,layer){
  const ids=[];
  for(const p of pieces){
   if(p.anchor){const h=dot(p.anchor,n);if(h>low+EPS&&h<=high+EPS)ids.push(p.id);continue;}
-  const heights=p.faces.flatMap(f=>f.points.map(v=>dot(v,n))),min=Math.min(...heights),max=Math.max(...heights);
+  // Mixup legality follows its exterior seams; radial support faces meet at the core.
+  const heights=p.faces.filter(f=>type!=='mixup'||f.color>=0).flatMap(f=>f.points.map(v=>dot(v,n))),min=Math.min(...heights),max=Math.max(...heights);
   if(max<=low+EPS||min>=high-EPS)continue;
   if(min<low-EPS||max>high+EPS)return null;
   ids.push(p.id);
@@ -109,8 +122,28 @@ function selection(pieces,type,order,axis,layer){
  return ids.length?ids:null;
 }
 
-function step(type,order,axis){return type==='sq1'&&axis===2?Math.PI:config(type,order).step;}
-function turn(pieces,type,order,axis,layer,dir){if(type==='gear'){Gear.turn(pieces,axis,layer,dir);return;}const ids=selection(pieces,type,order,axis,layer);if(!ids||![-1,1].includes(dir))throw Error('当前切面被块阻挡');const set=new Set(ids),c=config(type,order);for(const p of pieces)if(set.has(p.id)){const angle=step(type,order,axis)*dir;if(p.anchor)p.anchor=rotate(p.anchor,c.axes[axis],angle);p.frame=p.frame.map(v=>rotate(v,c.axes[axis],angle));for(const f of p.faces)f.points=f.points.map(v=>rotate(v,c.axes[axis],angle));}}
+function step(type,order,axis,layer=0){return type==='mixup'&&layer===1?Math.PI/4:type==='sq1'&&axis===2?Math.PI:config(type,order).step;}
+function turnAmounts(type){return type==='helicopter'?[JUMBLE/Math.PI,1-JUMBLE/Math.PI,1]:[1];}
+// Signed stops relative to the current geometry, not to the solved position.
+function turnStops(pieces,type,order,axis,layer=0){
+ if(type!=='helicopter')return [-1,1];
+ const ids=new Set(selection(pieces,type,order,axis,layer)||[]),c=config(type,order),n=c.axes[axis],stops=[-1,1];
+ for(const p of pieces)if(ids.has(p.id))for(const f of p.faces){
+  if(f.color>=0)continue;
+  let normal=norm(cross(sub(f.points[1],f.points[0]),sub(f.points[2],f.points[0])));
+  if(dot(normal,f.points[0])<0)normal=mul(normal,-1);
+  if(Math.abs(dot(normal,f.points[0])-Math.SQRT1_2)>EPS)continue;
+  const height=dot(normal,n),u=sub(normal,mul(n,height));
+  if(dot(u,u)<EPS)continue;
+  for(const target of c.axes){
+   if(Math.abs(dot(target,n)-height)>EPS)continue;
+   const v=sub(target,mul(n,height)),amount=Math.atan2(dot(n,cross(u,v)),dot(u,v))/Math.PI;
+   if(Math.abs(amount)>EPS&&!stops.some(x=>Math.abs(x-amount)<EPS))stops.push(amount);
+  }
+ }
+ return stops.sort((a,b)=>a-b);
+}
+function turn(pieces,type,order,axis,layer,dir){if(type==='gear'){Gear.turn(pieces,axis,layer,dir);return;}const ids=selection(pieces,type,order,axis,layer);if(!ids||!(turnAmounts(type).some(n=>Math.abs(Math.abs(dir)-n)<1e-9)||type==='helicopter'&&turnStops(pieces,type,order,axis,layer).some(n=>Math.abs(dir-n)<EPS)))throw Error('当前切面被块阻挡');const set=new Set(ids),c=config(type,order);for(const p of pieces)if(set.has(p.id)){const angle=step(type,order,axis,layer)*dir;if(p.anchor)p.anchor=rotate(p.anchor,c.axes[axis],angle);p.frame=p.frame.map(v=>rotate(v,c.axes[axis],angle));for(const f of p.faces)f.points=f.points.map(v=>rotate(v,c.axes[axis],angle));}}
 function solved(pieces,type,order){
  if(type==='gear')return Gear.solved(pieces);
  const ns=config(type,order).normals,faceColors=new Map(),colorFaces=new Map();
@@ -166,8 +199,8 @@ function insetFace(points,distance){
 function stickerColorIndex(type,color){
  if(color<0)return color;
  if(type==='cuboid')return [3,2,0,1,4,5][color];
- if(['skewb','sq1','gear'].includes(type))return [3,2,0,1,4,5][color^1];
+ if(['skewb','sq1','gear','helicopter','mixup'].includes(type))return [3,2,0,1,4,5][color^1];
  return color;
 }
-const api={stickerColorIndex,layerCount,insetFace,insetProjected,shell,orders,valid,config,create,selection,step,turn,solved,legalMoves,rotate,average,norm,cross,sub,dot};if(typeof module!=='undefined')module.exports=api;else root.PolyPuzzle=api;
+const api={turnStops,turnAmounts,stickerColorIndex,layerCount,insetFace,insetProjected,shell,orders,valid,config,create,selection,step,turn,solved,legalMoves,rotate,average,norm,cross,sub,dot};if(typeof module!=='undefined')module.exports=api;else root.PolyPuzzle=api;
 })(globalThis);

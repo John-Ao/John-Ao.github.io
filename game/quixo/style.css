@@ -1,0 +1,269 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f4f2ed;
+  color: #293d35;
+  font:
+    16px system-ui,
+    sans-serif;
+}
+main {
+  max-width: 860px;
+  margin: auto;
+  padding: 16px;
+}
+.controls,
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+button,
+select {
+  font: inherit;
+  color: inherit;
+  min-height: 44px;
+  padding: 8px 11px;
+  border: 1px solid #a4b3a9;
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button:focus-visible,
+select:focus-visible,
+[data-cell]:focus-visible {
+  outline: 3px solid #ba621e;
+  outline-offset: 2px;
+}
+#status {
+  font-weight: 650;
+  min-height: 26px;
+  margin: 12px 0 5px;
+}
+#hint {
+  color: #526458;
+  font-size: 14px;
+  min-height: 22px;
+  margin: 0 0 10px;
+}
+.actions {
+  margin: 10px 0;
+}
+.actions:has([hidden]):not(:has(button:not([hidden]))) {
+  display: none;
+}
+[hidden] {
+  display: none !important;
+}
+#players {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin: 12px 0;
+  font-size: 14px;
+}
+#players span {
+  padding: 8px 0;
+  border-bottom: 3px solid transparent;
+}
+#players .active {
+  border-color: #326a53;
+  font-weight: 650;
+}
+dialog {
+  width: min(92vw, 580px);
+  max-height: 85dvh;
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid #9dad9e;
+  border-radius: 10px;
+  line-height: 1.65;
+}
+dialog::backdrop {
+  background: #14261b77;
+}
+dialog h2 {
+  margin: 0;
+  font-size: 21px;
+}
+dialog p {
+  margin: 12px 0;
+}
+dialog a {
+  color: #23614f;
+}
+#board {
+  margin: auto;
+  max-width: 560px;
+  touch-action: manipulation;
+  user-select: none;
+}
+.square {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  aspect-ratio: 1;
+  gap: 6px;
+  background: #cdbd9f;
+  border: 2px solid #8e8068;
+  border-radius: 10px;
+  padding: 9px;
+}
+.square button {
+  aspect-ratio: 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee7d7;
+  border-color: #b3a487;
+  border-radius: 7px;
+}
+.square button.legal {
+  box-shadow: inset 0 0 0 2px #56866a;
+}
+.square button.selected {
+  outline: 3px solid #a45a20;
+  outline-offset: -3px;
+}
+.square button.target {
+  background: #d5e3cf;
+}
+.square button.win {
+  box-shadow: inset 0 0 0 4px #a45a20;
+}
+.piece {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #32483e;
+  font-size: clamp(16px, 4vw, 26px);
+  font-weight: 700;
+}
+.p1 {
+  background: #fffdf5;
+  color: #273e32;
+}
+.p2 {
+  background: #283e34;
+  color: #fff;
+}
+.p3 {
+  background: #dcb45f;
+  color: #493c20;
+}
+.stack-count {
+  position: absolute;
+  right: 5px;
+  bottom: 3px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.route {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  font-size: 12px;
+  color: #574b39;
+}
+.symbol {
+  font-size: clamp(26px, 9vw, 60px);
+  line-height: 1;
+}
+.symbol.p1,
+.symbol.p2 {
+  background: none;
+}
+.symbol.p1 {
+  color: #355f8e;
+}
+.symbol.p2 {
+  color: #954b32;
+}
+.top-order {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+.mini {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #5b6b5f;
+  border-radius: 50%;
+  font-size: 12px;
+}
+#hand {
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.8;
+}
+#hand:empty {
+  display: none;
+}
+@media (max-width: 500px) {
+  main {
+    padding: 10px;
+  }
+  .controls {
+    gap: 6px;
+  }
+  button,
+  select {
+    padding: 7px 9px;
+  }
+  .square {
+    gap: 4px;
+    padding: 6px;
+  }
+}
+@media (min-width: 700px) and (max-height: 540px) {
+  main {
+    display: grid;
+    grid-template-columns: minmax(250px, 1fr) minmax(300px, calc(100dvh - 24px));
+    column-gap: 18px;
+    max-width: 1100px;
+    padding: 12px;
+    align-items: start;
+  }
+  .controls,
+  #status,
+  #hint,
+  #players,
+  .actions,
+  #hand {
+    grid-column: 1;
+  }
+  #board {
+    grid-column: 2;
+    grid-row: 1/8;
+    width: 100%;
+    max-width: none;
+  }
+  #status {
+    margin: 8px 0 0;
+  }
+  #hint {
+    margin: 4px 0;
+  }
+  .actions,
+  #players {
+    margin: 6px 0;
+  }
+}

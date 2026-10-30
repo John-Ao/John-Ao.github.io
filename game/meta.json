@@ -33,6 +33,30 @@
       {
         "game": "polyomino",
         "title": "多米诺拼图"
+      },
+      {
+        "game": "slitherlink",
+        "title": "数回"
+      },
+      {
+        "game": "nonogram",
+        "title": "数织"
+      },
+      {
+        "game": "hashi",
+        "title": "桥梁"
+      },
+      {
+        "game": "galaxies",
+        "title": "星系"
+      },
+      {
+        "game": "sokoban",
+        "title": "推箱子"
+      },
+      {
+        "game": "akari",
+        "title": "照明"
       }
     ]
   },
@@ -96,6 +120,26 @@
       },
       {
         "game": "quoridor"
+      },
+      {
+        "game": "amazons",
+        "title": "亚马逊棋"
+      },
+      {
+        "game": "kalah",
+        "title": "播棋"
+      },
+      {
+        "game": "hex",
+        "title": "六角棋"
+      },
+      {
+        "game": "qawale",
+        "title": "Qawale"
+      },
+      {
+        "game": "quixo",
+        "title": "Quixo"
       }
     ]
   },
@@ -161,6 +205,26 @@
       },
       {
         "game": "toy_battle"
+      },
+      {
+        "game": "cant_stop",
+        "title": "Can't Stop"
+      },
+      {
+        "game": "railroad_ink",
+        "title": "铁路墨迹"
+      },
+      {
+        "game": "lost_cities",
+        "title": "失落的城市"
+      },
+      {
+        "game": "sushi_go",
+        "title": "Sushi Go!"
+      },
+      {
+        "game": "azul",
+        "title": "花砖物语"
       }
     ]
   }

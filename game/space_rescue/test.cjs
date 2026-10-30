@@ -17,3 +17,22 @@ for(const [index,l] of levels.entries()){
  console.log(`Level ${index+1}: validated, minimum ${path.length} moves`);
 }
 console.log('All rule and level tests passed.');
+
+// Published indexes and content remain compatible with existing local saves.
+assert.deepEqual(levels.slice(0,12),require('./legacy_levels.json'));
+assert.equal(levels.length,60);
+function canonical(pieces){
+ const forms=[];
+ for(const flip of [false,true]){
+  let points=pieces.map(p=>[flip?6-p%7:p%7,Math.floor(p/7)]);
+  for(let r=0;r<4;r++){
+   const positions=points.map(([x,y])=>x+7*y);
+   forms.push(JSON.stringify([positions[0],...positions.slice(1).sort((a,b)=>a-b)]));
+   points=points.map(([x,y])=>[6-y,x]);
+  }
+ }
+ return forms.sort()[0];
+}
+assert.equal(new Set(levels.map(l=>canonical(l.pieces))).size,levels.length,'no symmetry/robot-permutation duplicates');
+for(let distance=2;distance<=9;distance++)assert.equal(levels.slice(12).filter(l=>l.par===distance).length,6);
+console.log('PASS: immutable legacy prefix, 60 distinct puzzles, balanced shortest-distance tiers.');

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Sushi Go!</title
+  ><link rel="stylesheet" href="style.css" />
+  <main>
+    <div class="bar">
+      <strong id="round"></strong><button id="rules">规则</button
+      ><button id="new">新局</button>
+    </div>
+    <div id="players" class="players"></div>
+    <p id="message" class="status" role="status"></p>
+    <section id="choose">
+      <h2>你的手牌 <span id="handCount" class="muted"></span></h2>
+      <div id="hand" class="hand"></div>
+      <div class="actions">
+        <button id="confirm" class="primary">确认选牌并传递</button
+        ><button id="clear">取消选择</button
+        ><span id="chopHint" class="muted"></span>
+      </div>
+    </section>
+    <section id="result" hidden>
+      <div id="resultText"></div>
+      <button id="next" class="primary">开始下一轮</button>
+    </section>
+    <details>
+      <summary>计分速查</summary>
+      <div id="reference" class="reference"></div>
+    </details>
+  </main>
+  <dialog id="help">
+    <h2>Sushi Go! · 基础版</h2>
+    <p>
+      你与2–4位电脑进行三轮。3/4/5人每轮各发9/8/7张，从108张牌堆依次发牌，不将弃牌洗回。每次同时选一张、公开、将剩余手牌向左传；这里你传给电脑1，再依次传递，最后一位电脑传给你。
+    </p>
+    <p>
+      之前已有筷子时可按顺序选2张，并把一张旧筷子放回传出的手牌；每次最多交换一张筷子。当次新选的筷子不能立即使用。双选先后影响芥末：先芥末后寿司会得到三倍，反过来不会。①②标明选择顺序，点已选牌可取消。
+    </p>
+    <p>
+      天妇罗每2张5分；刺身每3张10分；饺子1/2/3/4/5+张为1/3/6/10/15分。蛋／鲑鱼／鱿鱼寿司1/2/3分；每张未用芥末使下一张寿司三倍。筷子及未用芥末0分。
+    </p>
+    <p>
+      卷物按图标数排名：第一6分、第二3分；并列均分向下取整；并列第一不再发第二。没有卷物者不参与。布丁留到第三轮，最多分6分、最少分−6分，并列均分舍去余数；零张也算最少，全员同数则不计分。最终同分以布丁多者胜，仍同则共享胜利。
+    </p>
+    <p>
+      仅基础版，固定向左传，不含反向或双人变体。电脑只参考自己的手牌和公开桌面。确认前可取消选择，揭牌后不能撤销。进度自动保存。
+    </p>
+    <a
+      href="https://gamewright.com/pdfs/Rules/SushiGoTM-RULES.pdf"
+      target="_blank"
+      rel="noopener"
+      >官方规则：Gamewright</a
+    >
+    <form method="dialog"><button>关闭</button></form>
+  </dialog>
+  <dialog id="setup">
+    <h2>开始新局</h2>
+    <p>将替换当前三轮对局进度。</p>
+    <label
+      >总人数
+      <select id="count">
+        <option value="3">3人 · 你与2位电脑</option>
+        <option value="4">4人 · 你与3位电脑</option>
+        <option value="5">5人 · 你与4位电脑</option>
+      </select></label
+    >
+    <div class="actions">
+      <button id="start" class="primary">开始新局</button
+      ><button id="cancelNew">取消</button>
+    </div>
+  </dialog>
+  <script type="module" src="app.mjs"></script>
+</html>

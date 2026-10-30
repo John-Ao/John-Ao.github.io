@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Qawale</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main aria-label="Qawale">
+      <div class="controls">
+        <select id="mode" aria-label="对局模式">
+          <option value="ai">人机 · 你先手</option>
+          <option value="local">同屏双人</option></select
+        ><button id="undo">撤销</button><button id="new">新局</button
+        ><button id="rules">规则</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <p id="hint"></p>
+      <div id="board" aria-label="棋盘"></div>
+      <div id="hand"></div>
+      <div class="actions">
+        <button id="cancel" hidden>取消选择</button
+        ><button id="confirmmove" hidden>确认行动</button>
+      </div>
+      <div id="players"></div>
+    </main>
+    <dialog id="help">
+      <h2>Qawale规则</h2>
+      <p>
+        四角各有两枚中立黄石，双方各持八枚。选择任意非空棋堆，加上自己一枚石子并拿起整堆，从相邻格开始把石子由底到顶逐颗播撒。每一步只能上下左右走，不能立即退回刚离开的格，但允许绕圈重访。
+      </p>
+      <p>
+        完成整次播撒后，只看各堆顶层；横、竖或两条大对角线四连获胜。双方八枚都用完且无人四连则平局。本页在完整回合后判胜；若双方同时四连，优先行动者（此为本页明确采用的裁定，官方规则未说明同时四连）。
+      </p>
+      <p>
+        Tab 进入棋盘，方向键移动焦点，Enter
+        或空格操作。撤销可取消当前预览或退回上一回合；人机时退回你行动之前。进度自动保存，刷新会取消尚未确认的预览。
+      </p>
+      <p>
+        <a
+          href="https://export.gigamic.com/wp-content/uploads/2022/08/GIGAMIC_GCQW_QAWALE_RULES-MLV_08-2022_BD.pdf"
+          target="_blank"
+          rel="noopener"
+          >Gigamic 官方规则</a
+        >
+      </p>
+      <button id="close-help">继续游戏</button>
+    </dialog>
+    <dialog id="new-dialog">
+      <h2>开始新局？</h2>
+      <p>当前对局及撤销记录将被替换。</p>
+      <div class="controls">
+        <button id="cancel-new">取消</button
+        ><button id="confirm-new">开始新局</button>
+      </div>
+    </dialog>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

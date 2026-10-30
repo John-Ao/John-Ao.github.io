@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>亚马逊棋</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <div class="toolbar">
+        <select id="mode" aria-label="对局模式">
+          <option value="ai">人机 · 你先手</option>
+          <option value="local">同屏双人</option></select
+        ><button id="undo">撤销</button><button id="new">新局</button
+        ><button id="rules">规则</button>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <div id="hint" class="hint"></div>
+      <div id="board" aria-label="亚马逊棋棋盘"></div>
+      <div id="players" class="players"></div>
+    </main>
+    <dialog id="help">
+      <h2>亚马逊棋规则</h2>
+      <p>
+        白方先行。每回合先选己方棋子，沿横、竖或对角线移动任意距离，再从新位置沿相同方向规则射出一支箭。移动与射箭都不能穿过棋子或箭；箭永久封锁格子。可以射回本回合腾空的原位置。轮到某方时，若其所有棋子均无法移动，该方失败。双方各有四枚棋子。
+      </p>
+      <p>
+        点击棋盘操作；也可用 Tab 进入棋盘，方向键选择格子，Enter
+        或空格操作。进度自动保存在此浏览器；撤销可退回你上次行动之前。
+      </p>
+      <button id="close">关闭</button>
+    </dialog>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

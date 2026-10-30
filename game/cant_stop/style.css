@@ -1,0 +1,150 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f4f3ee;
+  color: #253339;
+  font: 16px system-ui;
+}
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 14px;
+}
+.status {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.status > div {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #c7cdca;
+  border-radius: 8px;
+}
+.status .active {
+  border-color: #263e46;
+  background: white;
+}
+#board {
+  height: min(58vh, 550px);
+  min-height: 330px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  padding: 12px 5px;
+  background: #e3e8df;
+  border-radius: 12px;
+}
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  text-align: center;
+}
+.steps {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+}
+.step {
+  height: clamp(20px, 3.5vh, 32px);
+  background: #f8faf5;
+  border: 1px solid #b9c4b6;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 14px;
+}
+.one {
+  color: #245d9e;
+  font-weight: bold;
+}
+.two {
+  color: #a33c27;
+  font-weight: bold;
+}
+.temp {
+  color: #111;
+}
+.claimed {
+  background: #cbd9e7;
+}
+.column b {
+  padding-top: 5px;
+}
+button {
+  min-height: 44px;
+  border: 1px solid #aab7b8;
+  background: white;
+  color: inherit;
+  border-radius: 7px;
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+button:focus-visible {
+  outline: 3px solid #167a7a;
+  outline-offset: 2px;
+}
+.actions,
+#choices {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+#roll {
+  background: #244f53;
+  color: white;
+}
+#dice {
+  display: flex;
+  gap: 9px;
+  font-size: 32px;
+}
+.hint {
+  font-size: 13px;
+  color: #596365;
+}
+dialog {
+  max-width: 540px;
+  width: 90%;
+  max-height: 85vh;
+  overflow: auto;
+  border: 1px solid #aaa;
+  border-radius: 12px;
+  line-height: 1.7;
+}
+dialog::backdrop {
+  background: #0007;
+}
+@media (max-width: 480px) {
+  main {
+    padding: 8px;
+  }
+  #board {
+    gap: 3px;
+    padding: 8px 3px;
+  }
+  .step {
+    font-size: 11px;
+    gap: 0;
+  }
+  .actions button {
+    padding: 8px 10px;
+  }
+  .status > div {
+    padding: 8px;
+    font-size: 14px;
+  }
+}

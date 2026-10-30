@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>花砖物语</title
+  ><link rel="stylesheet" href="style.css" />
+  <main>
+    <div class="bar">
+      <strong id="round"></strong><button id="rules">规则</button
+      ><button id="new">新局</button>
+    </div>
+    <div id="factories" class="factories" aria-label="五个工厂"></div>
+    <section class="center">
+      <strong>中央 <span id="marker"></span></strong>
+      <div id="center" class="market"></div>
+    </section>
+    <p id="message" class="status" role="status"></p>
+    <div class="actions">
+      <button id="cancel">取消选砖</button
+      ><button id="next" class="primary" hidden>补货并开始下一轮</button>
+    </div>
+    <div id="boards" class="boards"></div>
+    <div id="result"></div>
+  </main>
+  <dialog id="help">
+    <h2>花砖物语 · 双人基础版</h2>
+    <p>
+      每轮五个工厂各4砖。轮到你时，从一个工厂或中央取走某一色全部瓷砖；取工厂后其余颜色移至中央。第一次从中央取砖还须拿先手标记，放进地板并成为下轮先手。
+    </p>
+    <p>
+      选中的砖必须放入同一条图案行，或全部丢到地板。图案行容量1–5，只可同色；对应墙行已有该色则不能再放。超出的砖落地，地板最多7格，更多落砖直接弃置；满地板时先手标记仍归你。
+    </p>
+    <p>
+      工厂和中央都空后才铺墙。按图案行从上到下结算：填满的行将一砖移到墙上同色位置，其余弃置；未满的行保留。无邻砖得1分；有横向或纵向连续邻砖则分别按该段总格数计分，横纵都有时相加。
+    </p>
+    <p>
+      地板从左到右扣1、1、2、2、2、3、3，最低0分。清空地板，袋空时用弃砖重新混合补货。某玩家墙上完成横排后，本轮双方铺墙计分结束即终局：每完整横排+2、竖列+7、同色5砖+10。最高分胜，同分比完整横排数，仍同共享胜利。
+    </p>
+    <p>
+      仅彩色墙基础版，不含灰墙变体。人机与同屏双人均为公开信息；电脑不查看袋中未来顺序。选色后再点自己的图案行，提交前可取消；落砖后轮次已交给对方，不提供回滚。自动保存在本机。
+    </p>
+    <a
+      href="https://cdn.svc.asmodee.net/production-nextmove/uploads/sites/4/2024/06/EN-Azul-Rules-Next-Move-web.pdf"
+      target="_blank"
+      rel="noopener"
+      >官方规则：Next Move Games</a
+    >
+    <form method="dialog"><button>关闭</button></form>
+  </dialog>
+  <dialog id="setup">
+    <h2>开始新局</h2>
+    <p>将替换当前对局进度。</p>
+    <label
+      >模式
+      <select id="mode">
+        <option value="ai">对战电脑</option>
+        <option value="local">同屏双人</option>
+      </select></label
+    >
+    <div class="actions">
+      <button id="start" class="primary">开始新局</button
+      ><button id="cancelNew">取消</button>
+    </div>
+  </dialog>
+  <script type="module" src="app.mjs"></script>
+</html>

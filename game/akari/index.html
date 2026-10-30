@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>照明</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main aria-label="照明">
+      <div class="controls">
+        <select id="group" aria-label="选择棋盘尺寸"></select
+        ><select id="level" aria-label="选择关卡"></select
+        ><button id="undo" disabled>撤销</button><button id="reset">重开</button
+        ><button id="zoom" aria-pressed="false">放大</button
+        ><button id="help">规则</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div class="controls" aria-label="标记方式">
+        <button id="lamp-mode" aria-pressed="true">放灯</button
+        ><button id="mark-mode" aria-pressed="false">标叉</button
+        ><button id="erase-mode" aria-pressed="false">擦除</button>
+      </div>
+      <div class="board-wrap"><div id="board"></div></div>
+      <p class="note">点击白格放灯；选择标叉记录排除。</p>
+    </main>
+    <dialog id="rules">
+      <h2>照明规则</h2>
+      <p>
+        在白格放灯。光线沿横纵方向传播，遇到黑格停止。照亮所有白格，但灯不能互相照射。带数字的黑格，上下左右相邻灯数必须恰好等于数字；无数字黑格不限制邻灯数。叉仅作排除记录。
+      </p>
+      <p>
+        方向键在格子间移动；空格或回车操作，X 标叉，Delete 清除。 Ctrl / ⌘ + Z
+        撤销。放大后可左右滑动棋盘。进度自动保存在此浏览器。
+      </p>
+      <button id="close-rules">继续游戏</button>
+    </dialog>
+    <dialog id="confirm">
+      <h2>重新开始本关？</h2>
+      <p>本关进度和撤销记录将被清除，其他关卡保留。</p>
+      <div class="controls">
+        <button id="cancel-reset">取消</button
+        ><button id="confirm-reset">重新开始</button>
+      </div>
+    </dialog>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quixo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main aria-label="Quixo">
+      <div class="controls">
+        <select id="mode" aria-label="对局模式">
+          <option value="ai">人机 · 你先手</option>
+          <option value="local">同屏双人</option></select
+        ><button id="undo">撤销</button><button id="new">新局</button
+        ><button id="rules">规则</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <p id="hint"></p>
+      <div id="board" aria-label="棋盘"></div>
+      <div id="hand"></div>
+      <div class="actions">
+        <button id="cancel" hidden>取消选择</button
+        ><button id="confirmmove" hidden>确认行动</button>
+      </div>
+      <div id="players"></div>
+    </main>
+    <dialog id="help">
+      <h2>Quixo规则</h2>
+      <p>
+        轮流选择棋盘外围的空白块或己方块，将取出的块变成己方符号，再从该行或列的另一端推入；其间方块整体滑动填补空位。不能拿对方块、不能从原取出口放回，也不能跳过回合。
+      </p>
+      <p>
+        先形成横、竖或两条大对角线的五连获胜。若你的行动替对手形成五连，你输，即使自己也同时形成五连。没有自动重复局面判和；双方可选择开始新局。
+      </p>
+      <p>
+        Tab 进入棋盘，方向键移动焦点，Enter
+        或空格操作。撤销可取消当前预览或退回上一回合；人机时退回你行动之前。进度自动保存，刷新会取消尚未确认的预览。
+      </p>
+      <p>
+        <a
+          href="https://export.gigamic.com/wp-content/uploads/2021/01/INS-RULES_QUIXO_03-2017.pdf"
+          target="_blank"
+          rel="noopener"
+          >Gigamic 官方规则</a
+        >
+      </p>
+      <button id="close-help">继续游戏</button>
+    </dialog>
+    <dialog id="new-dialog">
+      <h2>开始新局？</h2>
+      <p>当前对局及撤销记录将被替换。</p>
+      <div class="controls">
+        <button id="cancel-new">取消</button
+        ><button id="confirm-new">开始新局</button>
+      </div>
+    </dialog>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>推箱子</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main aria-label="推箱子">
+      <div class="controls">
+        <select id="group" aria-label="选择棋盘尺寸"></select
+        ><select id="level" aria-label="选择关卡"></select
+        ><button id="undo" disabled>撤销</button><button id="reset">重开</button
+        ><button id="zoom" aria-pressed="false">放大</button
+        ><button id="help">规则</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div class="board-wrap"><div id="board"></div></div>
+      <div class="pad" aria-label="移动方向">
+        <button data-dir="U" aria-label="向上">↑</button
+        ><button data-dir="L" aria-label="向左">←</button
+        ><button data-dir="D" aria-label="向下">↓</button
+        ><button data-dir="R" aria-label="向右">→</button>
+      </div>
+      <p class="note">用方向键、下方按钮或点击相邻格移动。</p>
+    </main>
+    <dialog id="rules">
+      <h2>推箱子规则</h2>
+      <p>
+        把所有箱子推到圆点目标上。每次只能推一个箱子，不能拉箱子，也不能穿过墙壁或箱子。箱子角落卡死时可撤销。棋盘上的人形圆点是你的位置。
+      </p>
+      <p>
+        方向键或 W / A / S / D 移动；点击人物相邻的一格也可移动。 Ctrl / ⌘ + Z
+        撤销。放大后可左右滑动棋盘。进度自动保存在此浏览器。
+      </p>
+      <button id="close-rules">继续游戏</button>
+    </dialog>
+    <dialog id="confirm">
+      <h2>重新开始本关？</h2>
+      <p>本关进度和撤销记录将被清除，其他关卡保留。</p>
+      <div class="controls">
+        <button id="cancel-reset">取消</button
+        ><button id="confirm-reset">重新开始</button>
+      </div>
+    </dialog>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>

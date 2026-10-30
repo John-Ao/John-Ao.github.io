@@ -66,6 +66,10 @@
     "title": "五子棋"
   },
   {
+    "game": "quarto",
+    "title": "连四棋"
+  },
+  {
     "game": "hive",
     "title": "昆虫棋"
   },

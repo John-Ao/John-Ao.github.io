@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101010">
+  <title>绝区零 · 代理人</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main id="screen" aria-label="绝区零代理人展示">
+    <div id="stage" aria-hidden="true">
+      <img id="character-art" alt="" hidden><video id="motion" hidden muted playsinline preload="auto" poster="./assets/motion/anby-poster.webp"></video>
+    </div>
+    <iframe id="model-stage" title="原始骨骼动画展示" hidden></iframe>
+    <nav id="quick-roster" aria-label="快速切换代理人"></nav>
+    <div class="top-actions">
+      <button id="back" class="back" aria-label="返回属性">↶</button>
+      <button id="sources-open" class="utility">资料</button>
+    </div>
+    <button id="picker-open"><span id="picker-current"></span> <span>选择代理人 ▦</span></button><p id="stage-note"></p><label id="recorded-option"><input id="recorded-mode" type="checkbox">使用已有菜单录屏</label>
+    <label id="model-option" hidden><input id="model-mode" type="checkbox"><span id="model-label">实时模型</span></label>
+    <section id="agent-panel" class="agent-panel" aria-label="代理人资料"></section>
+    <nav id="tabs" aria-label="代理人页面" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="stats">属性</button>
+      <button role="tab" aria-selected="false" data-tab="skills">技能</button>
+      <button role="tab" aria-selected="false" data-tab="equipment">装备</button>
+    </nav>
+    <button id="cinema-open" aria-label="查看角色影画"><span>影画</span><b id="cinema-count">0/6</b></button>
+    <section id="cinema" aria-label="角色影画" hidden>
+      <div class="cinema-heading"><span>代理人影画</span><strong id="cinema-name"></strong></div>
+      <div class="cinema-art"><p id="cinema-missing" hidden>该角色影画素材待收集</p><img id="cinema-image" alt=""><div class="film-edge"></div></div>
+      <div id="cinema-nodes"></div>
+      <aside class="cinema-details"><span id="cinema-number"></span><h2 id="cinema-title"></h2><p id="cinema-description"></p><a id="cinema-source" target="_blank" rel="noreferrer">查看完整影画机制 ↗</a></aside>
+      <label class="cinema-range">影画预览 <input id="cinema-level" type="range" min="0" max="6" value="0" aria-label="影画等级"><output id="cinema-output">0 / 6</output></label>
+    </section>
+    <div id="loading" role="status">载入角色影像…</div>
+    <div id="media-error" role="alert" hidden>角色影像加载失败 <button id="retry">重新加载</button></div>
+    <p id="announcement" class="sr-only" aria-live="polite"></p>
+  </main>
+  <dialog id="agent-picker" aria-labelledby="picker-title">
+    <div class="picker-heading"><h2 id="picker-title">选择代理人</h2><span id="roster-count"></span><button class="dialog-close" aria-label="关闭">×</button></div>
+    <div class="picker-filters"><input id="agent-search" type="search" placeholder="搜索代理人" aria-label="搜索代理人"><select id="filter-model" aria-label="筛选三维资源"><option value="">全部资源</option><option value="model">有三维模型</option><option value="animated">有骨骼动画</option><option value="missing">待补充模型</option></select><select id="filter-attribute" aria-label="筛选属性"><option value="">全部属性</option></select><select id="filter-specialty" aria-label="筛选特性"><option value="">全部特性</option></select><select id="filter-faction" aria-label="筛选阵营"><option value="">全部阵营</option></select></div>
+    <nav id="roster" aria-label="选择代理人"></nav><p id="roster-empty" hidden>没有符合条件的代理人 <button id="clear-filters">清除筛选</button></p>
+  </dialog>
+  <dialog id="detail"><button class="dialog-close" aria-label="关闭">×</button><div id="detail-body"></div></dialog>
+  <dialog id="sources"><button class="dialog-close" aria-label="关闭">×</button>
+    <h2>素材与动作来源</h2>
+    <p id="roster-summary"></p>
+    <p><a href="https://www.youtube.com/watch?v=XKa22KaSxJA" target="_blank" rel="noreferrer">Ultraclocked · 原始菜单展示录像</a><br><a href="https://www.bilibili.com/video/BV1NrNWz3EkG/" target="_blank" rel="noreferrer">公开转载与下载来源</a></p>
+    <p>已接入「属性 → 技能」「技能 → 装备」的原版转身。录像没有覆盖全部反向切换；缺失方向直接切到目标页的原始待机片段，不倒放或补造动作。素材为 720p / 30fps 录屏，并非实时 3D 模型。</p>
+    <p>影画与头像：<a href="https://github.com/seriaati/ZZZAssets" target="_blank" rel="noreferrer">ZZZAssets</a>。角色数值、影画说明与图标：<a href="https://wiki.biligame.com/zzz/安比德玛拉" target="_blank" rel="noreferrer">绝区零 BWIKI</a>。提供菜单录屏的角色可以手动启用；其他角色不借用这些动作。</p>
+    <p><a id="model-summary" href="./motion-lab.html">实时模型与骨骼动画 ↗</a>（战斗待机 / 战斗转身，非菜单动作）</p><p class="keys">← → 切换角色 · 1 / 2 / 3 切换页面 · C 影画 · Esc 返回</p>
+    <a href="./RESEARCH.md" target="_blank">查看调研记录与还原范围 ↗</a>
+  </dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

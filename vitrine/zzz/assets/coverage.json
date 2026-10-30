@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-30",
+  "releasedCount": 2,
+  "excluded": [
+    {
+      "gameId": 1631,
+      "name": "赛维里安",
+      "reason": "3.3 第二期，尚未实装"
+    }
+  ],
+  "characters": [
+    {
+      "id": "anby",
+      "gameId": 1011,
+      "name": "安比·德玛拉",
+      "release": "2024年07月04日（1.0版本）",
+      "source": "https://wiki.biligame.com/zzz/%E5%AE%89%E6%AF%94",
+      "dataSource": "https://static.nanoka.cc/zzz/3.3/zh/character/1011.json",
+      "portrait": true,
+      "splash": true,
+      "mindscapeStages": 3,
+      "menuSkeletalAnimation": "not-found",
+      "combatAnimation": "available",
+      "riggedModel": "available",
+      "skeletalClipCount": 3
+    },
+    {
+      "id": "nicole",
+      "gameId": 1031,
+      "name": "妮可·德玛拉",
+      "release": "2024年07月04日（1.0版本）",
+      "source": "https://wiki.biligame.com/zzz/%E5%A6%AE%E5%8F%AF",
+      "dataSource": "https://static.nanoka.cc/zzz/3.3/zh/character/1031.json",
+      "portrait": true,
+      "splash": true,
+      "mindscapeStages": 3,
+      "menuSkeletalAnimation": "not-found",
+      "combatAnimation": "available",
+      "riggedModel": "available",
+      "skeletalClipCount": 3
+    }
+  ],
+  "riggedModelCount": 2,
+  "animatedCharacterCount": 2,
+  "skeletalClipCount": 6,
+  "scope": "Published selection, not the complete released roster"
+}

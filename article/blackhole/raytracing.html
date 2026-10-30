@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>06 · 把度规变成图像：黑洞光线追踪</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="kerr-renderer.js"></script></head>
+<body data-page="raytracing"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>06 / 09</span></nav><article>
+<p class="eyebrow">从解析解到可运行程序</p><h1>把度规变成图像</h1><p class="lead">场方程决定时空，测地线决定光怎样穿过时空，相机和辐射模型决定屏幕上的亮度。这三个问题连在一起，才是一张黑洞图像。本章把每一步展开到可以照着实现的程度。</p><div class="toc" data-toc></div>
+<section><h2 id="experiment">1. 先看一台真正积分光线的相机</h2>
+<p>下面每个像素都从相机发出一条<strong>过去指向的零测地线</strong>，在解析 Kerr 度规中用 RK4 数值积分。设定 \(G=c=M=1\)，令 \(a=0\) 就是 Schwarzschild。拖动画布改变视角，也可聚焦画布后使用方向键。网格是人为绘制的天球坐标，便于看清光的偏折。</p>
+<div class="lab" data-kerr-lab>
+<div class="controls"><label>自旋 \(a/M\) <output data-kerr-spin>0.70</output><input data-kerr-control="spin" type="range" min="0" max="0.95" step="0.01" value="0.7"></label><label>相机距离 <output data-kerr-distance>24</output> \(M\)<input data-kerr-control="distance" type="range" min="18" max="40" step="1" value="24"></label><label>计算质量<select data-kerr-control="quality"><option value="0">快速：较粗步长</option><option value="1" selected>标准</option><option value="2">精细：较小步长</option></select></label><label>显示<select data-kerr-control="mode"><option value="0">光线与薄盘</option><option value="1">零约束误差</option><option value="2">光线终止分类</option></select></label><label><input type="checkbox" data-kerr-control="disk" checked>显示不透明薄盘</label><button type="button" data-kerr-reset>恢复初始视角</button></div>
+<canvas width="440" height="264" tabindex="0" aria-label="Kerr黑洞数值光线追踪。拖动或按方向键改变视角。" style="width:100%;height:auto;touch-action:none;display:block;background:#07101b"></canvas><p class="readout" data-kerr-status role="status">正在准备 WebGL 2 光线追踪……</p>
+<p class="caption">终止分类：黑色＝越过捕获阈值，青色＝到达远方，橙色＝先遇到薄盘，紫色＝步数耗尽或数值异常。误差图：深蓝约 \(10^{-7}\) 或更小，橙红约 \(10^{-2}\) 或更大，是沿途最大的归一化零约束残差。紫色不会被伪装成阴影。</p>
+</div>
+<p>建议先关掉薄盘，自旋从 0 调到 0.95，比较阴影边界；再打开薄盘，观察靠近我们的盘面与远侧盘像。把质量从“快速”升至“精细”，应看到大尺度图形保持稳定，而临界光线更可靠。这里<strong>度规是精确解析解，积分与图像是有限精度近似</strong>；薄盘亮度、颜色及背景是教学模型，不是观测照片或磁流体仿真。</p>
+</section>
+<section><h2 id="layers">2. 场方程、轨迹和成像分别算什么</h2>
+<p>上一章已经给出 \(g_{\mu\nu}(x)\)。此处不需要再次求解爱因斯坦方程：我们把这个函数当作已知输入，计算试探光子的路径；光子的能量太小，不反过来改变黑洞几何。这叫固定背景近似。双黑洞合并时，背景本身会变，才需要下一章的时空演化问题。</p>
+<figure><svg viewBox="0 0 850 152" role="img" aria-labelledby="pipeline-title" style="width:100%;height:auto"><title id="pipeline-title">从度规到像素的计算流程</title><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#5b7185"/></marker></defs><g fill="#edf0f0" stroke="#9aafbd"><rect x="5" y="30" width="140" height="70" rx="8"/><rect x="178" y="30" width="140" height="70" rx="8"/><rect x="351" y="30" width="140" height="70" rx="8"/><rect x="524" y="30" width="140" height="70" rx="8"/><rect x="697" y="30" width="145" height="70" rx="8"/></g><g fill="#203447" text-anchor="middle" font-size="17"><text x="75" y="58">度规与相机</text><text x="75" y="83">初始光线</text><text x="248" y="58">Hamilton 方程</text><text x="248" y="83">逐步积分</text><text x="421" y="58">捕获 / 逃逸</text><text x="421" y="83">或遇到盘面</text><text x="594" y="58">频移与辐射</text><text x="594" y="83">得到光强</text><text x="770" y="58">显示映射</text><text x="770" y="83">得到像素</text></g><g stroke="#5b7185" stroke-width="2" marker-end="url(#arrow)"><path d="M148,65 H173"/><path d="M321,65 H346"/><path d="M494,65 H519"/><path d="M667,65 H692"/></g></svg><figcaption>“画得像黑洞”与“哪一层符合什么方程”是不同问题。逐层定义，才能逐层验证。</figcaption></figure>
+<p>倒追光线比从发光物体向所有方向发射光子高效：屏幕只关心到达相机的极少数方向。在几何光学近似中，波长远小于曲率变化尺度，光可以用零测地线代表。这里忽略衍射、偏振、散射以及等离子体折射；在需要这些效应时，应扩充传播方程，而不是调一调黑洞的颜色。</p>
+</section>
+<section><h2 id="hamilton">3. 从测地线方程换到 Hamilton 方程</h2>
+<p>记光线的位置为 \(x^\mu(\lambda)\)，\(\lambda\) 是仿射参数。它是沿光线推进计算的刻度，不是光子的固有时，因为光线的固有时间隔为零。定义协变动量 \(p_\mu=g_{\mu\nu}\,dx^\nu/d\lambda\)，把二阶方程改写为两组一阶方程：</p>
+<div class="equation">\[H(x,p)=\frac12 g^{\mu\nu}p_\mu p_\nu=0,\qquad \frac{dx^\mu}{d\lambda}=\frac{\partial H}{\partial p_\mu}=g^{\mu\nu}p_\nu,\qquad \frac{dp_\mu}{d\lambda}=-\frac{\partial H}{\partial x^\mu}=-\frac12(\partial_\mu g^{\alpha\beta})p_\alpha p_\beta.\]</div>
+<p>它并没有改变物理，只是把“求联络，再求加速度”变成“求逆度规及其导数”。在平直时空中 \(g^{\mu\nu}\) 是常数，所以 \(dp_\mu/d\lambda=0\)，光走直线。在定常 Kerr 时空中 \(\partial_tg^{\mu\nu}=0\)，因此 \(p_t\) 守恒；轴对称又保证 \(p_\phi\) 守恒。用这两个守恒量检查程序，比肉眼检查一圈亮环可靠。</p>
+<p>将一条零测地线的所有动量乘以常数，只改变仿射参数的尺度，不改变它在时空中的几何路径。程序因此把过去指向光线的 \(p_t\) 归一成 \(+1\)。这里 \(E=-p_t=-1\) 是带方向的守恒量；物理观测频率仍是正数。若改用未来指向光线，则惯用 \(E>0\)，两套符号不可混用。</p>
+</section>
+<section><h2 id="ks">4. 给 GPU 的 Kerr–Schild 公式</h2>
+<p>Boyer–Lindquist 坐标适合研究对称性，却在视界处出现坐标分母，在轴线上也需要处理角坐标。渲染器选择近似笛卡尔的 Kerr–Schild 坐标。为了让<strong>过去指向、朝黑洞内部追踪</strong>的光线较稳定，本实验使用 outgoing 分支。下面这一组符号与代码完全一致：</p>
+<div class="equation">\[g_{\mu\nu}=\eta_{\mu\nu}+f\ell_\mu\ell_\nu,\quad \eta=\operatorname{diag}(-1,1,1,1),\quad f=\frac{2r^3}{r^4+a^2z^2},\quad \ell_\mu=\left(-1,\frac{rx-ay}{r^2+a^2},\frac{ry+ax}{r^2+a^2},\frac zr\right).\]</div>
+<p>此处 \(r\) 不是 \(\sqrt{x^2+y^2+z^2}\)。等 \(r\) 面是扁球面；把这个差别漏掉，渲染出的旋转黑洞就不是所写下的 Kerr 解。令 \(A=x^2+y^2+z^2-a^2\)，外部区域取正根：</p>
+<div class="equation">\[r^2=\frac{A+\sqrt{A^2+4a^2z^2}}2,\qquad \frac{x^2+y^2}{r^2+a^2}+\frac{z^2}{r^2}=1.\]</div>
+<p>由于 \(\ell\) 对 Minkowski 度规是零向量，逆矩阵无需通用求逆，直接得到 \(g^{\mu\nu}=\eta^{\mu\nu}-f\ell^\mu\ell^\nu\)。升指标后 \(\ell^t=+1\)，其余三项不变。令 \(\boldsymbol l\) 是后三项，\(q=p_t+\boldsymbol l\cdot\boldsymbol p\)，于是：</p>
+<div class="equation">\[H=\tfrac12[-p_t^2+\boldsymbol p^2-fq^2],\quad \dot{\boldsymbol x}=\boldsymbol p-fq\boldsymbol l,\quad \dot p_i=\tfrac12q^2\partial_i f+fq\,(\partial_i\boldsymbol l)\cdot\boldsymbol p.\]</div>
+<p>这三个式子就是着色器中 <code>geometry</code>、<code>derivative</code> 的内容。若 \(a=0\)，会自动得到 Schwarzschild 的 Kerr–Schild 形式；无需切换一套不同的引力公式。解析导数还避免了中心差分反复采样度规和差分步长的取舍。例如 \(B=\sqrt{A^2+4a^2z^2}\) 时，</p>
+<div class="equation">\[\nabla r=\left(\frac{rx}{B},\frac{ry}{B},\frac{z(r^2+a^2)}{rB}\right),\qquad \nabla f=f\left[\frac{3\nabla r}{r}-\frac{4r^3\nabla r+2a^2z\boldsymbol e_z}{r^4+a^2z^2}\right].\]</div>
+<div class="note"><p><strong>“穿越视界坐标”也有方向。</strong> 常见 ingoing 形式的 \(\ell_t=+1\)，空间项中 \(a\) 的符号也与上式不同。它适合未来指向的落入运动；用它向过去接近另一侧视界时，某些动量分量会增长。不能只翻转时间符号却沿用空间旋转项。我们只在外部积分并在视界邻域终止，不展示最大解析延拓中的内部区域。公式可与 <a href="https://arxiv.org/abs/1811.04711">Mädler 与 Winicour 的两种 Kerr–Schild 表示</a>逐项对照。</p></div>
+</section>
+<section><h2 id="camera">5. 相机的“正前方”必须是局部测量</h2>
+<p>直接将屏幕方向 \(\boldsymbol n\) 填成四向量 \((-1,n_x,n_y,n_z)\)，只在 Minkowski 坐标中自动满足零条件。曲率存在时，同样的坐标分量未必代表同样的尺长和夹角。相机需要一组<strong>局部正交标架</strong>，即 tetrad：</p>
+<div class="equation">\[g(e_{(0)},e_{(0)})=-1,\quad g(e_{(i)},e_{(j)})=\delta_{ij},\quad g(e_{(0)},e_{(i)})=0.\]</div>
+<p>\(e_{(0)}=u\) 是相机的四速度。实验中相机位于能层之外，保持坐标位置不动，故 \(u=(1/\sqrt{1-f},0,0,0)\)。将右、上、前的三个初始空间方向用度规内积做 Gram–Schmidt 正交化。对任意候选向量 \(v\)，先做 \(v\leftarrow v+g(u,v)u\) 去掉时间投影，再减掉已得到的空间投影，最后按 \(\sqrt{g(v,v)}\) 归一化。</p>
+<p>屏幕方向在这个局部实验室中是单位三向量 \(n^in_i=1\)，于是过去指向光线的初始切向量为 \(k=-u+n^ie_{(i)}\)。根据正交关系，\(g(k,k)=-1+1=0\)，无需猜测时间分量。最后降低指标 \(p_\mu=g_{\mu\nu}k^\nu\)，才交给 Hamilton 积分器。这也说明：改变相机位置不等于模拟运动相机；真实自由落体还要演化 \(u^\mu\)，并正确处理像差。</p>
+</section>
+<section><h2 id="integrator">6. 逐像素循环：RK4、步长与终止</h2>
+<p>把位置和动量合为六维状态 \(y=(\boldsymbol x,\boldsymbol p)\)，右端函数记为 \(F(y)\)。RK4 先试探起点、两个中点和终点的斜率，再按 \(1:2:2:1\) 加权；它在足够光滑的有限区间上具有四阶全局误差，而不是对每一步都“精确”。</p>
+<pre><code>k1 = F(y)
+k2 = F(y + h*k1/2)
+k3 = F(y + h*k2/2)
+k4 = F(y + h*k3)
+y  = y + h*(k1 + 2*k2 + 2*k3 + k4)/6</code></pre>
+<p>实验按半径缩放步长 \(h=\operatorname{clamp}(s r,0.018,0.85)\)，三档 \(s\) 分别为 0.065、0.035、0.020。这是<strong>经验步长控制</strong>，并不是有误差容限保证的嵌入式自适应方法。远处步子大、近处步子小，适合教学图像；若要可靠逼近极限光子轨道，应使用步长加倍比较或 Dormand–Prince 等嵌入式方法。</p>
+<pre><code>对每个像素：
+    用相机 tetrad 构造零动量
+    重复至步数预算耗尽：
+        若 r &lt; 1.002*r_plus：记录捕获，终止
+        若 r &gt; 70M：记录逃逸，查询远方天球，终止
+        保存旧位置；推进一次 RK4
+        更新零约束残差
+        检查与 z=0 盘面的线段相交
+        若命中盘的内外边缘之间：计算频移与亮度，终止
+    若尚无结论：显示紫色，保留“未完成”状态</code></pre>
+<p>薄盘相交使用这一步两端的线性插值。这样不会因为两个采样点恰好都离开盘面而完全漏过一次穿越，但它依旧不是精确的事件定位。屏幕上的薄亮环、临界阴影边界及高阶盘像对采样特别敏感：光线在光子区域绕很久时，少量误差可能改变最后的归宿。提高分辨率不能修复积分器误差，提高积分精度也不能修复像素欠采样。远方背景设在有限的 \(70M\) 截止球面，尚未做无穷远方向外推；若要精确测量天体位置，应增大外边界并检查结果收敛。</p>
+<p>误差视图记录 \(\epsilon_H=|2H|/(p_t^2+\boldsymbol p^2+|fq^2|)\) 沿路的最大值。它能揭示数值漂移，但<strong>残差小是必要的检查，不是充分的正确性证明</strong>：写错的方程也可能保持它自己的“守恒量”。末章的验证路线还会检查解析阴影、对称性和步长收敛。</p>
+</section>
+<section><h2 id="radiance">7. 红移、多普勒与盘面亮度</h2>
+<p>走完光线只得到“这个像素来自哪里”，尚未得到亮度。对未来指向动量 \(k\)，观察者测到的频率正比于 \(-k_\mu u^\mu\)。若程序倒追光线，两个测量同时变号，频率比不变：</p>
+<div class="equation">\[g_{\rm red}=\frac{\nu_{\rm obs}}{\nu_{\rm em}}=\frac{p_\mu u^\mu_{\rm obs}}{p_\mu u^\mu_{\rm em}}.\]</div>
+<p>赤道上顺行圆轨道的 \(\Omega=1/(r^{3/2}+a)\)，\(u^t=(1+a/r^{3/2})/\sqrt{1-3/r+2a/r^{3/2}}\)。本程序用 \(L_z=xp_y-yp_x\)；因相机固定在有限半径、\(p_t=1\)，频移为：</p>
+<div class="equation">\[g_{\rm red}=\frac{1/\sqrt{1-f_{\rm cam}}}{u^t_{\rm em}(1+\Omega L_z)}.\]</div>
+<p>上式的加号来自过去指向动量约定。若换用通常 \(E=-p_t\) 和 \(\lambda=L_z/E\)，分母就写成 \(u^t(1-\Omega\lambda)\)。两者相同。在真空传播中 \(I_\nu/\nu^3\) 不变，所以频谱强度 \(I_{\nu,\rm obs}=g_{\rm red}^3 I_{\nu,\rm em}(\nu_{\rm obs}/g_{\rm red})\)；对频率积分再多一个频率区间缩放，才得到总强度中的 \(g_{\rm red}^4\)。不能把三次方和四次方随意互换。</p>
+<p>教程给盘面指定一条简化径向发射率，内缘设在顺行 ISCO，外缘为 \(14M\)，并在第一次盘面命中处终止。不透明、无限薄、圆轨道以及有限外缘都是假设。真实盘还涉及光学厚度、温度、磁场、湍流、辐射转移和吸收。实验用暖色到冷色的显示映射帮助观察频移，不把 RGB 当成望远镜的定量光谱。</p>
+</section>
+<section><h2 id="practice">8. 自己改动时的三个实验</h2>
+<details class="exercise"><summary>实验一：如何证明自旋为零时没有左右偏好的阴影？</summary><p>关闭薄盘，令 \(a=0\)，选择光线终止分类。在相同相机距离下比较左右边界。有限分辨率可带来一个像素左右的差别；系统性偏移意味着相机、坐标或导数可能有错误。盘面开着时，其轨道运动本来就会产生亮度不对称，因此不能用发光盘检查阴影对称性。</p></details>
+<details class="exercise"><summary>实验二：步长减半后，哪些误差应该改善？</summary><p>选远离捕获阈值的一条逃逸光线，保存其远方方向、\(H\) 和 \(L_z\) 漂移。在 RK4 渐近误差区间中，固定终止条件下全局误差约缩小为原来的 \(1/16\)。临界捕获、盘面事件、float32 舍入或最大步数变化会破坏这个简单比例，因此要分别记录，不可只比较最终图像。</p></details>
+<details class="exercise"><summary>实验三：为什么不要给所有“没算完”的光线涂黑？</summary><p>临界光线可能绕很多圈才逃离。若预算耗尽被当成捕获，阴影会虚假变大；提高预算又使它变小，就会误认为出现某种物理效应。把未完成像素标成紫色，能让计算成本和物理边界保持可区分。</p></details>
+<p class="note">本页源码：<a href="kerr-renderer.js">kerr-renderer.js</a>。文件前半部分导出 float64 的 <code>metricTerms</code>、<code>cameraRay</code>、<code>rk4</code> 与 <code>traceRay</code>，供脱离 GPU 的数值检查；后半部分是对应 GLSL 与界面绑定。CPU 与 GPU 的数学表达式一致，不代表两种精度、终止细节会产生逐位相同的图像。</p>
+</section>
+<section><h2 id="sources">本章参考</h2><ul class="source-list"><li><a href="https://arxiv.org/abs/1811.04711">Mädler &amp; Winicour · Kerr Black Holes and Nonlinear Radiation Memory</a>：两种 Kerr–Schild 坐标及零向量。</li><li><a href="https://arxiv.org/abs/0904.4184">Müller &amp; Grave · Catalogue of Spacetimes</a>：度规、联络和局部标架。</li><li><a href="https://arxiv.org/abs/1502.03808">James 等 · Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</a>：相机、光束和高质量强引力成像。</li><li><a href="https://github.com/kyleyhw/black_hole">kyleyhw/black_hole</a>：功能与实现思路参考。本页独立实现了简化的单黑洞教学渲染器。</li></ul></section>
+<nav class="pager" aria-label="前后章节"><a href="kerr.html">← 05 · Kerr 解</a><a href="merger.html">07 · 黑洞合并 →</a></nav>
+</article></main></body></html>

@@ -1,0 +1,49 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01 · 从变化率到时空间隔</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="foundations.js"></script></head><body data-page="foundations"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>01 / 09</span></nav><article><p class="eyebrow">01 · 必要的数学与狭义相对论</p><h1>从变化率到时空间隔</h1><p class="lead">先解决“一个方程写了什么”。这一章只引入后续必需的数学：怎样描述变化、怎样处理多个分量、怎样让不同观察者对同一件事达成一致。</p><div class="toc" data-toc></div>
+<h2 id="functions">1. 函数、单位和坐标，不是同一回事</h2>
+<p>把一段运动写成 \(x(t)\)，只是说“给定时刻 \(t\)，规则告诉你位置 \(x\)”。例如 \(x(t)=2t^2\)：若 \(x\) 用米、\(t\) 用秒，则系数的单位必须是米每平方秒。方程两侧的单位必须一致。\(x\) 的数值会因原点与尺子单位而变化，物体的运动不会因此改变。</p>
+<p>相对论把一次“发生”叫作<strong>事件</strong>，用 \((ct,x,y,z)\) 四个数定位。时间乘上光速 \(c\)，使四个坐标都有长度单位。事件在不同坐标里可以有不同数字；坐标不是现实本身，而是给现实贴的标签。\(x^0,x^1,x^2,x^3\) 中的上标是分量编号，不是幂。只有明确写成 \((x^1)^2\) 时才是平方。</p>
+<p>这也是黑洞计算最重要的习惯：屏幕上的球体半径、坐标中的 \(r\)、用尺子测得的径向距离，可能是三种不同的量。后面每次画图都会说明用的是什么。</p>
+<h2 id="calculus">2. 导数读作变化率，积分读作累积</h2>
+<div class="equation">\[v(t)=\frac{dx}{dt}=\lim_{\Delta t\to0}\frac{x(t+\Delta t)-x(t)}{\Delta t},\qquad a(t)=\frac{d^2x}{dt^2}.\]</div>
+<p>\(x=2t^2\) 的导数是 \(v=4t\)，再求导得到 \(a=4\)。速度是位置曲线的斜率，加速度是速度曲线的斜率。\(d\) 表示非常小的变化，不是一个独立的可消掉字母；不过在严格成立的变量代换里，\(dx=v\,dt\) 确实能用来表达“小段位移”。</p>
+<p>积分做反方向的事情：把许多小段位移相加。已知速度与初始位置，就有 \(x(t)=x(0)+\int_0^t v(s)\,ds\)。积分变量 \(s\) 只是占位标签，避免与上限 \(t\) 混淆。没有初始位置，只能知道位置差，这解释了积分为什么会带一个待定常数。</p>
+<p>如果引力势依赖三个位置坐标，写成 \(\Phi(x,y,z)\)，则 \(\partial_x\Phi\) 表示固定另外两个变量、只沿 \(x\) 方向求变化率。这就是<strong>偏导数</strong>。\(\partial_\mu\) 是 \(\partial/\partial x^\mu\) 的简写。沿一条实际轨道，几个坐标一起变化，必须使用链式法则：</p>
+<div class="equation">\[\frac{d\Phi(x(\lambda))}{d\lambda}=\sum_{\mu=0}^3\frac{\partial\Phi}{\partial x^\mu}\frac{dx^\mu}{d\lambda}.\]</div>
+<p>\(\lambda\) 是沿路径排列点的参数，像录像的帧号。对有质量物体经常用随身钟的固有时间 \(\tau\)；光沿路的固有时间为零，不能用它来区分沿途各点，所以光线使用仿射参数。后面数值积分器里的步长 \(\Delta\lambda\)，通常既不是“过了几秒”，也不是“走了几米”。</p>
+<details class="exercise"><summary>练习：为什么偏导数和沿轨道的导数不同？</summary><p>令 \(\Phi(x,y)=x^2+y^2\)，轨道 \(x(t)=t,y(t)=2t\)。偏导数为 \(\partial_x\Phi=2x,\partial_y\Phi=2y\)。沿轨道，\(d\Phi/dt=2x\dot x+2y\dot y=2t+8t=10t\)。直接代入 \(\Phi=5t^2\) 再求导，同样得到 \(10t\)。</p></details>
+<h2 id="ode">3. 微分方程是一条“下一步怎么走”的规则</h2>
+<p>给定 \(\dot x=v\)、\(\dot v=-GM/r^2\)（这里只是径向牛顿示例），计算机并不需要先找到漂亮的解析函数。它可以从已知状态 \(y=(x,v)\) 出发，每走一小步就重新计算导数。最简单的 Euler 方法是：</p>
+<div class="equation">\[y_{n+1}=y_n+hF(y_n),\qquad \frac{dy}{d\lambda}=F(y).\]</div>
+<p>\(h\) 是数值步长，\(n\) 是第几步。它把弯曲轨迹在一步内当成直线，误差会累积。四阶 Runge–Kutta（RK4）在一步内部看四次斜率再加权，后面会详细实现。减小步长通常减小截断误差，却增加计算量；浮点数精度有限，步长也不是越小越好。</p>
+<p><strong>常微分方程 ODE</strong>沿一条轨迹演化有限个变量；<strong>偏微分方程 PDE</strong>同时描述各个空间位置上的场如何变化。给定 Kerr 度规追踪一条光线是 ODE；求两个黑洞合并时每个位置的度规变化，是 PDE。这两种计算的成本可以相差很多个数量级。</p>
+<h2 id="vectors">4. 向量、矩阵和下标：把很多公式打包</h2>
+<p>一个二维向量可以写为 \(v=(v^1,v^2)\)。它代表方向与大小，两个分量取决于你选的基底。矩阵是一组带两个编号的数，用于把一组分量线性映射为另一组。例如：</p>
+<div class="equation">\[A=\begin{pmatrix}2&1\\0&3\end{pmatrix},\quad v=\begin{pmatrix}1\\2\end{pmatrix},\quad Av=\begin{pmatrix}2\cdot1+1\cdot2\\0\cdot1+3\cdot2\end{pmatrix}=\begin{pmatrix}4\\6\end{pmatrix}.\]</div>
+<p>写成下标是 \(w^i=A^i{}_jv^j\)。这里<strong>一上一下重复出现的指标要对所有取值求和</strong>，叫爱因斯坦求和约定。在二维，\(j\) 取 1、2；在四维，希腊指标取 0、1、2、3。没有重复的 \(i\) 是自由指标，等式两侧必须一致。求和指标的名字可以换，但不能随意把自由指标改掉。</p>
+<p>上标与下标并不是装饰。向量是“沿哪个方向走”，协向量是“沿某方向变化率的测量规则”。梯度 \(\partial_\mu f\) 是协向量，与向量 \(v^\mu\) 配对得到方向导数 \(v^\mu\partial_\mu f\)。这个数不依赖于选了什么坐标。</p>
+<p>度规将二者联系起来：\(v_\mu=g_{\mu\nu}v^\nu\)。这叫<strong>降低指标</strong>。逆度规 \(g^{\mu\nu}\) 把指标升回去，满足 \(g^{\mu\alpha}g_{\alpha\nu}=\delta^\mu{}_{\nu}\)。\(\delta\) 是单位矩阵：两编号相等为 1，否则为 0。逆矩阵通常绝不是逐个元素取倒数。</p>
+<details class="exercise"><summary>练习：展开一个求和式，辨认上下标</summary><p>在平直时空 \(\eta=\mathrm{diag}(-1,1,1,1)\)，若 \(v^\mu=(2,1,0,0)\)，则 \(v_\mu=(-2,1,0,0)\)，\(v^\mu v_\mu=-4+1=-3\)。负号的意义来自时空间隔，而非负长度的三维欧氏直觉。</p></details>
+<h2 id="interval">5. 光速不变要求我们改变“时间”的定义</h2>
+<p>想象一只光钟：光束在相距 \(L\) 的上下两面镜子之间来回反射。与钟一起运动的人看见一来一回距离 \(2L\)，用时 \(\Delta\tau=2L/c\)。在钟横向速度为 \(v\) 的实验室里，光走斜线；既然仍以 \(c\) 运动，实验室必须读出更长的时间 \(\Delta t\)。半个周期组成直角三角形：</p>
+<div class="equation">\[\left(\frac{c\Delta t}{2}\right)^2=L^2+\left(\frac{v\Delta t}{2}\right)^2\quad\Rightarrow\quad\Delta t=\gamma\Delta\tau,\qquad\gamma=\frac1{\sqrt{1-v^2/c^2}}.\]</div>
+<p>这不是机械钟故障。为了让所有惯性系都测到同一个光速，空间与时间坐标必须一起变换。一维相对运动的洛伦兹变换为：</p>
+<div class="equation">\[ct'=\gamma(ct-\beta x),\qquad x'=\gamma(x-\beta ct),\qquad\beta=v/c.\]</div>
+<p>把式子展开后，交叉项互相抵消，得到 \(-(c\Delta t')^2+(\Delta x')^2=-(c\Delta t)^2+(\Delta x)^2\)。各个观察者对时间间隔和空间距离看法不同，却同意这个组合。这就是<strong>不变量</strong>。</p>
+<section class="lab" aria-labelledby="lorentz-title"><h3 id="lorentz-title">实验 · 改变参考系，间隔保持不变</h3><p>图中横轴为 x，纵轴为 ct，均使用相同长度单位。橙色事件取 x=0.6、ct=1；青色是同一事件变换后的坐标。虚线是光锥，坐标图叠画用于比较数值，不代表两个不同事件。</p><canvas id="lorentz-canvas" width="800" height="380" role="img" aria-label="洛伦兹变换前后事件坐标与光锥">洛伦兹变换实验需要 JavaScript；正文给出了全部公式。</canvas><div class="controls"><label for="boost">参考系速度 β = v/c <output id="boost-value">0.40</output><input id="boost" type="range" min="-0.85" max="0.85" step="0.01" value="0.4"></label></div><div class="readout" id="boost-readout" aria-live="polite"></div></section>
+<h2 id="metric">6. 度规就是时空的测量规则</h2>
+<div class="equation">\[ds^2=-c^2dt^2+dx^2+dy^2+dz^2=\eta_{\mu\nu}dx^\mu dx^\nu,\qquad \eta_{\mu\nu}=\mathrm{diag}(-1,1,1,1).\]</div>
+<p>这是狭义相对论中的平直时空度规。\(ds^2\) 不是必须为正的普通距离平方。按照 \((-+++)\) 约定，它把位移分成三类：</p>
+<div class="table-wrap"><table><thead><tr><th>类别</th><th>条件</th><th>意义</th></tr></thead><tbody><tr><td>类时 timelike</td><td>\(ds^2&lt;0\)</td><td>有质量观察者可以沿这条方向运动；\(d\tau=\sqrt{-ds^2}/c\)。</td></tr><tr><td>零 / 类光 null</td><td>\(ds^2=0\)</td><td>光传播的方向；不是“没有发生位移”。</td></tr><tr><td>类空 spacelike</td><td>\(ds^2&gt;0\)</td><td>不能由局部不超光速的信号直接连接。</td></tr></tbody></table></div>
+<p>若速度大小 \(v^2=(dx^2+dy^2+dz^2)/dt^2\)，度规给出 \(d\tau=dt\sqrt{1-v^2/c^2}\)。在实验室看来，运动的钟走得慢；反过来，另一惯性系也会说实验室钟慢。这并不矛盾，因为双方对“同时比较哪两只远处的钟”意见不同。双生子重逢的问题还涉及不同世界线，不能只靠互换两个惯性系概括。</p>
+<p>广义相对论把常数矩阵 \(\eta\) 换成随位置改变的 \(g_{\mu\nu}(x)\)。局部总能选择自由落体坐标让某一点的度规看起来像 \(\eta\)，但一般不能在一个有限区域把潮汐效应全部消掉。这个“局部能变平，整体未必能变平”的差别，正是下一章的曲率。</p>
+<h2 id="units">7. G=c=1：不是忽略常数，而是换尺子</h2>
+<p>引力常数 \(G\) 的单位是 \(\mathrm{m^3\,kg^{-1}\,s^{-2}}\)，光速的单位是 \(\mathrm{m/s}\)。所以物理质量 \(M_{\rm SI}\) 可以换算为长度 \(r_g=GM_{\rm SI}/c^2\)，也可以换成时间 \(t_g=GM_{\rm SI}/c^3\)。将这两把尺子的数值设为 1 后，公式会简洁很多。</p>
+<div class="equation">\[r_g\approx1.4766\,\mathrm{km}\left(\frac{M}{M_\odot}\right),\qquad t_g\approx4.9255\,\mu\mathrm{s}\left(\frac{M}{M_\odot}\right).\]</div>
+<p>注意 \(r_g\) 是质量对应的长度；无自旋黑洞的视界半径是 \(r_s=2r_g\)，不要把这两个习惯都叫“黑洞半径”而混用。教程中的 \(r=6M\) 意味着物理半径 \(6GM_{\rm SI}/c^2\)。一个总质量 \(65M_\odot\) 的系统，其时间单位约 \(0.320\) 毫秒；仿真里的 \(100M\) 是约 \(32\) 毫秒。</p>
+<section class="lab" aria-labelledby="units-title"><h3 id="units-title">实验 · 把几何单位换回公里和秒</h3><div class="controls"><label for="mass">质量（太阳质量）<input id="mass" type="number" min="1" max="10000000000" step="1" value="65"></label><label for="unit-preset">常用量级<select id="unit-preset"><option value="65">双黑洞总质量示例 · 65</option><option value="10">恒星级 · 10</option><option value="4300000">银河中心量级 · 430 万</option><option value="6500000000">M87 中心量级 · 65 亿</option></select></label></div><div id="unit-readout" class="readout" aria-live="polite"></div><p class="caption">后两项仅作为数量级示例，不用于当前测量值或参数拟合。r=6M 的 ISCO 只适用于无自旋黑洞。</p></section>
+<h2 id="checkpoint">8. 进入几何之前，检查三个概念</h2>
+<details class="exercise"><summary>“光走的 ds² 为零，所以光没有走过距离。”哪里错了？</summary><p>\(ds^2\) 是时间与空间贡献相抵后的时空间隔，不是三维空间距离。光在某个惯性系中满足 \(|d\boldsymbol{x}|=c\,dt\)，空间路程可以非零；沿光线的固有时间为零。</p></details>
+<details class="exercise"><summary>“设 G=c=1，就不能再与真实观测比较了。”哪里错了？</summary><p>只要记录质量尺度，就能把长度乘以 \(GM/c^2\)，把时间乘以 \(GM/c^3\)，把无量纲角频率乘以 \(c^3/(GM)\)。这是一一对应的单位变换，没有删除物理量。</p></details>
+<details class="exercise"><summary>“我给光加一个朝黑洞的牛顿力，就在求广义相对论了。”哪里错了？</summary><p>相对论中光沿时空度规决定的零测地线传播。简单牛顿偏折无法自动给出正确的空间曲率、旋转拖曳、光子球和时延；弱场下也可能少一半偏折。必须说明模型来自哪个方程、在哪个极限有效。</p></details>
+<ul class="source-list"><li>进阶推导：<a href="https://davidtong.org/teaching/general-relativity/">David Tong 的 General Relativity，第 1–2 章</a>；<a href="https://arxiv.org/abs/gr-qc/9712019">Carroll 讲义，第 1–2 章</a>。本章例题和交互为独立编写。</li></ul>
+<nav class="pager" aria-label="章节翻页"><a href="index.html">← 教程目录</a><a href="geometry.html">02 · 度规如何变成曲率 →</a></nav></article></main></body></html>

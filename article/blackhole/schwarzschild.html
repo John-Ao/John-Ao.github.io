@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>04 · 从场方程推导 Schwarzschild 黑洞</title>
   <meta name="description" content="从球对称真空场方程逐步推导 Schwarzschild 解，理解视界、光子球、ISCO、有效势和可复现的光线积分。">
-  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css">
+  <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css">
   <script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="solutions.js"></script>
 </head>
 <body data-page="schwarzschild"><main>
@@ -18,6 +18,7 @@
 <section><h2 id="assumptions">1. 先确定我们要求解什么</h2>
 <p>设一个天体没有自转，周围没有物质和电磁场，忽略宇宙学常数。真空区域中 \(T_{\mu\nu}=0\)，场方程缩并后给出 \(R=0\)，因此只剩 \(R_{\mu\nu}=0\)。这里的“真空”并不等于“没有引力”：Ricci 曲率可以为零，描述潮汐作用的 Riemann 曲率仍然不为零。中心物体的质量通过边界条件进入外部解，而非在每个外部点放一个非零密度。</p>
 <p>球对称指绕任意方向旋转，几何都不变。每个对称球面的面积写成 \(4\pi r^2\)，这定义了<strong>面积半径</strong> \(r\)。它通常不等于拿尺子从中心量到此处的距离。我们先求静态外部解；“静态”表示几何不随时间变化，而且存在与时间方向正交的空间切片。用两个待定函数 \(\Phi(r),\Lambda(r)\) 写出足够一般的形式：</p>
+<p>这两个未知函数各管一件事：\(\Phi\) 控制坐标时间怎样换成钟的读数，\(\Lambda\) 控制径向坐标差怎样换成尺长。此处 \(\Phi(r)\) 是无量纲的度规函数，不能直接等同于上一章有单位的牛顿势；\(\Lambda(r)\) 也是待求函数，不是上一章已忽略的宇宙学常数。\(e\) 是自然指数的底数，用 \(e^{2\Phi}\) 表示正系数只是方便，并没有预先解出引力。两个角 \(\theta,\phi\) 分别量南北方向和绕轴方向，后一项中 \(\sin\theta\) 反映同样转过一个经度角，在不同纬度走过的长度不同。</p>
 <div class="equation">\[ds^2=-e^{2\Phi(r)}c^2dt^2+e^{2\Lambda(r)}dr^2+r^2(d\theta^2+\sin^2\theta\,d\phi^2).\]</div>
 <p>指数写法让外部区域的时间、径向系数有确定符号。\(\theta\) 是从北极量起的极角，\(\phi\) 是绕轴的方位角；简写 \(d\Omega^2=d\theta^2+\sin^2\theta\,d\phi^2\)。接下来的代数暂时用 \(G=c=1\)，质量也可表示为长度。为了避免与物理质量混淆，推导中的长度常数记作 \(m=GM_{\rm phys}/c^2\)，之后习惯性写成 \(M\)。</p>
 <div class="note"><strong>适用范围。</strong>一颗理想球形恒星的外部也是这个解，恒星表面内部却要解含物质的方程。把真空解延拓至 \(r&lt;2m\) 得到黑洞内部，和常密度恒星的“Schwarzschild 内部解”是两回事。Birkhoff 定理进一步说明：即使球形源径向脉动，只要考察的区域保持球对称真空，其局部几何仍属于这个解；严格球对称运动不辐射引力波。</div>
@@ -27,7 +28,7 @@
 <p>上一章的算法是“度规 → 逆度规 → Christoffel 符号 → Ricci 张量”。现在代入上式。撇号表示对 \(r\) 求导，例如 \(\Phi'=d\Phi/dr\)。用混合分量 \(G^\mu{}_\nu=g^{\mu\alpha}G_{\alpha\nu}\) 会比较简洁。两个独立方程为：</p>
 <div class="equation">\[G^t{}_t=-\frac1{r^2}+e^{-2\Lambda}\left(\frac1{r^2}-\frac{2\Lambda'}r\right)=0,\]
 \[G^r{}_r=-\frac1{r^2}+e^{-2\Lambda}\left(\frac1{r^2}+\frac{2\Phi'}r\right)=0.\]</div>
-<p>不需要一次看懂全部符号。第一式只涉及 \(\Lambda\)，所以先解它。令 \(f(r)=e^{-2\Lambda(r)}\)，那么 \(f'=-2\Lambda'f\)。第一式乘以 \(r^2\) 后变成 \(-1+f+rf'=0\)。观察到乘积求导 \((rf)'=f+rf'\)，于是：</p>
+<p>先把指标固定住来读：\(G^t{}_t\) 是时间—时间分量，\(G^r{}_r\) 是径向—径向分量，这里的 t、r 是指定标签，不再求和。第一式只涉及 \(\Lambda\)，所以先解它。令 \(f(r)=e^{-2\Lambda(r)}\)，那么 \(f'=-2\Lambda'f\)。第一式乘以 \(r^2\) 后变成 \(-1+f+rf'=0\)。观察到乘积求导 \((rf)'=f+rf'\)，于是：</p>
 <div class="equation">\[(rf)'=1\quad\Longrightarrow\quad rf=r+C\quad\Longrightarrow\quad f=1+\frac Cr.\]</div>
 <p>这是从场方程得到的结果，尚未决定 \(C\) 的物理含义。把第二式减第一式，得到 \(2f(\Phi'+\Lambda')/r=0\)。在外部 \(f\ne0\)，因此 \(\Phi+\Lambda=C_0\)。常数 \(C_0\) 可以通过重新标定时间消去；选择无穷远时钟为标准后，\(\Phi=-\Lambda\)，从而 \(e^{2\Phi}=e^{-2\Lambda}=f\)。</p>
 <p>最后利用弱场极限。慢粒子在牛顿势 \(\varphi_N=-GM_{\rm phys}/r\) 中运动时，\(g_{tt}\approx-(1+2\varphi_N/c^2)\)，这里时间坐标取 \(ct\)。因此 \(f\approx1-2GM_{\rm phys}/(c^2r)\)，识别出 \(C=-2m\)。恢复单位后：</p>
@@ -40,23 +41,28 @@
 <p>对固定 \(r,\theta,\phi\) 的悬停观察者，\(ds^2=-d\tau^2\)，因此 \(d\tau=\sqrt f\,dt\)。\(\tau\) 是他手表上的固有时，\(t\) 与无穷远静止观察者的钟相匹配。在 \(r=4M\)，\(\sqrt f=1/\sqrt2\approx0.707\)：远处经过 1 秒，这只悬停钟经过约 0.707 秒。悬停并非自由落体，必须靠发动机持续支撑；所需固有加速度 \(M/(r^2\sqrt f)\) 在靠近视界时发散。</p>
 <p>沿静态空间切片量一小段径向距离，得到 \(d\ell=dr/\sqrt f\)，大于坐标差 \(dr\)。不能把图上的等距网格当成等长尺子。固定时间、赤道平面的空间切片还能嵌入三维欧氏空间：令旋转曲面高度为 \(z(r)\)，要求 \([1+(dz/dr)^2]dr^2+r^2d\phi^2=dr^2/f+r^2d\phi^2\)，得到 \(z=\pm2\sqrt{2M(r-2M)}\)。常见的“漏斗”图来自这个几何构造。</p>
 <div class="warning">漏斗只表现某一空间切片的内禀距离，不含时间，也不是黑洞朝某个外部方向陷下去的形状。用小球沿漏斗滚动来解释引力会重新引入一个外部重力场，不能替代时空测地线。</div>
+<p>如果从较低处每秒发出若干个光波峰，远方接收者会怎样数它们？两个地点对“每秒”的读法不同，所以同一串波峰会被赋予不同频率。下面用 \(\nu\) 记频率，用 em 标记 emission（发射），用 \(\infty\) 标记无穷远；\(r_{\rm em}\) 就是发光处的半径。这个比较要求两端观察者都保持静止。</p>
 <p>光的频率由观察者与光子四动量的内积决定。对静态发射者与无穷远接收者，\(\nu_\infty/\nu_{\rm em}=\sqrt{1-2M/r_{\rm em}}\)。在 \(4M\) 发出的 600 THz 光，到无穷远变成约 424 THz。若发光气体在轨道上运动，还必须叠加相对论多普勒效应；不能把整张吸积盘统一涂成同一个引力红移颜色。</p>
 </section>
 
 <section><h2 id="horizon">4. 视界是坐标坏了，还是物理坏了</h2>
 <p>在 \(r=2M\)，\(g_{tt}=0\)、\(g_{rr}\to\infty\)。某个分量发散不足以证明几何发散，例如地球经度在北极失去意义，地球表面并没有在那里破裂。一个不依赖坐标的检查量是 Kretschmann 标量：</p>
+<p>这个检查量要把曲率各个方向的贡献组合成一个数，记作 \(K\)。下面相乘的两份曲率里，\(\alpha,\beta,\gamma,\delta\) 各出现两次，所以四个编号都要求和，结果没有留下方向指标。它不是任挑一个曲率分量后平方；先用度规升指标，再缩并，才能保证换坐标后得到同一个数。</p>
 <div class="equation">\[K=R_{\alpha\beta\gamma\delta}R^{\alpha\beta\gamma\delta}=\frac{48M^2}{r^6}.\]</div>
 <p>\(K\) 在 \(2M\) 有限，只有 \(r=0\) 发散。前者是当前坐标的奇点，后者是这个经典解真正的曲率奇点。用龟坐标 \(r_*=r+2M\ln|r/(2M)-1|\)，再定义入射时间 \(v=t+r_*\)，度规变为：</p>
 <div class="equation">\[ds^2=-f\,dv^2+2\,dv\,dr+r^2d\Omega^2.\]</div>
 <p>这里没有 \(1/f\) 发散，能平滑穿过未来视界。径向光线满足 \(dv=0\)（入射族），或 \(dr/dv=f/2\)（出射族）。在外部，出射光可以增加 \(r\)；在视界上，它保持 \(r=2M\)；在内部，连这一族未来指向的“向外光线”也只能减小 \(r\)。这正是黑洞的因果意义：事件视界是无法向未来无穷远发送信号区域的边界。</p>
+<p>先给下一段的 \(E\) 一个含义：它是相对远方时间对称性定义的守恒能量，按粒子静质量归一化，并已取 \(c=1\)。从无穷远静止释放时，只有一份静质量能，所以 \(E=1\)。下一节会从测地线推导这个守恒量；这里先用它标明我们正在讨论哪一种下落，而不是所有可能的轨道。</p>
 <p>从无穷远静止落下的粒子有 \(E=1\)，满足 \(dr/d\tau=-\sqrt{2M/r}\)。因此从有限半径掉至视界只需要有限固有时。虽然 Schwarzschild 时间 \(t\) 趋于无穷，远方观察者收到的光也不断红移、变暗，不会看到一张永久明亮的“冻结照片”。对这个特定轨道，从视界到 \(r=0\) 的固有时间为 \(4M/3\)；十个太阳质量约为 65.7 μs。不同初始轨道有不同时间，这不是所有落入者的统一寿命。</p>
 <details class="exercise"><summary>计算：为什么超大质量黑洞的视界处潮汐反而可以更弱？</summary><p>自由落体局部参考系的径向相对加速度量级为 \(\Delta a\approx(2GM_{\rm phys}/r^3)\ell\)，\(\ell\) 为身体长度。在视界 \(r=2GM_{\rm phys}/c^2\) 代入，得到 \(\Delta a\propto\ell/M_{\rm phys}^2\)。质量越大，视界半径增长得越快，视界处的局部潮汐越小。这不改变视界的单向因果性质。</p></details>
 </section>
 
 <section><h2 id="effective-potential">5. 从测地线降到一维有效势</h2>
+<p>沿路不断变化的坐标很多，但有些组合会保持不变。找到它们，就不必每一步都从头求全部变量。我们要利用的两件事是“今天与明天的几何相同”和“绕中心换一个方位，几何相同”。在 Euler–Lagrange 方程中，如果 L 不直接依赖某个坐标，它对该坐标的偏导为零，相应的 \(\partial L/\partial\dot x\) 就沿路不变。这就是这里寻找守恒量的具体方法。</p>
 <p>球对称保证任何一条轨迹都可以放在赤道平面 \(\theta=\pi/2\)。取测地线拉格朗日量 \(\mathcal L=\tfrac12g_{\mu\nu}\dot x^\mu\dot x^\nu\)，点号对有质量粒子表示固有时导数，对光表示仿射参数导数。因为度规不显含 \(t\) 与 \(\phi\)，对应共轭动量守恒：</p>
 <div class="equation">\[E=f\dot t,\qquad L=r^2\dot\phi.\]</div>
 <p>对有质量粒子，\(E,L\) 是除以静质量后的能量和角动量；对光，它们依赖仿射参数归一化，但比值 \(b=L/E\) 有物理意义，叫冲量参数。四速度归一化给出 \(-\kappa=-f\dot t^2+\dot r^2/f+r^2\dot\phi^2\)，其中有质量粒子 \(\kappa=1\)，光子 \(\kappa=0\)。代入守恒量再乘以 \(f\)：</p>
+<p>现在只盯住半径。\(\kappa\)（kappa）是区分有质量粒子与光的开关，不是待拟合参数；\(V_{\rm eff}\) 的 eff 是英文 effective 的缩写，表示把角向运动折算进去的“有效势”。它不是一股新增的力。下一式把所有与半径有关的项收在右侧这个函数里，留下 \(\dot r^2\) 作为径向运动的余量。</p>
 <div class="equation">\[\boxed{\dot r^2+V_{\rm eff}(r)=E^2,\qquad V_{\rm eff}=\left(1-\frac{2M}{r}\right)\left(\kappa+\frac{L^2}{r^2}\right).}\]</div>
 <p>这是一个巨大简化：四维路径变成“一维径向运动 + 两个守恒量”。\(E^2\ge V_{\rm eff}\) 才是允许区域；相等处径向速度为零；势的极值对应圆轨道。图中的水平线不是实际轨迹，而是帮助判断哪些半径可达的能量水平。</p>
 <div class="lab"><h3>实验：势垒与势阱</h3>
@@ -72,7 +78,9 @@
 <p>对光子，\(V=L^2(1-2M/r)/r^2\)。令导数为零，得到唯一外部圆光轨道 \(r=3M\)，二阶导数为负，故不稳定。轻微向外偏离会逃逸，向内偏离会被捕获。把圆轨道条件 \(E^2=V(3M)\) 代入：</p>
 <div class="equation">\[b_c=\frac{L}{E}=3\sqrt3M\approx5.196M.\]</div>
 <p>从无穷远入射的光，\(|b|&lt;b_c\) 被捕获，\(|b|&gt;b_c\) 可绕过后离开。远处相机屏幕上的捕获区半径约为 \(b_c\)，所以影子不等于半径 \(2M\) 的视界，也不等于半径 \(3M\) 的光子球；强透镜把捕获边界投影到屏幕上。有限距离相机还有局部角度关系 \(\sin\alpha_c=b_c\sqrt{f(r_o)}/r_o\)，这要求相机为 \(r_o&gt;3M\) 的静止观察者。</p>
+<p>临界参数 \(b_c\) 中的 c 是 critical（临界）的名称标签，不是光速相乘；\(r_o\) 中的 o 表示 observer（观察者）。类似地，前面频率 \(\nu_{\rm em}\) 和 \(\nu_\infty\) 的下标区分“发射处”与“无穷远处”。这些命名下标不会触发求和约定。</p>
 <p>为了实际算一条光线，令 \(u=M/r\)，并将 \(b\) 也用 \(M\) 作单位。利用 \(d\phi/d\lambda=L/r^2\) 消去仿射参数，得到一阶约束及二阶轨道方程：</p>
+<p>这一步把自变量从“沿路走了几步”换成“绕中心转了多少角度”。\(u\) 现在专指倒半径 \(M/r\)，不是前面四速度 \(u^\mu\)；靠近黑洞时 \(u\) 增大。下面的导数全都对 \(\phi\) 求，后面的撇号也沿用这个约定。式中 \(b\) 是已经除以 \(M\) 的无量纲冲量参数，才能与无量纲的 \(u\) 放在同一个等式里。</p>
 <div class="equation">\[\left(\frac{du}{d\phi}\right)^2+u^2-2u^3=\frac1{b^2},\qquad \frac{d^2u}{d\phi^2}+u=3u^2.\]</div>
 <p>二阶形式能自然通过径向转向点，避免每次取平方根时手动切换正负号。写成 \(u'=p,p'=3u^2-u\)，便能用四阶 Runge–Kutta（RK4）积分。下图从有限半径 \(30M\) 启动，初始径向方向向内；显示的是坐标平面中的轨迹，不是假设空间本身是平的。</p>
 <div class="lab"><h3>实验：把光线推近捕获边界</h3><div class="controls"><label>b / M <output id="impact-value" for="impact">5.300</output><input id="impact" type="range" min="3.8" max="7.5" step="0.001" value="5.3"></label><button type="button" data-impact="4.8">被捕获 · 4.8</button><button type="button" data-impact="5.197">临界附近 · 5.197</button><button type="button" data-impact="6.5">散射 · 6.5</button></div><canvas id="schwarz-ray" role="img" aria-label="通过 RK4 积分得到的 Schwarzschild 光线赤道轨迹">光线图需要 Canvas。小于临界冲量参数的入射光会被捕获。</canvas><p class="readout" id="ray-readout" aria-live="polite"></p><p class="caption">固定步长 Δφ=0.0025；终止于 r≤2M、返回 r=30M，或积分上限。残差检测第一积分，不代表与真实答案的全部误差；临界附近必须进一步减小步长验证绕行角收敛。</p></div>

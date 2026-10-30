@@ -1,0 +1,44 @@
+:root{color-scheme:dark;--bg:#0c1921;--panel:#172d38;--line:#395563;--text:#e4eff2;--muted:#a6bbc4;--ice:#8dd5e3;--amber:#f0bc83}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,sans-serif}main{max-width:1280px;margin:auto;padding:18px}button,input,select,textarea{font:inherit;color:inherit;background:#203d4b;border:1px solid #537180;border-radius:8px;padding:10px;min-height:46px}button{cursor:pointer;touch-action:manipulation}button:hover:not(:disabled){background:#365867}button:disabled{opacity:.4;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ice);outline-offset:2px}input[type=number]{width:90px}textarea{width:100%;min-height:90px}a{color:var(--ice)}h1,h2,h3,p{margin:0 0 12px}h1{font-size:25px}h2{font-size:20px}h3{font-size:16px}.tools,.toolbar,.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tools{margin-bottom:18px}.tools strong{font:600 26px Georgia,serif}.tools span{margin-left:12px;color:var(--muted)}.toolbar{justify-content:flex-start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hint,small{color:var(--muted);font-size:13px}.primary{background:var(--ice);color:#122832;font-weight:700}.warning{border-left:3px solid var(--amber);padding:10px 14px;background:#45392866;margin-bottom:12px}.players{display:grid;grid-template-columns:1fr 1fr;gap:12px}.player{border-top:3px solid var(--ice)}.player.p1{border-top-color:var(--amber)}.player.current{box-shadow:0 0 0 2px var(--ice)}.hp{height:5px;background:#314853;margin:10px 0}.hp i{display:block;height:100%;background:var(--ice)}.p1 .hp i{background:var(--amber)}.arena{background:#101f29;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:14px}.board-wrap{overflow:auto;max-height:62vh}#board{display:block;min-width:620px;width:100%;height:490px;touch-action:manipulation}.hex{fill:#25424f;stroke:#4a6875;stroke-width:1.5;cursor:pointer}.hex.wall{fill:#080e14}.hex.obstacle{fill:#13252d}.hex.door{fill:#786244}.hex.difficult{fill:#46616b}.hex.trap{fill:#69443e}.hex.hazard{fill:#5a6041}.hex.reach{stroke:#a3f6f0;stroke-width:3;fill:#3b7780}.hex.target{stroke:#ffbb96;stroke-width:3;fill:#705044}svg text{fill:#d4e1e5;text-anchor:middle;pointer-events:none;font-size:13px}svg .token{stroke:#e4f2f4;stroke-width:2;pointer-events:none}svg .label{fill:#0c202a;font-size:15px;font-weight:800}.legend{font-size:12px;color:var(--muted);text-align:center}.order,.elements{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.chip{border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:12px}.chip.current{border-color:var(--ice);color:var(--ice)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:12px;background:#1b3541;border:1px solid #496470;border-radius:9px}.card.selected{border:2px solid var(--ice);background:#2d5361}.card .init{float:right;color:var(--amber);font-size:23px}.card b{display:block;margin-bottom:8px}.card .half{border-top:1px solid #3c5864;padding-top:8px;margin-top:8px;font-size:12px;max-height:95px;overflow:auto}.card button{font-size:13px;margin-top:8px;width:100%}.card .select-card{min-height:44px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.privacy{text-align:center;padding:30px}.flipped{transform:rotate(180deg)}.history{color:var(--muted);border-top:1px solid var(--line);padding:12px}.history ol{max-height:200px;overflow:auto}.history li{font-size:13px;margin:4px}.list{display:grid;gap:8px}.item{padding:12px;background:#122732;border:1px solid var(--line);border-radius:8px}.formrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0}label{display:grid;gap:5px}dialog{max-width:900px;width:calc(100% - 24px);max-height:90vh;overflow:auto;background:#162c38;border:1px solid #648393;border-radius:12px;padding:24px;color:var(--text)}dialog::backdrop{background:#000b}.cardimage{display:block;max-width:100%;max-height:65vh;margin:auto}.table{width:100%;border-collapse:collapse}.table td,.table th{border-bottom:1px solid var(--line);padding:8px;text-align:left}.scroll-list{max-height:55vh;overflow:auto}#notice:not(:empty){background:#533f2b;padding:12px;margin-bottom:12px;border-radius:8px}.selected-label{color:var(--ice)}details{margin:10px 0}summary{cursor:pointer;min-height:40px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}.check{display:flex;gap:8px;align-items:center}.check input{min-height:20px} @media(max-width:750px){main{padding:10px}.grid{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}.tools strong{font-size:23px}.tools span{font-size:13px}.toolbar{gap:6px}.toolbar button{font-size:12px;padding:8px}.panel{padding:12px}.players .panel{font-size:12px}.player h3{font-size:14px}.board-wrap{max-height:450px}#board{min-width:0;width:100%;height:470px}.card{padding:9px}.card .half{max-height:110px}.tools{align-items:flex-start}dialog{padding:16px}}@media(min-width:1000px){.battle-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}.battle-grid .cards{grid-template-columns:1fr 1fr}#board{min-width:520px}.battle-grid .board-wrap{max-height:65vh}}
+
+/* Wide screens keep the game and its controls together. */
+
+@media (min-width: 1100px) {
+  main {max-width:1900px; padding:12px 20px}
+  main>.tools {margin-bottom:10px}
+  .players .panel {padding:10px 14px; margin-bottom:10px}
+  .players h3 {margin-bottom:0}
+  .panel {padding:14px}
+  .battle-grid {grid-template-columns:minmax(0,1.35fr) minmax(420px,1fr); gap:16px}
+  .battle-grid>div {min-width:0; position:sticky; top:12px}
+  .battle-grid .board-wrap {max-height:calc(100dvh - 350px); min-height:300px}
+  .battle-grid #control {min-width:0; margin:0}
+  #control .cards {grid-template-columns:repeat(2,minmax(0,1fr)); max-height:calc(100dvh - 440px); min-height:260px; overflow:auto; padding:3px; scrollbar-gutter:stable}
+  .card .half {font-size:14px; line-height:1.5; max-height:none}
+  .card b {margin-bottom:5px}
+  .card button {min-height:44px}
+  .history {padding:8px 0}
+}
+
+@media (min-width:1100px) {
+  #app[data-view="battle"] {height:calc(100dvh - 80px); min-height:580px; display:grid; grid-template-rows:auto auto minmax(0,1fr) auto; gap:8px}
+  .players .panel {margin:0; padding:8px 12px}
+  .players .hp {margin:6px 0}
+  .scenario-summary {margin:0; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 16px; padding:10px 12px}
+  .scenario-summary .row {grid-column:1/-1}
+  .scenario-summary h2 {font-size:18px; margin:0}
+  .scenario-summary .elements,.scenario-summary .order {margin:0; align-items:center}
+  .scenario-summary button {padding:7px 10px; font-size:14px}
+  .battle-grid {min-height:0; align-items:stretch}
+  .battle-grid>div {min-height:0; position:static; display:flex; flex-direction:column}
+  .battle-grid .arena {display:flex; flex-direction:column; min-height:0; flex:1; margin:0}
+  .battle-grid .board-wrap {flex:1; min-height:0; max-height:none}
+  .battle-grid>div>details {flex:none; margin:6px 0 0; padding:6px 10px; max-height:25vh; overflow:auto}
+  .battle-grid #control {display:flex; flex-direction:column; min-height:0}
+  #control>.cards {flex:1; min-height:0; max-height:none; align-content:start}
+  #control>.actions {flex:none; margin:8px 0 0}
+  #control>h2 {font-size:18px; margin-bottom:8px}
+  #control>.hint {margin-bottom:8px}
+  #app>.history {margin:0; padding:0; max-height:25vh; overflow:auto}
+}
+
+@media(min-width:1100px){.battle-grid #board{height:calc(100% * var(--map-zoom,1))!important;min-width:0}.arena>.row,.arena>.legend{flex:none}}

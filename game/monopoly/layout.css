@@ -1,0 +1,144 @@
+/* The forty spaces form the perimeter; all game controls live in its interior. */
+.game {
+  display:block; width:100%; max-width:none; margin:0; padding:8px;
+}
+.table {width:100%; min-width:0}
+.board {
+  --edge-width:clamp(108px,9vw,152px);
+  --edge-height:clamp(96px,13vh,132px);
+  width:100%; height:calc(100dvh - 16px); min-height:720px; aspect-ratio:auto;
+  grid-template-columns:var(--edge-width) repeat(9,minmax(0,1fr)) var(--edge-width);
+  grid-template-rows:var(--edge-height) repeat(9,minmax(0,1fr)) var(--edge-height);
+  border-radius:8px; box-shadow:none;
+}
+.space {font-size:clamp(12px,1vw,16px); line-height:1.35; gap:2px}
+.space .name {padding:2px 6px; font-weight:600}
+.space .price {font-size:12px; line-height:1.3; opacity:.9; padding-bottom:5px}
+.space .stripe {height:12px; min-height:12px; flex-shrink:0}
+.space .symbol {font-size:23px; line-height:1.2}
+.space.special .symbol {font-size:24px}
+.space .tokens {position:static; min-height:24px; justify-content:center; flex-shrink:0; padding-bottom:3px}
+.space .tokens:empty {display:none}
+.space .token {width:22px; height:22px; font-size:11px; flex-shrink:0}
+.space .buildings {top:0; right:5px; font-size:11px; line-height:13px}
+.space[data-edge="left"],.space[data-edge="right"] {
+  display:grid; grid-template-columns:10px minmax(0,1fr) auto;
+  grid-template-rows:minmax(0,1fr) auto; gap:0 2px; text-align:left;
+}
+.space[data-edge="left"] .stripe,.space[data-edge="right"] .stripe {
+  grid-column:1; grid-row:1/-1; width:10px; height:100%; border-bottom:0; border-right:1px solid #7a897b;
+}
+.space[data-edge="left"] .name,.space[data-edge="right"] .name {grid-column:2; grid-row:1; align-self:end; padding:2px 3px 0}
+.space[data-edge="left"] .price,.space[data-edge="right"] .price {grid-column:2; grid-row:2; padding:1px 3px 3px}
+.space[data-edge="left"] .symbol,.space[data-edge="right"] .symbol {grid-column:1; grid-row:1/-1; font-size:15px}
+.space[data-edge="left"] .tokens,.space[data-edge="right"] .tokens {grid-column:3; grid-row:1/-1; flex-direction:column; padding:2px; gap:1px}
+.space[data-edge="left"] .buildings,.space[data-edge="right"] .buildings {top:1px; left:1px; right:auto; writing-mode:vertical-rl; font-size:10px}
+.interior {
+  grid-column:2/11; grid-row:2/11; min-width:0; min-height:0;
+  padding:14px 18px; display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(260px,1fr);
+  grid-template-rows:auto auto minmax(0,1fr); gap:12px 20px;
+  background:#e4ebdf;
+}
+.board-tools {grid-column:1/-1; gap:8px; flex-wrap:wrap; font-size:13px; min-width:0}
+.board-tools .game-name {font-size:18px; color:inherit; font-weight:650; margin-right:auto}
+.board-tools .quiet {font-size:13px; padding:8px 10px}
+.players {grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; gap:12px; min-width:0}
+.player {padding:10px 14px; min-height:0; border-radius:8px}
+.player-heading {font-size:14px; flex-wrap:wrap}
+.player-heading small {font-size:12px}
+.player-meta {font-size:12px}
+.money {font-size:28px; margin:3px 0; font-variant-numeric:tabular-nums}
+.player[aria-pressed="true"] .player-heading {text-decoration:underline; text-underline-offset:4px}
+.center,.busy-panel .center {
+  grid-column:1; grid-row:3; min-width:0; min-height:0; padding:10px 12px;
+  display:flex; align-items:center; justify-content:flex-start; background:transparent;
+  overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable;
+}
+.center>*,.busy-panel .center>* {flex-shrink:0}
+.turn-label,.busy-panel .turn-label {font-size:13px; letter-spacing:.5px; margin-top:0}
+h1,.busy-panel h1 {font-size:clamp(24px,2.4vw,36px); margin:8px 0 12px}
+.dice {gap:10px}
+.die {width:48px; height:48px; padding:9px; gap:3px}
+#hint,.busy-panel #hint {font-size:14px; line-height:1.6; max-width:480px; margin:12px 0; min-height:0}
+.actions,.busy-panel .actions {width:100%; gap:8px; align-items:center}
+.actions button {min-height:44px; font-size:14px; padding:9px 14px}
+.actions input {width:100px; font-size:15px}
+.bank,.busy-panel .bank {font-size:12px; margin-top:16px}
+.last-event {display:block; max-width:480px; font-size:12px; margin-top:8px}
+.drawn-card {max-width:480px; font-size:14px}
+.dashboard {
+  grid-column:2; grid-row:3; display:flex; flex-direction:column; min-width:0; min-height:0;
+  max-height:none; gap:0; padding:0 2px 0 16px; border-left:1px solid #bdcbbb;
+  overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable;
+}
+.assets {min-height:0; flex:1; display:flex; flex-direction:column}
+.section-label {margin:0 0 6px; gap:8px; flex-shrink:0}
+.section-label h2 {font-size:16px}
+.section-label .quiet {font-size:13px}
+#assetList {min-height:0; overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable}
+.asset-row {font-size:14px; min-height:44px; padding:8px 3px}
+.asset-row small {font-size:12px}
+.empty {padding:16px 0; font-size:14px}
+.history {margin-top:10px; flex-shrink:0}
+.history summary {font-size:13px; min-height:44px; display:list-item; padding:10px 0}
+.history ol {max-height:125px; margin:0; overflow:auto}
+.history li {font-size:12px}
+.save-state {font-size:11px; margin-top:8px; flex-shrink:0}
+.build-plan {font-size:13px}
+.build-plan button,.build-plan select {font-size:13px}
+.build-plan small {font-size:12px}
+.face-other .center,.face-other .dashboard {transform:none}
+.face-other .center {padding:10px 12px}
+.face-other .interior {transform:rotate(180deg)}
+html[data-theme="dark"] .interior {background:#20362f}
+html[data-theme="dark"] .dashboard {border-color:#647b76}
+@media (min-width:1600px) {
+  .interior {padding:20px 28px; gap:16px 28px}
+  .player {padding:14px 18px}
+  .space .name {font-size:16px}
+}
+@media (max-width:1000px) {
+  .board {--edge-width:94px; --edge-height:108px; min-height:780px}
+  .interior {padding:12px; gap:10px; grid-template-columns:minmax(0,1fr) minmax(210px,.85fr)}
+  .space {font-size:11px}
+  .space .price {font-size:11px}
+  .dashboard {padding-left:10px}
+  .player-heading small {margin-left:0}
+}
+@media (max-width:700px) {
+  .game {padding:4px}
+  .board {--edge-width:64px; --edge-height:116px; height:auto; min-height:calc(100dvh - 8px)}
+  .interior {display:flex; flex-direction:column; padding:10px; gap:12px}
+  .board-tools {gap:4px}
+  .board-tools .game-name {width:100%; font-size:16px}
+  .board-tools .quiet {font-size:12px; padding:8px}
+  .players {width:100%; gap:6px}
+  .player {padding:8px}
+  .player-heading {font-size:12px; gap:4px}
+  .player-heading small {font-size:11px; width:100%}
+  .player-meta {font-size:11px}
+  .money {font-size:24px}
+  .center,.busy-panel .center,.face-other .center {padding:6px 0; overflow:visible}
+  .center h1 {font-size:24px}
+  .turn-label {font-size:12px}
+  .dashboard {width:100%; overflow:visible; border-left:0; border-top:1px solid #bdcbbb; padding:8px 0 0}
+  .assets {flex:none}
+  #assetList {max-height:220px}
+  .space {font-size:10px; line-height:1.3; justify-content:flex-start}
+  .space .name {padding:2px 1px; overflow-wrap:anywhere}
+  .space .price {font-size:10px; padding-bottom:2px}
+  .space .stripe {height:8px; min-height:8px}
+  .space .tokens {flex-wrap:wrap; gap:1px}
+  .space .token {width:18px; height:18px; font-size:10px}
+  .space[data-edge="left"],.space[data-edge="right"] {grid-template-columns:6px minmax(0,1fr); grid-template-rows:minmax(0,1fr) auto auto; text-align:center}
+  .space[data-edge="left"] .stripe,.space[data-edge="right"] .stripe {width:6px}
+  .space[data-edge="left"] .tokens,.space[data-edge="right"] .tokens {grid-column:2; grid-row:3; flex-direction:row}
+  .space[data-edge="left"] .symbol,.space[data-edge="right"] .symbol {font-size:12px}
+}
+@media (max-width:420px) {
+  .board {--edge-width:52px; --edge-height:128px}
+  .interior {padding:8px}
+  .space .name {font-size:10px}
+  .space .price {font-size:9px}
+}

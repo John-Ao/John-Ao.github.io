@@ -1,0 +1,29 @@
+Frosthaven data source and attribution
+Retrieved 2026-10-20.
+
+Structured data: Gloomhaven Secretariat by Lurkars and contributors
+https://gloomhaven-secretariat.de/assets/data/fh.json
+https://github.com/Lurkars/gloomhavensecretariat
+The source project is AGPL-3.0. The bundled license is LICENSE-AGPL-3.0.txt.
+fh.js is the source JSON wrapped as JavaScript to allow offline file:// use.
+Only English and Simplified Chinese language entries are retained; card-image
+paths from Worldhaven are added. Game data remains copyright its respective
+owners. This directory does not claim ownership of Cephalofair game content.
+
+Card image index: Worldhaven / any2cards contributors
+https://raw.githubusercontent.com/any2cards/worldhaven/master/data/character-ability-cards.js
+https://github.com/any2cards/worldhaven
+Images are loaded on demand from the public repository, not bundled locally.
+
+Rules and publisher reference:
+https://pikdonker.github.io/frosthaven-rule-book/
+https://cephalofairgames.github.io/frosthaven-faq/
+https://cephalofair.com/pages/frosthaven
+
+This application is an unofficial cooperative implementation and assisted
+virtual tabletop. Inclusion of data does not imply all its rules are automated.
+
+Scenario 0 map, restricted hands, door reveal and treasure verified against:
+https://raw.githubusercontent.com/any2cards/worldhaven/master/images/books/frosthaven/fh-scenario-book-2-21.pdf (printed page 3)
+https://raw.githubusercontent.com/any2cards/worldhaven/master/images/books/frosthaven/fh-section-book-2-21.pdf (section 2.1)
+Geometry encoded as hex coordinates in setupTutorial/revealTutorial; no PDF art bundled.

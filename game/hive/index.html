@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ebe8df"><title>Hive · 昆虫棋</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../board_shared/theme.css"><link rel="stylesheet" href="theme.css"><script src="../board_shared/theme.js" data-controls='main>.actions'></script></head>
+<body><main class="game">
+<section id="black" class="player black" aria-label="黑方棋子"></section>
+<section class="table"><div class="status"><span id="turnDot"></span><strong id="status" aria-live="polite"></strong><button id="rulesBtn" class="small">规则</button></div><p id="hint" aria-live="polite"></p>
+<svg id="board" aria-label="昆虫棋棋盘" role="group" viewBox="-360 -280 720 560"></svg>
+<div class="boardTools"><button id="minus" aria-label="缩小">−</button><button id="fit">居中</button><button id="plus" aria-label="放大">＋</button></div>
+<div id="stackInfo"></div></section>
+<section id="white" class="player white" aria-label="白方棋子"></section>
+<div class="actions"><button id="undo">悔棋</button><button id="pass" hidden>跳过回合</button><button id="face">对坐模式</button><button id="draw">议和</button><button id="restart">重新开始</button></div>
+</main>
+<dialog id="rules"><div class="dialogTitle"><h2>Hive · 基础版规则</h2><button id="closeRules" aria-label="关闭">✕</button></div><p>两人在同一设备轮流操作。点选己方待放棋子或场上棋子，再点绿色落点。拖动空白区域平移，双指缩放；「居中」显示整个蜂群。对坐模式翻转黑方操作区。</p><h3>目标与回合</h3><p>围住对手蜂后的全部六边即获胜，围堵棋子不分颜色。双方蜂后同时被围则平局。白方先行，每回合放一枚或移动一枚。</p><p>双方第一枚棋子相邻；此后新棋子只能接触己方棋子。蜂后最迟在自己的第四回合放入，放入前不能移动。基础规则允许首回合放蜂后。</p><h3>五种昆虫 · 每方 11 枚</h3><ul><li><b>蜂后 ×1：</b>沿蜂群滑动一格。</li><li><b>兵蚁 ×3：</b>沿蜂群滑动任意格。</li><li><b>蚱蜢 ×3：</b>直线跳过至少一枚连续棋子，落在第一处空位。</li><li><b>甲虫 ×2：</b>移动一格，可爬上棋子；被盖住的棋子不能动，整叠按顶层颜色判断放置。</li><li><b>蜘蛛 ×2：</b>连续滑动恰好三格，不能重复经过位置。</li></ul><p>移动全过程不得拆散蜂群。地面滑动不能挤过两枚棋子夹成的窄口，也不能离开蜂群；甲虫根据叠层高度检查间隙。没有合法行动时才可跳过。僵局可由双方同意议和。</p><p>本页为基础版，不含蚊子、瓢虫与鼠妇扩展。进度自动保存在当前浏览器。</p><div class="sources">规则来源：<a href="https://hivegame.com/download/rules.pdf" target="_blank" rel="noreferrer">Hive 官方规则</a> · <a href="https://www.whistlerlibrary.ca/cover-images/hiverules.pdf" target="_blank" rel="noreferrer">Gen42 基础版规则 PDF</a> · <a href="https://www.ultraboardgames.com/hive/game-rules.php" target="_blank" rel="noreferrer">规则文字版</a></div></dialog>
+<dialog id="confirm"><h2 id="confirmTitle"></h2><p id="confirmText"></p><div class="confirmActions"><button id="cancel">取消</button><button id="accept">确认</button></div></dialog>
+<script src="engine.js"></script><script src="app.js"></script></body></html>

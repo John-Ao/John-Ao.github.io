@@ -1,0 +1,31 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Schotten Totten</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../board_shared/theme.css"><link rel="stylesheet" href="theme.css"><script src="../board_shared/theme.js" data-controls='.toolbar>.tools'></script></head><body>
+<main><div class="toolbar"><div><strong>Schotten Totten</strong><span class="edition" id="edition"></span></div><div class="tools"><button id="rules">规则</button><button id="rotate" aria-pressed="false">对坐模式</button><button id="restart">新对局</button></div></div>
+<div class="score"><span class="p2">玩家 2 <b id="score2">0</b> / 5</span><span id="deck"></span><span class="p1">玩家 1 <b id="score1">0</b> / 5</span></div>
+<p id="match" class="match"></p><p class="scroll-note">左右滑动查看全部九块界石</p><div class="board-scroll"><div id="board" class="board" aria-label="九块界石对战区"></div></div>
+<section id="controls"><div class="turnline"><div><strong id="turn"></strong><p id="instruction"></p></div><div class="actions"><button id="finish" class="primary">结束回合</button><button id="draw-clan" class="primary">抽氏族牌</button><button id="draw-tactic" class="primary">抽战术牌</button><button id="pass">跳过出牌</button><button id="activate" class="primary">发动招募者</button><button id="discard-selected">弃置目标牌</button><button id="agree-draw">双方同意和局</button><button id="next" class="primary">下一局</button></div></div><div id="hand" class="hand"></div><div class="hint">牌型：同花顺 ＞ 同点数组 ＞ 同花 ＞ 顺子 ＞ 散牌 · 同型比总点数，再平手则先完成者胜</div><p id="message" role="status" aria-live="polite"></p></section>
+<details class="history"><summary>公开弃牌</summary><div id="discard" class="discard"></div></details><details class="history"><summary>出牌记录</summary><ol id="log"></ol></details></main>
+<div id="curtain" class="curtain"><div class="handoff"><span class="eyebrow">手牌已隐藏</span><h1 id="handoff-title"></h1><p>将设备交给当前玩家，其他玩家请移开视线。</p><button id="reveal" class="primary">查看我的手牌</button><p class="small">共用屏幕无法阻止旁观，请双方配合保密。</p></div></div>
+<dialog id="rules-dialog"><h2>规则与战术牌</h2>
+<p>基础版起手 6 张；战术版起手 7 张氏族牌。每回合打出一张牌，在占领阶段可取得多块界石，然后补一张牌。战术版可选择氏族或战术牌堆；牌堆耗尽后继续游玩。</p>
+<p>界石每侧三张成阵。牌型依次为同花顺、同点数组、同花、顺子、散牌；同型比总和，再平手由先完成者获胜。四张阵型沿用此顺序。先取得相邻三块或任意五块立即胜利。</p>
+<p>提前占领只根据已出牌与公开弃牌，验证对方的所有普通氏族牌补全可能。不会读取隐藏手牌，也不假设未来打出的战术牌。已在阵型内的精锐牌按最优赋值计算。已占领界石不能再改变。</p>
+<p>普通模式在出牌后、补牌前占领；专家模式只在每回合出牌前占领。没有可用普通氏族牌或己方没有可放置的位置时，可以跳过出牌；跳过不补牌。</p>
+<p>打出战术牌后，己方累计使用数最多领先对方一张。战术牌替代本回合的普通出牌，不能额外使用。</p>
+<dl id="tactic-rules">
+<dt>百变者 × 2 · Joker</dt><dd>任选颜色与 1–9 点；每人整局最多打出一张。</dd>
+<dt>间谍 · Spy</dt><dd>固定 7 点，颜色可变。</dd>
+<dt>盾卫 · Shield-Bearer</dt><dd>颜色可变，点数可取 1、2、3。</dd>
+<dt>迷雾 · Blind-Man’s Bluff</dt><dd>置于界石，只比较点数总和。</dd>
+<dt>泥战 · Mud Fight</dt><dd>置于界石，双方需要四张成阵；可以与迷雾共存。</dd>
+<dt>招募者 · Recruiter</dt><dd>从两堆任选共抽三张，再从全部手牌中依次选两张退至各自牌堆底。后退回的牌在最底部。若牌堆不足三张，本实现约定抽完剩余牌后退两张。</dd>
+<dt>调度者 · Strategist</dt><dd>选己方未占领界石上的一张普通或精锐牌，移至另一未占领界石，或弃置。</dd>
+<dt>女妖 · Banshee</dt><dd>弃置对方未占领界石上的一张普通或精锐牌。</dd>
+<dt>叛徒 · Traiter</dt><dd>将对方未占领界石上的一张普通氏族牌转到己方任一未占领界石。</dd>
+</dl>
+<p>精锐牌放置时不锁定属性；系统在占领时自动选择最强组合，结果显示在牌上。普通牌和精锐牌允许具有相同颜色、点数。</p>
+<p>多局赛先约定局数。每局胜者加 5 分，败者按已占领界石数加分，最终总分高者胜；相同则平局。先手可手动指定，以便执行“最近去过苏格兰者先手”。</p>
+<p>可选僵局约定：连续跳过且双方没有任何合法出牌或占领时，可由双方确认和局，本局不计分。这是本实现补充的处理，非官方胜负规则。</p><p>共屏手牌需双方配合保密；窄屏横向滑动棋盘。进度自动保存在当前浏览器。</p>
+<p><a href="https://iellogames.com/wp-content/uploads/2016/08/schottentotten_rulebook_EN_light.pdf" target="_blank" rel="noopener">IELLO 官方英文规则 PDF</a> · <a href="https://iellogames.com/games/schotten-totten/" target="_blank" rel="noopener">游戏资料</a></p><button class="primary" onclick="this.closest('dialog').close()">返回对局</button></dialog>
+<dialog id="new-dialog"><h2>新对局设置</h2><p>开始后会替换当前对局及累计积分。</p><label class="option"><input type="checkbox" id="opt-tactics" checked> 战术牌变体（全部 10 张）</label><label class="option"><input type="checkbox" id="opt-expert"> 专家时机（出牌前占领）</label><label class="option">对局数 <input id="opt-rounds" type="number" value="1" min="1" max="99" inputmode="numeric"></label><label class="option">先手 <select id="opt-first"><option value="0">玩家 1</option><option value="1">玩家 2</option></select></label><div class="actions"><button id="confirm-new" class="primary">开始对局</button><button onclick="this.closest('dialog').close()">取消</button></div></dialog>
+<dialog id="round-dialog"><h2>下一局</h2><label class="option">本局先手 <select id="round-first"><option value="0">玩家 1</option><option value="1">玩家 2</option></select></label><button id="confirm-round" class="primary">发牌</button><button onclick="this.closest('dialog').close()">取消</button></dialog>
+<dialog id="draw-dialog"><h2>双方同意和局？</h2><p>双方均无合法行动或占领。官方规则书没有规定此僵局如何结算。此为可选约定：结束本局，双方均不加分。请双方同意后确认。</p><button id="confirm-draw" class="primary">双方同意，本局不计分</button><button onclick="this.closest('dialog').close()">返回</button></dialog><script src="game.js"></script><script src="app.js"></script></body></html>

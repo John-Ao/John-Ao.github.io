@@ -1,0 +1,27 @@
+核对日期：2026-10-20
+官方游戏页面：https://www.rprod.com/en/games/toy-battle
+官方英文规则：https://cdn.svc.asmodee.net/production-rprod/storage/games/toy_battle/rules/toy-en01-rules-1744030094a4kQo.pdf
+官方英文速查：https://cdn.svc.asmodee.net/production-rprod/storage/games/toy_battle/helpsheet/toy-en01-player-aid-mkt-1750679915Pm3l4.pdf
+官方扩展：https://www.rprod.com/en/toy-battle-cannes
+扩展中文规则：https://cdn.svc.asmodee.net/production-rprod/storage/games/toy_battle/la_croisette_rules/toy-expansion-la-croisette-cns01-rules-mkt-1780504877qZdBR.pdf
+官方扩展棋盘示意：https://cdn.svc.asmodee.net/production-rprod/storage/games/toy_battle/toy-expansion-la-croisette-a4-11-17713463046Xx1q.pdf
+
+八张基础地图的道路、旗帜、勋章及目标按以下完整实物照片核对；网页采用自行绘制的抽象节点图，不包含这些照片：
+城堡：https://boardgamegeek.com/image/9862159/toy-battle
+泳池：https://boardgamegeek.com/image/9862160/toy-battle
+云城：https://boardgamegeek.com/image/9862161/toy-battle
+火山：https://boardgamegeek.com/image/9862162/toy-battle
+墓地：https://boardgamegeek.com/image/9862163/toy-battle
+海域：https://boardgamegeek.com/image/9862165/toy-battle
+空间站：https://boardgamegeek.com/image/9862167/toy-battle
+战场：https://boardgamegeek.com/image/9862168/toy-battle
+
+实施细节
+- 总部不是基地，不计入控制区域时的“占领所有基地”条件。
+- Hook 的跳跃属于兵种效果，空间站屏蔽基地不允许其跳跃。
+- Kwak 没有兵种效果，其 joker 覆盖规则在屏蔽基地仍有效。
+- 冻结的是对手一张未知手牌，不是棋盘上的棋子。
+- 特殊基地效果在兵种连锁结束后由玩家逐项选择处理，可跳过。
+- 仅可操作可见的顶层棋子；火山移兵不触发新兵种或新基地效果。
+- 初始移除的四枚不是弃牌，不可复活。
+- 官方勋章计数轨仅为计分辅助，没有额外规则；网页以分数直接显示。

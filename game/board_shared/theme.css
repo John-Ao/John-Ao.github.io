@@ -1,0 +1,31 @@
+/* Presentation tokens only. Board pieces retain each game's semantic colors. */
+:root {
+  --ui-bg:#f3f4ee; --ui-panel:#fffef9; --ui-raised:#e7ece5;
+  --ui-text:#253b38; --ui-muted:#52665f; --ui-line:#a5b5ad;
+  --ui-accent:#176650; --ui-selected:#d5e8dc; --ui-warn:#80571d;
+  --ui-blue:#21637e; --ui-red:#a34532;
+}
+:root[data-theme="dark"] {
+  --ui-bg:#172126; --ui-panel:#202e34; --ui-raised:#2c3e43;
+  --ui-text:#e7eee8; --ui-muted:#b2c3ba; --ui-line:#647b76;
+  --ui-accent:#92d7b7; --ui-selected:#355548; --ui-warn:#efd09a;
+  --ui-blue:#94cee7; --ui-red:#f0b29b;
+}
+button.theme-toggle {
+  min-height:44px; min-width:88px; padding:8px 12px; flex-shrink:0;
+  font:inherit; font-size:14px; font-weight:500; line-height:1.4;
+  color:var(--ui-text); background:var(--ui-panel); border:1px solid var(--ui-line);
+  border-radius:8px; cursor:pointer; touch-action:manipulation;
+}
+button.theme-toggle:hover {color:var(--ui-text); background:var(--ui-raised)}
+html[data-theme] :is(button,input,select,textarea,a,summary,[tabindex]):focus-visible {
+  outline:3px solid var(--ui-accent); outline-offset:3px;
+}
+:where(dialog) {max-width:calc(100vw - 24px); max-height:calc(100dvh - 32px); overflow:auto; overscroll-behavior:contain}
+:where(button,input,select) {font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important}
+}
+
+/* Change text and surfaces together, without a low-contrast transition frame. */
+html.theme-changing *,html.theme-changing *::before,html.theme-changing *::after {transition:none!important}

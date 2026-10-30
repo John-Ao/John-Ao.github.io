@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101923"><title>Space Rescue</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../board_shared/theme.css"><link rel="stylesheet" href="theme.css"><script src="../board_shared/theme.js" data-controls='.gamebar>.tools'></script></head>
+<body>
+<main>
+ <div class="gamebar"><h1>Space Rescue</h1><div class="tools"><button id="rules">规则</button><button id="face" aria-pressed="false">对坐模式</button></div></div>
+ <div class="mission"><label>关卡 <select id="level" aria-label="选择关卡"></select></label><span id="par"></span><span>步数 <strong id="moves">0</strong></span></div>
+ <div class="playarea">
+  <section class="control pilot" aria-label="玩家一操作区"><div class="player"><span class="badge">1</span><div><h2>宇航员</h2><span>玩家一</span></div></div><div class="portrait astronaut" aria-hidden="true"><i></i></div><p class="assignment">抵达中央飞船</p><div class="pad" data-player="0"></div><p class="feedback" id="feedback0" aria-live="polite">等待接应</p></section>
+  <div class="boardwrap"><div class="board" id="board" aria-label="7乘7太空救援棋盘"></div><p id="status" role="status">点击棋子后滑动，或使用两侧方向键</p><div class="actions"><button id="undo">↶ 撤销</button><button id="hint">提示一步</button><button id="restart">重置关卡</button></div><div id="success" hidden><strong>救援成功</strong><span id="result"></span><button id="next">下一关 →</button></div></div>
+  <section class="control robots" aria-label="玩家二操作区"><div class="player"><span class="badge">2</span><div><h2>救援机器人</h2><span>玩家二</span></div></div><div class="robotchoices" id="robotchoices"></div><p class="assignment">选择机器人，移动接应</p><div class="pad" data-player="1"></div><p class="feedback" id="feedback1" aria-live="polite">已选择机器人 A</p></section>
+ </div>
+</main>
+<dialog id="ruleDialog"><div class="dialogtitle"><h2>玩法与来源</h2><button id="closeRules" aria-label="关闭规则">✕</button></div><p>目标：让宇航员停在棋盘中央的飞船上。</p><ol><li>棋子沿上、右、下、左直线移动。</li><li>前方必须有另一枚棋子接应，移动后停在最近棋子的前一格。不能随意停下，棋盘边缘也不能接应。</li><li>紧邻的棋子挡住去路时，该方向不能移动。飞船只是目标格，不会挡住棋子。</li><li>宇航员必须停在中央；经过中央不算完成。</li></ol><p><b>双人合作改编：</b>玩家一操作宇航员；玩家二操作四枚机器人。没有轮流限制，动作按触控完成顺序结算。可直接滑动棋子，也可点选后使用各自方向键。对坐模式会旋转玩家二操作区，方向相对玩家二视角。</p><p>原始规则参考 <a href="https://imaginary.github.io/space-rescue/" target="_blank" rel="noreferrer">IMAGINARY · Space Rescue</a>，其说明游戏灵感来自 Hiroshi Yamamoto。<a href="https://github.com/IMAGINARY/space-rescue" target="_blank" rel="noreferrer">公开实现</a>用于核对移动与胜利条件。本网页为独立实现，关卡原创，双人分工、撤销与提示为新增功能，并非官方双人规则。</p><p>进度自动保存在当前浏览器。键盘：WASD 控制宇航员，方向键控制机器人，1–4 选择机器人。</p></dialog>
+<dialog id="resetDialog"><h2>重新开始本关？</h2><p>本关步数与撤销记录将清空。</p><div class="actions"><button id="cancelReset">取消</button><button id="confirmReset">重新开始</button></div></dialog>
+<script src="levels.js"></script><script src="engine.js"></script><script src="app.js"></script>
+</body></html>

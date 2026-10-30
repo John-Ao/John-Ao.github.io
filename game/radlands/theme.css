@@ -1,0 +1,45 @@
+/* Light theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="light"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] button,
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="light"] .player,
+html[data-theme="light"] .player.active,
+html[data-theme="light"] .dialog,
+html[data-theme="light"] .card,
+html[data-theme="light"] .card.camp { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] .tablebar,
+html[data-theme="light"] .eventslot.filled,
+html[data-theme="light"] .options .selected,
+html[data-theme="light"] .badge { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="light"] p,
+html[data-theme="light"] .card .desc,
+html[data-theme="light"] .card.tired .name,
+html[data-theme="light"] .eventslot,
+html[data-theme="light"] .lastlog,
+html[data-theme="light"] .sub,
+html[data-theme="light"] .rulelist,
+html[data-theme="light"] .empty { color:var(--ui-muted) }
+html[data-theme="light"] a { color:var(--ui-blue) }
+html[data-theme="light"] button.primary,
+html[data-theme="light"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="light"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="light"] {--blue:#21637e; --pink:#994257; --gold:#80571d}
+html[data-theme="light"] .card.damaged {background:repeating-linear-gradient(135deg,#efd9d8,#efd9d8 8px,#e5c9c9 8px,#e5c9c9 9px)}
+html[data-theme="light"] .card.dead {background:#d5d9d4}
+html[data-theme="light"] .card.punk,
+html[data-theme="light"] .handback {background:repeating-linear-gradient(130deg,#dce4df,#dce4df 7px,#cbd6cf 7px,#cbd6cf 9px)}
+
+html[data-theme="light"] button:hover:not(:disabled) {background-color:var(--ui-raised)}
+html[data-theme="light"] button.primary:hover:not(:disabled) {background:var(--ui-accent); color:var(--ui-bg)}
+
+/* Ownership, rarity and selection markings remain independent of panel borders. */
+html[data-theme="light"] .player {border-top-color:var(--accent)}
+html[data-theme="light"] .player.active {border-inline-color:var(--accent)}
+html[data-theme="light"] .card.camp, html[data-theme="light"] .card.event {border-left-color:var(--gold)}
+html[data-theme="light"] .card.damaged {border-color:var(--pink)}

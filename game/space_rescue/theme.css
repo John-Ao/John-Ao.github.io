@@ -1,0 +1,33 @@
+/* Light theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="light"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] button,
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="light"] .control,
+html[data-theme="light"] dialog { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] dialog p,
+html[data-theme="light"] dialog li { color:var(--ui-muted) }
+html[data-theme="light"] a { color:var(--ui-blue) }
+html[data-theme="light"] button.primary,
+html[data-theme="light"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="light"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="light"] {--mint:#24664d; --orange:#8e4b10}
+html[data-theme="light"] .board {background:#dce5e8; border-color:#829b9f}
+html[data-theme="light"] .cell {background:transparent}
+html[data-theme="light"] .cell.target {background:#bed7c5}
+html[data-theme="light"] .cell.target::after {color:#24664d}
+html[data-theme="light"] .cell.possible {background:#b9d4c8}
+html[data-theme="light"] .piece,
+html[data-theme="light"] .piece:hover {background:transparent}
+html[data-theme="light"] .robotchoices button[aria-pressed=true] {color:#fff; background:#8e4b10}
+html[data-theme="light"] #success {color:#24533e; background:#d5e8dc}
+
+html[data-theme="light"] button:hover:not(:disabled) {background-color:var(--ui-raised)}
+html[data-theme="light"] button.primary:hover:not(:disabled) {background:var(--ui-accent); color:var(--ui-bg)}
+
+html[data-theme="light"] .piece:hover:not(:disabled) {background:transparent}

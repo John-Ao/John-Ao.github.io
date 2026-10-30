@@ -1,0 +1,170 @@
+[
+  {
+    "file": "assets/models/anby/idle.gltf",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/main/Assets/Arts/玩家模型/安比/Anbi@Idle.FBX",
+    "sha256": "14cde4845f71bb5ca69fea9eb7c1df351ffa8e4444da6cc6d9dc201dbfbe01da",
+    "bytes": 300544,
+    "sourceDuration": 4.016667,
+    "sourceTracks": 437,
+    "conversion": "Assimp 5.2.2 gltf2; textures mapped to existing original diffuse images",
+    "scope": "combat, not menu; exact game build unknown"
+  },
+  {
+    "file": "assets/models/anby/idle.bin",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/main/Assets/Arts/玩家模型/安比/Anbi@Idle.FBX",
+    "sha256": "b182d921c5fd6f7b99acad572af4eb1a9ddf919fd3a7d8d946add54754b6ad7f",
+    "bytes": 3694024,
+    "sourceDuration": 4.016667,
+    "sourceTracks": 437,
+    "conversion": "Assimp 5.2.2 gltf2; textures mapped to existing original diffuse images",
+    "scope": "combat, not menu; exact game build unknown"
+  },
+  {
+    "file": "assets/models/anby/turn-back.gltf",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/main/Assets/Arts/玩家模型/安比/Anbi@TurnBack.FBX",
+    "sha256": "7f91936cbcb569210acc98251d0ab463f6686f701e15209967de902ae59bf090",
+    "bytes": 297841,
+    "sourceDuration": 1.15,
+    "sourceTracks": 433,
+    "conversion": "Assimp 5.2.2 gltf2; textures mapped to existing original diffuse images",
+    "scope": "combat, not menu; exact game build unknown"
+  },
+  {
+    "file": "assets/models/anby/turn-back.bin",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/main/Assets/Arts/玩家模型/安比/Anbi@TurnBack.FBX",
+    "sha256": "9e88ba1ac5e3182fb0d933002eac6c8c016a785cdadbefe2a5a96587d646a947",
+    "bytes": 2447532,
+    "sourceDuration": 1.15,
+    "sourceTracks": 433,
+    "conversion": "Assimp 5.2.2 gltf2; textures mapped to existing original diffuse images",
+    "scope": "combat, not menu; exact game build unknown"
+  },
+  {
+    "file": "assets/models/nicole/idle.gltf",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/Nostradamus%40Idle.FBX",
+    "sha256": "ea1e64edfa327b03e1538711e88f2abfc1b4726688a346a68a118cb3dc31ead3",
+    "bytes": 415186,
+    "sourceDuration": 3.3499999046325684,
+    "sourceTracks": 664,
+    "conversion": "Assimp 5.2.2 gltf2; original diffuse PNG converted to WebP quality 95",
+    "scope": "combat, not menu; exact game build unknown"
+  },
+  {
+    "file": "assets/models/nicole/idle.bin",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/Nostradamus%40Idle.FBX",
+    "sha256": "4e196b986ea4c50ac7c8403acd3f5c813dfcf653a48d5500daed7ba34bcc06bc",
+    "bytes": 4212368,
+    "sourceDuration": 3.3499999046325684,
+    "sourceTracks": 664,
+    "conversion": "Assimp 5.2.2 gltf2; original diffuse PNG converted to WebP quality 95",
+    "scope": "combat, not menu; exact game build unknown"
+  },
+  {
+    "file": "assets/models/nicole/Nostradamus_Body_D_CN.webp",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/PNG/Nostradamus_Body_D_CN.tga.png",
+    "sha256": "cdb185b0a42383f7948edcb994a294baf23678a3903d60bc89d752ae04bfe965",
+    "bytes": 377504,
+    "conversion": "Pillow WebP quality 95 from original diffuse PNG"
+  },
+  {
+    "file": "assets/models/nicole/Nostradamus_Face_D.webp",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/PNG/Nostradamus_Face_D.tga.png",
+    "sha256": "7b6e7a0a1a926a2ba3900f1da14751edf8b97f16c8c5df966cff33ee394fe606",
+    "bytes": 122058,
+    "conversion": "Pillow WebP quality 95 from original diffuse PNG"
+  },
+  {
+    "file": "assets/models/nicole/Nostradamus_Hair_D.webp",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/PNG/Nostradamus_Hair_D.tga.png",
+    "sha256": "a3097c54399bce7aa381dffd743e169e85f5d78cf79c268aa077d30e7dca7d69",
+    "bytes": 207120,
+    "conversion": "Pillow WebP quality 95 from original diffuse PNG"
+  },
+  {
+    "file": "assets/models/nicole/Nostradamus_Weapon_D.webp",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/PNG/Nostradamus_Weapon_D.tga.png",
+    "sha256": "92a6b790683e3770518aab911d0a09f2ed1f55742e1bf29a280d4be96d0cef6b",
+    "bytes": 247498,
+    "conversion": "Pillow WebP quality 95 from original diffuse PNG"
+  },
+  {
+    "file": "assets/models/nicole/turn-back.gltf",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/Nostradamus%40TurnBack.FBX",
+    "sha256": "bf2ba8f75016edf462c28e63202148838b829488dd7f5a43d959e3fd6845d3d1",
+    "bytes": 415751,
+    "scope": "Combat, not menu; source build unknown",
+    "conversion": "Assimp 5.2.2 gltf2"
+  },
+  {
+    "file": "assets/models/nicole/turn-back.bin",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/Nostradamus%40TurnBack.FBX",
+    "sha256": "f3608130acad2ae15ca9576be401b7dc9099ac5e7ce9325ab6d16c9dc3a604bf",
+    "bytes": 2877372,
+    "scope": "Combat, not menu; source build unknown",
+    "conversion": "Assimp 5.2.2 gltf2"
+  },
+  {
+    "file": "assets/models/nicole/idle-afk.gltf",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/Nostradamus%40Idle_AFK.FBX",
+    "sha256": "f0ade74246756ff0702c579456556f32d823bb22f2b519d554c582a8afc3f61e",
+    "bytes": 406594,
+    "scope": "Combat, not menu; source build unknown",
+    "conversion": "Assimp 5.2.2 gltf2"
+  },
+  {
+    "file": "assets/models/nicole/idle-afk.bin",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%A6%AE%E5%8F%AF/Nostradamus%40Idle_AFK.FBX",
+    "sha256": "d73b5b0244249ff19a88602815dc2940b542c80556ef81ef5c041ba9e6b9cf56",
+    "bytes": 8089644,
+    "scope": "Combat, not menu; source build unknown",
+    "conversion": "Assimp 5.2.2 gltf2"
+  },
+  {
+    "file": "assets/models/anby/idle-afk.gltf",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%AE%89%E6%AF%94/Anbi%40Idle_AFK.FBX",
+    "sha256": "c55b0eb28b8811a7b9aaeb153d4d1c2c31436e0897e1802182ea89f900f51c3f",
+    "bytes": 274738,
+    "scope": "Combat, not menu; source build unknown",
+    "conversion": "Assimp 5.2.2 gltf2"
+  },
+  {
+    "file": "assets/models/anby/idle-afk.bin",
+    "source": "https://raw.githubusercontent.com/oOIEririIOo/ZZZDemo/cbe73cd434292b7943b820b2aafb243f81650cff/Assets/Arts/%E7%8E%A9%E5%AE%B6%E6%A8%A1%E5%9E%8B/%E5%AE%89%E6%AF%94/Anbi%40Idle_AFK.FBX",
+    "sha256": "69c73552a5e52ab5ef0021f03e22d4b24b94589b007deccf59a84c1cfe45de58",
+    "bytes": 6781004,
+    "scope": "Combat, not menu; source build unknown",
+    "conversion": "Assimp 5.2.2 gltf2"
+  },
+  {
+    "file": "assets/models/anby/Anbi_Weapon_D.webp",
+    "source": "assets/models/anby/Anbi_Weapon_D.png",
+    "conversion": "PNG to WebP",
+    "scope": "public extracted assets; build unknown; not menu animations",
+    "bytes": 216770,
+    "sha256": "6161168b2cb3f2a6b076fd330eefbbf857da3e8ab0a0fff86a4659c6f80e9d95"
+  },
+  {
+    "file": "assets/models/anby/Anbi_Body_D.webp",
+    "source": "assets/models/anby/Anbi_Body_D.png",
+    "conversion": "PNG to WebP",
+    "scope": "public extracted assets; build unknown; not menu animations",
+    "bytes": 291704,
+    "sha256": "e7098e1db034bdba939a7861a2a2207cd491b923214f4864ec15ee74f2c445be"
+  },
+  {
+    "file": "assets/models/anby/Anbi_Hair_D.webp",
+    "source": "assets/models/anby/Anbi_Hair_D.png",
+    "conversion": "PNG to WebP",
+    "scope": "public extracted assets; build unknown; not menu animations",
+    "bytes": 265344,
+    "sha256": "4c1610bfc89a594a9178b3ae4aca741f30bfdd06c39d4d22af5350e84d06de4f"
+  },
+  {
+    "file": "assets/models/anby/Anbi_Face_D.webp",
+    "source": "assets/models/anby/Anbi_Face_D.png",
+    "conversion": "PNG to WebP",
+    "scope": "public extracted assets; build unknown; not menu animations",
+    "bytes": 117964,
+    "sha256": "deacbb0397b4869ced7c03c49151408740a7a8f5852d281de769930f3e1f6abe"
+  }
+]

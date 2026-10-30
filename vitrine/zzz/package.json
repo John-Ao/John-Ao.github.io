@@ -1,0 +1,11 @@
+{
+  "name": "zzz-character-vitrine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 5327",
+    "check": "node --check app.js && node --check stage.js && node --check data.js && node --check motion-lab.js && node --check toon-material.js && node scripts/verify-assets.mjs && node --check resource-catalog.js && node scripts/verify-publication.mjs",
+    "check:local": "node scripts/verify-assets.mjs --local",
+    "prepare:publication": "node scripts/prepare-publication.mjs"
+  }
+}

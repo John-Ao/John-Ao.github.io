@@ -1,0 +1,146 @@
+[
+  {
+    "file": "assets/models/anby/shading/Anbi_Body_M.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Anbi_Body_M.png",
+    "sha256": "cc6e0969c64a546b24be428e1a2f50af7dd7acf849342fd256b26b3694b238d6",
+    "bytes": 1497943
+  },
+  {
+    "file": "assets/models/anby/shading/Anbi_Body_N.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Anbi_Body_N.png",
+    "sha256": "ab2eae43f7df79062f0898429f0a321f886d915a0c849af097fefcdf8ca60c59",
+    "bytes": 3274609
+  },
+  {
+    "file": "assets/models/anby/shading/Anbi_Hair_M.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Anbi_Hair_M.png",
+    "sha256": "ea4b266ea79504ece6b5339d4816cb084c5b998a2b907da134c639481f67753b",
+    "bytes": 145709
+  },
+  {
+    "file": "assets/models/anby/shading/Anbi_Hair_N.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Anbi_Hair_N.png",
+    "sha256": "063668dcd1df0659ee44207f3904f65834872169663a7a25967299cb1b0b51d8",
+    "bytes": 2064881
+  },
+  {
+    "file": "assets/models/anby/shading/Anbi_Weapon_M.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Anbi_Weapon_M.png",
+    "sha256": "1b73c89ce3a87149b23d7231dbe90db02aaf6f2cd4249786b0250ad0d4e38c29",
+    "bytes": 273839
+  },
+  {
+    "file": "assets/models/anby/shading/Anbi_Weapon_N.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Anbi_Weapon_N.png",
+    "sha256": "f12c382886d84f681c50e64895515577d761582dfb26e545348aaf1e4141f976",
+    "bytes": 1484838
+  },
+  {
+    "file": "assets/models/anby/shading/Famale_Face_lightmap.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Famale_Face_lightmap.png",
+    "sha256": "c305bd5f9b989e5898160f1480aacf900d2ca1928c9424513ffe8e7811c376a9",
+    "bytes": 140681
+  },
+  {
+    "file": "assets/models/anby/shading/Metal_MatCap.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/Metal_MatCap.png",
+    "sha256": "57f394a95f607ee987f8993645f5def73a3cd9e56751e13d12584b37b28e4bf5",
+    "bytes": 66378
+  },
+  {
+    "file": "assets/models/anby/shading/MAT_Anbi_Body_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/materials/MAT_Anbi_Body_UI.json",
+    "sha256": "3bacef1472e066b257b1b20246ed3e42fb9396ddbb63b8d7dc9ff4639ea8ff0b",
+    "bytes": 7904
+  },
+  {
+    "file": "assets/models/anby/shading/MAT_Anbi_Face_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/materials/MAT_Anbi_Face_UI.json",
+    "sha256": "2bc10403e553e2bcb5a32c7239b3f9699be9b2ae84d10ddbc5f5ead0d8d30af9",
+    "bytes": 2459
+  },
+  {
+    "file": "assets/models/anby/shading/MAT_Anbi_Hair_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/materials/MAT_Anbi_Hair_UI.json",
+    "sha256": "8473459d7b8543d6a0556715dc71858747f9cb882ea461d8941b27ed416c4911",
+    "bytes": 7566
+  },
+  {
+    "file": "assets/models/anby/shading/MAT_Anbi_Weapon_Fire_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Anbi_Model/materials/MAT_Anbi_Weapon_Fire_UI.json",
+    "sha256": "b26ca303f39fecabdb86b7c7914748ae577ddd7fe804ba5b236bfd0ec615617b",
+    "bytes": 7902
+  },
+  {
+    "file": "assets/models/nicole/shading/Famale_Face_lightmap.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Famale_Face_lightmap.png",
+    "sha256": "c305bd5f9b989e5898160f1480aacf900d2ca1928c9424513ffe8e7811c376a9",
+    "bytes": 140681
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Body_M_CN.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Body_M_CN.png",
+    "sha256": "9c6afd23ca002af1860699305c567c62794939837939772d106c4bde0d9400f8",
+    "bytes": 1755054
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Body_MatCap_Tex.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Body_MatCap_Tex.png",
+    "sha256": "9cce8baf3801337225245c3fe44f40066962ab796ce4102b76457385e09d7758",
+    "bytes": 32601
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Body_N_CN.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Body_N_CN.png",
+    "sha256": "0132f1329c9016303e92fc4fa7935406e3a93e9cb7abd896f5116f30253fa839",
+    "bytes": 3848977
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Hair_M.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Hair_M.png",
+    "sha256": "47656cc5e2bea6189da501ffd3a9c2279cdc75dd81681b48c628983c6f4908ba",
+    "bytes": 94774
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Hair_N.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Hair_N.png",
+    "sha256": "a17c4945ae82c4739c4749586e8c0f3fec7be4f6c3ea63ecd6cc4d2a2e4ba382",
+    "bytes": 2769843
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Weapon_M.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Weapon_M.png",
+    "sha256": "311b8a2076aa1f8979f854d9995dc63e5035048b1c86a15129552ac0dca21590",
+    "bytes": 1604719
+  },
+  {
+    "file": "assets/models/nicole/shading/Nostradamus_Weapon_N.png",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/Nostradamus_Weapon_N.png",
+    "sha256": "823bf46dfe9da6c7cb6efbe7f62de644da34940b76e5d2471a7097d7c7b462a0",
+    "bytes": 2626804
+  },
+  {
+    "file": "assets/models/nicole/shading/MAT_Nostradamus_Body_T_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/materials/MAT_Nostradamus_Body_T_UI.json",
+    "sha256": "09aab265393adf8e695b29a8414e98ae4d21130e92155e51e11294b1b77830a8",
+    "bytes": 8004
+  },
+  {
+    "file": "assets/models/nicole/shading/MAT_Nostradamus_Face_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/materials/MAT_Nostradamus_Face_UI.json",
+    "sha256": "422ad3b506c36f885a3ce3b86f780bdd933dbec87dc4ee821b74f712985c366f",
+    "bytes": 2467
+  },
+  {
+    "file": "assets/models/nicole/shading/MAT_Nostradamus_Hair_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/materials/MAT_Nostradamus_Hair_UI.json",
+    "sha256": "cb8a61eb8fee7c2cea66505bc525b35e63c5b6b314991defee2474c253c6e307",
+    "bytes": 7571
+  },
+  {
+    "file": "assets/models/nicole/shading/MAT_Nostradamus_Weapon_UI.json",
+    "source": "https://raw.githubusercontent.com/m4urlclo0/ZZZ-Assets/426db7a2f54c1af1e7b39b14199f89e8f12e48e9/Assets/Characters/Avatar_Female_Size02_Nostradamus_Model/materials/MAT_Nostradamus_Weapon_UI.json",
+    "sha256": "447792b5531f62fe7f41c602e2e3c9d024804e97caffe242c5ccbf1eb8b156c4",
+    "bytes": 7583
+  }
+]

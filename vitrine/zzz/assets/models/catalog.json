@@ -1,0 +1,62 @@
+[
+  {
+    "key": "anby",
+    "agentId": "anby",
+    "name": "安比",
+    "prefix": "Anbi",
+    "toon": true,
+    "clips": [
+      {
+        "id": "idle",
+        "label": "战斗待机 · Idle",
+        "animated": true,
+        "loop": true
+      },
+      {
+        "id": "idle-afk",
+        "label": "战斗闲置 · Idle AFK",
+        "animated": true,
+        "loop": true
+      },
+      {
+        "id": "turn-back",
+        "label": "战斗转身 · TurnBack",
+        "animated": true,
+        "loop": false
+      }
+    ],
+    "meshCount": 5,
+    "jointCount": 127,
+    "animationCount": 3
+  },
+  {
+    "key": "nicole",
+    "agentId": "nicole",
+    "name": "妮可",
+    "prefix": "Nostradamus",
+    "toon": true,
+    "clips": [
+      {
+        "id": "idle",
+        "label": "战斗待机 · Idle",
+        "animated": true,
+        "loop": true
+      },
+      {
+        "id": "idle-afk",
+        "label": "战斗闲置 · Idle AFK",
+        "animated": true,
+        "loop": true
+      },
+      {
+        "id": "turn-back",
+        "label": "战斗转身 · TurnBack",
+        "animated": true,
+        "loop": false
+      }
+    ],
+    "meshCount": 4,
+    "jointCount": 205,
+    "animationCount": 3
+  }
+]

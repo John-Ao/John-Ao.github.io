@@ -1,0 +1,81 @@
+:root{color-scheme:light;--bg:#faf9f6;--paper:#fffefa;--text:#242722;--muted:#687067;--line:#dedfd6;--accent:#37614d;--wash:#eff2eb;--shadow:0 10px 40px #17251b12}
+html[data-theme=dark]{color-scheme:dark;--bg:#181c1a;--paper:#202622;--text:#dce2d9;--muted:#a2ada2;--line:#384239;--accent:#a2c7a8;--wash:#252f28;--shadow:0 10px 40px #0003}
+*{box-sizing:border-box}
+html{scroll-padding-top:5rem}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.85}
+a{color:var(--accent);text-underline-offset:4px}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.reader-control{position:fixed;top:max(18px,env(safe-area-inset-top));z-index:10;display:flex;gap:9px;align-items:center;justify-content:center;min-width:48px;height:46px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--text);box-shadow:var(--shadow);transition:transform .22s,opacity .22s}
+.reader-control svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#menu-button{left:max(18px,env(safe-area-inset-left))}
+#theme-button{right:max(18px,env(safe-area-inset-right))}
+.controls-hidden .reader-control{transform:translateY(-100px);opacity:0;pointer-events:none}
+.controls-hidden .reader-control:focus{transform:none;opacity:1;pointer-events:auto}
+main{max-width:760px;margin:auto;padding:78px 28px 100px}
+h1,h2,h3{line-height:1.45;font-weight:650;letter-spacing:.01em}
+h1{font-size:2rem;margin:12px 0 18px}
+h2{font-size:1.6rem;margin:0 0 24px}
+h3{font-size:1.08rem;margin:28px 0 8px}
+p{margin:16px 0}
+article{font-size:18px}
+section.lesson{padding:48px 0 32px;border-top:1px solid var(--line)}
+.part{font-size:.8rem;color:var(--muted);letter-spacing:.1em;margin:0 0 8px}
+.intro{font-size:15px;color:var(--muted);margin-bottom:36px}
+.formula{background:var(--wash);border-radius:8px;padding:12px 18px;margin:22px 0;overflow-x:auto;font-size:1.05rem}
+.formula .katex-display{margin:.5em 0}
+.example{border-left:3px solid var(--accent);padding:2px 0 2px 20px;margin:24px 0}
+.example p{margin:7px 0}
+.example strong{font-size:.85rem;color:var(--accent)}
+details.exercise{margin:24px 0;border:1px solid var(--line);border-radius:8px;padding:12px 18px;font-size:16px}
+summary{cursor:pointer}
+details.exercise p{color:var(--muted)}
+.references{font-size:15px;padding-top:36px;border-top:1px solid var(--line)}
+dialog{position:fixed;inset:0 auto 0 0;margin:0;width:min(370px,90vw);height:100dvh;max-height:100dvh;max-width:90vw;padding:24px 22px;border:0;border-right:1px solid var(--line);background:var(--paper);color:var(--text);box-shadow:var(--shadow)}
+dialog::backdrop{background:#101b1760;backdrop-filter:blur(2px)}
+.drawer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.drawer-top h2{font-size:20px;margin:0}
+.close{width:44px;height:44px;background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--text);font-size:24px}
+#chapter-search{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)}
+.toc-group h3{font-size:13px;color:var(--muted);margin:24px 0 8px}
+.toc-group a{display:block;text-decoration:none;padding:8px 10px;font-size:15px;border-radius:6px}
+.toc-group a[aria-current=true],.toc-group a:hover{background:var(--wash);color:var(--accent)}
+.toc-group a span{color:var(--muted);display:inline-block;min-width:28px;font-variant-numeric:tabular-nums}
+#search-status{font-size:13px;color:var(--muted);margin:10px 0}
+.skip{position:fixed;top:-100px;left:90px;z-index:30;background:var(--paper);padding:10px}
+.skip:focus{top:18px}
+[hidden]{display:none!important}
+@media(max-width:600px){main{padding:80px 22px 64px}
+article{font-size:17px;line-height:1.95}
+h1{font-size:1.65rem}
+h2{font-size:1.4rem}
+section.lesson{padding-top:36px}
+.reader-control{top:12px;height:44px}
+#menu-button{left:12px}
+#theme-button{right:12px}
+.control-label{display:none}
+.formula{padding:10px 12px;font-size:.95rem}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}
+}
+@media print{.reader-control,dialog,.skip{display:none!important}
+body{background:white;color:black}
+main{max-width:none;padding:0}
+section.lesson{break-before:page}
+.formula{break-inside:avoid}
+.exercise{break-inside:avoid}
+}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.drawer-source{border-top:1px solid var(--line);padding-top:18px;font-size:14px}
+.no-script{max-width:704px;margin:0 auto 32px;padding:0 22px}
+.lesson:focus,main:focus,.references:focus{outline:none}
+.formula .katex{white-space:nowrap}
+.references h2{font-size:1.3rem}
+dialog{overscroll-behavior:contain}
+
+
+
+/* Keep wide equations scrollable from their first symbol on narrow screens. */
+.formula .katex-display{width:max-content;min-width:100%}

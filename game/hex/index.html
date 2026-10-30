@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>六角棋</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main aria-label="六角棋">
+      <div class="controls">
+        <select id="mode" aria-label="对局模式">
+          <option value="ai">人机 · 你先手</option>
+          <option value="local">同屏双人</option></select
+        ><select id="size" aria-label="棋盘尺寸">
+          <option value="7">7×7</option>
+          <option value="9">9×9</option>
+          <option value="11">11×11</option></select
+        ><button id="zoom" aria-pressed="false">放大棋盘</button
+        ><button id="undo">撤销</button><button id="new">新局</button
+        ><button id="rules">规则</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <p id="hint"></p>
+      <div id="board" aria-label="棋盘"></div>
+      <div id="hand"></div>
+      <div class="actions">
+        <button id="swap" hidden>交换颜色</button
+        ><button id="cancel" hidden>取消选择</button
+        ><button id="confirmmove" hidden>确认行动</button>
+      </div>
+      <div id="players"></div>
+    </main>
+    <dialog id="help">
+      <h2>六角棋规则</h2>
+      <p>
+        红方连接上、下红边，蓝方连接左、右蓝边；共边的六角格才相邻。轮流在空格放一枚己方棋子，首先连通对应两边者获胜，无平局。
+      </p>
+      <p>
+        首枚红棋落下后，玩家二可用一次行动交换双方颜色及目标边。棋盘和已落棋子不动，随后由玩家一执蓝落子。本页面采用交换玩家归属的换边规则。
+      </p>
+      <p>
+        Tab 进入棋盘，方向键移动焦点，Enter
+        或空格操作。撤销可取消当前预览或退回上一回合；人机时退回你行动之前。进度自动保存，刷新会取消尚未确认的预览。
+      </p>
+      <p>
+        <a
+          href="https://www.hexwiki.net/index.php/Swap_rule"
+          target="_blank"
+          rel="noopener"
+          >HexWiki 换边规则</a
+        >
+      </p>
+      <button id="close-help">继续游戏</button>
+    </dialog>
+    <dialog id="new-dialog">
+      <h2>开始新局？</h2>
+      <p>当前对局及撤销记录将被替换。</p>
+      <div class="controls">
+        <button id="cancel-new">取消</button
+        ><button id="confirm-new">开始新局</button>
+      </div>
+    </dialog>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

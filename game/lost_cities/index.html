@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>失落的城市</title
+  ><link rel="stylesheet" href="style.css" />
+  <main>
+    <div class="bar">
+      <strong id="round"></strong><button id="rules">规则</button
+      ><button id="new">新局</button>
+    </div>
+    <div id="scores" class="summary"></div>
+    <div id="routes"></div>
+    <div id="discards" class="discards" aria-label="五色弃牌堆"></div>
+    <div class="actions">
+      <button id="draw" class="primary"></button
+      ><span class="muted">弃牌仅可取顶牌</span>
+    </div>
+    <p id="message" class="status" role="status"></p>
+    <section id="gate" class="notice">
+      <p id="gateText"></p>
+      <button id="reveal" class="primary">我已接手，查看手牌</button>
+    </section>
+    <section id="play">
+      <h2 id="handTitle"></h2>
+      <div id="hand" class="hand"></div>
+      <div class="actions">
+        <button id="expedition" class="primary">加入远征</button
+        ><button id="discard">弃掉此牌</button
+        ><button id="undo">撤销出牌</button
+        ><button id="hide">隐藏手牌并交接</button>
+      </div>
+    </section>
+    <section id="result" hidden>
+      <div id="resultText"></div>
+      <button id="next" class="primary">开始下一轮</button>
+    </section>
+  </main>
+  <dialog id="help">
+    <h2>失落的城市 · 五色基础版</h2>
+    <p>
+      双方各持8张牌。每回合先选牌加入同色远征或弃牌，再从牌堆或一个弃牌堆取顶牌。不能立即取回刚弃的牌。
+    </p>
+    <p>
+      每色有2–10各一张、投资牌3张。远征数字必须递增；投资只能放在数字之前。未开启远征0分；已开启按「数字之和−20」乘以「投资数+1」，正负都乘。达到8张另加20分，不受投资倍数影响。
+    </p>
+    <p>
+      最后一张牌堆牌被抽走即结算。共三轮累计分高者胜，同分平局。下一轮累计领先者先手；平分时玩家1先手。第一轮玩家1先手。本版不含第六色扩展。
+    </p>
+    <p>
+      人机时电脑仅利用己方手牌和公开信息。同屏双人用交接遮罩保护手牌，刷新后也先遮罩。选牌可随时取消；出牌可在抽牌前撤销，抽牌揭示信息后不可回滚。进度自动保存本机。
+    </p>
+    <a
+      href="https://www.thamesandkosmos.com/manuals/full/691821_LC_Card_Game.pdf"
+      target="_blank"
+      rel="noopener"
+      >官方规则：Thames & Kosmos（五色基础章节）</a
+    >
+    <form method="dialog"><button>关闭</button></form>
+  </dialog>
+  <dialog id="setup">
+    <h2>开始新局</h2>
+    <p>将替换当前三轮对局进度。</p>
+    <label
+      >模式
+      <select id="mode">
+        <option value="ai">对战电脑</option>
+        <option value="local">同屏双人</option>
+      </select></label
+    >
+    <div class="actions">
+      <button id="start" class="primary">开始新局</button
+      ><button id="cancelNew">取消</button>
+    </div>
+  </dialog>
+  <script type="module" src="app.mjs"></script>
+</html>

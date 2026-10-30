@@ -9,7 +9,20 @@ try{
 function save(){try{localStorage.setItem('space-rescue-v1',JSON.stringify(state));}catch{}}
 function won(){return state.pieces[0]===24;}
 function status(message){$('status').textContent=message;}
-LEVELS.forEach((l,i)=>{const o=document.createElement('option');o.value=i;o.textContent=String(i+1).padStart(2,'0');$('level').append(o);});
+const levelGroups = new Map();
+LEVELS.forEach((level, index) => {
+ const label = index < 12 ? '原有关卡 01–12' : `进阶题库 · 最短 ${level.par} 步`;
+ if (!levelGroups.has(label)) {
+  const group = document.createElement('optgroup');
+  group.label = label;
+  levelGroups.set(label, group);
+  $('level').append(group);
+ }
+ const option = document.createElement('option');
+ option.value = index;
+ option.textContent = `${String(index + 1).padStart(2, '0')} · ${level.par} 步`;
+ levelGroups.get(label).append(option);
+});
 const cells=[],pieces=[];
 for(let n=0;n<49;n++){
  const c=document.createElement('div');c.className='cell'+(n===24?' target':'');c.setAttribute('aria-hidden','true');$('board').append(c);cells.push(c);

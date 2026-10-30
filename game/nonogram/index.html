@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>数织</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main aria-label="数织">
+      <div class="controls">
+        <select id="group" aria-label="选择尺寸与关卡组"></select
+        ><select id="level" aria-label="选择关卡"></select
+        ><button id="undo" disabled>撤销</button><button id="reset">重开</button
+        ><button id="zoom" aria-pressed="false">放大</button
+        ><button id="help">规则</button>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div class="controls" aria-label="标记模式">
+        <button id="fill" aria-pressed="true">涂色</button
+        ><button id="mark" aria-pressed="false">标叉</button
+        ><button id="erase" aria-pressed="false">擦除</button>
+      </div>
+      <div class="board-wrap"><div id="board"></div></div>
+      <p class="note">选择涂色或标叉，点击或拖动格子。</p>
+    </main>
+    <dialog id="rules">
+      <h2>数织规则</h2>
+      <p>
+        每行、每列的数字依次表示连续涂色格的长度，相邻色块之间至少留一个空格。0
+        表示这一行或列没有色块。按线索填出全部色格即可完成，空格无需全部标叉。
+      </p>
+      <p>
+        方向键移动焦点；空格按当前模式操作；X 标叉，Delete 清空。 Ctrl / ⌘ + Z
+        撤销。进度自动保存在此浏览器。
+      </p>
+      <button data-close="rules">继续游戏</button>
+    </dialog>
+    <dialog id="confirm">
+      <h2>重新开始本关？</h2>
+      <p>本关的标记和撤销记录将被清除，其他关卡进度保留。</p>
+      <div class="controls">
+        <button id="cancel-reset">取消</button
+        ><button id="confirm-reset">重新开始</button>
+      </div>
+    </dialog>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>

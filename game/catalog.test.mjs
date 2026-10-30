@@ -7,11 +7,11 @@ test('grouped catalog preserves all unique entries and resolves supported page f
  const groups=parseGameMetadata(source);
  assert.deepEqual(groups.map(g=>g.title),['单人解谜','棋类','桌游']);
  const games=groups.flatMap(g=>g.games);
- assert.equal(games.length,41);assert.equal(new Set(games.map(g=>g.game)).size,games.length);
+ assert.equal(games.length,57);assert.equal(new Set(games.map(g=>g.game)).size,games.length);
  assert.equal(games.find(g=>g.game==='quarto').title,'连四棋');
  assert.equal(games.find(g=>g.game==='connect4').url,'/game/connect4.html');
  // Other catalog entries may be developed independently; check both supported URL formats.
- for(const id of ['quarto','connect4','othello']){const g=games.find(g=>g.game===id);await access(new URL('..'+g.url+(g.url.endsWith('/')?'index.html':''),import.meta.url));}
+ for(const id of ['quarto','connect4','othello','slitherlink','nonogram','amazons','kalah','cant_stop','railroad_ink','hashi','galaxies','sokoban','akari','hex','qawale','quixo','lost_cities','sushi_go','azul']){const g=games.find(g=>g.game===id);await access(new URL('..'+g.url+(g.url.endsWith('/')?'index.html':''),import.meta.url));}
 });
 test('rejects duplicates across categories, invalid groups and unsafe game paths',()=>{
  const group={id:'puzzles',title:'单人解谜',games:[{game:'cube'}]};

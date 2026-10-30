@@ -1,0 +1,240 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f4f3ee;
+  color: #233b3c;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+main {
+  max-width: 720px;
+  margin: auto;
+  padding: 16px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+button,
+select {
+  font: inherit;
+  color: inherit;
+  border: 1px solid #bac8c4;
+  background: #fff;
+  border-radius: 7px;
+  min-height: 44px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button[aria-pressed="true"] {
+  background: #235d55;
+  color: white;
+  border-color: #235d55;
+}
+button:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #cf7724;
+  outline-offset: 2px;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.controls select {
+  flex: 1;
+  min-width: 125px;
+}
+#status {
+  margin: 0;
+  min-height: 24px;
+  font-weight: 600;
+}
+#board {
+  width: 100%;
+  margin: auto;
+  touch-action: none;
+  user-select: none;
+}
+dialog {
+  width: min(90vw, 480px);
+  max-height: 85dvh;
+  border: 1px solid #bac8c4;
+  border-radius: 12px;
+  padding: 24px;
+  line-height: 1.7;
+}
+dialog::backdrop {
+  background: #203a3b66;
+}
+dialog h2 {
+  margin: 0 0 10px;
+}
+dialog p {
+  margin: 10px 0;
+}
+.note {
+  font-size: 14px;
+  color: #526765;
+  margin: 0;
+}
+.board-wrap {
+  width: 100%;
+  overflow: auto;
+}
+svg {
+  display: block;
+  width: 100%;
+  max-height: 69dvh;
+}
+.edge {
+  cursor: pointer;
+}
+.edge:focus-visible {
+  outline: none;
+}
+.edge:focus-visible .hit {
+  fill: #efb770;
+  fill-opacity: 0.5;
+}
+.hit {
+  fill: transparent;
+}
+.line {
+  stroke: #bac8c4;
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.edge.on .line {
+  stroke: #23695c;
+  stroke-width: 6;
+}
+.cross {
+  stroke: #a85e40;
+  stroke-width: 2;
+  pointer-events: none;
+}
+.dot {
+  fill: #344f4d;
+  pointer-events: none;
+}
+.clue {
+  fill: #344f4d;
+  font: 24px system-ui;
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.clue.bad {
+  fill: #b03b2d;
+}
+.nonogram {
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: auto;
+  width: 100%;
+  max-width: 600px;
+}
+.nonogram td {
+  padding: 0;
+  border: 1px solid #9aaca7;
+  aspect-ratio: 1;
+}
+.nonogram td.block {
+  border-right: 2px solid #526f67;
+}
+.nonogram tr.block td {
+  border-bottom: 2px solid #526f67;
+}
+.nonogram th {
+  font-size: clamp(12px, 2.8vw, 18px);
+  font-weight: 500;
+  padding: 4px;
+  white-space: nowrap;
+}
+.nonogram th.column {
+  vertical-align: bottom;
+  line-height: 1.4;
+}
+.nonogram th.done {
+  color: #456c42;
+}
+.cell {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  font-size: clamp(16px, 4vw, 28px);
+  line-height: 1;
+}
+.cell.fill {
+  background: #235d55;
+  color: white;
+}
+.cell.mark {
+  color: #89624a;
+}
+.cell:focus-visible {
+  position: relative;
+  outline-offset: -3px;
+  z-index: 1;
+}
+@media (max-width: 480px) {
+  main {
+    padding: 12px;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+  .controls {
+    gap: 6px;
+  }
+  button,
+  select {
+    padding: 8px 10px;
+  }
+  .nonogram th {
+    padding: 3px;
+  }
+  .note {
+    font-size: 13px;
+  }
+}
+@media (max-height: 600px) and (min-width: 600px) {
+  main {
+    justify-content: flex-start;
+  }
+  svg {
+    max-height: 65dvh;
+  }
+  .nonogram {
+    max-width: 430px;
+  }
+}
+
+.controls .picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 160px;
+  white-space: nowrap;
+}
+.controls .picker select {
+  min-width: 0;
+  width: 100%;
+}

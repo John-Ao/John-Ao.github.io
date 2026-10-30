@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>铁路墨迹</title
+  ><link rel="stylesheet" href="style.css" />
+  <main>
+    <div class="layout">
+      <div>
+        <div class="top">
+          <strong id="round"></strong
+          ><span>实线 公路 · 枕木 铁路 · ■ 车站</span>
+        </div>
+        <div id="board" aria-label="七乘七路线棋盘"></div>
+      </div>
+      <section>
+        <p id="message" role="status">选择骰子路线，再点击棋盘预览。</p>
+        <div id="dice" class="tiles"></div>
+        <div class="actions">
+          <button id="rotate">旋转 ↻</button><button id="flip">翻面 ↔</button
+          ><button id="place">确认放置</button
+          ><button id="cancel">取消预览</button>
+        </div>
+        <details>
+          <summary>特殊路线 <span id="specialCount"></span></summary>
+          <div id="special" class="tiles"></div>
+        </details>
+        <div class="actions">
+          <button id="next">结束本轮</button><button id="undo">撤销放置</button
+          ><button id="rules">规则</button><button id="new">新局</button>
+        </div>
+        <div id="score"></div>
+      </section>
+    </div>
+  </main>
+  <dialog id="help">
+    <h2>铁路墨迹 · 单人基础版</h2>
+    <p>
+      共七轮。每轮三个普通路线骰和一个车站／立交骰，必须放置所有仍能合法放置的骰子。先选路线、旋转或翻面，再选格子预览并确认。绿色虚线标记当前方向的合法格。
+    </p>
+    <p>
+      每块必须至少连接同类型出口或已有路线。公路与铁路不能直接相接；车站允许换乘，立交桥两条线不互通。路线可朝向空地或棋盘边缘，也可在相邻路线的空白边结束。
+    </p>
+    <p>
+      六种特殊路线每种仅一次，每轮最多一种，全局最多三种。可在普通路线之间使用。轮内可撤销；结束轮次后不可改动。自动保存在本机。
+    </p>
+    <p>
+      每个连通网络含 N 个出口：2 至 11 个得 4×(N−1) 分，12
+      个得45分。最长公路、最长铁路分别按单条连续路径的格数计分，不重复经过格子、不累计分支；经过车站不能更换路线类型。中央九格每格1分。每个未接上的内部路线端点扣1分，朝向棋盘外缘不扣分。
+    </p>
+    <p>
+      本版仅基础路线，不含红／蓝盒扩展；单人挑战最高分。棋盘按钮可用
+      Tab、方向键与 Enter 操作；R 旋转、F 翻面、Escape 取消预览。
+    </p>
+    <a
+      href="https://cmon-files.s3.amazonaws.com/pdf/assets_item/resource/148/Rulebook_RailroadInk-BlazingRedEdition.pdf"
+      target="_blank"
+      rel="noopener"
+      >官方基础规则（CMON / Horrible Games）</a
+    >
+    <form method="dialog"><button>关闭</button></form>
+  </dialog>
+  <script type="module" src="app.mjs"></script>
+</html>

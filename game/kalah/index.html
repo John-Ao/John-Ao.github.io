@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>播棋 Kalah</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <div class="toolbar">
+        <select id="mode" aria-label="对局模式">
+          <option value="ai">人机 · 你先手</option>
+          <option value="local">同屏双人</option></select
+        ><button id="undo">撤销</button><button id="new">新局</button
+        ><button id="rules">规则</button>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <div id="hint" class="hint"></div>
+      <div id="board" aria-label="播棋 Kalah棋盘"></div>
+      <div id="players" class="players"></div>
+    </main>
+    <dialog id="help">
+      <h2>播棋 Kalah规则</h2>
+      <p>
+        双方各有六个棋坑和一个仓库，初始每坑四子。下方为玩家一，上方为玩家二。选择己方非空棋坑，将其中棋子按棋盘上的逆时针方向逐颗播撒，经过己方仓库时放一颗，跳过对方仓库。最后一颗落在己方仓库，可再行动一次；落入己方原本为空的坑且对面有子时，将这颗与对面所有棋子收入己仓。一方六坑全空时立即结束，对方剩余棋子收入其仓库，仓中棋子多者获胜。
+      </p>
+      <p>
+        点击棋盘操作；也可用 Tab 选择格子，Enter
+        或空格操作。进度自动保存在此浏览器；撤销可退回你上次行动之前。
+      </p>
+      <button id="close">关闭</button>
+    </dialog>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

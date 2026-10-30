@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Can't Stop</title
+  ><link rel="stylesheet" href="style.css" />
+  <main>
+    <div class="status" id="players"></div>
+    <div id="board" aria-label="登山棋盘"></div>
+    <section>
+      <p id="message" role="status"></p>
+      <div id="dice" aria-label="骰子"></div>
+      <div id="choices"></div>
+      <div class="actions">
+        <button id="roll">掷骰</button><button id="stop">收手保留</button
+        ><button id="undo">撤销配对</button><button id="rules">规则</button
+        ><button id="new">新局</button>
+      </div>
+      <p class="hint">标记 ① / ②：已保存进度；黑色 ▲：本回合临时位置。</p>
+    </section>
+  </main>
+  <dialog id="help">
+    <h2>Can't Stop · 双人</h2>
+    <p>
+      四骰分成两对，按点数和推进对应列。最多同时使用三个临时登山者；同一点数两次可推进两格。在选定配对中，能用的两个点数都须使用；只剩一个登山者时可选择先走哪一列。
+    </p>
+    <p>
+      推进后选择再掷或收手。若任何配对都无法推进，失去本回合全部临时进度。收手才能保存进度并占领到顶的列；已占领列对所有人关闭。先占领三列获胜。
+    </p>
+    <p>
+      基础规则，不含强制继续或长局变体。掷骰不能撤销；配对可在下次掷骰或收手前撤销。自动保存在本机。
+    </p>
+    <a
+      href="https://www.yucata.de/en/Rules/CantStop"
+      target="_blank"
+      rel="noopener"
+      >规则参考：Yucata 授权在线版</a
+    >
+    <form method="dialog"><button>关闭</button></form>
+  </dialog>
+  <script type="module" src="app.mjs"></script>
+</html>

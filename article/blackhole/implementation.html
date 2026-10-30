@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>09 · 实现路线、简化技巧与验证</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script></head>
+<body data-page="implementation"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>09 / 09</span></nav><article><p class="eyebrow">把理解落实为可复现的计算</p><h1>实现路线、简化技巧与验证</h1><p class="lead">一个可信的仿真，要能说清楚每一层的方程、输入、输出、误差和适用范围。到这里，你可以把黑洞图像、双星轨道、时空演化和探测器数据分析，拆成可独立开发、再逐步连接的程序。</p><div class="toc" data-toc></div>
+<section><h2 id="reference">1. 实现参考：仓库里究竟有哪些物理</h2>
+<p>本教程考察的实现参考是 <a href="https://github.com/kyleyhw/black_hole">kyleyhw/black_hole</a>。它覆盖静止、旋转和合并可视化，适合将一个完整产品拆开研究。本次核查日期为 2026-10-30，以下文件链接固定在已检查的提交 <code>96a6835f2624bc6425682f723a050f397893cb6d</code>。下面按实际文件分工阅读；网页里的“精确”必须限定为使用的解析度规或公式，不能据此推断有限步长、显示颜色或双洞合并也没有近似。</p>
+<div class="table-wrap"><table><thead><tr><th>要理解的问题</th><th>参考仓库文件</th><th>阅读时的关键检查</th></tr></thead><tbody>
+<tr><td>单黑洞的光路</td><td><a href="https://github.com/kyleyhw/black_hole/blob/96a6835f2624bc6425682f723a050f397893cb6d/src/shaders/render.frag.glsl"><code>src/shaders/render.frag.glsl</code></a></td><td>度规、Hamilton 右端、步进、盘面相交与光强分别在哪里？</td></tr>
+<tr><td>相机的物理方向</td><td><a href="https://github.com/kyleyhw/black_hole/blob/96a6835f2624bc6425682f723a050f397893cb6d/src/tetrad.ts"><code>src/tetrad.ts</code></a></td><td>用度规内积定义标架；静止与运动观察者不要混同。</td></tr>
+<tr><td>合并动画的时间线</td><td><a href="https://github.com/kyleyhw/black_hole/blob/96a6835f2624bc6425682f723a050f397893cb6d/src/merger.ts"><code>src/merger.ts</code></a></td><td>PN inspiral、插值 plunge、拟正规模 ringdown 是不同段落。</td></tr>
+<tr><td>数据从哪里来</td><td><a href="https://github.com/kyleyhw/black_hole/blob/96a6835f2624bc6425682f723a050f397893cb6d/src/gw150914_chirp.json"><code>src/gw150914_chirp.json</code></a></td><td>该文件描述的是处理过并归一化的 H1 曲线，不是原始探测器数据。</td></tr>
+<tr><td>如何验证</td><td><a href="https://github.com/kyleyhw/black_hole/blob/96a6835f2624bc6425682f723a050f397893cb6d/docs/validation.md"><code>docs/validation.md</code></a></td><td>数学单元验证与真正浏览器着色器验证必须同时存在。</td></tr>
+</tbody></table></div>
+<p>仓库中双洞部分采用叠加的 Kerr–Schild 构造、后牛顿轨道和末段平滑过渡。给定一个近似度规后，认真求它的测地线仍然只是<strong>近似度规中的数值光路</strong>；并不把这个度规升级成满足完整场方程的双黑洞解。观测曲线与动画共享播放进度，也不能证明动画产生了该观测波形。</p>
+<p>核查时该提交根目录未提供 LICENSE 文件，<code>package.json</code> 也没有声明许可证；公开可见并不自动授予源码再分发许可。本教程以公式和实现分层为参考，没有复制该仓库源码或把完整应用打包进来。单黑洞实验是根据标准公式独立编写的 <a href="kerr-renderer.js">kerr-renderer.js</a>，仅保留静止相机、赤道薄盘和按需渲染；合并实验使用明确标注的教学近似；观测页说明本地数据的来源和处理步骤。这样每一个滑块背后都有可读的方程。</p>
+</section>
+<section><h2 id="build-order">2. 从空文件开始，按什么顺序做</h2>
+<ol>
+<li><strong>先写单位与约定。</strong> 定义度规号差 \((-+++)\)、索引次序、\(a=J/(Mc)\) 还是 \(a_*=cJ/(GM^2)\)、坐标 \(t\) 是否已经乘过 \(c\)。创建一个转换模块，不要在不同公式中散落质量和秒的转换常量。</li>
+<li><strong>先运行平直时空。</strong> 给定 \(\eta_{\mu\nu}\)，验证零光线走直线，局部相机中心像素朝向正确。在这一步就解决坐标朝向、矩阵转置、屏幕上下翻转，避免将图形学错误误诊为相对论。</li>
+<li><strong>独立实现 Schwarzschild 光路。</strong> 可先在一个平面解 \(u''+u=3Mu^2\)。再写通用 Hamilton 或 Christoffel 积分器，让两个独立实现对同一偏折角给出一致结果。</li>
+<li><strong>加 Kerr 与标架。</strong> 核对 \(a\to0\) 极限、旋转轴、\(g^{\mu\alpha}g_{\alpha\nu}=\delta^\mu{}_\nu\)、初始零约束；最后再调吸积盘颜色。</li>
+<li><strong>单独写双星动力学。</strong> 输入质量、轨道相位、距离，输出位置、频率和 \(h_+,h_\times\)。先不渲染，检查能量损失方向和啁啾质量标度。</li>
+<li><strong>把近似失效处显式切开。</strong> 选择停止 PN 的条件，画出该时刻；若接上插值与阻尼正弦，保存“示意过渡”的标记，而不是掩藏在一个复杂函数中。</li>
+<li><strong>单独读取真实数据。</strong> 从官方来源开始，记录采样率、GPS 时间、质量标记、滤波和单位；最后才连接播放轴与波形比较。</li>
+</ol>
+<p>每一步的结果都可以成为下一步的测试。出错时，也能知道该检查“坐标变换”“轨迹积分”还是“显示映射”。把物理函数写成不依赖 DOM 的纯函数，能够在命令行中运行长时间或高精度检查；界面仅负责收集输入和画结果。</p>
+</section>
+<section><h2 id="units">3. 单位是最容易漏掉的算法</h2>
+<p>在几何单位中 \(M\) 同时是长度和时间的标尺。恢复 SI 单位时，长度乘 \(GM/c^2\)，时间乘 \(GM/c^3\)，频率乘 \(c^3/(GM)\)。太阳质量对应的尺度约为 \(1.4766\) km 和 \(4.9255\) 微秒：</p>
+<div class="equation">\[r_{\rm SI}=\hat r\,\frac{GM}{c^2},\quad t_{\rm SI}=\hat t\,\frac{GM}{c^3},\quad f_{\rm SI}=\hat f\,\frac{c^3}{GM}.\]</div>
+<p>因此质量增大 10 倍而所有无量纲参数不变，图像的无量纲几何不变，系统的真实尺寸增大 10 倍，演化变慢 10 倍，频率降低 10 倍。对 \(60M_\odot\)，\(M\) 约为 88.6 km，\(1000M\) 时间约为 0.296 秒。总质量、单个黑洞质量和 Schwarzschild 半径 \(r_s=2M\) 是三个常见、但不同的代码长度单位。</p>
+<p>宇宙学红移又带来源参考系与探测器参考系的差别。探测器测到的时间被拉长，频率被压低；波形中的质量组合是 \(M_{\rm det}=(1+z)M_{\rm source}\)。拿目录的源质量直接计算探测器啁啾而不处理红移，可能得到看似接近、实际系统偏差的波形。距离还需要区分光度距离、共动距离和欧氏直线距离。</p>
+</section>
+<section><h2 id="tricks">4. 哪些 trick 值得用，代价是什么</h2>
+<div class="table-wrap"><table><thead><tr><th>技巧</th><th>节省在哪里</th><th>必须保留的边界说明</th></tr></thead><tbody>
+<tr><td>用球对称将 Schwarzschild 光线转入平面</td><td>三维问题变二维，只积分径向与角度</td><td>Kerr 不能直接套同样的任意轨道平面化。</td></tr>
+<tr><td>利用守恒量或 Hamilton 形式</td><td>减状态量，避免逐次构造全部 Christoffel 分量</td><td>时变度规中 \(p_t\) 通常不守恒，不能照搬定常假设。</td></tr>
+<tr><td>Kerr–Schild 秩一逆矩阵</td><td>省去每步四阶矩阵求逆</td><td>依赖零向量结构；双洞叠加时的逆不再是简单逐项相减。</td></tr>
+<tr><td>解析导数 / 自动微分</td><td>减少差分采样，避免差分步长误差</td><td>符号推导与索引实现要独立验证，错误会非常稳定地重现。</td></tr>
+<tr><td>远处大步、近处小步</td><td>把计算集中在强场区域</td><td>仅按半径缩放没有误差保证，临界轨道需更严格控制。</td></tr>
+<tr><td>降低分辨率，交互停止后精细重算</td><td>像素数直接决定光线条数</td><td>插值放大不是增加物理信息；保留内部计算分辨率。</td></tr>
+<tr><td>预计算偏折角表</td><td>用纹理查询替代重复积分</td><td>表绑定坐标、参数和相机假设；临界点需专门分辨率。</td></tr>
+<tr><td>冻结每帧度规</td><td>仅积分三位置、三动量</td><td>适合定常背景；快速变化双洞会丢失光传播中的延迟效应。</td></tr>
+<tr><td>牛顿轨道 + 四极矩辐射反作用</td><td>几条常微分方程即可看见啁啾</td><td>只适用于慢速、弱场、近圆轨道，无法预测真正 plunge。</td></tr>
+<tr><td>平滑连接 + 阻尼振荡</td><td>低成本展示 inspiral–merger–ringdown 的形态</td><td>连续或可微不是满足场方程，也不是已校准波形模型。</td></tr>
+<tr><td>从数值相对论预计算数据库插值</td><td>浏览器不用每次求解三维 PDE</td><td>要说明训练 / 校准参数范围、外推风险、模式截断与误差。</td></tr>
+</tbody></table></div>
+<p>有的技巧只是提高同一个数学问题的求解效率，如秩一求逆；有的改变了模型，如冻结度规或牛顿轨道；还有的只改变显示，如色调映射和放慢播放。三种改变应分别记录。尤其不要把两张单黑洞图像叠在一起，称为双黑洞的相互透镜；光线必须在同一个联合几何中传播，才能表达一条光线依次经过两个区域的偏折。</p>
+</section>
+<section><h2 id="verification">5. 从“看起来对”走向可检验</h2>
+<p><strong>第一层是代数和极限。</strong> 检查度规对称、逆矩阵乘积、tetrad 正交和初始 \(H=0\)。令引力源趋零应回到直线，令 \(a\to0\) 应回到球对称。解析梯度可用独立中心差分核对；差分步长从 \(10^{-3}\) 到 \(10^{-6}\) 扫一遍，寻找截断误差与浮点消减之间的平台，不要只测一个点。</p>
+<p><strong>第二层是可解析的观测量。</strong> Schwarzschild 光子球为 \(r=3M\)，远方临界冲击参数为 \(b_c=3\sqrt3M\)，弱场偏折为 \(4M/b\)。有限半径静止相机的阴影角半径满足 \(\sin\alpha_{\rm sh}=b_c\sqrt{1-2M/r_{\rm cam}}/r_{\rm cam}\)。因此 \(r_{\rm cam}=24M\) 时，不能拿屏幕角半径直接与 \(3\sqrt3\) 比较；先经过相机投影和局部标架换算。</p>
+<p><strong>第三层是收敛。</strong> 对同一个平滑、非临界问题跑步长 \(h,h/2,h/4\)，看轨迹终点和守恒量误差是否按预期下降。空间网格 PDE 则改变网格间距、时间步长、外边界位置与提取半径。只增加一个网格尺寸并出现“更平滑”不足以说明准确。</p>
+<p><strong>第四层是实际 GPU。</strong> CPU 使用 double 而 fragment shader 常用 float32。应当编译真正的 shader，测试不同自旋、视角与设备；检查像素中是否出现 NaN、无穷值或预算耗尽，确认控件改变的是正确的 uniform。CPU 的漂亮误差曲线不能代替这一层。</p>
+<p><strong>第五层是独立物理方法。</strong> 轨迹可与 Carter 分离变量方法比较；完整合并可和不同数值格式、公开数值波形比较。对真实数据做残差与匹配滤波时，必须用同一个 PSD 与频带，并检查多个探测器的一致性。复用同一个错误公式写出的“参考答案”，并不是独立验证。</p>
+<div class="note"><p>本地单黑洞实现的验证入口是 <code>metricTerms</code>、<code>metricDot</code>、<code>cameraTetrad</code>、<code>cameraRay</code>、<code>phaseDerivative</code>、<code>rk4</code> 与 <code>traceRay</code>。它们和浏览器入口分开，便于做数学检查。运行 <code>node article/blackhole/scripts/test-raytracing.mjs</code> 可复核局部标架、解析导数、Schwarzschild 临界冲击参数和非临界光线的四阶收敛。实验的误差视图只是运行时诊断，不能替代上述完整验证清单。</p></div>
+</section>
+<section><h2 id="numerical-relativity">6. 若要亲自做“真正合并”，下一步学什么</h2>
+<p>完整数值相对论求的是三维空间网格上度规随时间的变化，而不是两点之间一条改进的吸引力。先学 3+1 分解，把四维时空切成空间切片，用 \(\gamma_{ij}\)、\(K_{ij}\)、lapse \(\alpha\) 与 shift \(\beta^i\) 描述切片内和切片间的几何。初始数据必须满足 Hamilton 与动量约束；给两个位置和速度只是问题的开头。</p>
+<p>随后理解 BSSN 或广义调和形式如何改进数值稳定性、规范条件如何避免坐标过早崩溃、moving puncture 或 excision 如何处理不可解析的内部区域。有限差分 / 谱方法决定空间导数，方法线决定时间推进，CFL 条件约束步长；自适应网格把高分辨率分配到黑洞和波传播区域。</p>
+<p>提取引力波时，还要从有限半径上的曲率或度规扰动构造辐射模式，例如 \(\Psi_4\) 与 \(h_+,h_\times\) 的关系，并处理时间积分常数、有限半径外推、坐标与规范效应。数值解不是“渲染好了就完工”；约束残差、能量角动量平衡、分辨率收敛和误差预算都属于结果。</p>
+<p>建议先运行并理解 <a href="https://einsteintoolkit.org/">Einstein Toolkit</a> 的公开例子，再改参数和网格。<a href="https://20k.github.io/c++/2024/07/31/nr101.html">20k 的 NR101</a> 与 <a href="https://20k.github.io/c++/2025/01/12/nr102.html">NR102</a> 展示了从 GPU 数值演化走到双洞碰撞的教学路线；适合看公式如何变成数组与内核，但关键定义应与论文和正式文档交叉核对。其解析时空渲染器 <a href="https://github.com/20k/geodesic_raytracing">geodesic_raytracing</a> 与数值演化教程是不同层次的项目。</p>
+</section>
+<section><h2 id="reproduce">7. 复现实验与扩展作业</h2>
+<p>本教程是静态网页。把整个 <code>article/blackhole</code> 目录部署在同一个静态站点即可；本地应通过 HTTP 打开，以支持 ES modules 和本地数据读取。使用 Python 自带服务器的一种方式：</p>
+<pre><code>cd John-Ao.github.io
+python3 -m http.server 8000
+# 浏览器打开 http://localhost:8000/article/blackhole/</code></pre>
+<p>先验证每页公式和图形，再运行单黑洞、合并和观测实验。没有 WebGL 2 的设备仍可阅读全部推导和其他二维图示。渲染器按需运行，不需要持续播放才展示物理；这也让参数改变前后的对照更容易。</p>
+<details class="exercise"><summary>作业 A：为解析导数写一个独立检查</summary><p>在视界之外随机取 100 个点，固定一组动量；通过有限差分求 \(H\) 对 \(x_i\) 的导数，再与 <code>phaseDerivative(...).p</code> 的负号对应值比较。跳过奇点和浮点范围不合理的点，但记录跳过条件。改变差分步长，画出误差曲线。如果只有某个坐标方向出错，优先检查矩阵列 / 行和旋转项符号。</p></details>
+<details class="exercise"><summary>作业 B：从程序测量 Schwarzschild 阴影</summary><p>关闭薄盘，固定相机，用二分法在中心与明确逃逸方向之间搜索捕获边界。用 tetrad 角度计算冲击参数，与 \(3\sqrt3M\) 比较。每次二分都允许更高的步数预算，保留“未完成”第三状态。对不同相机半径重复，检查换算后是否得到同一个临界 \(b_c\)。</p></details>
+<details class="exercise"><summary>作业 C：证明教学合并不是观测级模板</summary><p>把最低阶啁啾与一个正式 IMR 波形用同一采样率生成，统一时移、相位、PSD 和频带，绘制累计相位差及噪声加权失配。不要只按峰值高度归一化后肉眼对齐。逐步提高最高比较频率，观察弱场近似在哪一段开始失效。</p></details>
+<details class="exercise"><summary>作业 D：选择一个科学问题，而不是无限增加特效</summary><p>可以研究自旋如何改变 ISCO、强场光路对积分精度的要求、源质量与探测器质量的区别，或背景 PSD 对匹配滤波的影响。先写清楚可量化的输出，再决定需要哪一级模型。有明确误差范围的简单模型，比没有验证的大型渲染器更适合回答问题。</p></details>
+</section>
+<section><h2 id="reading">8. 按问题查阅原始资料</h2>
+<ul class="source-list">
+<li><a href="https://arxiv.org/abs/gr-qc/9712019">Sean Carroll · Lecture Notes on General Relativity</a>：从流形、联络、曲率到场方程和黑洞的系统推导。</li>
+<li><a href="https://arxiv.org/abs/0904.4184">Müller &amp; Grave · Catalogue of Spacetimes</a>：查度规、标架和测地线公式，并留意作者的号差约定。</li>
+<li><a href="https://arxiv.org/abs/0706.0622">Matt Visser · The Kerr spacetime: A brief introduction</a>：不同坐标、视界、能层和几何结构。</li>
+<li><a href="https://arxiv.org/abs/1502.03808">James 等 · Gravitational Lensing by Spinning Black Holes</a>：强场光线与光束成像。</li>
+<li><a href="https://arxiv.org/abs/1310.1528">Luc Blanchet · Post-Newtonian Theory for Gravitational Waves</a>：后牛顿展开、辐射反作用及适用范围。</li>
+<li><a href="https://arxiv.org/abs/gr-qc/9810065">Baumgarte &amp; Shapiro · On the Numerical Integration of Einstein’s Field Equations</a>：BSSN 类变量分解与数值稳定性。</li>
+<li><a href="https://einsteintoolkit.org/">Einstein Toolkit 官方文档与例子</a>：实际运行数值相对论代码的入口。</li>
+<li><a href="https://gwosc.org/GW150914data/">GWOSC · GW150914 数据发布</a>：追溯观测数据和官方教程。</li>
+</ul>
+<p>阅读论文时始终写下四项：作者采用的单位、度规号差、坐标和近似阶数。同一个物理系统可以有不同的数学表达；同一个漂亮图形也可能来自完全不同的物理模型。理解它们之间的对应，才算真正掌握了如何从场方程走到仿真与观测。</p>
+</section><nav class="pager" aria-label="前后章节"><a href="observations.html">← 08 · 与真实引力波比较</a><a href="index.html">回到教程目录 →</a></nav></article></main></body></html>

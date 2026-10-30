@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>07 · 双黑洞合并与数值相对论</title>
+  <meta name="description" content="从四极矩能量损失推导双黑洞啁啾，用可交互轨道理解近似，再学习 ADM、BSSN、约束、网格和波形提取。">
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css">
+  <script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script>
+  <script type="module" src="merger.js"></script>
+</head>
+<body data-page="merger">
+<main>
+<nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>07 / 09</span><a href="observations.html">下一章：与观测对照 →</a></nav>
+<article>
+<p class="eyebrow">07 · 从定常解到动力学时空</p>
+<h1>双黑洞怎样合并，计算机究竟在算什么？</h1>
+<p class="lead">单个黑洞的精确解提供几何背景。两个质量相近的黑洞相互靠近时，几何本身也要演化。本章先推导能手算、能在浏览器运行的啁啾，再逐层说明真正求解爱因斯坦场方程还需要哪些工作。</p>
+<div class="toc" data-toc></div>
+
+<h2 id="nonlinear">1. 为什么不能把两个 Kerr 解相加？</h2>
+<p>电磁学里，在同一背景上可以把两个电荷产生的电场相加，因为麦克斯韦方程是线性的。广义相对论的度规既描述引力，又决定如何求导、如何收缩指标。因此 \(G_{\mu\nu}[g]\) 含有逆度规、度规的二阶导数，以及一阶导数的乘积。一般来说，\(G[g_1+g_2]\neq G[g_1]+G[g_2]\)。把两个单黑洞度规叠加，即使得到漂亮画面，也不自动满足真空方程 \(R_{\mu\nu}=0\)。</p>
+<p>“真空”只要求考察区域内没有物质应力能量；它允许曲率和引力辐射。双黑洞外部可以处处真空，仍有随时间变化的潮汐场。相距很远时，可把每个黑洞近似成质量点，展开速度与光速之比 \(v/c\)；接近合并时，弱场、慢速近似都失效；合并后，则可把新的 Kerr 黑洞写成定常背景加小扰动。这解释了常见的三阶段：旋近、合并、振铃。</p>
+<div class="note"><strong>三个不同的问题：</strong>给定背景追踪光线，是求测地线；给定近似辐射损失更新两点轨道，是轨道模型；在三维网格上更新度规并满足约束，才是完整数值相对论。前两者都很有教学价值，但不能替代第三者验证强场合并。</div>
+
+<h2 id="quadrupole">2. 从变化的四极矩到越来越快的啁啾</h2>
+<p>引力波是远离波源时传播的几何扰动。取观察距离 \(D\) 远大于波源尺寸，并在波区采用横向无迹（TT）描述，最低阶辐射公式是</p>
+<div class="equation">\[h_{ij}^{\mathrm{TT}}(t,\mathbf n)=\frac{2G}{c^4D}\,\ddot I_{ij}^{\mathrm{TT}}(t-D/c),\qquad
+I_{ij}=\int\rho(\mathbf x)\left(x_ix_j-\frac13\delta_{ij}r^2\right)d^3x.\]</div>
+<p>\(I_{ij}\) 是质量分布的四极矩：它关心质量分布是否拉长，以及拉长方向如何变化。点表示对时间求导。孤立系统总质量能量守恒，不能靠单极项周期性地把总质量凭空增减；质心运动受总动量守恒限制，不能给出独立的质量偶极辐射。四极项因而是通常双星的主导辐射。两颗质量绕质心转过半圈，质量分布的四极形状已经重复，所以主导引力波频率是轨道频率的两倍。</p>
+<p>令 \(M=m_1+m_2\)、约化质量 \(\mu=m_1m_2/M\)、对称质量比 \(\eta=\mu/M\leq1/4\)，两物体的间距为 \(r\)。对慢速、近圆轨道，牛顿关系给出 \(\Omega^2=GM/r^3\)，束缚能 \(E=-G\mu M/(2r)\)。把圆轨道代入四极矩辐射功率，有</p>
+<div class="equation">\[P_{\mathrm{GW}}=\frac{G}{5c^5}\left\langle\dddot I_{ij}\dddot I_{ij}\right\rangle
+=\frac{32}{5}\frac{G^4\mu^2M^3}{c^5r^5},\qquad
+\frac{dE}{dt}=-P_{\mathrm{GW}}.\]</div>
+<p>能量平衡中的负号很关键：辐射带走能量，轨道总能量变得更负，距离随之减小。因为 \(dE/dr=G\mu M/(2r^2)>0\)，直接相除便得到</p>
+<div class="equation">\[\frac{dr}{dt}=-\frac{64}{5}\frac{G^3\mu M^2}{c^5r^3}.\]</div>
+<p>注意这不是“给两颗球加一点摩擦力”的随意选择，而是指定近似阶数后的能量守恒。令 \(x=rc^2/(GM)\)、\(\tau=tc^3/(GM)\)，公式变成没有单位常数的形式。积分后，浏览器无需昂贵的三维网格也能得到这一级近似的精确轨道：</p>
+<div class="equation">\[\frac{dx}{d\tau}=-\frac{64\eta}{5x^3},\quad
+x(\tau)=\left(x_0^4-\frac{256\eta}{5}\tau\right)^{1/4},\quad
+\phi(\tau)-\phi_0=\frac{x_0^{5/2}-x(\tau)^{5/2}}{32\eta}.\]</div>
+<p>这里 \(\phi\) 是轨道相位，引力波主模态的相位是 \(2\phi\)。定义啁啾质量 \(\mathcal M=\eta^{3/5}M\)，并用 \(f=\Omega/\pi\) 消掉 \(r\)，可得一个非常有观测意义的结果：</p>
+<div class="equation">\[\dot f=\frac{96}{5}\pi^{8/3}\left(\frac{G\mathcal M}{c^3}\right)^{5/3}f^{11/3},\qquad
+t_c-t=\frac{5}{256}\left(\frac{G\mathcal M}{c^3}\right)^{-5/3}(\pi f)^{-8/3}.\]</div>
+<p>因此波形的间距越来越密，振幅也随 \(1/r\) 增大。“啁啾”首先约束的是质量的这个组合，不是独立的 \(m_1\) 与 \(m_2\)。式中的 \(t_c\) 是最低阶近似外推到 \(r=0\) 的形式时间；真实系统不会沿该公式穿过合并。接近强场时继续计算发散频率，是模型被用出了适用范围。</p>
+
+<h2 id="inspiral-lab">3. 亲手改变轨道与波形</h2>
+<p>下图使用刚刚推导的积分式，从 \(r=20GM/c^2\) 演化到人为设置的截止 \(r=6GM/c^2\)。实线波形与两点轨道共享同一个相位。之后用连续的教学过渡接到阻尼振铃；这段过渡不是场方程的解。对可比质量双星，\(6M\) 也不是一个精确的“共同 ISCO”。</p>
+<section class="lab" aria-label="双黑洞旋近交互实验">
+  <div class="controls">
+    <label>探测器系总质量 \(M_z\) <output id="mass-value">65 M☉</output><input id="total-mass" type="range" min="20" max="120" step="1" value="65"></label>
+    <label>质量比 \(q=m_1/m_2\) <output id="ratio-value">1.2</output><input id="mass-ratio" type="range" min="1" max="4" step="0.1" value="1.2"></label>
+    <label>假定残骸自旋 \(\chi_f\) <output id="spin-value">0.68</output><input id="remnant-spin" type="range" min="0.1" max="0.95" step="0.01" value="0.68"></label>
+    <label>播放速度 <select id="merger-speed"><option value="0.2">0.2 ×</option><option value="1" selected>1 ×</option><option value="4">4 ×</option></select></label>
+    <label>波形范围 <select id="merger-window"><option value="full">完整过程</option><option value="late">末段 0.35 s 与振铃</option></select></label>
+    <button type="button" id="merger-play">播放</button><button type="button" id="merger-reset">重置</button>
+  </div>
+  <canvas id="merger-orbit" style="width:100%;height:310px;display:block" role="img" aria-label="两黑洞的坐标轨道示意，播放或拖动时间观察靠近过程"></canvas>
+  <canvas id="merger-wave" style="width:100%;height:250px;display:block" role="img" aria-label="与轨道同步的教学引力波应变曲线，黄色部分为人工合并过渡"></canvas>
+  <label style="display:block;margin:1rem 0">时间位置 <input id="merger-time" type="range" min="0" max="1000" step="1" value="0" style="width:100%"></label>
+  <div class="readout" id="merger-readout" aria-live="polite">正在初始化旋近模型。</div>
+  <p class="caption">蓝色：最低阶圆轨道旋近；黄色：人工连续过渡；紫色：单模态振铃近似。圆盘只是位置与质量示意，不是数值求出的视界。距离固定为 400 Mpc、正面观测；省略天线响应。时间轴以人工振铃起点为零。质量与自旋一经改变，时间归零。</p>
+  <noscript><p>启用 JavaScript 可操纵轨道。无脚本时仍可用上面的 \(x(\tau)\) 与 \(\phi(\tau)\) 公式重算；下文完整说明模型和误差。</p></noscript>
+</section>
+<p>先固定质量比、把总质量加倍：以 \(GM/c^3\) 为单位的同一过程要花两倍秒数，特征频率减半。再固定总质量、增大 \(q\)：\(\eta=q/(1+q)^2\) 变小，辐射效率减小，同一初始间距到截止的时间变长。选择“末段”并将时间拖到接近终点，可以分辨人工过渡和振铃。应变还受距离、轨道倾角和探测器方向影响，因此“更高的振幅”不能单独证明“质量更大”。</p>
+
+<h2 id="ringdown">4. 合并之后为什么像钟一样振铃？</h2>
+<p>新形成的黑洞初期并不处在完全定常的 Kerr 状态。将其几何写成 \(g=g_{\mathrm{Kerr}}+\delta g\)，对小扰动线性化，就能寻找满足“视界处仅向内、远方仅向外”边界条件的振荡。这种开放系统会不断辐射能量，频率因此是复数，而不是不衰减的实数正常模态。</p>
+<div class="equation">\[h(t)\simeq \sum_{\ell mn} A_{\ell mn}e^{-(t-t_0)/\tau_{\ell mn}}
+\cos\!\left[2\pi f_{\ell mn}(t-t_0)+\varphi_{\ell mn}\right].\]</div>
+<p>\(\ell,m\) 描述角向结构，\(n\) 是泛音编号。对 Kerr 黑洞，每个模态的频率与衰减时间由残骸质量和自旋决定；振幅与相位则取决于此前怎样激发。严格地说，刚过波形峰值时能否只保留一个模态，需要检验，不能靠视觉上“看起来衰减了”决定。</p>
+<p>交互图只保留 \((\ell,m,n)=(2,2,0)\)，采用 Berti、Cardoso、Will 的拟合系数。设 \(M_f=0.95M_z\) 是本演示固定的质量损失假设，且 \(\chi_f\) 是用户独立指定的参数：</p>
+<div class="equation">\[f_{220}=\frac{c^3}{2\pi GM_f}\left[1.5251-1.1568(1-\chi_f)^{0.1292}\right],\quad
+Q=0.7000+1.4187(1-\chi_f)^{-0.4990},\quad \tau_{220}=\frac{Q}{\pi f_{220}}.\]</div>
+<p>这里 \(Q\) 衡量衰减前能振荡多少周期。演示用 \(12GM_z/c^3\) 的过渡时长把旋近截止频率平滑提高到 \(f_{220}\)，并用三次 Hermite 振幅插值匹配两端斜率。这个选择让曲线连续、可读；它没有通过合并能量与角动量守恒计算 \(M_f,\chi_f\)。改变质量比后仍采用 5% 损失，更说明它只是可审计的教学假设，不能拿去拟合真实事件。</p>
+
+<h2 id="adm">5. 完整数值相对论：把时空切成一叠空间</h2>
+<p>现在从低成本模型跨到真正的方程演化。采用 \(G=c=1\)，将四维时空按时间切为三维切片。每张切片内部的距离由空间度规 \(\gamma_{ij}\) 描述；两张切片之间，lapse \(\alpha\) 控制法向观察者经过的固有时间，shift \(\beta^i\) 控制坐标网格相对法向的横向移动：</p>
+<div class="equation">\[ds^2=-\alpha^2dt^2+\gamma_{ij}(dx^i+\beta^idt)(dx^j+\beta^jdt),\qquad
+K_{ij}=-\frac{1}{2\alpha}(\partial_t-\mathcal L_\beta)\gamma_{ij}.\]</div>
+<p>\(K_{ij}\) 是外曲率，描述一张空间切片如何嵌入整个时空，也编码空间几何的时间变化。这里选择了上式的负号约定；换约定必须同时改后续公式。\(\mathcal L_\beta\) 是沿 shift 的 Lie 导数，负责区分“场真在变化”和“坐标在移动”。lapse 和 shift 属于规范选择，不是新物质场，但糟糕的选择会让网格很快失去可用性。</p>
+<p>将真空场方程投影到切片上，一部分成为初始切片必须满足的四个约束：</p>
+<div class="equation">\[\mathcal H={}^{(3)}R+K^2-K_{ij}K^{ij}=0,\qquad
+\mathcal M^i=D_j(K^{ij}-\gamma^{ij}K)=0.\]</div>
+<p>\({}^{(3)}R\) 是三维空间曲率，\(D_i\) 是与 \(\gamma_{ij}\) 相容的协变导数，\(K=\gamma^{ij}K_{ij}\)。Hamiltonian 约束有一个分量，动量约束有三个分量。不是任意画两颗黑洞、填上速度，就能成为合法初值。其余投影给出 ADM 演化方程，例如</p>
+<div class="equation">\[(\partial_t-\mathcal L_\beta)\gamma_{ij}=-2\alpha K_{ij},\qquad
+(\partial_t-\mathcal L_\beta)K_{ij}=-D_iD_j\alpha+
+\alpha\left({}^{(3)}R_{ij}+KK_{ij}-2K_{ik}K^k{}_j\right).\]</div>
+<p>连续、精确的方程会传播约束；浮点误差、离散求导和边界反射会破坏它。因此“代码能一直跑”远远不够，还要记录 \(\mathcal H\) 与 \(\mathcal M^i\) 的范数及分辨率收敛性。直接离散最朴素的 ADM 系统通常不是最稳健的实际方案。</p>
+
+<h2 id="bssn">6. BSSN、CCZ4 与移动穿孔：稳定性从哪里来？</h2>
+<p>BSSN 将体积变化和形状变化分开。若 \(\gamma=\det\gamma_{ij}\)，定义 \(\chi=\gamma^{-1/3}\)、\(\tilde\gamma_{ij}=\chi\gamma_{ij}\)，使 \(\det\tilde\gamma=1\)。把外曲率分成迹与无迹部分，并引入收缩的共形联络函数：</p>
+<div class="equation">\[\tilde A_{ij}=\chi\left(K_{ij}-\frac13\gamma_{ij}K\right),\qquad
+\tilde\Gamma^i=\tilde\gamma^{jk}\tilde\Gamma^i{}_{jk}.\]</div>
+<p>演化变量变为 \(\chi,\tilde\gamma_{ij},K,\tilde A_{ij},\tilde\Gamma^i\)。这不是换个变量名就神奇稳定；关键还在于用约束重写演化系统、控制其传播性质，并选择合适的规范条件。CCZ4 则引入与约束违反相关的额外场和阻尼项，使某些数值产生的约束误差被传播、抑制。两者都不是“不同的引力理论”，而是同一场方程的数值形式。</p>
+<p>常见移动穿孔方案使用 1+log lapse 与 Gamma-driver shift。示意写法是</p>
+<div class="equation">\[(\partial_t-\beta^j\partial_j)\alpha=-2\alpha K,\qquad
+\partial_t\beta^i=\frac34 B^i,\qquad
+\partial_tB^i=\partial_t\tilde\Gamma^i-\eta_BB^i.\]</div>
+<p>不同实现会加入相应的平流项，\(\eta_B\) 是规范阻尼参数，与上面的对称质量比 \(\eta\) 不同。1+log slicing 让 lapse 在强场内部变小，避免时间切片直接冲向奇点；shift 则使坐标适应黑洞移动。另一条路线是广义谐和形式加约束阻尼，并将视界内区域从计算域切除。选哪条路线，取决于方程形式、数值方法与边界条件，而不是单个参数开关。</p>
+<p>穿孔初值的一种构造以共形平直空间为起点，取 \(\gamma_{ij}=\psi^4\delta_{ij}\)、\(K=0\)，再用 Bowen–York 形式指定动量和自旋相关的无迹外曲率。写成 \(\psi=1+m_1^{\mathrm{bare}}/(2r_1)+m_2^{\mathrm{bare}}/(2r_2)+u\) 后，Hamiltonian 约束变成求光滑修正 \(u\) 的非线性椭圆方程：</p>
+<div class="equation">\[\nabla^2\psi+\frac18\bar A_{ij}\bar A^{ij}\psi^{-7}=0.\]</div>
+<p>这里 \(\bar A^{ij}\) 是初值构造采用的共形无迹张量，不应与 BSSN 的变量缩放混用。裸质量也不等于最后测得的黑洞质量。初始自由数据还决定残余偏心率和一段非天体物理的初始“垃圾辐射”；分析应避开它，必要时迭代调小偏心率。Einstein Toolkit 的 TwoPunctures 提供这类约束求解的实际入口。</p>
+
+<h2 id="numerics">7. 从偏微分方程到可靠计算</h2>
+<p>最直接的实现将空间放到网格上，用有限差分近似空间导数，再用 Runge–Kutta 更新时间。四阶中心差分的一阶导数模板是 \(f'_i\simeq(f_{i-2}-8f_{i-1}+8f_{i+1}-f_{i+2})/(12\Delta x)\)。实际演化还要考虑平流项、边界模板和数值耗散，不能把这一条模板复制到所有位置。谱方法则用一组基函数表示场，在足够光滑的区域能更快收敛，但域分解与黑洞边界处理同样重要。</p>
+<p>黑洞附近曲率变化快，需要细网格；波传播到远处，需要很大的区域。自适应网格细化（AMR）让细层跟随黑洞，而外层逐渐变粗。网格之间的插值、时间子步与同步都会引入误差。CFL 条件限制 \(\Delta t\lesssim C\Delta x/v_{\max}\)，其中 \(v_{\max}\) 应包括所用规范和演化系统的最快特征速度，不一定只是光速。把空间分辨率加倍却不缩小时间步，往往首先得到不稳定。</p>
+<p>在三维均匀网格上，线性分辨率加倍需要约八倍格点；若同时把时间步减半，固定物理时长的工作量可能约增十六倍。这是浏览器演示不能假装在实时运行高精度全域合并的实际原因之一。远端边界还必须足够远并使用合适条件，防止边界反射在分析时段返回波提取区。</p>
+<p>一个可信结果至少需要三种分辨率比较相位与振幅误差；检查约束是否随分辨率下降；改变提取半径和边界位置；比较辐射出去的能量、角动量与残骸变化是否相容；说明初始垃圾辐射、有限半径和规范带来的系统误差。针对同一个事件，采用独立方程形式和数值方法的代码仍得到一致波形，是更强的交叉验证。</p>
+
+<h2 id="extraction">8. 怎样把网格中的几何变成探测器波形？</h2>
+<p>计算机演化的是度规等场，而探测器需要的是应变。常用方法是在较远的球面上计算 Weyl 曲率的 Newman–Penrose 标量 \(\Psi_4\)，并分解到自旋权重为 −2 的球谐函数。在一种常见的标架与符号约定下，</p>
+<div class="equation">\[\Psi_4=\ddot h_+-i\ddot h_\times,\qquad
+r\Psi_4(t,\theta,\varphi)=\sum_{\ell m}\psi_{\ell m}(t)\,{}_{-2}Y_{\ell m}(\theta,\varphi).\]</div>
+<p>不同文献的符号约定可能相反，因此代码接口必须写明定义。两次时间积分会把低频漂移严重放大，必须说明积分常数和低频处理，例如固定频率积分；对有限半径提取，还需外推到无穷远，或使用特征演化提取。不能把“任意网格点某个度规分量的变化”直接当作远处观测的引力波。</p>
+<p>真空方程以总质量为尺度时具有缩放性质。一份无量纲 NR 波形可以按 \(t_{\mathrm{obs}}=(GM_z/c^3)\hat t\) 重标时间，按 \(GM_z/(c^2D_L)\) 重标应变；随后选择观察方向、组合模态、应用探测器天线响应与到达时差。这种缩放比重新运行同样质量比和无量纲自旋的模拟便宜得多。但改变质量比、自旋方向或偏心率会改变无量纲动力学，不能只靠伸缩横纵坐标解决。</p>
+
+<h2 id="approximations">9. 可以怎样简化，而不误导自己？</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>方法</th><th>节省什么</th><th>保留与丢失</th></tr></thead>
+<tbody>
+<tr><td>牛顿轨道 + 四极矩损失</td><td>只更新少量轨道变量</td><td>解释早期啁啾；强场合并、进动、高阶模态缺失</td></tr>
+<tr><td>后牛顿（PN）展开</td><td>按 \(v/c\) 逐阶修正</td><td>改善旋近；在展开失效处不能无限外推</td></tr>
+<tr><td>有效单体（EOB）与现象学模型</td><td>用经过 NR 校准的低成本模型</td><td>适合搜索大量参数；精度依赖模型与校准范围</td></tr>
+<tr><td>NR surrogate / 降阶模型</td><td>对离线高成本波形学习插值</td><td>浏览器可回放高质量结果；并非在线解场方程，外推须谨慎</td></tr>
+<tr><td>固定背景 + 光线追踪</td><td>不用演化几何</td><td>适合单洞成像；不能预测可比质量双洞合并波形</td></tr>
+<tr><td>人工拼接旋近与振铃</td><td>让教学动画连贯</td><td>本页采用；拼接区的相位与能损没有观测预测力</td></tr>
+</tbody></table></div>
+<p>若准备实际跑一次合并，最稳妥的起点是使用 Einstein Toolkit 发布的 GW150914 示例及其参数文件，先理解它的初值、演化 thorns、网格和输出，再做低分辨率测试。发表级参数估计通常使用经过验证的波形模型库，而不会每取一个参数点就重新跑一场三维 NR。下一章直接读取官方观测与 NR 数据，看看“吻合”应如何定量理解。</p>
+
+<details class="exercise"><summary>自检：你能解释三种“加速”了吗？</summary><p>① 为什么两颗黑洞损失能量反而绕得更快？② 总质量加倍时，波形的时间与频率怎样缩放？③ 把本页过渡时长改一倍，会改变真实的引力理论吗？</p><p>答：① 轨道能量更负、间距减小，\(\Omega\propto r^{-3/2}\) 增大；② 时间加倍、频率减半；③ 只改变人为拼接，不改变场方程，也说明这一区间尚无预测能力。</p></details>
+<details class="exercise"><summary>动手：把动画升级为可以检查误差的计算</summary><p>用 RK4 数值积分 \(dx/d\tau=-64\eta/(5x^3)\)，与本章解析解比较。把步长依次减半，在远离截止的位置检查全局误差是否约降至 \(1/16\)。然后保持波形模型不变，只改显示采样率，区分“数值积分误差”和“绘图漏掉振荡”。这比为动画增加更多视觉效果更能检验你是否理解仿真。</p></details>
+<h2 id="sources">本章资料与继续阅读</h2>
+<ul class="source-list">
+<li><a href="https://doi.org/10.1103/PhysRev.136.B1224">Peters（1964），Gravitational Radiation and the Motion of Two Point Masses</a>：辐射反作用与轨道衰减。</li>
+<li><a href="https://arxiv.org/abs/gr-qc/9810065">Baumgarte &amp; Shapiro（1998）</a>：BSSN 变量重组与稳定性。</li>
+<li><a href="https://arxiv.org/abs/1106.2254">Alic 等（2011），CCZ4</a>：约束阻尼的共形协变形式。</li>
+<li><a href="https://einsteintoolkit.org/thornguide/EinsteinInitialData/TwoPunctures/documentation.html">Einstein Toolkit：TwoPunctures 文档</a>：实际初值约束求解。</li>
+<li><a href="https://www.einsteintoolkit.org/gallery/bbh/index.html">Einstein Toolkit：GW150914 双黑洞示例</a>：参数文件、数据与波提取教程。</li>
+<li><a href="https://pages.jh.edu/eberti2/ringdown/">Emanuele Berti：准正常模态数据与拟合</a>；<a href="https://arxiv.org/abs/gr-qc/0512160">Berti、Cardoso、Will（2006）</a>：本页 \(220\) 模态系数来源。</li>
+<li><a href="https://arxiv.org/abs/1607.05377">Modeling the source of GW150914 with targeted numerical-relativity simulations</a>：独立 NR 代码的交叉验证。</li>
+</ul>
+<nav class="pager" aria-label="上下章节"><a href="raytracing.html">← 06 · 光线追踪</a><a href="observations.html">08 · 与真实观测对照 →</a></nav>
+</article>
+</main>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "blackhole-tutorial-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "python3 scripts/check_site.py"
+  }
+}

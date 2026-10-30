@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>05 · Kerr 黑洞：自转、能层与可分离测地线</title>
+  <meta name="description" content="逐项解释 Kerr 度规、内外视界、能层、环奇点、ISCO、Carter 常数与 Kerr–Schild 光线积分。">
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css">
+  <script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="solutions.js"></script>
+</head>
+<body data-page="kerr"><main>
+<nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>05 / 09</span></nav>
+<article>
+<p class="eyebrow">05 · 轴对称真空解</p>
+<h1>Kerr 黑洞：自转改变了什么</h1>
+<p class="lead">加入角动量后，时间与转角会在度规中混合，视界与“无法保持静止的边界”分开，顺行和逆行轨道也不再等价。本章把这些结果从同一个度规中取出来，再说明如何利用隐藏守恒量高效积分光线。</p>
+<div class="toc" data-toc></div>
+
+<section><h2 id="spin-parameter">1. 质量之外，多一个角动量</h2>
+<p>继续采用度规号约定 \((-+++)\) 和几何单位 \(G=c=1\)。质量参数 \(M\) 有长度量纲，角动量 \(J\) 有长度平方量纲，定义 \(a=J/M\)，它仍是一个长度。程序中更方便使用无量纲自旋 \(a_*=a/M\)。恢复普通单位时：</p>
+<div class="equation">\[M_{\rm geom}=\frac{GM_{\rm phys}}{c^2},\qquad a=\frac{J_{\rm phys}}{M_{\rm phys}c},\qquad a_* =\frac{cJ_{\rm phys}}{GM_{\rm phys}^2}.\]</div>
+<p>\(a_*=0\) 退化为 Schwarzschild。\(|a_*|&lt;1\) 是亚极端 Kerr 黑洞，\(|a_*|=1\) 是极端极限。自旋的正负只是在选定轴方向后的约定；轨道角动量与它同向叫顺行，反向叫逆行。本页交互把 \(a_*\) 取非负，同时比较两种轨道方向。</p>
+<p>“静态”与“定常”在这里要分开：Kerr 度规不随时间改变，所以定常；但自转使时间方向不能处处与一组空间切片正交，因此通常不是静态。绕自转轴旋转仍不改变几何，这叫轴对称；绕其他轴旋转就不再是对称。少了球对称，我们不能再把每条普通轨道都限制在一个固定平面中。</p>
+<div class="note">Kerr 描述的是孤立、无电荷、趋于平衡的旋转黑洞的理想真空外部。一般旋转恒星可以有独立的四极矩，其外部并不精确等于 Kerr。黑洞唯一性结论也带有定常、渐近平直、视界正则性等条件，不能据此把正在合并的两个黑洞当作两个互不影响的 Kerr 解直接相加。</div>
+</section>
+
+<section><h2 id="metric">2. 把完整度规拆成可读的几块</h2>
+<p>采用 Boyer–Lindquist（BL）坐标 \((t,r,\theta,\phi)\)。它在远处接近熟悉的时间和球坐标，但 \(r\) 已不是一般意义的面积半径。引入两个反复出现的函数：</p>
+<div class="equation">\[\Sigma=r^2+a^2\cos^2\theta,\qquad\Delta=r^2-2Mr+a^2.\]</div>
+<p>\(\Sigma\) 同时依赖半径与纬度，\(\Delta\) 只依赖半径。完整线元是：</p>
+<div class="equation">\[\begin{aligned}
+ds^2={}&-\left(1-\frac{2Mr}{\Sigma}\right)dt^2
+-\frac{4Mar\sin^2\theta}{\Sigma}\,dt\,d\phi\\
+&+\frac{\Sigma}{\Delta}dr^2+\Sigma\,d\theta^2\\
+&+\left(r^2+a^2+\frac{2Ma^2r\sin^2\theta}{\Sigma}\right)\sin^2\theta\,d\phi^2.
+\end{aligned}\]</div>
+<p>逐项看：\(dt^2\) 控制静止时钟；\(dr^2,d\theta^2,d\phi^2\) 控制空间方向的局部间隔；最重要的新项是 \(dt\,d\phi\)，它让时间与绕轴运动发生耦合。因为指标求和同时包含 \(t\phi\) 与 \(\phi t\)，<strong>交叉项系数是 \(2g_{t\phi}\)</strong>，因此 \(g_{t\phi}=-2Mar\sin^2\theta/\Sigma\)，不是 \(-4Mar\sin^2\theta/\Sigma\)。这是一类常见的代码错误。</p>
+<p>做三次快速自检。第一，令 \(a=0\)，有 \(\Sigma=r^2,\Delta=r(r-2M)\)，逐项回到上一章。第二，远处 \(g_{tt}\approx-1+2M/r\)，识别质量；交叉项约为 \(-4J\sin^2\theta\,dt\,d\phi/r\)，识别角动量。第三，令 \(M=0\) 而保留坐标参数 \(a\)，仍是平直时空，只是采用扁球坐标；不能看到 \(a\) 就认为必然存在引力。</p>
+<details class="exercise"><summary>为什么没有像 Schwarzschild 那样给出“两步求解 Kerr”的捷径？</summary><p>球对称把未知函数压缩为只依赖 \(r\) 的两个函数，而定常轴对称一般仍允许多个 \((r,\theta)\) 函数，真空方程是耦合偏微分方程。Kerr 的构造使用了额外的代数特殊性与特殊零方向结构。这里直接给出精确解，再用极限、守恒量和 \(R_{\mu\nu}=0\) 进行验证；这与声称仅凭“有质量、有自转”便推导出它不同。要完整复现发现过程，需要 Newman–Penrose 形式或其他解生成方法，超出两行常微分方程能承载的内容。</p></details>
+<p>计算机验证并非黑箱：按前章的明确公式求逆度规、所有偏导、联络，再计算 Ricci 张量并化简。由于 \(\partial_tg=\partial_\phi g=0\)，只需要对 \(r,\theta\) 求导。对一般参数应得到全部分量为零；仅在一个点用有限差分算出很小的数，只是数值检查，不是解析证明。</p>
+</section>
+
+<section><h2 id="horizons">3. 三种不同的边界：视界、静止极限与奇点</h2>
+<p>先找 \(r=\text{常数}\) 的曲面什么时候是零曲面。它的法向量来自 \(dr\)，其平方范数是 \(g^{rr}=\Delta/\Sigma\)。令 \(\Delta=0\)，得到：</p>
+<div class="equation">\[\boxed{r_\pm=M\pm\sqrt{M^2-a^2}.}\]</div>
+<p>对于亚极端黑洞，\(r_+\) 是外部事件视界，\(r_-\) 是精确解中的内视界。BL 的 \(g_{rr}\) 在这里发散，但可以换成跨越视界的坐标；这类似上一章的坐标问题。极端时两个根在 \(r=M\) 合并，<strong>视界并没有消失</strong>。若 \(|a|&gt;M\)，没有实根，真空 Kerr 解失去这组视界，成为另一类具有裸露奇点的数学解；这不等于已经证明自然界能制造这种物体。</p>
+<p>再找固定 \(r,\theta,\phi\) 的观察者何时还能存在。他的世界线只有 \(dt\)，要是类时线就必须 \(g_{tt}&lt;0\)。令 \(g_{tt}=0\) 得到外部<strong>静止极限</strong>：</p>
+<div class="equation">\[r_{\rm e}(\theta)=M+\sqrt{M^2-a^2\cos^2\theta}.\]</div>
+<p>在两极 \(r_e=r_+\)，在赤道 \(r_e=2M\)。夹在 \(r_+&lt;r&lt;r_e\) 的区域叫能层（ergoregion）。进入能层不代表必然被吞噬；你仍可能逃出，但无法相对无穷远保持固定方位，必须随自转方向运动。它与事件视界的区别，直接来自“固定坐标世界线的类时条件”和“零曲面条件”是两种不同问题。</p>
+<p>真正的 Kerr 曲率奇点位于 \(\Sigma=0\)，即 \(r=0,\theta=\pi/2\)。在常用辅助笛卡尔坐标中，它对应 \(x^2+y^2=a^2,z=0\)，因此叫环奇点。“环”是坐标几何中的描述，不是可以触摸的旋转铁环；我们不能用经典奇点内部的失效方程可靠预测物质如何存在。</p>
+<div class="lab"><h3>实验：自旋把三种结构分开</h3><div class="controls"><label>a* <output id="spin-value" for="spin">0.700</output><input id="spin" type="range" min="0" max="0.998" step="0.001" value="0.7"></label><label>极角 θ <output id="latitude-value" for="latitude">90°</output><input id="latitude" type="range" min="0" max="90" step="1" value="90"></label><button type="button" id="spin-reset">恢复初值</button></div><canvas id="kerr-structure" role="img" aria-label="Kerr 黑洞子午截面，比较内外视界、静止极限和环奇点">Kerr 结构图需要 Canvas，数学边界由本节公式给出。</canvas><p class="readout" id="kerr-readout" aria-live="polite"></p><p class="caption">坐标示意：x=√(r²+a²) sin θ，z=r cos θ；红点为环奇点在截面上的位置。图形没有声称测得了真实欧氏形状或内禀距离。a*=0 时“内视界”公式给出 r=0，实际已退化为 Schwarzschild 奇点，不能当作正则内视界。</p></div>
+<p>例如 \(a_*=0.7\) 时，\(r_+\approx1.7141M\)、\(r_-\approx0.2859M\)，赤道静止极限依然是 \(2M\)。对于十个太阳质量，外视界 BL 半径约为 25.3 km。但其面积是 \(A_H=4\pi(r_+^2+a^2)=8\pi Mr_+\)，因此面积等效半径 \(\sqrt{A_H/(4\pi)}\) 与 \(r_+\) 不同。</p>
+</section>
+
+<section><h2 id="dragging">4. 拖曳惯性系并不是“空间像水一样旋转”</h2>
+<p>考虑固定 \(r,\theta\) 但可以绕轴转动的世界线，定义坐标角速度 \(\Omega=d\phi/dt\)。类时条件是一个二次不等式：</p>
+<div class="equation">\[g_{tt}+2g_{t\phi}\Omega+g_{\phi\phi}\Omega^2&lt;0,\qquad
+\Omega_-&lt;\Omega&lt;\Omega_+,\]
+\[\Omega_\pm=\frac{-g_{t\phi}\pm\sqrt{g_{t\phi}^2-g_{tt}g_{\phi\phi}}}{g_{\phi\phi}}.\]</div>
+<p>外部远处允许的区间包含零，所以可以悬停。进入能层后，对于 \(a&gt;0\)，允许区间整体移到正角速度，必须顺向转动。靠近视界时这个区间收缩至视界角速度：</p>
+<div class="equation">\[\Omega_H=\frac{a}{r_+^2+a^2}=\frac{a}{2Mr_+}.\]</div>
+<p>另一种有用观察者满足轴向角动量 \(p_\phi=0\)，叫零角动量观察者（ZAMO）。因为 \(p_\phi=g_{t\phi}\dot t+g_{\phi\phi}\dot\phi\)，即使角动量为零，他仍有：</p>
+<div class="equation">\[\omega=-\frac{g_{t\phi}}{g_{\phi\phi}}=\frac{2Mar}{A},\qquad A=(r^2+a^2)^2-a^2\Delta\sin^2\theta.\]</div>
+<p>这便是拖曳效应的可计算含义：零角动量与零坐标角速度不同。远处 \(\omega\approx2J/r^3\)，接近视界时趋向 \(\Omega_H\)。ZAMO 通常仍需加速保持固定半径，不能把他当作随处自由下落的参考系。采用局部正交四标架时，他可以作为定义相机方向、光的局部能量和像素射线的清晰基准。</p>
+<p>能层中的 \(\partial_t\) 变为空间样，因而相对无穷远定义的守恒能量 \(E=-p_t\) 可以为负。Penrose 过程设想物体在能层分裂，一部分携负 \(E\) 掉入黑洞，另一部分带走比原来更多的能量。没有违反能量守恒，差值来自黑洞转动能。理想可逆极限的可提取比例从不可约质量 \(M_{\rm irr}=\sqrt{A_H/(16\pi)}\) 求得；极端黑洞为 \(1-1/\sqrt2\approx29.3\%\)。这是总转动能上限，不是每次分裂、每个吸积盘或喷流的效率。</p>
+</section>
+
+<section><h2 id="carter">5. Carter 常数：四维运动为什么还能分离</h2>
+<p>在一般弯曲时空中，可以直接积分八个一阶变量 \((x^\mu,p_\mu)\)。Kerr 多了一种幸运的隐藏对称性：除了 \(E=-p_t\)、\(L_z=p_\phi\) 和四动量范数，还有 Carter 常数 \(Q\)。为了看它从哪里来，使用 Hamilton–Jacobi 方法：寻找一个作用量函数，使动量等于它的坐标梯度，\(p_\mu=\partial_\mu S\)。</p>
+<p>因为 \(t,\phi\) 是循环坐标，令约化作用量 \(S=-Et+L_z\phi+S_r(r)+S_\theta(\theta)\)，代入 \(g^{\mu\nu}\partial_\mu S\,\partial_\nu S=-\kappa\)。\(\kappa=1\) 表示按静质量归一化的有质量粒子，\(\kappa=0\) 表示光。乘上 \(\Sigma\) 后，可以整理成一个只含 \(r\) 的部分和一个只含 \(\theta\) 的部分；让它们相等就必须等于某个分离常数。这给出：</p>
+<div class="equation">\[Q=p_\theta^2+\cos^2\theta\left[a^2(\kappa-E^2)+\frac{L_z^2}{\sin^2\theta}\right].\]</div>
+<p>它不只是普通绕轴对称性的产物，而与二阶 Killing 张量有关。无需先掌握完整理论，也可以理解它的实用意义：\(Q\) 编码了离开赤道的运动，使径向和纬度运动各自只需处理一维函数。定义：</p>
+<div class="equation">\[\begin{aligned}
+P(r)&=E(r^2+a^2)-aL_z,\\
+R(r)&=P^2-\Delta[\kappa r^2+(L_z-aE)^2+Q],\\
+\Theta(\theta)&=Q-\cos^2\theta\left[a^2(\kappa-E^2)+\frac{L_z^2}{\sin^2\theta}\right].
+\end{aligned}\]</div>
+<p>四条完整测地线方程是：</p>
+<div class="equation">\[\begin{aligned}
+\Sigma\frac{dr}{d\lambda}&=\pm\sqrt{R},&
+\Sigma\frac{d\theta}{d\lambda}&=\pm\sqrt{\Theta},\\
+\Sigma\frac{dt}{d\lambda}&=a(L_z-aE\sin^2\theta)+\frac{(r^2+a^2)P}{\Delta},\\
+\Sigma\frac{d\phi}{d\lambda}&=\frac{L_z}{\sin^2\theta}-aE+\frac{aP}{\Delta}.
+\end{aligned}\]</div>
+<p>有质量粒子取 \(\lambda=\tau\)，光取仿射参数。\(R\ge0,\Theta\ge0\) 才允许运动，根对应转向点。赤道初始条件 \(\theta=\pi/2,p_\theta=0\) 给出 \(Q=0\)，轨迹会留在赤道。一般轨道会在纬度上振荡，不能把一个平面轨迹简单绕黑洞旋转便认为已经得到全部 Kerr 运动。</p>
+<details class="exercise"><summary>回归检查：a=0 时 Carter 常数变成什么？</summary><p>此时 \(Q=p_\theta^2+L_z^2\cot^2\theta\)。球对称的总角动量平方为 \(L^2=p_\theta^2+L_z^2/\sin^2\theta\)，所以 \(Q=L^2-L_z^2\)。把 \(L^2=Q+L_z^2\) 代回径向函数，就能恢复 Schwarzschild 的有效势。这个极限比仅看渲染图像“像不像”更能检验公式是否写对。</p></details>
+<p>实现分离式时，最容易出错的是转向点：平方根不决定离开根后的符号，如果一直固定正号，粒子会卡住或穿进禁止区域。可以用事件检测精确定位根，再反转方向；也可以改用 Hamilton 方程演化动量。定义 Mino 参数 \(d\lambda=\Sigma\,d\gamma\) 后，前两式成为 \(dr/d\gamma=\pm\sqrt R\)、\(d\theta/d\gamma=\pm\sqrt\Theta\)，分离结构更加清晰，但屏幕曝光或时延仍要同时积分 \(t\)。</p>
+</section>
+
+<section><h2 id="isco">6. 顺行与逆行 ISCO：同一个黑洞，两种边缘</h2>
+<p>限制到有质量、赤道、圆轨道。圆轨道要求 \(R=0,R'=0\)，临界稳定再加 \(R''=0\)。这是上一章 \(V'=V''=0\) 的 Kerr 版本。对 \(a_*\ge0\)，解这组代数条件可写成：</p>
+<div class="equation">\[\begin{aligned}
+Z_1&=1+(1-a_*^2)^{1/3}\big[(1+a_*)^{1/3}+(1-a_*)^{1/3}\big],\\
+Z_2&=\sqrt{3a_*^2+Z_1^2},\\
+\frac{r_{\rm ISCO}^{\rm pro/retro}}M&=3+Z_2\mp\sqrt{(3-Z_1)(3+Z_1+2Z_2)}.
+\end{aligned}\]</div>
+<p>减号是顺行，加号是逆行。\(a_*=0\) 时两者都为 \(6M\)；\(a_*=0.7\) 时约为 \(3.393M\) 与 \(8.143M\)；极端极限分别趋于 \(M\) 与 \(9M\)。不能把“顺行轨道坐标半径趋于视界”解读为普通悬停观察者能坐在视界上，极端极限的固有距离与极限顺序存在细微之处。</p>
+<div class="lab"><h3>实验：同一自旋下的三个半径</h3><p class="caption">由上方 a* 滑块控制标记位置。曲线依据闭式公式；只适用于无自旋的测试粒子、赤道圆轨道。</p><canvas id="kerr-isco" role="img" aria-label="Kerr 顺行和逆行 ISCO 以及外视界半径随自旋变化">自旋增加时，顺行 ISCO 减小，逆行 ISCO 增大。</canvas></div>
+<p>圆轨道的坐标角速度是 \(\Omega_{\rm pro}=\sqrt M/(r^{3/2}+a\sqrt M)\)、\(\Omega_{\rm retro}=-\sqrt M/(r^{3/2}-a\sqrt M)\)。若使用 \(x=r/M\)，顺行圆轨道能量为：</p>
+<div class="equation">\[E_{\rm pro}(x)=\frac{x^{3/2}-2x^{1/2}+a_*}{x^{3/4}\sqrt{x^{3/2}-3x^{1/2}+2a_*}}.\]</div>
+<p>把 \(x=r_{\rm ISCO}/M\) 代入即可估算理想薄盘辐射效率 \(1-E_{\rm ISCO}\)。自旋越高，顺行稳定轨道可深入更强场，通常可释放更多束缚能；但磁应力、盘厚度、捕获光子与辐射输运都会影响实际效率。浏览器中把盘内缘简单设为 ISCO 是一种明确的薄盘建模假设，并非完整吸积流体解。</p>
+</section>
+
+<section><h2 id="shadow">7. Kerr 没有一个包办全部方向的“光子球”</h2>
+<p>Schwarzschild 的不稳定圆光轨道组成一个球面。Kerr 中一般存在固定 \(r\) 但 \(\theta\) 来回变化的<strong>球形光轨道</strong>，它们整体形成光子区域；赤道顺行与逆行圆光轨道只是其中的特殊成员。对于光，令 \(\xi=L_z/E\)、\(\eta=Q/E^2\)，再用 \(R=R'=0\) 解出临界参数（\(a\ne0\)）：</p>
+<div class="equation">\[\xi(r)=\frac{r^2(r-3M)+a^2(r+M)}{a(M-r)},\qquad
+\eta(r)=\frac{r^3[4a^2M-r(r-3M)^2]}{a^2(M-r)^2}.\]</div>
+<p>对无穷远、视线与自转轴夹角为 \(i\) 的观察者，屏幕坐标可写成：</p>
+<div class="equation">\[\alpha=-\frac{\xi}{\sin i},\qquad
+\beta=\pm\sqrt{\eta+a^2\cos^2i-\xi^2\cot^2i}.\]</div>
+<p>只取根号非负且与外部相关的不稳定球形轨道分支，便描出影子的边界。公式在 \(a=0\) 或正对自转轴时应另取光滑极限，不能直接把分母置零。高自旋、近赤道观察时影子一侧更扁，视线接近自转轴时又更接近圆形。影子的形状变化、盘的多普勒亮暗不对称与镜头投影是三种不同作用，不宜只用“自旋把黑洞拉扁了”一句话解释整幅图。</p>
+<p>这些解析式适合做离线基准和查表，但只能给边界，不能告诉你盘、背景星空、红移与多次交叉的全部图像。真正的像素仍需要从相机四标架发射零测地线，追踪到发光体或远处背景。有限距离相机还需要把动量投影到自己的局部正交参考系。</p>
+</section>
+
+<section><h2 id="kerr-schild">8. 仿真中为何经常换成 Kerr–Schild 坐标</h2>
+<p>BL 坐标很适合解释守恒量，但靠近 \(\Delta=0\) 时 \(dt/d\lambda,d\phi/d\lambda\) 出现大项，数值积分会变得难处理。一个常用选择是穿越视界的 Kerr–Schild（KS）形式：</p>
+<div class="equation">\[g_{\mu\nu}=\eta_{\mu\nu}+2Hk_\mu k_\nu,\qquad
+H=\frac{Mr^3}{r^4+a^2z^2}.\]</div>
+<p>这里的 \(\eta_{\mu\nu}=\operatorname{diag}(-1,1,1,1)\) 是辅助平直度规，\((t,x,y,z)\) 是 KS 坐标，<strong>不是刚才 BL 坐标直接换名字</strong>。取一套惯用自旋方向约定：</p>
+<div class="equation">\[k_\mu=\left(1,\frac{rx+ay}{r^2+a^2},\frac{ry-ax}{r^2+a^2},\frac zr\right),\]
+\[r^2=\frac12\left[\rho^2-a^2+\sqrt{(\rho^2-a^2)^2+4a^2z^2}\right],\quad\rho^2=x^2+y^2+z^2.\]</div>
+<p>它满足 \(\eta^{\mu\nu}k_\mu k_\nu=0\)，所以逆矩阵特别简单：\(g^{\mu\nu}=\eta^{\mu\nu}-2Hk^\mu k^\nu\)，其中 \(k^\mu\) 用 \(\eta\) 升指标。直接相乘时二次项正比于 \(k^\mu k_\mu=0\)，自动消失。这不仅节省每一步的矩阵求逆，也使笛卡尔射线与 GPU 数据布局更方便。</p>
+<p>给定 Hamilton 量 \(\mathcal H=\tfrac12g^{\mu\nu}p_\mu p_\nu\)，就可以积分：</p>
+<div class="equation">\[\frac{dx^\mu}{d\lambda}=g^{\mu\nu}p_\nu,\qquad
+\frac{dp_\mu}{d\lambda}=-\frac12(\partial_\mu g^{\alpha\beta})p_\alpha p_\beta.\]</div>
+<p>对光要求 \(\mathcal H=0\)。解析求导速度快且误差可控；中心差分更容易写，但每步需重复评估度规，差分间距太大有截断误差、太小又有浮点相消。用 GPU 时，预先写出解析导数或自动生成着色器通常更适合。\(a\to0\)、远场直线、守恒量漂移、影子边界和步长收敛可以组成一套层层递进的测试。</p>
+<details class="exercise"><summary>实现中的坑：为什么不能只改 r₊ 和盘内缘，就把 Schwarzschild 渲染器叫作 Kerr？</summary><p>Kerr 的 \(g_{t\phi}\) 改变了时间与方位运动耦合，\(\Sigma\) 引入纬度依赖，光子区域与捕获边界也都改变。调整视界半径和 ISCO 只改两个表面位置，并没有求解 Kerr 的零测地线。这样的效果可以用于教学示意，但应标注“自旋外观近似”；若声称精确 Kerr，至少应演化完整 Hamilton 方程或 Carter 分离方程并检验守恒量。</p></details>
+</section>
+
+<section><h2 id="interior">9. 内视界与最大延拓：不要把数学地图当作旅游路线</h2>
+<p>亚极端 Kerr 的精确解析延拓比 Schwarzschild 复杂。穿过外视界后，在 \(r_-&lt;r&lt;r_+\) 中 \(\Delta&lt;0\)，径向坐标具有时间性质；内视界是一种 Cauchy 视界，越过它后，只靠原来外部初始面上的数据不足以唯一决定延拓。数学上还会出现其他区域，某些区域允许闭合类时曲线。</p>
+<p>这不意味着真实坍缩黑洞提供了可靠的时间机器。理想解析解极度依赖严格定常和真空；真实黑洞受到剩余辐射、吸积和扰动影响。内视界附近的巨大蓝移可以放大很小的入射扰动，质量暴涨研究揭示了内部结构的不稳定性。内视界与环奇点周围到底如何在一般坍缩中演化，是比外部稳定黑洞几何更精细的问题。</p>
+<p>对本教程的仿真目标，合理边界非常清楚：外部光线、能层、视界邻域可以依据精确 Kerr 背景计算；被未来事件视界捕获的外部观察光线可直接终止。没有必要给它继续绘制穿过环、连接新宇宙的戏剧情节。若需要研究内部，需要另外选择正则变量、扰动模型、约束演化与相应数值分析，不能用一张漂亮的延拓示意代替。</p>
+</section>
+
+<section><h2 id="bridge">10. 从单黑洞走向合并，哪些捷径还能用</h2>
+<p>Schwarzschild 与 Kerr 的廉价来自它们已经是精确、具有强对称性的背景。对于两个相距很远的黑洞，可用后牛顿展开近似相互作用；对于质量比极端的系统，可把小物体视作 Kerr 上的扰动。可比质量黑洞进入强场并合时，整个度规都随时间变化，单个 \(E,L_z,Q\) 不再沿所有光线守恒，也不能对两个 Kerr 度规简单叠加就声称解决了真空 Einstein 方程。</p>
+<p>渲染可以为了实时性使用运动中心、混合透镜或手工拼接势场，但必须交代它们如何偏离真实方程。科学级合并则需要演化时空几何、监控 Hamilton 与动量约束，并从远区提取引力波。下一章先把单黑洞图像的数值流程走完，后续再区分“看起来像合并的可视化”“近似波形模型”和“完整数值相对论”三层成本与可信范围。</p>
+<details class="exercise"><summary>综合自测：描述一个 a*=0.7 的黑洞，哪些陈述正确？</summary><p>① 外视界 \(1.714M\)，正确。② 赤道能层外边界 \(2M\)，正确。③ 进入能层就再也出不来，错误；那是事件视界的性质。④ 顺行 ISCO 比 \(6M\) 小，正确。⑤ 只需把 Schwarzschild 黑球半径缩小即可精确模拟，错误。⑥ 外部定常背景里的测试光子有 \(E,L_z,Q\) 守恒，正确。⑦ 内视界解析延拓已被天文观测证实，错误。把每句话联系到本章相应的方程，比记住结论更有用。</p></details>
+</section>
+
+<section><h2 id="sources">可继续核对的资料</h2><p>下列是原始研究与作者综述。本章的文字展开与交互为独立教学实现，公式约定已统一为 \((-+++)\)、\(G=c=1\)。</p><ul class="source-list"><li><a href="https://doi.org/10.1103/PhysRevLett.11.237">Roy Kerr，Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics，1963</a>：原始解。</li><li><a href="https://arxiv.org/abs/0706.0622">Matt Visser，The Kerr spacetime: A brief introduction，2007/2008</a>：坐标形式、视界、能层与内部结构限制。极端极限保留退化视界。</li><li><a href="https://doi.org/10.1103/PhysRev.174.1559">Brandon Carter，Global Structure of the Kerr Family of Gravitational Fields，1968</a>：可分离性与整体结构。</li><li><a href="https://doi.org/10.1086/151796">Bardeen、Press、Teukolsky，Rotating Black Holes: Locally Nonrotating Frames, Energy Extraction, and Scalar Synchrotron Radiation，1972</a>：局部参考系与轨道公式。</li><li><a href="https://arxiv.org/abs/2105.07101">Perlick 与 Tsupko，Calculating black hole shadows: review of analytical studies，2022</a>：影子参数及观察者条件。</li><li><a href="https://doi.org/10.1103/PhysRevLett.63.1663">Poisson 与 Israel，Inner-horizon instability and mass inflation in black holes，1989</a>：以简化模型研究内视界扰动。</li><li><a href="solutions.js">本页源码：自旋、视界、能层截面与 ISCO</a>。</li></ul></section>
+</article><nav class="pager" aria-label="前后章节"><a href="schwarzschild.html">← 04 · Schwarzschild 解</a><a href="raytracing.html">06 · 光线追踪与 WebGL →</a></nav>
+</main></body></html>

@@ -876,3 +876,14 @@ body[data-page="game"] > .ambient-orb--one { background: #e8e2cd; }
   background-size: 256px 256px;
   opacity: .035;
 }
+
+.game-categories { display: flex; justify-content: center; gap: 8px; margin: 0 0 18px; }
+.game-categories[hidden] { display: none; }
+.game-categories button { padding: 9px 18px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+.game-categories button[aria-selected="true"] { background: var(--selected); border-color: var(--edge); color: var(--text); }
+.game-categories button:hover { color: var(--text); }
+.game-categories button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 650px), (max-height: 500px) {
+  .game-categories { gap: 4px; margin-bottom: 12px; }
+  .game-categories button { padding: 7px 12px; font-size: 14px; }
+}

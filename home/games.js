@@ -11,6 +11,10 @@ import { loadGameMetadata } from '/game/catalog.js';
   const panel = document.getElementById('game');
   const heading = document.getElementById('game-title');
   const pager = panel.querySelector('.game-pagination');
+  const categories = document.getElementById('game-categories');
+  const categoryPanel = document.getElementById('game-category-panel');
+  let groups = [];
+  let selectedGroup = 0;
   let pageSize = 8;
   let page = 0;
   function paginate() {
@@ -41,7 +45,7 @@ import { loadGameMetadata } from '/game/catalog.js';
       else button.removeAttribute('aria-current');
     });
     if (pager.hidden && pagerHadFocus && cards[0]) cards[0].focus({ preventScroll: true });
-    count.textContent = String(cards.length).padStart(2, '0');
+
   }
   function resizePages() {
     if (panel.hidden || !panel.clientHeight || !list.children.length) return;
@@ -62,7 +66,7 @@ import { loadGameMetadata } from '/game/catalog.js';
     };
     // Try the full grid without controls first so hidden controls reclaim space.
     const fullRows = Math.ceil(cards.length / columns);
-    if (fullRows * cardHeight + (fullRows - 1) * gap <= panel.clientHeight - outerHeight(heading)) {
+    if (fullRows * cardHeight + (fullRows - 1) * gap <= panel.clientHeight - outerHeight(heading) - outerHeight(categories)) {
       pageSize = cards.length;
       page = 0;
       paginate();
@@ -71,7 +75,7 @@ import { loadGameMetadata } from '/game/catalog.js';
     pager.hidden = false;
     // Recheck after pagination wraps: more dots may consume another line.
     for (let pass = 0; pass < 4; pass++) {
-      const available = panel.clientHeight - outerHeight(heading) - outerHeight(pager);
+      const available = panel.clientHeight - outerHeight(heading) - outerHeight(categories) - outerHeight(pager);
       const rows = Math.max(1, Math.floor((available + gap) / (cardHeight + gap)));
       const size = Math.min(cards.length, columns * rows);
       const unchanged = size === pageSize;
@@ -103,40 +107,73 @@ import { loadGameMetadata } from '/game/catalog.js';
     status.hidden = false;
     status.textContent = '正在加载游戏…';
     try {
-      const games = await loadGameMetadata();
-      const cards = games.map((game, i) => {
-        const card = document.createElement('a');
-        card.className = 'card game-card';
-        card.href = game.url;
-        const number = document.createElement('span');
-        number.className = 'game-number';
-        number.textContent = String(i + 1).padStart(2, '0');
-        const title = document.createElement('span');
-        title.className = 'card-name';
-        title.textContent = game.title;
-        const arrow = document.createElement('span');
-        arrow.className = 'arrow';
-        arrow.setAttribute('aria-hidden', 'true');
-        card.append(number, title);
-        if (game.description) {
-          const description = document.createElement('span');
-          description.className = 'card-description';
-          description.textContent = game.description;
-          card.append(description);
-        }
-        card.append(arrow);
-        return card;
-      });
-      list.replaceChildren(...cards);
-      status.hidden = games.length > 0;
-      status.textContent = games.length ? '' : '暂无游戏';
-      paginate();
-      resizePages();
+      groups = await loadGameMetadata();
+      count.textContent = String(groups.reduce((total, group) => total + group.games.length, 0)).padStart(2, '0');
+      categories.replaceChildren(...groups.map((group, i) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.id = `game-tab-${group.id}`;
+        tab.textContent = group.title;
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-controls', 'game-category-panel');
+        tab.addEventListener('click', () => selectGroup(i));
+        tab.addEventListener('keydown', event => {
+          const targets = { ArrowRight: (i + 1) % groups.length, ArrowLeft: (i - 1 + groups.length) % groups.length, Home: 0, End: groups.length - 1 };
+          if (!(event.key in targets)) return;
+          event.preventDefault();
+          event.stopPropagation();
+          const target = targets[event.key];
+          selectGroup(target);
+          categories.children[target].focus();
+        });
+        return tab;
+      }));
+      categories.hidden = groups.length === 0;
+      selectGroup(Math.min(selectedGroup, Math.max(0, groups.length - 1)));
     } catch {
       status.textContent = '游戏列表加载失败，请重试';
       retry.hidden = false;
       pager.hidden = true;
     }
+  }
+  function selectGroup(index) {
+    selectedGroup = index;
+    page = 0;
+    const group = groups[index];
+    [...categories.children].forEach((tab, i) => {
+      tab.setAttribute('aria-selected', String(i === index));
+      tab.tabIndex = i === index ? 0 : -1;
+    });
+    if (group) categoryPanel.setAttribute('aria-labelledby', `game-tab-${group.id}`);
+    else categoryPanel.removeAttribute('aria-labelledby');
+    const cards = (group?.games || []).map((game, i) => {
+      const card = document.createElement('a');
+      card.className = 'card game-card';
+      card.href = game.url;
+      const number = document.createElement('span');
+      number.className = 'game-number';
+      number.textContent = String(i + 1).padStart(2, '0');
+      const title = document.createElement('span');
+      title.className = 'card-name';
+      title.textContent = game.title;
+      const arrow = document.createElement('span');
+      arrow.className = 'arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      card.append(number, title);
+      if (game.description) {
+        const description = document.createElement('span');
+        description.className = 'card-description';
+        description.textContent = game.description;
+        card.append(description);
+      }
+      card.append(arrow);
+      return card;
+    });
+    list.replaceChildren(...cards);
+    status.hidden = cards.length > 0;
+    status.textContent = cards.length ? '' : '暂无游戏';
+    paginate();
+    resizePages();
   }
   retry.addEventListener('click', refresh);
   refresh();

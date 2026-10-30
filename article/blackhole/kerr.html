@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>05 · Kerr 黑洞：自转、能层与可分离测地线</title>
   <meta name="description" content="逐项解释 Kerr 度规、内外视界、能层、环奇点、ISCO、Carter 常数与 Kerr–Schild 光线积分。">
-  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css">
+  <script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css">
   <script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="solutions.js"></script>
 </head>
 <body data-page="kerr"><main>
@@ -17,6 +17,7 @@
 
 <section><h2 id="spin-parameter">1. 质量之外，多一个角动量</h2>
 <p>继续采用度规号约定 \((-+++)\) 和几何单位 \(G=c=1\)。质量参数 \(M\) 有长度量纲，角动量 \(J\) 有长度平方量纲，定义 \(a=J/M\)，它仍是一个长度。程序中更方便使用无量纲自旋 \(a_*=a/M\)。恢复普通单位时：</p>
+<p>这里的下标 phys 与 geom 分别是“普通物理单位”和“几何单位”的标签；星号 \(*\) 则标记无量纲自旋，不表示乘法。前面的总览用 \(\chi\) 表示同一个无量纲比值，本章采用黑洞轨道资料中常见的 \(a_*\)。下式只是把同一个质量、同一个角动量用不同单位记下来。</p>
 <div class="equation">\[M_{\rm geom}=\frac{GM_{\rm phys}}{c^2},\qquad a=\frac{J_{\rm phys}}{M_{\rm phys}c},\qquad a_* =\frac{cJ_{\rm phys}}{GM_{\rm phys}^2}.\]</div>
 <p>\(a_*=0\) 退化为 Schwarzschild。\(|a_*|&lt;1\) 是亚极端 Kerr 黑洞，\(|a_*|=1\) 是极端极限。自旋的正负只是在选定轴方向后的约定；轨道角动量与它同向叫顺行，反向叫逆行。本页交互把 \(a_*\) 取非负，同时比较两种轨道方向。</p>
 <p>“静态”与“定常”在这里要分开：Kerr 度规不随时间改变，所以定常；但自转使时间方向不能处处与一组空间切片正交，因此通常不是静态。绕自转轴旋转仍不改变几何，这叫轴对称；绕其他轴旋转就不再是对称。少了球对称，我们不能再把每条普通轨道都限制在一个固定平面中。</p>
@@ -25,6 +26,7 @@
 
 <section><h2 id="metric">2. 把完整度规拆成可读的几块</h2>
 <p>采用 Boyer–Lindquist（BL）坐标 \((t,r,\theta,\phi)\)。它在远处接近熟悉的时间和球坐标，但 \(r\) 已不是一般意义的面积半径。引入两个反复出现的函数：</p>
+<p>先给两个反复出现的长表达式取短名：\(\Sigma\) 读作大写 sigma，\(\Delta\) 读作大写 delta。这里它们是函数名；\(\Sigma\) 不是求和号 \(\sum\)，\(\Delta\) 也不是“某个量的变化”。这种缩写的收益是，读度规时能先看清时间、半径、转角如何组合，而不必反复读同一串代数。</p>
 <div class="equation">\[\Sigma=r^2+a^2\cos^2\theta,\qquad\Delta=r^2-2Mr+a^2.\]</div>
 <p>\(\Sigma\) 同时依赖半径与纬度，\(\Delta\) 只依赖半径。完整线元是：</p>
 <div class="equation">\[\begin{aligned}
@@ -34,6 +36,7 @@ ds^2={}&-\left(1-\frac{2Mr}{\Sigma}\right)dt^2
 &+\left(r^2+a^2+\frac{2Ma^2r\sin^2\theta}{\Sigma}\right)\sin^2\theta\,d\phi^2.
 \end{aligned}\]</div>
 <p>逐项看：\(dt^2\) 控制静止时钟；\(dr^2,d\theta^2,d\phi^2\) 控制空间方向的局部间隔；最重要的新项是 \(dt\,d\phi\)，它让时间与绕轴运动发生耦合。因为指标求和同时包含 \(t\phi\) 与 \(\phi t\)，<strong>交叉项系数是 \(2g_{t\phi}\)</strong>，因此 \(g_{t\phi}=-2Mar\sin^2\theta/\Sigma\)，不是 \(-4Mar\sin^2\theta/\Sigma\)。这是一类常见的代码错误。</p>
+<p>可以用一对钟理解交叉项带来的变化。在能层外的同一 \(r,\theta\) 处，让两只钟以大小相同、方向相反的坐标角速度运动；取相同的 \(dt\)，它们的 \(d\phi\) 互为相反数。所有平方项相同，唯独 \(dt\,d\phi\) 这一项变号，因此两条世界线累积的固有时不同（前提是两条都类时）。自转使顺行与逆行不再等价，这件事已经写在度规里，还没有用到任何吸积盘颜色。</p>
 <p>做三次快速自检。第一，令 \(a=0\)，有 \(\Sigma=r^2,\Delta=r(r-2M)\)，逐项回到上一章。第二，远处 \(g_{tt}\approx-1+2M/r\)，识别质量；交叉项约为 \(-4J\sin^2\theta\,dt\,d\phi/r\)，识别角动量。第三，令 \(M=0\) 而保留坐标参数 \(a\)，仍是平直时空，只是采用扁球坐标；不能看到 \(a\) 就认为必然存在引力。</p>
 <details class="exercise"><summary>为什么没有像 Schwarzschild 那样给出“两步求解 Kerr”的捷径？</summary><p>球对称把未知函数压缩为只依赖 \(r\) 的两个函数，而定常轴对称一般仍允许多个 \((r,\theta)\) 函数，真空方程是耦合偏微分方程。Kerr 的构造使用了额外的代数特殊性与特殊零方向结构。这里直接给出精确解，再用极限、守恒量和 \(R_{\mu\nu}=0\) 进行验证；这与声称仅凭“有质量、有自转”便推导出它不同。要完整复现发现过程，需要 Newman–Penrose 形式或其他解生成方法，超出两行常微分方程能承载的内容。</p></details>
 <p>计算机验证并非黑箱：按前章的明确公式求逆度规、所有偏导、联络，再计算 Ricci 张量并化简。由于 \(\partial_tg=\partial_\phi g=0\)，只需要对 \(r,\theta\) 求导。对一般参数应得到全部分量为零；仅在一个点用有限差分算出很小的数，只是数值检查，不是解析证明。</p>
@@ -66,6 +69,7 @@ ds^2={}&-\left(1-\frac{2Mr}{\Sigma}\right)dt^2
 
 <section><h2 id="carter">5. Carter 常数：四维运动为什么还能分离</h2>
 <p>在一般弯曲时空中，可以直接积分八个一阶变量 \((x^\mu,p_\mu)\)。Kerr 多了一种幸运的隐藏对称性：除了 \(E=-p_t\)、\(L_z=p_\phi\) 和四动量范数，还有 Carter 常数 \(Q\)。为了看它从哪里来，使用 Hamilton–Jacobi 方法：寻找一个作用量函数，使动量等于它的坐标梯度，\(p_\mu=\partial_\mu S\)。</p>
+<p>先拆开 \(p_\mu\)：它共有 \(p_t,p_r,p_\theta,p_\phi\) 四个分量，与四个位置坐标配对。\(p_\theta\) 是极角的共轭动量，不是日常三维直角坐标里的线动量；\(L_z\) 的 z 指自转轴。\(S_r(r)\) 与 \(S_\theta(\theta)\) 则是两个待求函数的名字，不表示对 S 求偏导。所谓“循环坐标”，就是方程中的系数不显含这个坐标，因此相应动量守恒。</p>
 <p>因为 \(t,\phi\) 是循环坐标，令约化作用量 \(S=-Et+L_z\phi+S_r(r)+S_\theta(\theta)\)，代入 \(g^{\mu\nu}\partial_\mu S\,\partial_\nu S=-\kappa\)。\(\kappa=1\) 表示按静质量归一化的有质量粒子，\(\kappa=0\) 表示光。乘上 \(\Sigma\) 后，可以整理成一个只含 \(r\) 的部分和一个只含 \(\theta\) 的部分；让它们相等就必须等于某个分离常数。这给出：</p>
 <div class="equation">\[Q=p_\theta^2+\cos^2\theta\left[a^2(\kappa-E^2)+\frac{L_z^2}{\sin^2\theta}\right].\]</div>
 <p>它不只是普通绕轴对称性的产物，而与二阶 Killing 张量有关。无需先掌握完整理论，也可以理解它的实用意义：\(Q\) 编码了离开赤道的运动，使径向和纬度运动各自只需处理一维函数。定义：</p>
@@ -74,6 +78,7 @@ P(r)&=E(r^2+a^2)-aL_z,\\
 R(r)&=P^2-\Delta[\kappa r^2+(L_z-aE)^2+Q],\\
 \Theta(\theta)&=Q-\cos^2\theta\left[a^2(\kappa-E^2)+\frac{L_z^2}{\sin^2\theta}\right].
 \end{aligned}\]</div>
+<p>这三个新名字各有分工：\(P\) 只是节省书写的中间组合；\(R(r)\) 控制径向运动；\(\Theta(\theta)\)（大写 theta）控制极角运动。这里的 \(R(r)\) 不是 Ricci 曲率标量——Kerr 真空中的后者为零，而这个径向函数通常不为零。带括号的自变量和当前定义是辨认它们的关键。下面前两条式子开平方后会出现正负号，它们表示当前向内还是向外、向北还是向南。</p>
 <p>四条完整测地线方程是：</p>
 <div class="equation">\[\begin{aligned}
 \Sigma\frac{dr}{d\lambda}&=\pm\sqrt{R},&
@@ -88,6 +93,7 @@ R(r)&=P^2-\Delta[\kappa r^2+(L_z-aE)^2+Q],\\
 
 <section><h2 id="isco">6. 顺行与逆行 ISCO：同一个黑洞，两种边缘</h2>
 <p>限制到有质量、赤道、圆轨道。圆轨道要求 \(R=0,R'=0\)，临界稳定再加 \(R''=0\)。这是上一章 \(V'=V''=0\) 的 Kerr 版本。对 \(a_*\ge0\)，解这组代数条件可写成：</p>
+<p>闭式答案比较长，先看怎样使用。\(Z_1,Z_2\) 只是两个中间数，没有新增的物理参数；先给定自旋 \(a_*\)，按顺序算完它们，最后得到半径与质量长度的比。pro、retro 分别表示顺行、逆行，写在上方也是名称标签，不是幂。\(\mp\) 要与两个名称按顺序配对：顺行取减号，逆行取加号。比起背住这串根号，更重要的是记住它来自圆轨道条件与稳定性条件共同成立。</p>
 <div class="equation">\[\begin{aligned}
 Z_1&=1+(1-a_*^2)^{1/3}\big[(1+a_*)^{1/3}+(1-a_*)^{1/3}\big],\\
 Z_2&=\sqrt{3a_*^2+Z_1^2},\\
@@ -102,9 +108,11 @@ Z_2&=\sqrt{3a_*^2+Z_1^2},\\
 
 <section><h2 id="shadow">7. Kerr 没有一个包办全部方向的“光子球”</h2>
 <p>Schwarzschild 的不稳定圆光轨道组成一个球面。Kerr 中一般存在固定 \(r\) 但 \(\theta\) 来回变化的<strong>球形光轨道</strong>，它们整体形成光子区域；赤道顺行与逆行圆光轨道只是其中的特殊成员。对于光，令 \(\xi=L_z/E\)、\(\eta=Q/E^2\)，再用 \(R=R'=0\) 解出临界参数（\(a\ne0\)）：</p>
+<p>\(\xi\)（xi）和 \(\eta\)（eta）把光线动量的整体尺度除掉，只保留决定轨迹形状的两个比值。它们在本节是普通标量；\(\eta\) 既不是平直度规 \(\eta_{\mu\nu}\)，也不是下一章双星的对称质量比。求 \(R'=0\) 时，导数对半径取，先把 \(E,L_z,Q\) 当作常数；联立之后，才把临界常数写成参数 r 的函数。</p>
 <div class="equation">\[\xi(r)=\frac{r^2(r-3M)+a^2(r+M)}{a(M-r)},\qquad
 \eta(r)=\frac{r^3[4a^2M-r(r-3M)^2]}{a^2(M-r)^2}.\]</div>
 <p>对无穷远、视线与自转轴夹角为 \(i\) 的观察者，屏幕坐标可写成：</p>
+<p>接下来是在相机屏幕上画图：\(\alpha\)（alpha）与 \(\beta\)（beta）是影子边界的横、纵坐标，具有长度量纲，不是角度，也不是第一章的速度比 \(\beta=v/c\)。\(i\) 在这里是观察倾角，是一个实际的角度值；它没有作为指标出现，因此不求和。选一个允许的球形光轨道半径 r，算出 \(\xi,\eta\)，再算这两个屏幕坐标，就得到边界上的一点。</p>
 <div class="equation">\[\alpha=-\frac{\xi}{\sin i},\qquad
 \beta=\pm\sqrt{\eta+a^2\cos^2i-\xi^2\cot^2i}.\]</div>
 <p>只取根号非负且与外部相关的不稳定球形轨道分支，便描出影子的边界。公式在 \(a=0\) 或正对自转轴时应另取光滑极限，不能直接把分母置零。高自旋、近赤道观察时影子一侧更扁，视线接近自转轴时又更接近圆形。影子的形状变化、盘的多普勒亮暗不对称与镜头投影是三种不同作用，不宜只用“自旋把黑洞拉扁了”一句话解释整幅图。</p>
@@ -113,6 +121,7 @@ Z_2&=\sqrt{3a_*^2+Z_1^2},\\
 
 <section><h2 id="kerr-schild">8. 仿真中为何经常换成 Kerr–Schild 坐标</h2>
 <p>BL 坐标很适合解释守恒量，但靠近 \(\Delta=0\) 时 \(dt/d\lambda,d\phi/d\lambda\) 出现大项，数值积分会变得难处理。一个常用选择是穿越视界的 Kerr–Schild（KS）形式：</p>
+<p>这次的短写把“平直测量规则”和“黑洞带来的修正”分开。\(k_\mu\) 记录一条特殊的零方向，两个 k 相乘形成一张矩阵，\(H\) 是控制修正强度的标量函数。它与稍后表示轨迹演化的 Hamilton 量 \(\mathcal H\) 不同：前者构造度规，后者由度规和光线动量构造。</p>
 <div class="equation">\[g_{\mu\nu}=\eta_{\mu\nu}+2Hk_\mu k_\nu,\qquad
 H=\frac{Mr^3}{r^4+a^2z^2}.\]</div>
 <p>这里的 \(\eta_{\mu\nu}=\operatorname{diag}(-1,1,1,1)\) 是辅助平直度规，\((t,x,y,z)\) 是 KS 坐标，<strong>不是刚才 BL 坐标直接换名字</strong>。取一套惯用自旋方向约定：</p>

@@ -1,15 +1,17 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03 · 逐项读懂爱因斯坦场方程</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="foundations.js"></script></head><body data-page="einstein"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>03 / 09</span></nav><article><p class="eyebrow">03 · 几何与物质的关系</p><h1>逐项读懂爱因斯坦场方程</h1><p class="lead">几何提供了一整套测量和求导工具，但还没有告诉我们应该选哪个度规。场方程把几何和物质联系起来；对称性、初始条件和边界条件再决定具体是哪一个解。</p><div class="toc" data-toc></div>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03 · 逐项读懂爱因斯坦场方程</title><script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="foundations.js"></script></head><body data-page="einstein"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>03 / 09</span></nav><article><p class="eyebrow">03 · 几何与物质的关系</p><h1>逐项读懂爱因斯坦场方程</h1><p class="lead">几何提供了一整套测量和求导工具，但还没有告诉我们应该选哪个度规。场方程把几何和物质联系起来；对称性、初始条件和边界条件再决定具体是哪一个解。</p><div class="toc" data-toc></div>
 <h2 id="principle">1. 从等效原理开始，但不止于等效原理</h2>
 <p>在封闭的自由落体电梯里，你和物体一起落下，附近物体可以漂浮。相反，在远离引力的空间中让电梯加速，地板会压住脚，让你感到类似“重力”。这提示我们：引力可以通过时空几何和参考系描述，局部自由落体是不受非引力作用的运动。</p>
 <p>等效原理是局部陈述。两个相隔较远的物体受到稍有不同的自由落体加速度，产生潮汐，不能用一个共同的加速参考系在整个区域消除。等效原理帮助确定物质如何在给定几何中运动，但不能独自推导出唯一的引力场方程；还需要对动力学、对称性和弱场极限作要求。</p>
 <h2 id="stress">2. 右边：能动张量究竟装了什么</h2>
 <p>先站在某一点的局部正交惯性系，使用 \(x^0=ct\)。能动张量 \(T^{\hat\mu\hat\nu}\) 将能量、动量、应力放在同一个对称矩阵中。帽子表示局部正交基底，避免把一般坐标中的分量直接当作测量值：</p>
+<p>先给这张表的行列一个操作意义：第一指标指定记录哪一种能量或动量，第二指标指定流过哪个方向的面。时间槽位记 0，空间槽位记 x、y、z。\(\varepsilon\)（epsilon）是每单位体积的能量；\(S_x\) 是沿 x 方向每秒通过单位面积的能量；\(\sigma_{xy}\) 则记录 x 动量沿 y 方向的流动。这里用的是动量通量的应力约定，静止流体的对角空间项是正压力。除以 \(c\) 是为了让能流项也具有能量密度的单位。帽子只标记“本地钟尺组成的正交基”，并不是新的求和操作。</p>
 <div class="equation">\[T^{\hat\mu\hat\nu}=\begin{pmatrix}\varepsilon&S_x/c&S_y/c&S_z/c\\S_x/c&\sigma_{xx}&\sigma_{xy}&\sigma_{xz}\\S_y/c&\sigma_{yx}&\sigma_{yy}&\sigma_{yz}\\S_z/c&\sigma_{zx}&\sigma_{zy}&\sigma_{zz}\end{pmatrix}.\]</div>
 <p>\(\varepsilon\) 是能量密度（焦耳每立方米），\(S_i\) 是能流密度（瓦每平方米），空间部分描述动量流或应力，单位与能量密度相同。相对论中不仅静质量引力有效：运动能量、辐射和压力都会进入方程。把上标版本换成下标版本时必须用两次度规，时间—空间分量的符号可能改变。</p>
 <p>理想流体是常用例子。能量密度 \(\varepsilon\)、各向同性压力 \(p\)，四速度满足 \(u^\mu u_\mu=-c^2\)，则：</p>
 <div class="equation">\[T^{\mu\nu}=(\varepsilon+p)\frac{u^\mu u^\nu}{c^2}+pg^{\mu\nu}.\]</div>
 <p>在流体静止的局部惯性系，\(u^{\hat\mu}=(c,0,0,0)\)，因此 \(T^{\hat0\hat0}=\varepsilon\)、\(T^{\hat i\hat j}=p\delta^{ij}\)。低速稀薄物质近似 \(\varepsilon\simeq\rho c^2\)、\(p\ll\rho c^2\)，这才回到“质量密度主导引力”的牛顿直觉。</p>
 <h2 id="equation">3. 左边：为什么是这个曲率组合</h2>
+<p>现在两边都有了可比较的表：\(T_{\mu\nu}\) 记录能量动量，上一章构造的 \(G_{\mu\nu}\) 记录一种曲率组合。固定两个方向，比如都取时间方向 0，场方程就是这两张表中相应元素的关系；换成 0、1，就得到另一条关系。带两个下标的 \(G\) 是几何对象，右边不带下标的 \(G\) 则是牛顿引力常数。还允许一个常数 \(\Lambda\)（大写 lambda）乘度规，它叫宇宙学常数。先辨认这些角色，再读完整方程：</p>
 <div class="equation">\[\boxed{G_{\mu\nu}+\Lambda g_{\mu\nu}=\frac{8\pi G}{c^4}T_{\mu\nu}},\qquad G_{\mu\nu}=R_{\mu\nu}-\frac12Rg_{\mu\nu}.\]</div>
 <p>\(R_{\mu\nu}\) 是 Ricci 张量，\(R\) 是其迹，\(g_{\mu\nu}\) 是我们要求解的度规。\(\Lambda\) 是宇宙学常数，单位为长度的负二次方。黑洞附近的局部教程通常令 \(\Lambda=0\)，因为在所研究的尺度上其影响可以忽略；这不等于宣称真实宇宙的 \(\Lambda\) 为零。</p>
 <p>为什么不直接写 \(R_{\mu\nu}=\kappa T_{\mu\nu}\)？因为物质满足局部协变守恒 \(\nabla_\mu T^{\mu\nu}=0\)，而几何恒等式保证的是 \(\nabla^\mu(R_{\mu\nu}-\tfrac12Rg_{\mu\nu})=0\)。额外的迹项使左右结构相容。\(\nabla g=0\) 又允许加入常数乘 \(g\)。这给出自然的候选；系数 \(8\pi G/c^4\) 由牛顿极限确定。</p>
@@ -19,9 +21,11 @@
 <p>先令 \(\Lambda=0\)，用 \(g^{\mu\nu}\) 乘场方程。由于 \(g^{\mu\nu}g_{\mu\nu}=4\)，左侧变成 \(R-\tfrac12R\times4=-R\)。若记 \(T=g^{\mu\nu}T_{\mu\nu}\)，便有 \(R=-8\pi GT/c^4\)。再代回原式：</p>
 <div class="equation">\[R_{\mu\nu}=\frac{8\pi G}{c^4}\left(T_{\mu\nu}-\frac12Tg_{\mu\nu}\right).\]</div>
 <p>真空 \(T_{\mu\nu}=0\) 意味着 \(R_{\mu\nu}=0\)，但不要求 \(R^\rho{}_{\sigma\mu\nu}=0\)。想象质量所在区域之外：那里没有局部物质，仍可以有由整体解与边界条件决定的引力场。Schwarzschild 和 Kerr 都是这样的真空解，质量与角动量编码在整体时空中。这里不应把奇点当作已知的、正常的局部物质密度来代入。</p>
+<p>这里要特别留意“等于零”的对象。\(T=0\) 只说能动张量的迹为零；真空要求的是整张表 \(T_{\mu\nu}=0\)。例如电磁场可以有非零能量动量却具有零迹。因此下面讨论真空时，总是要求每个分量都为零，不能只检查一个缩并后的数。</p>
 <p>牛顿理论也有类似情况：质量外部满足 \(\nabla^2\Phi=0\)，而 \(\Phi=-GM/r\) 显然不为零。Laplace 方程为零只约束二阶导数的和，不要求每个二阶导数为零。对应地，真空潮汐可以拉长一个方向、压缩另外两个方向，总迹仍然为零。</p>
 <section class="lab" aria-labelledby="tidal-title"><h3 id="tidal-title">实验 · 真空里的潮汐为何可以“迹为零”</h3><p>在局部自由落体系，初始静止的小球团受到径向拉伸、两个横向压缩。这里只画一个横截面，使用冻结曲率的短时展开 ξ≈ξ₀+½ξ̈₀Δτ²，固定中心 r；不是对黑洞的完整下落轨迹。</p><canvas id="tidal-canvas" width="800" height="380" role="img" aria-label="真空潮汐造成径向拉伸与横向压缩">径向潮汐系数为 2M/r³，两个切向系数均为 −M/r³，总和为零。</canvas><div class="controls"><label for="tidal-radius">中心坐标半径 r <output id="tidal-radius-value">8.0 M</output><input id="tidal-radius" type="range" min="6" max="20" step="0.2" value="8"></label><label for="tidal-time">短时展开 Δτ <output id="tidal-time-value">6.0 M</output><input id="tidal-time" type="range" min="0" max="8" step="0.1" value="6"></label></div><div id="tidal-readout" class="readout" aria-live="polite"></div><p class="caption">径向拉伸与两次横向压缩的系数和为零。二阶展开的截断项会让有限时刻面积或体积出现更高阶偏差，不能据此解读精确体积守恒。</p></section>
 <h2 id="newton">5. 牛顿极限：一步步找回熟悉的重力</h2>
+<p>我们已经用新语言写了引力，现在必须让它回答一个旧问题：放开一颗慢速小球，它是否仍按牛顿规律下落？用 \(\Phi\)（大写 phi）表示单位质量的牛顿引力势，\(\rho\) 表示物质的质量密度；此处它们都是标量，不是指标。\(g_{00}\) 的两个 0 表示时间—时间槽位，\(g_{0i}\) 表示时间与第 i 个空间方向的混合槽位。下文的 \(\nabla^2\Phi\) 是平直三维空间的 Laplace 算子，即 \(\partial_x^2\Phi+\partial_y^2\Phi+\partial_z^2\Phi\)，不是把一个向量平方。</p>
 <p>假设场很弱 \(|\Phi|/c^2\ll1\)、静态，粒子很慢 \(v\ll c\)，且压力可忽略。考虑局部弱场坐标中的 \(g_{00}=-(1+2\Phi/c^2)\)，\(g_{0i}\simeq0\)。由于空间度规近似单位阵，联络的主导项是：</p>
 <div class="equation">\[\Gamma^i{}_{00}\simeq-\frac12\delta^{ij}\partial_jg_{00}=\frac{\partial_i\Phi}{c^2}.\]</div>
 <p>慢速粒子的四速度主要沿时间方向。测地线方程中 \(dx^0/dt=c\)，忽略高阶项后：</p>
@@ -32,8 +36,10 @@
 <details class="exercise"><summary>练习：无穷远处 Φ=0，为什么引力井里的静止钟较慢？</summary><p>静止钟 \(dx^i=0\)，所以 \(d\tau=\sqrt{-g_{00}}dt\simeq(1+\Phi/c^2)dt\)。引力井里 \(\Phi&lt;0\)，于是 \(d\tau&lt;dt\)。这里比较的是静态场中的静止观察者；落入黑洞的自由落体钟还要计入运动和坐标问题。</p></details>
 <h2 id="action">6. 再深入一层：从一个标量作用量得到场方程</h2>
 <p>力学里，作用量是沿路径累积的一个数，真实路径使其一阶变分为零。场论则对整个时空积分，把未知度规作为可变对象。下式采用 \(c=1\)，\(g=\det(g_{\mu\nu})\)，\(S_m\) 为物质作用量：</p>
+<p>“变分”可以想成比较两个极其接近的候选方案。把度规每个位置的数稍微改一点，算出作用量改变多少；真正的解要求一阶改变为零，这不一定是最小值。\(S[g,\psi]\) 的方括号表示它依赖整片时空里的度规和物质场 \(\psi\)，不只是某个点的数值。\(d^4x\) 是 \(dx^0dx^1dx^2dx^3\) 的短写；\(\det\) 取矩阵行列式，\(\sqrt{-g}\) 则把坐标小格子换算成几何体积。</p>
 <div class="equation">\[S[g,\psi]=\frac1{16\pi G}\int d^4x\,\sqrt{-g}\,(R-2\Lambda)+S_m[g,\psi].\]</div>
 <p>\(\sqrt{-g}\,d^4x\) 是坐标变换下不变的体积元素，\(R\) 是曲率标量，\(\psi\) 统称物质场。对逆度规 \(g^{\mu\nu}\) 作小变化时，使用：</p>
+<p>下面的 \(\delta g^{\mu\nu}\) 是我们试加的微小改动，\(\delta S_m/\delta g^{\mu\nu}\) 是物质作用量对此改动的响应，称为泛函导数。这里孤立的 \(\delta\) 是变分符号；它不同于带一上一下两个指标的单位矩阵 \(\delta^\mu{}_\nu\)。把两种写法看完整，就不会把“修改方案”误读成“指标相等时取 1”。</p>
 <div class="equation">\[\delta\sqrt{-g}=-\frac12\sqrt{-g}\,g_{\mu\nu}\delta g^{\mu\nu},\qquad T_{\mu\nu}=-\frac2{\sqrt{-g}}\frac{\delta S_m}{\delta g^{\mu\nu}}.\]</div>
 <p>曲率部分的变分给出 \(R_{\mu\nu}\delta g^{\mu\nu}\) 加一个全散度。通过合适的边界条件与边界项处理掉全散度后：</p>
 <div class="equation">\[\delta S=\frac1{16\pi G}\int\sqrt{-g}\left(G_{\mu\nu}+\Lambda g_{\mu\nu}-8\pi GT_{\mu\nu}\right)\delta g^{\mu\nu}\,d^4x.\]</div>
@@ -45,6 +51,6 @@
 <h2 id="conservation">8. 局部守恒不等于随手定义一个全宇宙能量</h2>
 <p>\(\nabla_\mu T^{\mu\nu}=0\) 是局部能量动量关系。它包含联络项，不是任意坐标中简单的 \(\partial_\mu T^{\mu\nu}=0\)。引力场本身也不能用一个普适的、局部坐标不变的引力能量密度张量来描述。</p>
 <p>在渐近平直时空，可以在无穷远处定义 ADM 质量、Bondi 质量等整体量，并衡量向外辐射的能量。因此合并前后说“约几个太阳质量的能量成为引力波”有精确定义的渐近背景。对任意宇宙学时空，不能不加条件地照搬同一种总能量守恒形式。</p>
-<details class="exercise"><summary>检查理解：为什么黑洞外部的 T=0 不能让你删掉黑洞？</summary><p>因为场方程是在每个点约束曲率的一部分，整体解还由边界条件、初值和全局结构决定。真空 Schwarzschild 的 Ricci 为零，而例如曲率不变量 \(R_{\alpha\beta\gamma\delta}R^{\alpha\beta\gamma\delta}=48M^2/r^6\) 非零。质量是解中的整体参数，不需要在每个外部点都有物质。</p></details>
+<details class="exercise"><summary>检查理解：为什么黑洞外部的能动张量为零，仍然有引力？</summary><p>因为场方程是在每个点约束曲率的一部分，整体解还由边界条件、初值和全局结构决定。真空 Schwarzschild 的 Ricci 为零，而例如曲率不变量 \(R_{\alpha\beta\gamma\delta}R^{\alpha\beta\gamma\delta}=48M^2/r^6\) 非零。质量是解中的整体参数，不需要在每个外部点都有物质。</p></details>
 <ul class="source-list"><li><a href="https://arxiv.org/abs/gr-qc/9712019">Carroll，Lecture Notes on General Relativity，第 4、6 章</a>：场方程、作用量、弱场极限。</li><li><a href="https://davidtong.org/teaching/general-relativity/">Tong，The Einstein Equations / When Gravity is Weak</a>：守恒、对称性与线性引力。建议对照本章的符号约定重算例题。</li></ul>
 <nav class="pager" aria-label="章节翻页"><a href="geometry.html">← 02 · 度规与曲率</a><a href="schwarzschild.html">04 · 推导 Schwarzschild 解 →</a></nav></article></main></body></html>

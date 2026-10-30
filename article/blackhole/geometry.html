@@ -1,9 +1,10 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02 · 度规如何变成曲率</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="foundations.js"></script></head><body data-page="geometry"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>02 / 09</span></nav><article><p class="eyebrow">02 · 微分几何的计算链</p><h1>度规如何变成曲率</h1><p class="lead">从一张测量规则表 g 出发，先计算比较向量的方法 Γ，再计算比较结果的路径依赖 R。这里的每一步都能成为代码，且“坐标弯曲”和“时空弯曲”必须分开。</p><div class="toc" data-toc></div>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02 · 度规如何变成曲率</title><script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script><script type="module" src="foundations.js"></script></head><body data-page="geometry"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>02 / 09</span></nav><article><p class="eyebrow">02 · 微分几何的计算链</p><h1>度规如何变成曲率</h1><p class="lead">从一张测量规则表 g 出发，先计算比较向量的方法 Γ，再计算比较结果的路径依赖 R。这里的每一步都能成为代码，且“坐标弯曲”和“时空弯曲”必须分开。</p><div class="toc" data-toc></div>
 <h2 id="manifold">1. 为什么不需要把时空想象成嵌在外面的大橡皮膜</h2>
 <p>地球表面只有两个自由方向，但可以用三维空间的球面来想象。数学上，我们也能只在表面上用经纬度描述位置、用尺子测距离，而不要求住在球面上的人能看见外部空间。<strong>流形</strong>就是这种“每一小片都能用若干坐标描述”的空间。广义相对论的流形有四个维度，不需要假定它嵌在某个更高维空间里。</p>
 <p>一套坐标未必能覆盖全部流形。经度在北极失去唯一性，不能据此说北极有物理奇点。同理，某个黑洞坐标系在视界处出问题，也不能直接推出曲率发散。换坐标像换地图投影，不是在改变地形。</p>
 <p>每一点都有一个<strong>切空间</strong>：收集从该点出发的所有微小方向。沿曲线 \(x^\mu(\lambda)\) 的切向量为 \(u^\mu=dx^\mu/d\lambda\)。不同点的切空间并不天然共用一组基底，所以直接相减两个不同位置的向量分量，一般没有几何意义。这正是我们需要“联络”的原因。</p>
 <h2 id="polar">2. 在平面上换成极坐标，先算一次度规</h2>
+<p>先不碰四维时空。站在一张平纸上，用 \(r\) 记录离原点多远，用 \(\phi\)（phi）记录绕原点转了多少弧度。向外走一点，长度就是 \(dr\)；保持半径转一点，弧长却是 \(r\,d\phi\)。下面的代数只是把这两种尺子读数从熟悉的 \(x,y\) 坐标重新算一遍。矩阵中的 \(a,b\) 在此只取 \(r,\phi\) 两个标签，不是额外的物理量。</p>
 <p>平面上有 \(x=r\cos\phi,y=r\sin\phi\)。分别求微分：</p>
 <div class="equation">\[dx=\cos\phi\,dr-r\sin\phi\,d\phi,\qquad dy=\sin\phi\,dr+r\cos\phi\,d\phi.\]</div>
 <p>平方相加，交叉项抵消，利用 \(\sin^2\phi+\cos^2\phi=1\)，得到：</p>
@@ -12,16 +13,21 @@
 <figure class="diagram"><svg viewBox="0 0 820 250" role="img" aria-label="极坐标中相同角度在不同半径对应不同弧长"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10" fill="none" stroke="#146b67"/></marker></defs><g transform="translate(100,210)" fill="none"><path d="M0 0H350M0 0V-180" stroke="#bac8bf"/><path d="M0 0L325 -150M0 0L325 -25" stroke="#80928b"/><path d="M129 -60A143 143 0 0 1 142 -11" stroke="#146b67" stroke-width="4"/><path d="M258 -119A285 285 0 0 1 284 -22" stroke="#b47a3f" stroke-width="4"/><path d="M24 -11A26 26 0 0 1 26 -2" stroke="#80928b"/><text x="40" y="-12" fill="#52625e" font-size="16">dφ</text><text x="110" y="-78" fill="#146b67" font-size="17">r dφ</text><text x="263" y="-136" fill="#9a5c24" font-size="17">2r dφ</text></g><text x="480" y="85" fill="#202c31" font-size="20">角度不是长度</text><text x="480" y="124" fill="#66716e" font-size="17">度规负责把坐标差</text><text x="480" y="154" fill="#66716e" font-size="17">转换成尺子读出的距离。</text></svg><figcaption>此图是平面上的坐标变换；空间本身没有弯曲。一般坐标变换规则为 g′<sub>ab</sub> = (∂x<sup>μ</sup>/∂x′<sup>a</sup>)(∂x<sup>ν</sup>/∂x′<sup>b</sup>)g<sub>μν</sub>。</figcaption></figure>
 <h2 id="connection">3. 协变导数：连同基底变化一起求导</h2>
 <p>假设一个箭头始终向东。在笛卡尔坐标中，它的分量不变；但沿圆走时，“径向”和“沿圆切向”的基底在旋转，箭头在这组基底中的分量会变。仅看普通导数，会误以为箭头自身在转动。协变导数补上基底变化：</p>
+<p>把箭头叫作 \(V\)，我们要回答的是：“沿一个指定方向挪一点，箭头真正变了多少？”先选移动方向，标为 \(\mu\)；再选要查看的箭头分量，标为 \(\nu\)。\(\partial_\mu V^\nu\) 只看数字的变化。还需要把各个基向量自身的变化乘上它承载的分量，再全部相加；这项修正就写作 \(\Gamma^\nu{}_{\mu\rho}V^\rho\)。这里 \(\rho\) 重复，所以是求和；\(\mu,\nu\) 保留，所以答案仍是一张两指标的表。</p>
 <div class="equation">\[\nabla_\mu V^\nu=\partial_\mu V^\nu+\Gamma^\nu{}_{\mu\rho}V^\rho.\]</div>
 <p>\(\nabla\) 读作 nabla，\(\Gamma\) 读作 Gamma。\(\Gamma^\nu{}_{\mu\rho}\) 是 Christoffel 符号，描述沿 \(\mu\) 方向移动时，\(\rho\) 基向量在 \(\nu\) 方向产生的变化。它本身不是张量：换坐标会多出一个二阶导数项；正确组合成的 \(\nabla_\mu V^\nu\) 才按张量规则变化。</p>
 <p>要求“平行移动保留内积”（度规相容 \(\nabla g=0\)）并且没有挠率，就唯一得到 Levi-Civita 联络：</p>
+<p>“没有挠率”在这里意味着联络两个下指标可交换。于是我们不用再独立猜测整张修正表，可以从度规算它。读下面的式子时先固定 \(\rho,\mu,\nu\)：它只是在计算一个指定的 \(\Gamma\) 分量；只有重复的 \(\sigma\) 要求和。括号里的三项是度规在不同方向的变化率，前面的逆度规把结果转换成所需的输出分量。紧接着我们会把抽象编号换成 \(r,\phi\)，实际算出几个数。</p>
 <div class="equation">\[\Gamma^\rho{}_{\mu\nu}=\frac12g^{\rho\sigma}\left(\partial_\mu g_{\sigma\nu}+\partial_\nu g_{\sigma\mu}-\partial_\sigma g_{\mu\nu}\right).\]</div>
+<p>例如我们即将求 \(\Gamma^r{}_{\phi\phi}\)。三个标签的读法是：沿角方向移动，角方向基向量的变化在径向上占多少。把通式中的 \(\rho,\mu,\nu\) 分别换成 \(r,\phi,\phi\)，由于极坐标度规的混合项为零，括号前两项消失，只剩 \(-\tfrac12g^{rr}\partial_r g_{\phi\phi}\)。于是通式并不要求一次计算几十项，先固定想要的分量，很多项会自己消失。</p>
 <p>对平面极坐标，只有 \(\partial_r g_{\phi\phi}=2r\) 不为零，逆度规为 \(\mathrm{diag}(1,r^{-2})\)。逐项代入：</p>
 <div class="equation">\[\Gamma^r{}_{\phi\phi}=-\frac12(1)(2r)=-r,\qquad\Gamma^\phi{}_{r\phi}=\Gamma^\phi{}_{\phi r}=\frac12\frac1{r^2}(2r)=\frac1r.\]</div>
 <p>其余分量为零。看上去出现了“力”的系数，但我们根本没有加入任何引力。它们只是基底在变。遇到很复杂的黑洞联络时，始终记得这个简单例子。</p>
 <h2 id="geodesic">4. 测地线：切向量沿自己平行移动</h2>
 <p>平直坐标里的匀速直线运动满足 \(d^2x^\mu/d\lambda^2=0\)。将普通导数换成协变导数，就得到无需坐标特殊待遇的表达：</p>
+<p>我们把沿路的切向量叫 \(u\)，即 \(u^\mu=dx^\mu/d\lambda\)。\(u^\nu\nabla_\nu\) 的意思是沿着正在运动的方向求变化率，不是沿任意一条坐标轴。把这个操作作用在 \(u\) 自己身上，并要求结果为零，就说“沿途没有额外转向”。右边展开式中只有 \(\mu\) 留下来：依次取四个值，就得到四条坐标运动方程；\(\alpha,\beta\) 都重复，要做两重求和。</p>
 <div class="equation">\[u^\nu\nabla_\nu u^\mu=0\quad\Longleftrightarrow\quad\frac{d^2x^\mu}{d\lambda^2}+\Gamma^\mu{}_{\alpha\beta}\frac{dx^\alpha}{d\lambda}\frac{dx^\beta}{d\lambda}=0.\]</div>
+<p>还有一条获得相同方程的路线，可以顺便说明“作用量”如何工作。对一条候选路径，沿路累积一个函数 L，得到 \(S=\int L(x,\dot x)\,d\lambda\)。保持两端不动，把中间路径轻轻挪成 \(x+\epsilon\zeta\)：\(\epsilon\) 是很小的试探量，\(\zeta\) 指定往哪里挪。L 的一阶变化有两部分，来自位置改动和速度改动。对速度改动那项做分部积分，端点项因 \(\zeta=0\) 消失，便有</p><div class="equation">\[\left.\frac{dS}{d\epsilon}\right|_{\epsilon=0}=\int\left[\frac{\partial L}{\partial x^\rho}-\frac{d}{d\lambda}\left(\frac{\partial L}{\partial\dot x^\rho}\right)\right]\zeta^\rho\,d\lambda.\]</div><p>如果任意中间改动都不能使 S 发生一阶变化，每个方向的方括号就必须为零，这就是 Euler–Lagrange 方程。在求 \(\partial L/\partial\dot x^\rho\) 时，把速度分量暂时当作 L 的独立输入。接下来选择由度规构造的 L，便能把“路径满足什么条件”与前面的几何说法接起来。</p>
 <p>它也可由拉格朗日量 \(L=\tfrac12g_{\mu\nu}\dot x^\mu\dot x^\nu\) 的 Euler–Lagrange 方程推得：先求 \(\partial L/\partial\dot x^\rho=g_{\rho\nu}\dot x^\nu\)，对 \(\lambda\) 求导，再减去 \(\partial L/\partial x^\rho=\tfrac12(\partial_\rho g_{\mu\nu})\dot x^\mu\dot x^\nu\)，最后乘逆度规，恰好组合成上面的 \(\Gamma\)。这一推导要求使用仿射参数；任意重新参数化可能在右侧增加与速度平行的项。</p>
 <p>极坐标中的两条测地线方程于是为：</p>
 <div class="equation">\[\ddot r-r\dot\phi^2=0,\qquad\ddot\phi+\frac2r\dot r\dot\phi=0.\]</div>
@@ -29,7 +35,9 @@
 <details class="exercise"><summary>手算：验证 y=b 的直线满足极坐标测地线方程</summary><p>\(\dot r=\lambda/r\)、\(\ddot r=b^2/r^3\)、\(\dot\phi=-b/r^2\)，因此 \(r\dot\phi^2=b^2/r^3=\ddot r\)。再求 \(\ddot\phi=2b\dot r/r^3\)，恰好抵消 \(2\dot r\dot\phi/r\)。</p></details>
 <h2 id="riemann">5. 曲率不是 Γ，而是绕一小圈后的差</h2>
 <p>在平面里平行移动一个箭头，沿闭合路径回到出发点，箭头不会净转动。球面上通常会。这种路径依赖由 Riemann 曲率张量描述。本文采用以下符号约定：</p>
+<p>这次为什么需要四个指标？要指定绕圈的两个方向，记为 \(\mu,\nu\)；还要指定搬运箭头原来的分量 \(\sigma\)，以及最后读出的变化分量 \(\rho\)。因此 \(R^\rho{}_{\sigma\mu\nu}\) 是“这两个方向的小回路，怎样把输入箭头变成输出变化”的系数。回路面积越小，变化也越小；曲率描述的是单位有向面积对应的变化。接下来长式中的 \(\lambda\) 只是中间分量的求和编号，不是此前沿光路前进的参数。</p>
 <div class="equation">\[R^\rho{}_{\sigma\mu\nu}=\partial_\mu\Gamma^\rho{}_{\nu\sigma}-\partial_\nu\Gamma^\rho{}_{\mu\sigma}+\Gamma^\rho{}_{\mu\lambda}\Gamma^\lambda{}_{\nu\sigma}-\Gamma^\rho{}_{\nu\lambda}\Gamma^\lambda{}_{\mu\sigma}.\]</div>
+<p>方括号 \([\nabla_\mu,\nabla_\nu]\) 是交换子，定义为“先作用 \(\nabla_\nu\) 再作用 \(\nabla_\mu\)，减去反过来的顺序”。这是比较两条路线的简洁记法。对向量有这样的差，并不意味着普通标量函数的两个平滑偏导也不交换。</p>
 <p>前两项比较联络沿不同方向的变化，后两项比较先后平行移动的组合。它满足 \([\nabla_\mu,\nabla_\nu]V^\rho=R^\rho{}_{\sigma\mu\nu}V^\sigma\)。有些书把整个 \(R\) 定义为相反号；读资料时应把 Riemann、Ricci 与场方程约定一起核对。</p>
 <p>现在计算平面极坐标的一个分量，看到非零联络如何消掉：</p>
 <div class="equation">\[R^r{}_{\phi r\phi}=\partial_r(-r)-0+0-\Gamma^r{}_{\phi\phi}\Gamma^\phi{}_{r\phi}=-1-(-r)(1/r)=0.\]</div>
@@ -40,11 +48,13 @@
 <section class="lab" aria-labelledby="transport-title"><h3 id="transport-title">实验 · 走完一圈，箭头为什么转了</h3><p>青色箭头沿大圆平行移动。右图始终比较走完整圈后的结果；路径进度控制左图当前所在的位置。所有线段都在球面上，透视只是显示手段。</p><canvas id="transport-canvas" width="800" height="380" role="img" aria-label="球面三角形上的平行移动与净转角">平行移动净转角等于球面三角形角盈 α。</canvas><div class="controls"><label for="triangle-angle">经线夹角 α <output id="triangle-angle-value">90°</output><input id="triangle-angle" type="range" min="15" max="150" step="1" value="90"></label><label for="transport-progress">沿路径前进 <output id="transport-progress-value">100%</output><input id="transport-progress" type="range" min="0" max="100" step="1" value="100"></label></div><div id="transport-readout" class="readout" aria-live="polite"></div></section>
 <p>球面只是帮助理解的二维黎曼几何例子。真实时空有一个时间方向，度规非正定；不能把这个球面或常见的“橡皮膜下陷”直接认作黑洞的四维几何。几何的核心是可测的内积、平行移动和因果关系，而不是一张嵌入图的外形。</p>
 <h2 id="contractions">7. Riemann → Ricci → Einstein：逐次收缩</h2>
+<p>完整曲率表回答所有方向的问题，场方程却只需要其中一些组合。先在二维看“收缩”实际做什么：\(R_{11}=R^1{}_{111}+R^2{}_{121}\)，\(R_{12}=R^1{}_{112}+R^2{}_{122}\)。每项都把第一、第三个槽位填成同一编号，再相加；四维时只是多加两项。求和后两个槽位消失，原先的四指标表变成两指标表。再借助逆度规把余下两个指标配对求和，才得到一个没有自由指标的数。</p>
 <p>“收缩”就是将一个上标和一个下标设为同一求和编号。Ricci 张量收缩 Riemann：</p>
 <div class="equation">\[R_{\mu\nu}=R^\rho{}_{\mu\rho\nu},\qquad R=g^{\mu\nu}R_{\mu\nu},\qquad G_{\mu\nu}=R_{\mu\nu}-\frac12Rg_{\mu\nu}.\]</div>
 <p>\(R\) 是 Ricci 标量，\(G_{\mu\nu}\) 是 Einstein 张量（这里的 G 带下标，不是牛顿常数）。在四维，Riemann 有 20 个独立分量，Ricci 只有 10 个。收缩丢失了信息；因此 \(R_{\mu\nu}=0\) 绝不意味着整个 Riemann 为零。余下的无迹部分叫 Weyl 曲率，真空黑洞的潮汐场和真空引力波都与它有关。</p>
 <p>联络与曲率还满足一个几何恒等式，收缩后为 \(\nabla^\mu G_{\mu\nu}=0\)，叫收缩 Bianchi 恒等式。它不是额外要求物质满足的方程，而是度规构造本身带来的关系。下一章会看到，这使 Einstein 张量能够与守恒的能动张量配对。</p>
 <h2 id="deviation">8. 曲率怎么被测量：测地偏离</h2>
+<p>想象两颗紧邻的小球同时放手，我们跟随其中一颗，把指向另一颗的微小箭头记成 \(\xi\)（xi）。现在关心的不是任意一颗相对地面的加速度，而是这支分离箭头怎样变化。\(\tau\) 是参考小球随身钟的读数，\(u\) 是它的四速度；大写 \(D\) 提醒我们，求导时要比较不同位置的向量，必须包含联络修正。这样，方程左边就是相对加速度，右边是曲率对速度和分离方向共同作用的结果。</p>
 <p>一个自由落体观察者可以在很小的实验室里消除自身感受到的重力，却不能让附近所有自由落体互相保持不动。两条邻近测地线的分离向量 \(\xi\) 满足：</p>
 <div class="equation">\[\frac{D^2\xi^\mu}{d\tau^2}=-R^\mu{}_{\nu\alpha\beta}u^\nu\xi^\alpha u^\beta.\]</div>
 <p>这里 \(D/d\tau=u^\nu\nabla_\nu\) 表示沿世界线的协变导数，\(u\) 是四速度。这是潮汐力的相对论表达：曲率把分离向量转换成相对加速度。对远离球对称质量的自由落体小球团，径向拉伸、两个横向压缩；局部一阶体积变化可以抵消，但形状依然改变。</p>

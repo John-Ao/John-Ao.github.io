@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>09 · 实现路线、简化技巧与验证</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>09 · 实现路线、简化技巧与验证</title><script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script></head>
 <body data-page="implementation"><main><nav class="chapter-nav" aria-label="章节导航"><a href="index.html">教程目录</a><span>09 / 09</span></nav><article><p class="eyebrow">把理解落实为可复现的计算</p><h1>实现路线、简化技巧与验证</h1><p class="lead">一个可信的仿真，要能说清楚每一层的方程、输入、输出、误差和适用范围。到这里，你可以把黑洞图像、双星轨道、时空演化和探测器数据分析，拆成可独立开发、再逐步连接的程序。</p><div class="toc" data-toc></div>
 <section><h2 id="reference">1. 实现参考：仓库里究竟有哪些物理</h2>
 <p>本教程考察的实现参考是 <a href="https://github.com/kyleyhw/black_hole">kyleyhw/black_hole</a>。它覆盖静止、旋转和合并可视化，适合将一个完整产品拆开研究。本次核查日期为 2026-10-30，以下文件链接固定在已检查的提交 <code>96a6835f2624bc6425682f723a050f397893cb6d</code>。下面按实际文件分工阅读；网页里的“精确”必须限定为使用的解析度规或公式，不能据此推断有限步长、显示颜色或双洞合并也没有近似。</p>
@@ -26,6 +26,7 @@
 <p>每一步的结果都可以成为下一步的测试。出错时，也能知道该检查“坐标变换”“轨迹积分”还是“显示映射”。把物理函数写成不依赖 DOM 的纯函数，能够在命令行中运行长时间或高精度检查；界面仅负责收集输入和画结果。</p>
 </section>
 <section><h2 id="units">3. 单位是最容易漏掉的算法</h2>
+<p>读代码前先确认数组里存的是“米”还是“多少个质量长度”。下式用帽子 \(\hat r,\hat t,\hat f\) 标记无量纲数，用 SI 下标标记换算后的普通单位；它们不是第一章局部正交基的帽子指标。这里不带下标的 M 取公斤计的物理质量，所以 \(GM/c^2\) 才是一把有米单位的尺子。若输入本来已经是几何质量，不能再做一次相同换算。</p>
 <p>在几何单位中 \(M\) 同时是长度和时间的标尺。恢复 SI 单位时，长度乘 \(GM/c^2\)，时间乘 \(GM/c^3\)，频率乘 \(c^3/(GM)\)。太阳质量对应的尺度约为 \(1.4766\) km 和 \(4.9255\) 微秒：</p>
 <div class="equation">\[r_{\rm SI}=\hat r\,\frac{GM}{c^2},\quad t_{\rm SI}=\hat t\,\frac{GM}{c^3},\quad f_{\rm SI}=\hat f\,\frac{c^3}{GM}.\]</div>
 <p>因此质量增大 10 倍而所有无量纲参数不变，图像的无量纲几何不变，系统的真实尺寸增大 10 倍，演化变慢 10 倍，频率降低 10 倍。对 \(60M_\odot\)，\(M\) 约为 88.6 km，\(1000M\) 时间约为 0.296 秒。总质量、单个黑洞质量和 Schwarzschild 半径 \(r_s=2M\) 是三个常见、但不同的代码长度单位。</p>

@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="从数学基础、爱因斯坦场方程到 Schwarzschild、Kerr 黑洞与双黑洞合并：可交互的中文教程，包含 WebGL 光线追踪和 GW150914 真实观测数据。"><title>黑洞：从场方程到仿真</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="从数学基础、爱因斯坦场方程到 Schwarzschild、Kerr 黑洞与双黑洞合并：可交互的中文教程，包含 WebGL 光线追踪和 GW150914 真实观测数据。"><title>黑洞：从场方程到仿真</title><script src="theme.js"></script><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script><script defer src="vendor/auto-render.min.js"></script><script defer src="common.js"></script></head>
 <body data-page="index"><main><article>
 <p class="eyebrow">学习目录 · 数学 / 几何 / 仿真 / 观测</p>
 <h1>黑洞：从场方程到仿真</h1>
 <p class="lead">为什么一个方程能够描述钟的快慢、光的弯曲和两个黑洞的合并？从读懂下标开始，逐步推导球对称黑洞，理解旋转黑洞，再把数学变成可运行的光线追踪和引力波模型。</p>
+<p>把一圈小球放在黑洞附近，让它们一同自由落下。你也跟着落下，可能并不觉得自己“有重量”，却会看见球团被拉长。这种不能靠一起自由落下消除的相对变化，是我们理解引力的出发点。爱因斯坦场方程将这种几何与物质联系起来：</p>
 <div class="equation">\[\underbrace{R_{\mu\nu}-\frac12 Rg_{\mu\nu}+\Lambda g_{\mu\nu}}_{\text{时空的几何}}=\underbrace{\frac{8\pi G}{c^4}T_{\mu\nu}}_{\text{物质与能量}}\]</div>
-<p>这里的符号暂时不需要认识。全文使用同一套约定，每个新对象先解释“测量什么”，再解释“如何计算”。推导、实验和代码路径相互对应；展开练习可以检查自己是否真正理解，而不只是记住图像。</p>
+<p>先把这行公式当成一张路线图。左边问：附近的钟和尺怎样读数，自由落体怎样彼此靠拢或分离？右边问：那里有多少能量，能量和动量怎样流动？两边的下标是在标明所比较的时间或空间方向。我们会从两只钟、几个小球的测量开始，逐步学会这些字母为什么非写不可。</p>
 <div class="concept-map" aria-label="本教程的四步路径"><div><span class="symbol">g</span><br><b>如何测量</b><small>距离、固有时间、度规</small></div><div><span class="symbol">R</span><br><b>如何弯曲</b><small>联络、曲率、场方程</small></div><div><span class="symbol">x(λ)</span><br><b>如何运动</b><small>测地线、轨道、光线</small></div><div><span class="symbol">h(t)</span><br><b>如何验证</b><small>数值演化、引力波数据</small></div></div>
 <ol class="steps">
 <li><div><a href="foundations.html">从变化率到时空间隔</a><p>函数、导数、积分、矩阵、求和约定；用光钟和洛伦兹变换理解时间。交互：时间膨胀、质量与自然单位。</p></div></li>
@@ -20,7 +21,7 @@
 </ol>
 <h2 id="how-to-read">如何读，才能真正学会</h2>
 <p>第一遍按顺序阅读，每章只抓住一个问题：度规测量什么？曲率测量什么？场方程约束什么？解如何决定轨迹？轨迹为什么还不等于合并？第二遍手算例题、修改滑块，然后打开对应 JavaScript 看公式如何落地。大学数学不是前置门槛，但掌握偏微分方程和数值相对论需要反复演算；这些网页提供的是可循序练习的入口，而不是省略必要训练的捷径。</p>
-<div class="note"><strong>符号约定。</strong> 度规号差为 \((-+++ )\)，\(x^0=ct\)；希腊下标跑遍 0–3，拉丁空间下标跑遍 1–3。解析黑洞和仿真常用 \(G=c=1\)，此时质量也有长度与时间单位。全书用 \(M\) 表示几何质量，\(a=J/(M_{\rm SI}c)\) 在 SI 定义下有长度量纲，\(\chi=a/M\) 在几何单位下是无量纲自旋。不同章节会在首次使用时重新注明。</div>
+<details class="exercise"><summary>符号与单位约定：读到公式时可回来查</summary><p>时间分量的负号和三个空间分量的正号记为 \((-+++)\)，时间坐标取 \(x^0=ct\)。希腊方向指标通常取 0–3，拉丁空间指标通常取 1–3；名称下标和采样编号会另作解释。<a href="foundations.html#vectors">第一章从二维矩阵展开求和记号</a>，无需先背下这些约定。</p><p>解析黑洞章节常用 \(G=c=1\)，把质量换算成长度或时间；涉及观测和普通单位的公式会恢复常数。\(M\) 究竟是几何质量、公斤数还是以太阳质量计的输入，要依当地定义判断。旋转参数 a 有长度量纲，\(a_*=a/M\) 或 \(\chi\) 表示无量纲自旋。换算方法见<a href="foundations.html#units">第一章的单位实验</a>。</p></details>
 <h2 id="levels">不要把三种计算混为一谈</h2>
 <div class="table-wrap"><table><thead><tr><th>层级</th><th>真正计算的东西</th><th>本教程中的位置</th></tr></thead><tbody><tr><td>解析时空中的数值轨迹</td><td>度规已经给定，积分光子或测试粒子的常微分方程；数值结果仍有误差。</td><td>第 4–6 章，Schwarzschild / Kerr</td></tr><tr><td>物理启发的合并近似</td><td>用辐射反作用让轨道收缩，再用显式过渡接到振铃；过渡不是场方程解。</td><td>第 7 章网页实验</td></tr><tr><td>完整数值相对论</td><td>满足初始约束、演化整个时空，并验证约束残差和网格收敛。</td><td>第 7、9 章讲解；第 8 章展示官方 NR 参考数据</td></tr></tbody></table></div>
 <p>图中的吸积盘颜色是辐射外观模型；黑洞合并动画里的位置与圆形边界是示意。真实观测数据则明确标注探测器、处理流程和来源。漂亮的图、平滑的动画、稳定的程序，都不能单独证明物理正确。</p>

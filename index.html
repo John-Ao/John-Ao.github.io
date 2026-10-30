@@ -42,13 +42,14 @@
 <section class="panel" id="game" aria-labelledby="game-title" hidden inert>
 <div class="collection game-collection">
 <h2 class="reveal" id="game-title">Game<span class="count" id="game-count">—</span></h2>
+<div id="game-categories" class="game-categories reveal" role="tablist" aria-label="游戏分类" hidden></div>
 <p class="game-status reveal" id="games-status" role="status">正在加载游戏…</p>
 <button type="button" id="games-retry" class="blog-link" hidden>重新加载</button>
-<div class="grid grid-game" id="game-list"></div>
+<div role="tabpanel" id="game-category-panel"><div class="grid grid-game" id="game-list"></div></div>
 <div class="game-pagination reveal" hidden aria-label="游戏列表分页">
 <button type="button" id="games-prev" class="game-page-arrow" aria-label="上一页游戏" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
 <div id="games-pages" role="group" aria-label="选择游戏页码"></div>
-<span id="games-page" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true">第 1 页，共 3 页</span>
+<span id="games-page" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></span>
 <button type="button" id="games-next" class="game-page-arrow" aria-label="下一页游戏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
 </div>
 </div>

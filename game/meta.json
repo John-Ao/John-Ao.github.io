@@ -1,142 +1,167 @@
 [
   {
-    "game": "cube",
-    "title": "魔方"
+    "id": "puzzles",
+    "title": "单人解谜",
+    "games": [
+      {
+        "game": "cube",
+        "title": "魔方"
+      },
+      {
+        "game": "beads"
+      },
+      {
+        "game": "beads2",
+        "title": "匈牙利环"
+      },
+      {
+        "game": "lights_out",
+        "title": "关灯"
+      },
+      {
+        "game": "mastermind",
+        "title": "猜颜色"
+      },
+      {
+        "game": "slide",
+        "title": "滑动拼图"
+      },
+      {
+        "game": "tents_and_trees",
+        "title": "帐篷与树"
+      },
+      {
+        "game": "polyomino",
+        "title": "多米诺拼图"
+      }
+    ]
   },
   {
-    "game": "beads"
+    "id": "board-games",
+    "title": "棋类",
+    "games": [
+      {
+        "game": "aeroplane_chess",
+        "title": "飞行棋"
+      },
+      {
+        "game": "backgammon",
+        "title": "双陆棋"
+      },
+      {
+        "game": "blokus"
+      },
+      {
+        "game": "chess",
+        "title": "国际象棋"
+      },
+      {
+        "game": "chinese_checkers",
+        "title": "六角跳棋"
+      },
+      {
+        "game": "chinese_chess",
+        "title": "中国象棋"
+      },
+      {
+        "game": "connect4",
+        "title": "四子棋"
+      },
+      {
+        "game": "dots_and_boxes",
+        "title": "点格棋"
+      },
+      {
+        "game": "gomoku",
+        "title": "五子棋"
+      },
+      {
+        "game": "go",
+        "title": "围棋"
+      },
+      {
+        "game": "onitama"
+      },
+      {
+        "game": "quarto",
+        "title": "连四棋"
+      },
+      {
+        "game": "hive",
+        "title": "昆虫棋"
+      },
+      {
+        "game": "othello",
+        "title": "黑白棋"
+      },
+      {
+        "game": "quoridor"
+      }
+    ]
   },
   {
-    "game": "beads2",
-    "title": "匈牙利环"
-  },
-  {
-    "game": "lights_out",
-    "title": "关灯"
-  },
-  {
-    "game": "mastermind",
-    "title": "猜颜色"
-  },
-  {
-    "game": "slide",
-    "title": "滑动拼图"
-  },
-  {
-    "game": "tents_and_trees",
-    "title": "帐篷与树"
-  },
-  {
-    "game": "polyomino",
-    "title": "多米诺拼图"
-  },
-  {
-    "game": "aeroplane_chess",
-    "title": "飞行棋"
-  },
-  {
-    "game": "backgammon",
-    "title": "双陆棋"
-  },
-  {
-    "game": "blokus"
-  },
-  {
-    "game": "chess",
-    "title": "国际象棋"
-  },
-  {
-    "game": "chinese_checkers",
-    "title": "六角跳棋"
-  },
-  {
-    "game": "chinese_chess",
-    "title": "中国象棋"
-  },
-  {
-    "game": "connect4",
-    "title": "四子棋"
-  },
-  {
-    "game": "dots_and_boxes",
-    "title": "点格棋"
-  },
-  {
-    "game": "gomoku",
-    "title": "五子棋"
-  },
-  {
-    "game": "quarto",
-    "title": "连四棋"
-  },
-  {
-    "game": "hive",
-    "title": "昆虫棋"
-  },
-  {
-    "game": "othello",
-    "title": "黑白棋"
-  },
-  {
-    "game": "quoridor"
-  },
-  {
-    "game": "monopoly",
-    "title": "大富翁"
-  },
-  {
-    "game": "jaipur",
-    "title": "斋普尔"
-  },
-  {
-    "game": "patchwork",
-    "title": "拼布艺术"
-  },
-  {
-    "game": "splendor_duel",
-    "title": "璀璨宝石·对决"
-  },
-  {
-    "game": "tacta"
-  },
-  {
-    "game": "7_wonders_duel"
-  },
-  {
-    "game": "frosthaven"
-  },
-  {
-    "game": "gloomhaven"
-  },
-  {
-    "game": "keep_talking_and_nobody_explodes"
-  },
-  {
-    "game": "radlands"
-  },
-  {
-    "game": "schotten_totten"
-  },
-  {
-    "game": "sky_team"
-  },
-  {
-    "game": "slay_the_spire",
-    "title": "杀戮尖塔"
-  },
-  {
-    "game": "sleeping_gods"
-  },
-  {
-    "game": "space_rescue"
-  },
-  {
-    "game": "spirit_island"
-  },
-  {
-    "game": "targi"
-  },
-  {
-    "game": "toy_battle"
+    "id": "tabletop",
+    "title": "桌游",
+    "games": [
+      {
+        "game": "monopoly",
+        "title": "大富翁"
+      },
+      {
+        "game": "jaipur",
+        "title": "斋普尔"
+      },
+      {
+        "game": "patchwork",
+        "title": "拼布艺术"
+      },
+      {
+        "game": "splendor_duel",
+        "title": "璀璨宝石·对决"
+      },
+      {
+        "game": "tacta"
+      },
+      {
+        "game": "7_wonders_duel"
+      },
+      {
+        "game": "frosthaven"
+      },
+      {
+        "game": "gloomhaven"
+      },
+      {
+        "game": "keep_talking_and_nobody_explodes"
+      },
+      {
+        "game": "radlands"
+      },
+      {
+        "game": "schotten_totten"
+      },
+      {
+        "game": "sky_team"
+      },
+      {
+        "game": "slay_the_spire",
+        "title": "杀戮尖塔"
+      },
+      {
+        "game": "sleeping_gods"
+      },
+      {
+        "game": "space_rescue"
+      },
+      {
+        "game": "spirit_island"
+      },
+      {
+        "game": "targi"
+      },
+      {
+        "game": "toy_battle"
+      }
+    ]
   }
 ]

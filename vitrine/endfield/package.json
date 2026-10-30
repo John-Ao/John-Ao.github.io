@@ -1,0 +1,14 @@
+{
+  "name": "endfield-character-viewer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 scripts/serve.py",
+    "check": "node --check app.js && node --check stage.js && node --check materials.js && node --check npr.js && node --check outlines.js && node --check eye-layer.js && node --check props.js && node --check animation.js && node scripts/verify-assets.mjs",
+    "check:render": "node scripts/check-rendering.mjs",
+    "prepare:publish": "python3 scripts/prepare-publish.py",
+    "serve:public": "python3 scripts/serve.py --public",
+    "check:public": "node scripts/verify-assets.mjs --public",
+    "check:color": "node scripts/check-shadow-lut.mjs"
+  }
+}

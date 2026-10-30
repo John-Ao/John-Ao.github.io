@@ -1,0 +1,15 @@
+#board{grid-template-columns:repeat(5,1fr)}.cell{border-right:1px solid #ac8c5b80;border-bottom:1px solid #ac8c5b80}.cell.temple:before{content:'◇';position:absolute;color:#977749;font-size:clamp(24px,5vw,50px)}.stone{z-index:1;width:62%;height:62%;border-radius:50%;display:grid;place-items:center;color:white;font-size:clamp(16px,3vw,29px);box-shadow:0 3px 3px #0002;border:3px solid #fff9}.stone.blue{background:#316276}.stone.red{background:#ae5147}.stone.master{border:5px double #fff}.hand{display:flex;gap:12px;margin:10px 0}.card{display:flex;align-items:center;justify-content:center;gap:12px;padding:9px;flex:1;min-width:0}.card svg{width:78px;height:78px;flex-shrink:0}.card b{display:block;font-size:16px}.card small{font-size:11px}.card.red{border-top:3px solid #ae5147}.card.blue{border-top:3px solid #316276}.card:disabled{opacity:.72}#side .card{width:100%}.cell.legal:after{width:23%;height:23%;z-index:2;border:2px solid white}.cell.legal:has(.stone):after{width:85%;height:85%;border:4px solid #367b63;background:transparent}@media(max-width:450px){.card{gap:7px;padding:6px}.card svg{width:62px;height:62px}.card b{font-size:14px}.hand{gap:8px}}
+
+/* Wide screens keep the game and its controls together. */
+
+@media (min-width: 1000px) {
+  main {max-width:1600px; padding:16px 24px; gap:24px; align-items:flex-start; min-height:100dvh}
+  .play {flex:none; width:min(calc(100vw - 380px), max(380px, calc(100dvh - 248px)))}
+  .controls {width:300px; padding-top:10px; max-height:calc(100dvh - 32px); overflow:auto; scrollbar-gutter:stable}
+  .hand {margin:8px 0; gap:8px}
+  .card {padding:8px; gap:10px}
+  .card svg {width:72px; height:72px}
+  .controls button, summary {min-height:44px}
+  .actions {display:grid; grid-template-columns:1fr 1fr}
+  #notice:empty {display:none}
+}

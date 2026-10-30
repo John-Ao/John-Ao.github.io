@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#172229" />
+    <title>Gloomhaven · 双人合作</title>
+    <link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="../board_shared/theme.css"><link rel="stylesheet" href="theme.css"><script src="../board_shared/theme.js" data-controls='main>.toolbar>.tools'></script>
+  </head>
+  <body>
+    <main>
+      <div class="toolbar">
+        <div>
+          <strong>Gloomhaven</strong><small>2017 原版规则 · 双人合作</small>
+        </div>
+        <div class="tools">
+          <button id="rules">规则与实现范围</button
+          ><button id="save">导出存档</button><button id="load">导入存档</button
+          ><button id="retreat">撤退</button
+          ><button id="restart">重开场景</button>
+        </div>
+      </div>
+      <input id="file" type="file" accept="application/json,.json" hidden />
+      <div id="notice" role="status" aria-live="polite"></div>
+      <div id="camp"></div>
+      <div id="play" hidden>
+        <section id="stats" aria-label="队伍状态"></section>
+        <section class="battle">
+          <div class="battle-info">
+            <div>
+              <h1 id="sceneName"></h1>
+              <p id="objective"></p>
+            </div>
+            <span id="round"></span>
+          </div>
+          <div id="elements"></div>
+          <div class="maptools">
+            <span>左右滑动战场 · 点格移动 / 点敌人攻击</span
+            ><button id="fit">缩放地图</button
+            ><button id="center">定位当前角色</button>
+          </div>
+          <div id="mapScroll">
+            <svg id="board" role="group" aria-label="六角格合作战场"></svg>
+          </div>
+          <div class="legend">
+            <span>▥ 房门</span><span>△ 陷阱</span><span>≈ 困难地形</span
+            ><span>◆ 宝箱</span><span>● 金币</span><span>★ 精英</span>
+          </div>
+          <div id="order"></div>
+        </section>
+        <section class="control">
+          <div class="control-heading">
+            <h2 id="prompt"></h2>
+            <span id="phase"></span>
+          </div>
+          <p id="hint"></p>
+          <div id="pending"></div>
+          <div id="actions"></div>
+          <div id="inventory"></div>
+          <div id="cards"></div>
+        </section>
+        <details id="monsterPanel">
+          <summary>怪物能力与场上状态</summary>
+          <div id="monsters"></div>
+        </details>
+        <details>
+          <summary>战斗记录</summary>
+          <div id="lastAttack"></div>
+          <ol id="log"></ol>
+        </details>
+      </div>
+    </main>
+    <dialog id="modal">
+      <div id="modalContent"></div>
+      <button id="close">返回</button>
+    </dialog>
+    <script src="data.js"></script>
+    <script src="monster-stats.js"></script>
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

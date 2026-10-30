@@ -1,0 +1,46 @@
+/* Dark theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="dark"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="dark"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="dark"] button,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="dark"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="dark"] .score,
+html[data-theme="dark"] .control,
+html[data-theme="dark"] dialog,
+html[data-theme="dark"] .curtain { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="dark"] .card.selected,
+html[data-theme="dark"] select { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="dark"] .tools small,
+html[data-theme="dark"] #hint,
+html[data-theme="dark"] .privacy,
+html[data-theme="dark"] .curtain p,
+html[data-theme="dark"] #mapNote { color:var(--ui-muted) }
+html[data-theme="dark"] a { color:var(--ui-blue) }
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="dark"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="dark"] {--blue:#94cee7; --red:#f0b29b}
+html[data-theme="dark"] .board {background:#344b3b; border-color:#718874}
+html[data-theme="dark"] .node {color:#e7eee8; background:#364b40}
+html[data-theme="dark"] .node.special {background:#625437; border-color:#baa46b}
+html[data-theme="dark"] .node.p0 {color:#94cee7; background:#294957}
+html[data-theme="dark"] .node.p1 {color:#f0b29b; background:#593e37}
+html[data-theme="dark"] .node .depth {color:#253b38; background:#edf0e4}
+html[data-theme="dark"] .card.selected {color:var(--ui-text); background:var(--ui-selected); border-color:var(--ui-accent)}
+html[data-theme="dark"] .curtain {background:#172126fa}
+html[data-theme="dark"] .curtain button,
+html[data-theme="dark"] .actions button:first-child {color:#e7eee8; background:#355548}
+html[data-theme="dark"] .curtain p button {color:var(--ui-text); background:var(--ui-panel)}
+
+html[data-theme="dark"] .region.unclaimed {fill:#344b3b}
+html[data-theme="dark"] .region.unclaimed:nth-child(even) {fill:#405744}
+html[data-theme="dark"] .region.claimed-p0 {fill:#315467}
+html[data-theme="dark"] .region.claimed-p1 {fill:#63483e}
+html[data-theme="dark"] .board svg line:nth-of-type(odd) {stroke:#657b60}
+html[data-theme="dark"] .board svg line:nth-of-type(even) {stroke:#a5b18d}
+html[data-theme="dark"] .score.red {color:var(--red); border-left-color:var(--red)}
+html[data-theme="dark"] .score.blue {color:var(--blue); border-left-color:var(--blue)}

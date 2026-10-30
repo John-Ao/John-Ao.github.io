@@ -1,0 +1,19 @@
+核对日期：2026-10-20
+
+官方游戏说明：https://keeptalkinggame.com/
+官方手册 v1 / Verification Code 241：https://www.bombmanual.com/web/index.html
+
+依据章节：Defusing Bombs、Wires、The Button、Keypads、Simon Says、Who's on First、Memory、Morse Code、Complicated Wires、Wire Sequences、Mazes、Passwords、Needy Modules、Venting Gas、Capacitor Discharge、Knobs、Appendix A/B/C。
+
+data.js 数据来源与处理：
+keypadColumns：官方 Keypads HTML 表格的六列顺序。
+whoLook：Who's on First 第一步各显示文字的眼睛标记位置（按行从左至右编号0–5）。
+whoPriority：第二步全部28组优先顺序。
+complexCodes：官方内嵌维恩图的16个区域，按 red=1、blue=2、star=4、LED=8编码；数学判断椭圆交集并核对图例。
+mazes：官方 img/modules/maze/maze0.svg 至 maze8.svg 的线段墙壁与圆圈坐标，转为6×6拓扑；网页以自身SVG渲染。
+knobs：官方两行六列灯阵，方向按上0、右1、下2、左3编号。
+
+assets/keypad/*.png 来自 https://www.bombmanual.com/web/img/modules/keypad/ 同名文件，用于保留官方符号辨认玩法，未作修改。
+未下载或复制官方Logo、封面、装饰图案、音效和营销文案。
+
+原始游戏名称、符号图与手册素材属于 Steel Crate Games 等原权利人。本项目为非官方改编。

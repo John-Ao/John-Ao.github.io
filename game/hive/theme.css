@@ -1,0 +1,33 @@
+/* Dark theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="dark"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="dark"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="dark"] button,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="dark"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="dark"] .player,
+html[data-theme="dark"] .player.black,
+html[data-theme="dark"] dialog { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .tileBtn.selected { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="dark"] #hint,
+html[data-theme="dark"] #stackInfo,
+html[data-theme="dark"] .tileBtn:disabled { color:var(--ui-muted) }
+html[data-theme="dark"] a { color:var(--ui-blue) }
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="dark"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="dark"] button.tileBtn {background:transparent}
+html[data-theme="dark"] button.tileBtn.selected {background:var(--ui-selected); border-color:var(--ui-accent)}
+html[data-theme="dark"] .player:not(.inactive) {border-color:var(--ui-accent); box-shadow:inset 0 0 0 1px var(--ui-accent)}
+html[data-theme="dark"] .boardTools button {background:var(--ui-panel)}
+html[data-theme="dark"] #turnDot {border-color:var(--ui-muted)}
+html[data-theme="dark"] .target polygon {fill:#355548; stroke:#92d7b7}
+html[data-theme="dark"] .target:hover polygon {fill:#4e7361}
+
+html[data-theme="dark"] .target text {fill:#c9e3d2}
+html[data-theme="dark"] button.tileBtn {border-color:transparent}
+html[data-theme="dark"] button.tileBtn.selected {border-color:var(--ui-accent)}

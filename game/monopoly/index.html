@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183c36"><title>Monopoly · 大富翁</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="layout.css"><link rel="stylesheet" href="../board_shared/theme.css"><link rel="stylesheet" href="theme.css"><script src="../board_shared/theme.js" data-controls='.board-tools'></script></head>
+<body><main class="game">
+<section class="table" aria-label="Monopoly 棋盘">
+<div id="board" class="board">
+  <div class="interior">
+    <div class="board-tools"><span class="game-name">Monopoly</span><button id="rules" class="quiet">规则</button><button id="rotate" class="quiet">对坐模式：关</button><button id="new" class="quiet">重新开始</button></div>
+    <section id="players" class="players" aria-label="玩家状态与资产选择"></section>
+    <section class="center" aria-label="当前回合操作">
+      <div class="turn-label" id="turnLabel"></div><h1 id="status"></h1>
+      <div class="dice" id="dice" aria-label="骰子"></div><p id="hint"></p>
+      <div id="actions" class="actions"></div><div id="card" class="drawn-card" hidden></div>
+      <div class="bank" id="bank"></div><div class="last-event" id="lastEvent" aria-live="polite"></div>
+    </section>
+    <section class="dashboard" aria-label="地产与对局记录">
+      <section class="assets"><div class="section-label"><h2 id="assetTitle">地产</h2><button id="trade" class="quiet">双方交易 ⇄</button></div><div id="assetList"></div></section>
+      <details class="history"><summary>对局记录</summary><ol id="log"></ol></details>
+      <span class="save-state" id="saveState">自动保存在此设备</span>
+    </section>
+  </div>
+</div>
+</section>
+</main><dialog id="modal"><div class="modal-top"><h2 id="modalTitle"></h2><button id="close" aria-label="关闭">×</button></div><div id="modalBody"></div></dialog><div id="toast" role="alert"></div><script src="engine.js"></script><script src="app.js"></script></body></html>

@@ -1,0 +1,69 @@
+/* Light theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="light"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] button,
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="light"] .scene,
+html[data-theme="light"] .arena,
+html[data-theme="light"] .player,
+html[data-theme="light"] .player.green,
+html[data-theme="light"] dialog { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] .enemy,
+html[data-theme="light"] .pending,
+html[data-theme="light"] .map-drawer,
+html[data-theme="light"] .potion-list>div { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="light"] .scene p,
+html[data-theme="light"] .piles,
+html[data-theme="light"] .inventory,
+html[data-theme="light"] .log,
+html[data-theme="light"] .card-info,
+html[data-theme="light"] .enemy-top>span,
+html[data-theme="light"] .enemy details,
+html[data-theme="light"] .row-label,
+html[data-theme="light"] .power-list { color:var(--ui-muted) }
+html[data-theme="light"] a { color:var(--ui-blue) }
+html[data-theme="light"] button.primary,
+html[data-theme="light"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="light"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="light"] {--gold:#80571d}
+html[data-theme="light"] .player {border-top-color:#9e533c}
+html[data-theme="light"] .player.green {border-top-color:#347254}
+html[data-theme="light"] .player .hp {color:#9c4838}
+html[data-theme="light"] .player .block {color:#21637e}
+html[data-theme="light"] .player .energy,
+html[data-theme="light"] .dice,
+html[data-theme="light"] .waiting,
+html[data-theme="light"] .notice,
+html[data-theme="light"] .starter-relic {color:var(--ui-warn)}
+html[data-theme="light"] .card,
+html[data-theme="light"] .green .card {color:var(--ui-text); background:#f2e5da; border-color:#93755d}
+html[data-theme="light"] .green .card {background:#dfebdf}
+html[data-theme="light"] .card.status,
+html[data-theme="light"] .card.curse {background:#e6deee}
+html[data-theme="light"] .card.upgraded strong {color:#286747}
+html[data-theme="light"] .cardbottom {color:var(--ui-muted); border-color:var(--ui-line)}
+html[data-theme="light"] .card:disabled {border-color:#a4aaa0}
+html[data-theme="light"] .card:disabled .cost {color:#fff; background:#64695d}
+html[data-theme="light"] .token {color:#344b3c; background:#e2e8d7}
+html[data-theme="light"] .token.poison {color:#426317}
+html[data-theme="light"] .token.weak,
+html[data-theme="light"] .token.vulnerable {color:#933d35}
+html[data-theme="light"] .intent {color:var(--ui-warn)}
+html[data-theme="light"] .piles b {color:var(--ui-red)}
+html[data-theme="light"] .target-buttons .selected,
+html[data-theme="light"] .row-target .selected {color:var(--ui-text); background:var(--ui-selected)}
+
+html[data-theme="light"] button:hover:not(:disabled) {background-color:var(--ui-raised)}
+html[data-theme="light"] button.primary:hover:not(:disabled) {background:var(--ui-accent); color:var(--ui-bg)}
+
+html[data-theme="light"] .hp {color:#9c4838}
+html[data-theme="light"] .block {color:#21637e}
+
+/* Ownership, rarity and selection markings remain independent of panel borders. */
+html[data-theme="light"] .card.uncommon {border-color:#38718e}
+html[data-theme="light"] .card.rare {border-color:#98701b}

@@ -1,0 +1,49 @@
+/* Light theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="light"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] button,
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="light"] .player,
+html[data-theme="light"] .setup,
+html[data-theme="light"] .card,
+html[data-theme="light"] dialog { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] .phase-path span,
+html[data-theme="light"] .meter,
+html[data-theme="light"] .invader,
+html[data-theme="light"] .detail-grid div,
+html[data-theme="light"] select,
+html[data-theme="light"] .resolution { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="light"] .card p,
+html[data-theme="light"] .log ol,
+html[data-theme="light"] .innate p,
+html[data-theme="light"] .element,
+html[data-theme="light"] .track span { color:var(--ui-muted) }
+html[data-theme="light"] a { color:var(--ui-blue) }
+html[data-theme="light"] button.primary,
+html[data-theme="light"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="light"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="light"] {--p0:#87551c; --p1:#21637e}
+html[data-theme="light"] .cost,
+html[data-theme="light"] .fast,
+html[data-theme="light"] dialog h3,
+html[data-theme="light"] .innate p.available {color:var(--ui-warn)}
+html[data-theme="light"] .slow {color:var(--ui-blue)}
+html[data-theme="light"] .error {color:var(--ui-red)}
+html[data-theme="light"] .element.lit {color:#674613; background:#e9dfc9}
+html[data-theme="light"] .track span {background:#e3e9e3}
+html[data-theme="light"] .track .uncovered {color:#173237; background:#b6ba8d}
+html[data-theme="light"] .land {color:#fff; background:var(--terrain)}
+html[data-theme="light"] .token.a {background:#eebc73}
+html[data-theme="light"] .token.z {background:#86cbd9}
+
+html[data-theme="light"] .board>.small {color:#c8d9d3}
+
+html[data-theme="light"] .board>h3,html[data-theme="light"] .board>h3 .small {color:#c8d9d3}
+
+/* Ownership, rarity and selection markings remain independent of panel borders. */
+html[data-theme="light"] .player {border-top-color:var(--accent)}

@@ -1,0 +1,39 @@
+/* Light theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="light"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="light"] button,
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="light"] .panel,
+html[data-theme="light"] dialog,
+html[data-theme="light"] .card,
+html[data-theme="light"] .item { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="light"] .card.selected,
+html[data-theme="light"] .warning,
+html[data-theme="light"] #notice:not(:empty) { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="light"] .legend,
+html[data-theme="light"] .history { color:var(--ui-muted) }
+html[data-theme="light"] a { color:var(--ui-blue) }
+html[data-theme="light"] button.primary,
+html[data-theme="light"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="light"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="light"] {--ice:#216b7a; --amber:#8a521d}
+html[data-theme="light"] .arena {background:#101f29}
+html[data-theme="light"] .warning,
+html[data-theme="light"] #notice:not(:empty) {color:var(--ui-warn); background:#f3e8d0}
+html[data-theme="light"] .card.selected {background:var(--ui-selected); border-color:var(--ui-accent)}
+
+html[data-theme="light"] button:hover:not(:disabled) {background-color:var(--ui-raised)}
+html[data-theme="light"] button.primary:hover:not(:disabled) {background:var(--ui-accent); color:var(--ui-bg)}
+
+html[data-theme="light"] .arena .hint,html[data-theme="light"] .arena .legend {color:#b9cbd1}
+
+html[data-theme="light"] .arena>.row {color:#d4e1e5}
+
+/* Ownership, rarity and selection markings remain independent of panel borders. */
+html[data-theme="light"] .player {border-top-color:var(--ice)}
+html[data-theme="light"] .player.p1 {border-top-color:var(--amber)}

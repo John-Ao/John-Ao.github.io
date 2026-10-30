@@ -1,0 +1,54 @@
+/* Dark theme: interface surfaces; game-specific markings stay distinct. */
+html[data-theme="dark"] { --bg:var(--ui-bg); --panel:var(--ui-panel); --text:var(--ui-text); --ink:var(--ui-text); --muted:var(--ui-muted); --line:var(--ui-line); color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="dark"] body { color:var(--ui-text); background:var(--ui-bg) }
+html[data-theme="dark"] button,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea { color:var(--ui-text); background-color:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="dark"] button:hover:not(:disabled) { border-color:var(--ui-accent) }
+html[data-theme="dark"] .player,
+html[data-theme="dark"] .player.viewed,
+html[data-theme="dark"] dialog,
+html[data-theme="dark"] .drawn-card { color:var(--ui-text); background:var(--ui-panel); border-color:var(--ui-line) }
+html[data-theme="dark"] .build-plan,
+html[data-theme="dark"] .rent-button { color:var(--ui-text); background:var(--ui-raised) }
+html[data-theme="dark"] .bank,
+html[data-theme="dark"] .last-event,
+html[data-theme="dark"] .board-tools,
+html[data-theme="dark"] .player-heading small,
+html[data-theme="dark"] .money small,
+html[data-theme="dark"] .player-meta,
+html[data-theme="dark"] .asset-row small,
+html[data-theme="dark"] .empty,
+html[data-theme="dark"] .history li,
+html[data-theme="dark"] .save-state,
+html[data-theme="dark"] .note,
+html[data-theme="dark"] .trade-cols legend,
+html[data-theme="dark"] .build-plan small { color:var(--ui-muted) }
+html[data-theme="dark"] a { color:var(--ui-blue) }
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] .primary { background:var(--ui-accent); color:var(--ui-bg); border-color:var(--ui-accent) }
+html[data-theme="dark"] button.selected { background:var(--ui-selected); border-color:var(--ui-accent) }
+
+/* Preserve game objects and semantic states in the alternate palette. */
+html[data-theme="dark"] {--green:#92d7b7; --p0:#dc826e; --p1:#76b7dc}
+html[data-theme="dark"] .board {background:#233c36; border-color:#738d7b}
+html[data-theme="dark"] .space {background:#293e38; color:#edf1e5; border-color:#657b6c}
+html[data-theme="dark"] .space.special {background:#35483e}
+html[data-theme="dark"] .center {background:#20362f}
+html[data-theme="dark"] .die {background:#e8e8d8}
+html[data-theme="dark"] .history li:first-child {color:var(--ui-text)}
+html[data-theme="dark"] .danger {color:var(--ui-red)}
+html[data-theme="dark"] .asset-row,
+html[data-theme="dark"] .quiet,
+html[data-theme="dark"] .modal-top button {background:transparent}
+html[data-theme="dark"] input,
+html[data-theme="dark"] select {color:var(--ui-text); background:var(--ui-raised)}
+html[data-theme="dark"] #toast {background:#e7eee8; color:#253b38}
+html[data-theme="dark"] .space .price {opacity:.9}
+
+html[data-theme="light"] .empty,html[data-theme="light"] .save-state {color:#586c5e}
+html[data-theme="dark"] .token {color:#172126}
+
+/* Ownership, rarity and selection markings remain independent of panel borders. */
+html[data-theme="dark"] .player.active {border-color:var(--active)}

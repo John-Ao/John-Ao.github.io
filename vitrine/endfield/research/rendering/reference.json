@@ -1,0 +1,21 @@
+{
+  "officialSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.f95544.mp4",
+  "officialFrameSeconds": 1,
+  "officialEncoding": "left RGB / right grayscale alpha",
+  "comparison": {
+    "character": "perlica",
+    "clip": "A_actor_pelica_ui_overview_loop",
+    "timeSeconds": 1,
+    "viewport": [
+      1440,
+      1000
+    ],
+    "crop": [
+      320,
+      320,
+      800,
+      860
+    ],
+    "note": "Before and after use the same model, pose and camera. Official image uses a different camera."
+  }
+}

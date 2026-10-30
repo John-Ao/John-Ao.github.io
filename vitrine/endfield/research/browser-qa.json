@@ -1,0 +1,1892 @@
+{
+  "verifiedAt": "2026-10-30T05:39:40.344Z",
+  "browser": "Google Chrome / ANGLE SwiftShader",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "tested": 34,
+  "passed": 34,
+  "results": [
+    {
+      "id": "jsspsi",
+      "name": "祀",
+      "ok": true,
+      "seconds": 7.505,
+      "model": true,
+      "action": "A_actor_jsspsi_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.2,
+      "playing": true,
+      "bones": 505,
+      "meshes": 33,
+      "skinned": 33,
+      "triangles": 101898,
+      "drawCalls": 30,
+      "geometries": 18,
+      "textures": 38,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/jsspsi.png",
+        "/tmp/endfield-qa-screens/jsspsi-face.png"
+      ]
+    },
+    {
+      "id": "endministrator2",
+      "name": "管理员 · 男",
+      "ok": true,
+      "seconds": 4.211,
+      "model": true,
+      "action": "A_actor_endminm_ui_overview_loop",
+      "duration": 2.5,
+      "time": 0.3756999998092651,
+      "playing": true,
+      "bones": 301,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 78726,
+      "drawCalls": 17,
+      "geometries": 12,
+      "textures": 49,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/endministrator2.png"
+      ]
+    },
+    {
+      "id": "endministrator1",
+      "name": "管理员 · 女",
+      "ok": true,
+      "seconds": 3.969,
+      "model": true,
+      "action": "A_actor_endminf_ui_overview_loop",
+      "duration": 2.0833332538604736,
+      "time": 0.31830000019073484,
+      "playing": true,
+      "bones": 314,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 72015,
+      "drawCalls": 18,
+      "geometries": 12,
+      "textures": 57,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/endministrator1.png"
+      ]
+    },
+    {
+      "id": "perlica",
+      "name": "佩丽卡",
+      "ok": true,
+      "seconds": 6.268,
+      "model": true,
+      "action": "A_actor_pelica_ui_overview_loop",
+      "duration": 3.0833332538604736,
+      "time": 0.15000000000000002,
+      "playing": true,
+      "bones": 278,
+      "meshes": 16,
+      "skinned": 16,
+      "triangles": 94617,
+      "drawCalls": 21,
+      "geometries": 15,
+      "textures": 76,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/perlica.png",
+        "/tmp/endfield-qa-screens/perlica-face.png"
+      ]
+    },
+    {
+      "id": "chen",
+      "name": "陈千语",
+      "ok": true,
+      "seconds": 3.091,
+      "model": true,
+      "action": "A_actor_chen_ui_overview_loop",
+      "duration": 2,
+      "time": 0.25469999885559086,
+      "playing": true,
+      "bones": 320,
+      "meshes": 14,
+      "skinned": 12,
+      "triangles": 94443,
+      "drawCalls": 18,
+      "geometries": 13,
+      "textures": 78,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "typhoea",
+      "name": "提弗洛斯",
+      "ok": true,
+      "seconds": 5.129,
+      "model": true,
+      "action": "A_actor_typhoea_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.15000000000000002,
+      "playing": true,
+      "bones": 401,
+      "meshes": 32,
+      "skinned": 32,
+      "triangles": 101230,
+      "drawCalls": 22,
+      "geometries": 16,
+      "textures": 96,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/typhoea.png"
+      ]
+    },
+    {
+      "id": "purrche",
+      "name": "噗切娜",
+      "ok": true,
+      "seconds": 11.105,
+      "model": true,
+      "action": "A_actor_purrchena_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.11610000038146973,
+      "playing": true,
+      "bones": 252,
+      "meshes": 32,
+      "skinned": 32,
+      "triangles": 191020,
+      "drawCalls": 27,
+      "geometries": 27,
+      "textures": 113,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/purrche.png",
+        "/tmp/endfield-qa-screens/purrche-face.png"
+      ]
+    },
+    {
+      "id": "lizhiyan",
+      "name": "诀",
+      "ok": true,
+      "seconds": 4.508,
+      "model": true,
+      "action": "A_actor_lizhiyan_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.05,
+      "playing": true,
+      "bones": 500,
+      "meshes": 30,
+      "skinned": 30,
+      "triangles": 107679,
+      "drawCalls": 20,
+      "geometries": 14,
+      "textures": 131,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "liino",
+      "name": "梨诺",
+      "ok": true,
+      "seconds": 3.841,
+      "model": true,
+      "action": "A_actor_liino_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.2,
+      "playing": true,
+      "bones": 365,
+      "meshes": 25,
+      "skinned": 25,
+      "triangles": 109271,
+      "drawCalls": 26,
+      "geometries": 20,
+      "textures": 148,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "mifu",
+      "name": "弭弗",
+      "ok": true,
+      "seconds": 3.952,
+      "model": true,
+      "action": "A_actor_mifu_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.2,
+      "playing": true,
+      "bones": 369,
+      "meshes": 24,
+      "skinned": 24,
+      "triangles": 91029,
+      "drawCalls": 18,
+      "geometries": 12,
+      "textures": 159,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "camille",
+      "name": "卡缪",
+      "ok": true,
+      "seconds": 4.654,
+      "model": true,
+      "action": "A_actor_camille_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.35,
+      "playing": true,
+      "bones": 341,
+      "meshes": 31,
+      "skinned": 31,
+      "triangles": 97177,
+      "drawCalls": 20,
+      "geometries": 15,
+      "textures": 37,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "zhuangfy",
+      "name": "庄方宜",
+      "ok": true,
+      "seconds": 3.032,
+      "model": true,
+      "action": "A_actor_zhuangfy_ui_overview_loop_01",
+      "duration": 3.3333332538604736,
+      "time": 0.15000000000000002,
+      "playing": true,
+      "bones": 368,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 104368,
+      "drawCalls": 16,
+      "geometries": 10,
+      "textures": 36,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "tangtang",
+      "name": "汤汤",
+      "ok": true,
+      "seconds": 3.669,
+      "model": true,
+      "action": "A_actor_tangtang_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.21720000076293944,
+      "playing": true,
+      "bones": 400,
+      "meshes": 23,
+      "skinned": 23,
+      "triangles": 115668,
+      "drawCalls": 21,
+      "geometries": 15,
+      "textures": 56,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "rossi",
+      "name": "洛茜",
+      "ok": true,
+      "seconds": 4.067,
+      "model": true,
+      "action": "A_actor_wulfa_ui_overview_loop_01",
+      "duration": 2.3333332538604736,
+      "time": 0.15000000000000002,
+      "playing": true,
+      "bones": 337,
+      "meshes": 32,
+      "skinned": 32,
+      "triangles": 100976,
+      "drawCalls": 23,
+      "geometries": 16,
+      "textures": 70,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "laevatain",
+      "name": "莱万汀",
+      "ok": true,
+      "seconds": 4.049,
+      "model": true,
+      "action": "A_actor_laevat_ui_overview_loop",
+      "duration": 2,
+      "time": 0.15000000000000002,
+      "playing": true,
+      "bones": 310,
+      "meshes": 17,
+      "skinned": 17,
+      "triangles": 110449,
+      "drawCalls": 19,
+      "geometries": 13,
+      "textures": 84,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "yvonne",
+      "name": "伊冯",
+      "ok": true,
+      "seconds": 3.499,
+      "model": true,
+      "action": "A_actor_girl_idle_loop",
+      "duration": 2,
+      "time": 0.25830000019073485,
+      "playing": true,
+      "bones": 263,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 116703,
+      "drawCalls": 18,
+      "geometries": 12,
+      "textures": 89,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "gilberta",
+      "name": "洁尔佩塔",
+      "ok": true,
+      "seconds": 2.58,
+      "model": true,
+      "action": "A_actor_aglina_ui_overview_loop",
+      "duration": 1.6666666269302368,
+      "time": 0.20630000019073486,
+      "playing": true,
+      "bones": 290,
+      "meshes": 11,
+      "skinned": 11,
+      "triangles": 107727,
+      "drawCalls": 15,
+      "geometries": 10,
+      "textures": 96,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "ardelia",
+      "name": "艾尔黛拉",
+      "ok": true,
+      "seconds": 5.216,
+      "model": true,
+      "action": "A_actor_ardelia_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.25589999961853027,
+      "playing": true,
+      "bones": 378,
+      "meshes": 18,
+      "skinned": 18,
+      "triangles": 122160,
+      "drawCalls": 23,
+      "geometries": 17,
+      "textures": 126,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "ember",
+      "name": "余烬",
+      "ok": true,
+      "seconds": 4.071,
+      "model": true,
+      "action": "A_actor_azrila_ui_overview_loop",
+      "duration": 2.5,
+      "time": 0.25220000076293947,
+      "playing": true,
+      "bones": 292,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 83302,
+      "drawCalls": 18,
+      "geometries": 12,
+      "textures": 127,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/ember.png"
+      ]
+    },
+    {
+      "id": "lastrite",
+      "name": "别礼",
+      "ok": true,
+      "seconds": 3.078,
+      "model": true,
+      "action": "A_actor_lastrite_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.17910000038146975,
+      "playing": true,
+      "bones": 298,
+      "meshes": 14,
+      "skinned": 14,
+      "triangles": 100765,
+      "drawCalls": 18,
+      "geometries": 13,
+      "textures": 136,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "lifeng",
+      "name": "黎风",
+      "ok": true,
+      "seconds": 4.363,
+      "model": true,
+      "action": "A_actor_lifeng_ui_overview_loop",
+      "duration": 2.5,
+      "time": 0.3823000001907348,
+      "playing": true,
+      "bones": 256,
+      "meshes": 12,
+      "skinned": 12,
+      "triangles": 102241,
+      "drawCalls": 16,
+      "geometries": 11,
+      "textures": 26,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "pogranichnik",
+      "name": "骏卫",
+      "ok": true,
+      "seconds": 4.477,
+      "model": true,
+      "action": "A_actor_pograni_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.3,
+      "playing": true,
+      "bones": 629,
+      "meshes": 49,
+      "skinned": 49,
+      "triangles": 109673,
+      "drawCalls": 21,
+      "geometries": 14,
+      "textures": 42,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "alesh",
+      "name": "阿列什",
+      "ok": true,
+      "seconds": 3.177,
+      "model": true,
+      "action": "A_actor_deepfin_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.35,
+      "playing": true,
+      "bones": 289,
+      "meshes": 17,
+      "skinned": 17,
+      "triangles": 69369,
+      "drawCalls": 17,
+      "geometries": 13,
+      "textures": 53,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "arclight",
+      "name": "弧光",
+      "ok": true,
+      "seconds": 2.578,
+      "model": true,
+      "action": "A_actor_ikut_ui_overview_loop",
+      "duration": 2.6666667461395264,
+      "time": 0.3761999998092651,
+      "playing": true,
+      "bones": 259,
+      "meshes": 10,
+      "skinned": 10,
+      "triangles": 56675,
+      "drawCalls": 15,
+      "geometries": 10,
+      "textures": 57,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "avywenna",
+      "name": "艾维文娜",
+      "ok": true,
+      "seconds": 2.646,
+      "model": true,
+      "action": "A_actor_avywen_ui_overview_loop",
+      "duration": 2.5999999046325684,
+      "time": 0.3241999998092651,
+      "playing": true,
+      "bones": 289,
+      "meshes": 9,
+      "skinned": 9,
+      "triangles": 78343,
+      "drawCalls": 12,
+      "geometries": 9,
+      "textures": 62,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "dapan",
+      "name": "大潘",
+      "ok": true,
+      "seconds": 5.484,
+      "model": true,
+      "action": "A_actor_dapan_ui_overview_loop",
+      "duration": 2.5,
+      "time": 0.1,
+      "playing": true,
+      "bones": 258,
+      "meshes": 22,
+      "skinned": 22,
+      "triangles": 245147,
+      "drawCalls": 22,
+      "geometries": 19,
+      "textures": 78,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": [
+        "/tmp/endfield-qa-screens/dapan.png"
+      ]
+    },
+    {
+      "id": "snowshine",
+      "name": "昼雪",
+      "ok": true,
+      "seconds": 2.513,
+      "model": true,
+      "action": "A_actor_aurora_ui_overview_loop",
+      "duration": 2.5,
+      "time": 0.10810000038146973,
+      "playing": true,
+      "bones": 228,
+      "meshes": 15,
+      "skinned": 15,
+      "triangles": 93204,
+      "drawCalls": 20,
+      "geometries": 14,
+      "textures": 100,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": false,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "wulfgard",
+      "name": "狼卫",
+      "ok": true,
+      "seconds": 2.599,
+      "model": true,
+      "action": "A_actor_wolfgd_ui_overview_loop",
+      "duration": 3.1666667461395264,
+      "time": 0.10789999961853028,
+      "playing": true,
+      "bones": 344,
+      "meshes": 22,
+      "skinned": 22,
+      "triangles": 100826,
+      "drawCalls": 23,
+      "geometries": 16,
+      "textures": 122,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "xaihi",
+      "name": "赛希",
+      "ok": true,
+      "seconds": 1.558,
+      "model": true,
+      "action": "A_actor_seraph_ui_overview_loop",
+      "duration": 2.0833332538604736,
+      "time": 0.10259999942779542,
+      "playing": true,
+      "bones": 284,
+      "meshes": 15,
+      "skinned": 15,
+      "triangles": 66450,
+      "drawCalls": 21,
+      "geometries": 14,
+      "textures": 125,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": false,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "akekuri",
+      "name": "秋栗",
+      "ok": true,
+      "seconds": 1.608,
+      "model": true,
+      "action": "A_actor_Karin_ui_overview_loop_01",
+      "duration": 2.6666667461395264,
+      "time": 0.1,
+      "playing": true,
+      "bones": 227,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 93989,
+      "drawCalls": 17,
+      "geometries": 12,
+      "textures": 130,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "antal",
+      "name": "安塔尔",
+      "ok": true,
+      "seconds": 4.581,
+      "model": true,
+      "action": "A_actor_antal_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.19559999942779543,
+      "playing": true,
+      "bones": 109,
+      "meshes": 8,
+      "skinned": 7,
+      "triangles": 48354,
+      "drawCalls": 9,
+      "geometries": 9,
+      "textures": 22,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "catcher",
+      "name": "卡契尔",
+      "ok": true,
+      "seconds": 3.09,
+      "model": true,
+      "action": "A_actor_meurs_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.3,
+      "playing": true,
+      "bones": 190,
+      "meshes": 14,
+      "skinned": 14,
+      "triangles": 73632,
+      "drawCalls": 18,
+      "geometries": 13,
+      "textures": 36,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "estella",
+      "name": "埃特拉",
+      "ok": true,
+      "seconds": 3.029,
+      "model": true,
+      "action": "A_actor_whiten_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.2646999998092651,
+      "playing": true,
+      "bones": 206,
+      "meshes": 13,
+      "skinned": 13,
+      "triangles": 89307,
+      "drawCalls": 18,
+      "geometries": 12,
+      "textures": 43,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    },
+    {
+      "id": "fluorite",
+      "name": "萤石",
+      "ok": true,
+      "seconds": 3.06,
+      "model": true,
+      "action": "A_actor_bounda_ui_overview_loop_01",
+      "duration": 2.5,
+      "time": 0.3076999998092651,
+      "playing": true,
+      "bones": 220,
+      "meshes": 14,
+      "skinned": 14,
+      "triangles": 74571,
+      "drawCalls": 18,
+      "geometries": 13,
+      "textures": 56,
+      "loading": false,
+      "error": null,
+      "timeAdvanced": true,
+      "events": [],
+      "screenshots": []
+    }
+  ],
+  "deferred": [],
+  "rapidSwitch": {
+    "ok": true,
+    "id": "ember",
+    "model": true,
+    "action": "A_actor_azrila_ui_overview_loop",
+    "duration": 2.5,
+    "time": 0.0975,
+    "playing": true,
+    "bones": 292,
+    "meshes": 13,
+    "skinned": 13,
+    "triangles": 83302,
+    "drawCalls": 18,
+    "geometries": 12,
+    "textures": 70,
+    "loading": false,
+    "error": null,
+    "events": [
+      {
+        "type": "requestfailed",
+        "text": "net::ERR_ABORTED",
+        "url": "http://127.0.0.1:5338/vitrine/endfield/assets/models/88bc9e5fe17dbdcd.bin.gz"
+      },
+      {
+        "type": "requestfailed",
+        "text": "net::ERR_ABORTED",
+        "url": "http://127.0.0.1:5338/vitrine/endfield/assets/models/a5346f3fa8939ca4.bin.gz"
+      },
+      {
+        "type": "requestfailed",
+        "text": "net::ERR_ABORTED",
+        "url": "http://127.0.0.1:5338/vitrine/endfield/assets/models/10cc2eaeb34c526b.bin.gz"
+      },
+      {
+        "type": "requestfailed",
+        "text": "net::ERR_ABORTED",
+        "url": "http://127.0.0.1:5338/vitrine/endfield/assets/models/05cd4a7546184583.bin.gz"
+      }
+    ]
+  },
+  "followup": {
+    "verifiedAt": "2026-10-30T05:34:14.171Z",
+    "results": [
+      {
+        "id": "purrche",
+        "time": 0.1,
+        "triangles": 191020,
+        "duration": 2.5,
+        "textures": 38,
+        "maskedMaterials": [
+          "M_actor_purrchena_furcard_01"
+        ],
+        "timeAdvanced": true
+      },
+      {
+        "id": "dapan",
+        "time": 0.1655,
+        "triangles": 245147,
+        "duration": 2.5,
+        "textures": 28,
+        "maskedMaterials": [
+          "M_actor_dapan_body_01",
+          "M_actor_dapan_body_02",
+          "M_actor_lod_dapan_body_01"
+        ],
+        "timeAdvanced": true
+      },
+      {
+        "id": "jsspsi",
+        "time": 0.1,
+        "triangles": 101898,
+        "duration": 2.5,
+        "textures": 38,
+        "maskedMaterials": [],
+        "timeAdvanced": true
+      },
+      {
+        "id": "snowshine",
+        "time": 0.1,
+        "triangles": 93204,
+        "duration": 2.5,
+        "textures": 33,
+        "maskedMaterials": [],
+        "timeAdvanced": true
+      },
+      {
+        "id": "xaihi",
+        "time": 0.1224000005722046,
+        "triangles": 66450,
+        "duration": 2.0833332538604736,
+        "textures": 31,
+        "maskedMaterials": [],
+        "timeAdvanced": true
+      }
+    ],
+    "clear": {
+      "textures": 1,
+      "geometries": 1
+    },
+    "errors": []
+  },
+  "coverage": {
+    "characters": 34,
+    "defaultSourceActions": 34,
+    "rapidSwitchRequests": 5,
+    "representativeScreenshots": [
+      "Si",
+      "Purrchena",
+      "Ember",
+      "Da Pan",
+      "male Endministrator",
+      "female Endministrator",
+      "Perlica",
+      "Typhoeus",
+      "Camille",
+      "Arcane"
+    ],
+    "allAnimationClipsPlayed": false,
+    "additionalSourceActions": [
+      "A_actor_typhoea_ui_relax_sp_01",
+      "A_actor_camille_ui_overview_start_01",
+      "A_actor_lizhiyan_ui_relax_sp_01"
+    ]
+  },
+  "notes": [
+    "All 34 characters reached an actual loaded model and playing source clip; no shader compile errors, unbound animation tracks, failed HTTP responses, or unexpected request failures were observed.",
+    "Rapid switching canceled four obsolete model requests as expected and displayed the final requested character, Ember.",
+    "The initial 220 ms time-advance sample missed the next software-rendered frame for Snowshine and Xaihi; follow-up waits explicitly verified advancement for both.",
+    "The first pass captured elevated texture counts before the skeleton disposal fix; a fresh follow-up run after the fix returned to 1 texture and 1 geometry after clearing.",
+    "Follow-up visual checks verified additional alpha masks for fur cards, and corrected head-bone framing for Si and Purrchena.",
+    "Nested extras.vfx MainTex/MaskTex, UV scale/offset, tint, alpha channel, and depth-only color suppression are now applied from source parameters. Follow-up source action playback for Typhoeus, Camille, and Arcane and Si overview rendered without shader or request errors; each cleanup returned to 1 texture and 1 geometry. Full distortion, animated texture blending, soft particles, fur shell lighting, and original game post-processing remain approximations or unsupported."
+  ],
+  "visualFindings": [
+    {
+      "id": "face-framing",
+      "characters": [
+        "jsspsi",
+        "purrche"
+      ],
+      "status": "fixed-and-verified",
+      "evidence": [
+        "/tmp/endfield-qa-screens/jsspsi-face-fixed.png",
+        "/tmp/endfield-qa-screens/purrche-face-fixed.png"
+      ]
+    },
+    {
+      "id": "fur-card-alpha",
+      "characters": [
+        "purrche",
+        "dapan"
+      ],
+      "status": "fixed-and-verified",
+      "evidence": [
+        "/tmp/endfield-qa-screens/purrche-fixed.png",
+        "/tmp/endfield-qa-screens/dapan-fixed.png"
+      ]
+    },
+    {
+      "id": "vfx-materials",
+      "characters": [
+        "jsspsi",
+        "typhoea",
+        "camille",
+        "lizhiyan"
+      ],
+      "status": "fixed-and-verified",
+      "detail": "Original adapter reads nested extras.vfx MainTex and MaskTex with source UV transforms. Depth-only materials use colorWrite=false. Si pale opaque cards were replaced with source masked ink textures; tested VFX actions show no shader errors. Complex game-only VFX features are outside this static texture approximation.",
+      "evidence": [
+        "/tmp/endfield-qa-screens/jsspsi-vfx.png",
+        "/tmp/endfield-qa-screens/jsspsi-face-vfx.png",
+        "/tmp/endfield-qa-screens/typhoea-vfx.png",
+        "/tmp/endfield-qa-screens/camille-vfx.png",
+        "/tmp/endfield-qa-screens/lizhiyan-vfx.png"
+      ]
+    }
+  ],
+  "vfxFollowup": {
+    "verifiedAt": "2026-10-30T05:37:32.490Z",
+    "results": [
+      {
+        "id": "jsspsi",
+        "time": 0.1,
+        "triangles": 108250,
+        "duration": 2.5,
+        "textures": 52,
+        "maskedMaterials": [
+          "M_fx_jsspsi_cloth_04_01",
+          "M_fx_jsspsi_cloth_04_02",
+          "M_fx_jsspsi_cloth_04_03",
+          "M_fx_jsspsi_cloth_05",
+          "M_fx_actor_jsspsi_cloth_05_01",
+          "M_fx_jsspsi_cloth_06_01",
+          "M_fx_jsspsi_cloth_06_01_depthonly",
+          "M_fx_actor_jsspsi_cloth_08_01",
+          "M_fx_actor_jsspsi_cloth_08_01_depthonly",
+          "M_fx_jsspsi_cloth_06_02",
+          "M_fx_jsspsi_cloth_06_02_depthonly"
+        ],
+        "vfxMaterials": [
+          {
+            "name": "M_fx_jsspsi_cloth_04_01",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_04_02",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1.25
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_04_03",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 0.10000000149011612
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_05",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 2
+          },
+          {
+            "name": "M_fx_actor_jsspsi_cloth_05_01",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 0.30000001192092896
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_06_01",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1.2999999523162842
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_06_01_depthonly",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": false,
+            "depthWrite": true,
+            "opacity": 1.2999999523162842
+          },
+          {
+            "name": "M_fx_actor_jsspsi_cloth_08_01",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 3
+          },
+          {
+            "name": "M_fx_actor_jsspsi_cloth_08_01_depthonly",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": false,
+            "depthWrite": true,
+            "opacity": 3
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_06_02",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fx_jsspsi_cloth_06_02_depthonly",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": false,
+            "depthWrite": true,
+            "opacity": 1
+          }
+        ],
+        "timeAdvanced": true
+      },
+      {
+        "id": "perlica",
+        "time": 0.1,
+        "triangles": 94617,
+        "duration": 3.0833332538604736,
+        "textures": 38,
+        "maskedMaterials": [],
+        "vfxMaterials": [],
+        "timeAdvanced": true
+      },
+      {
+        "id": "purrche",
+        "time": 0.1,
+        "triangles": 191020,
+        "duration": 2.5,
+        "textures": 38,
+        "maskedMaterials": [
+          "M_actor_purrchena_furcard_01"
+        ],
+        "vfxMaterials": [],
+        "timeAdvanced": true
+      }
+    ],
+    "clear": {
+      "textures": 1,
+      "geometries": 1
+    },
+    "errors": []
+  },
+  "vfxActionsFollowup": {
+    "verifiedAt": "2026-10-30T05:39:40.344Z",
+    "results": [
+      {
+        "id": "typhoea",
+        "time": 0.10519999980926514,
+        "triangles": 114396,
+        "duration": 32.93333435058594,
+        "textures": 54,
+        "maskedMaterials": [
+          "M_fx_typhoea_objectline_001_zgm"
+        ],
+        "vfxMaterials": [
+          {
+            "name": "M_fxui_typhoea_sp01_book",
+            "hasMain": true,
+            "hasMask": false,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_typhoea_sp01_book",
+            "hasMain": true,
+            "hasMask": false,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fx_typhoea_objectline_001_zgm",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 5
+          }
+        ],
+        "timeAdvanced": true
+      },
+      {
+        "id": "camille",
+        "time": 0.1,
+        "triangles": 108108,
+        "duration": 11.066666603088379,
+        "textures": 53,
+        "maskedMaterials": [
+          "M_fxui_camille_overview_start_27",
+          "M_fxui_camille_overview_start_28",
+          "M_fxui_camille_overview_start_31",
+          "M_fxui_camille_overview_start_51",
+          "M_fxui_camille_overview_start_31_depth",
+          "M_fxui_camille_overview_start_25",
+          "M_fxui_camille_overview_start_32",
+          "M_fx_camille_ui_equip_to_overview_12",
+          "M_fx_camille_ui_equip_to_overview_15"
+        ],
+        "vfxMaterials": [
+          {
+            "name": "M_fxui_camille_overview_start_27",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_camille_overview_start_28",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_camille_overview_start_31",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 4
+          },
+          {
+            "name": "M_fxui_camille_overview_start_51",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_camille_overview_start_31_depth",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": false,
+            "depthWrite": true,
+            "opacity": 4
+          },
+          {
+            "name": "M_fxui_camille_overview_start_25",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 3.3299999237060547
+          },
+          {
+            "name": "M_fxui_camille_overview_start_32",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 0.699999988079071
+          },
+          {
+            "name": "M_fx_camille_ui_equip_to_overview_11",
+            "hasMain": true,
+            "hasMask": false,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 5
+          },
+          {
+            "name": "M_fx_camille_ui_equip_to_overview_12",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_camille_overview_start_33",
+            "hasMain": false,
+            "hasMask": false,
+            "colorWrite": false,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fx_camille_ui_equip_to_overview_14",
+            "hasMain": true,
+            "hasMask": false,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 5
+          },
+          {
+            "name": "M_fx_camille_ui_equip_to_overview_15",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_camille_overview_start_33",
+            "hasMain": false,
+            "hasMask": false,
+            "colorWrite": false,
+            "depthWrite": false,
+            "opacity": 1
+          }
+        ],
+        "timeAdvanced": true
+      },
+      {
+        "id": "lizhiyan",
+        "time": 0.1,
+        "triangles": 119003,
+        "duration": 28.200000762939453,
+        "textures": 41,
+        "maskedMaterials": [
+          "M_fxui_lizhiyan_relax_sp_01_31",
+          "M_fxui_lizhiyan_relax_sp_01_32"
+        ],
+        "vfxMaterials": [
+          {
+            "name": "M_fxui_lizhiyan_relax_sp_01_36",
+            "hasMain": true,
+            "hasMask": false,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_lizhiyan_relax_sp_01_31",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_lizhiyan_relax_sp_01_32",
+            "hasMain": true,
+            "hasMask": true,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_lizhiyan_relax_sp_01_34",
+            "hasMain": false,
+            "hasMask": false,
+            "colorWrite": false,
+            "depthWrite": false,
+            "opacity": 1
+          },
+          {
+            "name": "M_fxui_lizhiyan_relax_sp_01_01",
+            "hasMain": true,
+            "hasMask": false,
+            "colorWrite": true,
+            "depthWrite": false,
+            "opacity": 1
+          }
+        ],
+        "timeAdvanced": true
+      }
+    ],
+    "clear": {
+      "textures": 1,
+      "geometries": 1
+    },
+    "errors": []
+  },
+  "actionControls": {
+    "results": [
+      {
+        "id": "perlica",
+        "name": "佩丽卡",
+        "tests": [
+          {
+            "clip": "A_actor_pelica_battle_attack_01",
+            "time": 0.5499999999999999,
+            "duration": 5.5333333015441895,
+            "tracks": 608,
+            "props": 2,
+            "visibleProps": 0,
+            "propAnimations": 0,
+            "boneDelta": 751.531050211249,
+            "propMovement": [
+              {
+                "n": 1,
+                "mount": "IK_Weapon_R_001",
+                "visible": false,
+                "worldDelta": 4.496903516319222
+              },
+              {
+                "n": 2,
+                "mount": "IK_Weapon_L_001",
+                "visible": false,
+                "worldDelta": 7.165643352345145
+              }
+            ]
+          },
+          {
+            "clip": "A_actor_pelica_ui_relax_react",
+            "time": 0.6,
+            "duration": 11,
+            "tracks": 601,
+            "props": 2,
+            "visibleProps": 2,
+            "propAnimations": 0,
+            "boneDelta": 1256.4976102376352,
+            "propMovement": [
+              {
+                "n": 1,
+                "mount": "IK_Weapon_R_001",
+                "visible": true,
+                "worldDelta": 7.9681856057049245
+              },
+              {
+                "n": 2,
+                "mount": "IK_Weapon_L_001",
+                "visible": true,
+                "worldDelta": 7.210756254724955
+              }
+            ]
+          }
+        ],
+        "replay": {
+          "end": {
+            "time": 11,
+            "duration": 11,
+            "paused": true
+          },
+          "restarted": {
+            "time": 0.05,
+            "playing": true
+          }
+        },
+        "rapid": {
+          "url": "A_actor_pelica_battle_attack_04",
+          "action": "A_actor_pelica_battle_attack_04",
+          "active": "A_actor_pelica_battle_attack_04",
+          "error": true,
+          "visibleProps": 0
+        },
+        "screenshot": {
+          "filename": "佩丽卡-A_actor_pelica_ui_relax_react.png",
+          "bytes": 190062,
+          "width": 1200,
+          "height": 850
+        }
+      },
+      {
+        "id": "lizhiyan",
+        "name": "诀",
+        "tests": [
+          {
+            "clip": "A_actor_lizhiyan_battle_attack_01",
+            "time": 0.39999999999999997,
+            "duration": 7.4666666984558105,
+            "tracks": 812,
+            "props": 7,
+            "visibleProps": 0,
+            "propAnimations": 0,
+            "boneDelta": 1403.9862856665497,
+            "propMovement": [
+              {
+                "n": 3,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0
+              },
+              {
+                "n": 2,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0
+              },
+              {
+                "n": 4,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0
+              },
+              {
+                "n": 6,
+                "mount": "Funnel_Point_002",
+                "visible": false,
+                "worldDelta": 7.900823470636109
+              },
+              {
+                "n": 7,
+                "mount": "Funnel_Point_003",
+                "visible": false,
+                "worldDelta": 8.183612764925154
+              },
+              {
+                "n": 5,
+                "mount": "Funnel_Point_001",
+                "visible": false,
+                "worldDelta": 7.17135572399474
+              },
+              {
+                "n": 1,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0
+              }
+            ]
+          },
+          {
+            "clip": "A_actor_lizhiyan_ui_relax_react",
+            "time": 0.44999999999999996,
+            "duration": 15.25,
+            "tracks": 814,
+            "props": 7,
+            "visibleProps": 0,
+            "propAnimations": 7,
+            "boneDelta": 534.5079189506858,
+            "propMovement": [
+              {
+                "n": 3,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0,
+                "propClip": "A_item_widget_lizhiyan_03_ui_relax_react",
+                "propTime": 0
+              },
+              {
+                "n": 2,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0,
+                "propClip": "A_item_widget_lizhiyan_02_ui_relax_react",
+                "propTime": 0
+              },
+              {
+                "n": 4,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0,
+                "propClip": "A_item_widget_lizhiyan_01_ui_relax_react",
+                "propTime": 0
+              },
+              {
+                "n": 6,
+                "mount": "Funnel_Point_002",
+                "visible": false,
+                "worldDelta": 0.00015484642097945885,
+                "propClip": "A_wpn_misc_0047_01_ui_relax_react",
+                "propTime": 0
+              },
+              {
+                "n": 7,
+                "mount": "Funnel_Point_003",
+                "visible": false,
+                "worldDelta": 0.00015484642097945885,
+                "propClip": "A_wpn_misc_0047_01_ui_relax_react",
+                "propTime": 0
+              },
+              {
+                "n": 5,
+                "mount": "Funnel_Point_001",
+                "visible": false,
+                "worldDelta": 0.00015484642097945885,
+                "propClip": "A_wpn_misc_0047_01_ui_relax_react",
+                "propTime": 0
+              },
+              {
+                "n": 1,
+                "mount": "",
+                "visible": false,
+                "worldDelta": 0,
+                "propClip": "A_item_widget_lizhiyan_01_ui_disappear_01",
+                "propTime": 0
+              }
+            ]
+          }
+        ],
+        "replay": {
+          "end": {
+            "time": 15.25,
+            "duration": 15.25,
+            "paused": true
+          },
+          "restarted": {
+            "time": 0.05,
+            "playing": true
+          }
+        },
+        "rapid": {
+          "url": "A_actor_lizhiyan_battle_attack_04",
+          "action": "A_actor_lizhiyan_battle_attack_04",
+          "active": "A_actor_lizhiyan_battle_attack_04",
+          "error": true,
+          "visibleProps": 0
+        },
+        "screenshot": {
+          "filename": "诀-A_actor_lizhiyan_ui_relax_react.png",
+          "bytes": 252558,
+          "width": 1200,
+          "height": 850
+        }
+      }
+    ],
+    "errors": [],
+    "warnings": [],
+    "failed": []
+  },
+  "liveProps": {
+    "activity": [
+      {
+        "time": 5.640000152587891,
+        "props": [
+          {
+            "n": 4,
+            "visible": true,
+            "meshes": 6,
+            "clip": "A_item_widget_lizhiyan_01_relax_sp_01",
+            "time": 5.640000152587891,
+            "duration": 28.200000762939453,
+            "bones": 128
+          },
+          {
+            "n": 3,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_item_widget_lizhiyan_03_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 2,
+            "visible": true,
+            "meshes": 1,
+            "clip": "A_item_widget_lizhiyan_02_relax_sp_01",
+            "time": 5.640000152587891,
+            "duration": 28.200000762939453,
+            "bones": 864
+          },
+          {
+            "n": 7,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 6,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 5,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 1,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_item_widget_lizhiyan_01_ui_disappear_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          }
+        ]
+      },
+      {
+        "time": 14.100000381469727,
+        "props": [
+          {
+            "n": 4,
+            "visible": true,
+            "meshes": 6,
+            "clip": "A_item_widget_lizhiyan_01_relax_sp_01",
+            "time": 14.100000381469727,
+            "duration": 28.200000762939453,
+            "bones": 128
+          },
+          {
+            "n": 3,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_item_widget_lizhiyan_03_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 2,
+            "visible": true,
+            "meshes": 1,
+            "clip": "A_item_widget_lizhiyan_02_relax_sp_01",
+            "time": 14.100000381469727,
+            "duration": 28.200000762939453,
+            "bones": 864
+          },
+          {
+            "n": 7,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 6,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 5,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 1,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_item_widget_lizhiyan_01_ui_disappear_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          }
+        ]
+      },
+      {
+        "time": 22.560000610351565,
+        "props": [
+          {
+            "n": 4,
+            "visible": true,
+            "meshes": 6,
+            "clip": "A_item_widget_lizhiyan_01_relax_sp_01",
+            "time": 22.560000610351565,
+            "duration": 28.200000762939453,
+            "bones": 128
+          },
+          {
+            "n": 3,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_item_widget_lizhiyan_03_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 2,
+            "visible": true,
+            "meshes": 1,
+            "clip": "A_item_widget_lizhiyan_02_relax_sp_01",
+            "time": 22.560000610351565,
+            "duration": 28.200000762939453,
+            "bones": 864
+          },
+          {
+            "n": 7,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 6,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 5,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_wpn_misc_0047_01_ui_relax_sp_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          },
+          {
+            "n": 1,
+            "visible": false,
+            "meshes": 0,
+            "clip": "A_item_widget_lizhiyan_01_ui_disappear_01",
+            "time": 0,
+            "duration": 0,
+            "bones": 0
+          }
+        ]
+      }
+    ],
+    "final": {
+      "clip": "A_actor_lizhiyan_ui_overview_equip_loop_01",
+      "props": [
+        {
+          "n": 4,
+          "source": "dec1c701063875ee.bin",
+          "expected": "dec1c701063875ee.bin",
+          "shows": false,
+          "match": true
+        },
+        {
+          "n": 3,
+          "source": "85480029d3cc5cae.bin",
+          "expected": "85480029d3cc5cae.bin",
+          "shows": false,
+          "match": true
+        },
+        {
+          "n": 2,
+          "source": "22c9fa145e2c1330.bin",
+          "expected": "22c9fa145e2c1330.bin",
+          "shows": true,
+          "match": true
+        },
+        {
+          "n": 7,
+          "source": "3fc0732c11e8745b.bin",
+          "expected": "3fc0732c11e8745b.bin",
+          "shows": true,
+          "match": true
+        },
+        {
+          "n": 6,
+          "source": "1af7aaabb52c51bd.bin",
+          "expected": "1af7aaabb52c51bd.bin",
+          "shows": true,
+          "match": true
+        },
+        {
+          "n": 5,
+          "source": "28b25ec0c24f7f07.bin",
+          "expected": "28b25ec0c24f7f07.bin",
+          "shows": true,
+          "match": true
+        },
+        {
+          "n": 1,
+          "source": "80fbc535549e4c7b.bin",
+          "expected": "80fbc535549e4c7b.bin",
+          "shows": false,
+          "match": true
+        }
+      ]
+    },
+    "errors": []
+  },
+  "responsiveControls": {
+    "desktop": [
+      1440,
+      1000
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "errors": [],
+    "checks": [
+      "play-pause",
+      "seek",
+      "speed",
+      "animation-search",
+      "animation-categories",
+      "34-card-roster",
+      "roster-search",
+      "element-filter",
+      "camera-presets",
+      "background",
+      "ground-grid",
+      "hide-interface",
+      "mobile-action-toggle",
+      "no-horizontal-overflow"
+    ],
+    "loaded": {
+      "sourceTracks": 592,
+      "props": 2,
+      "visibleProps": 2,
+      "triangles": 94617
+    }
+  }
+}

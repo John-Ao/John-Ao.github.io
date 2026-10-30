@@ -1,0 +1,820 @@
+{
+  "verifiedAt": "2026-10-30",
+  "releaseCutoff": "2026-10-30T23:59:59+08:00",
+  "version": "1.6",
+  "versionName": "丹青渡 / Sanctuary of Ink",
+  "operatorCount": 33,
+  "appearanceCount": 34,
+  "countNote": "管理员男女形象单独计入外观；未计入 2026-11-05 开放寻访的明河。",
+  "sources": [
+    {
+      "url": "https://endfield.hypergryph.com/operator",
+      "purpose": "Official Chinese/English names, rarity, class, element, and portrait URLs from server-rendered markup."
+    },
+    {
+      "url": "https://endfield.gryphline.com/en-us/operator",
+      "purpose": "Official English roster cross-check."
+    },
+    {
+      "url": "https://endfield.gryphline.com/en-us/news/9560",
+      "purpose": "Official 2026-10-15 Sanctuary of Ink update notice: Si is available; Argent Flow availability starts 2026-11-05 12:00 server time."
+    },
+    {
+      "url": "https://web.hycdn.cn/endfield/official-v4/_next/static/chunks/8858-7e71d425d9268eb0.js",
+      "purpose": "Official entrance/idle video URL mapping in module 38991."
+    },
+    {
+      "url": "https://web.hycdn.cn/endfield/official-v4/_next/static/chunks/8498-2c5f8c0351c886c2.js",
+      "purpose": "Official transparent-video packing and shader behavior in module 25221."
+    }
+  ],
+  "excludedUpcoming": [
+    {
+      "id": "minghe",
+      "name": "明河",
+      "englishName": "Argent Flow",
+      "availableFrom": "2026-11-05T12:00:00+08:00",
+      "reason": "Announced but not yet obtainable by release cutoff."
+    }
+  ],
+  "videoEncoding": {
+    "type": "pre-rendered-official-character-video",
+    "geometry": false,
+    "layout": "left-right",
+    "colorRect": [
+      0,
+      0,
+      0.5,
+      1
+    ],
+    "maskRect": [
+      0.5,
+      0,
+      0.5,
+      1
+    ],
+    "maskLuminanceWeights": [
+      0.3,
+      0.59,
+      0.11
+    ],
+    "displayWidth": "videoWidth / 2",
+    "displayHeight": "videoHeight",
+    "crossOrigin": "anonymous",
+    "note": "Video previews preserve the official rendered appearance but cannot rotate a 3D camera or expose bones."
+  },
+  "operators": [
+    {
+      "id": "jsspsi",
+      "name": "祀",
+      "englishName": "Si",
+      "rarity": 6,
+      "class": "辅助",
+      "classKey": "support",
+      "classEnglish": "Supporter",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/jsspsi.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/jsspsi.19ec05d9.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.15923c.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.a776c1.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "endministrator2",
+      "name": "管理员 · 男",
+      "englishName": "Endministrator",
+      "rarity": 6,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/endministrator2.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/endministrator2.5ccb44a8.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.0a2d0e.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.810977.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true,
+      "appearance": "male",
+      "appearanceVerification": "Official portrait visually checked; endministrator1 is female, endministrator2 is male."
+    },
+    {
+      "id": "endministrator1",
+      "name": "管理员 · 女",
+      "englishName": "Endministrator",
+      "rarity": 6,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/endministrator1.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/endministrator1.c391b13d.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.13649e.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.12d14a.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true,
+      "appearance": "female",
+      "appearanceVerification": "Official portrait visually checked; endministrator1 is female, endministrator2 is male."
+    },
+    {
+      "id": "perlica",
+      "name": "佩丽卡",
+      "englishName": "Perlica",
+      "rarity": 5,
+      "class": "术师",
+      "classKey": "caster",
+      "classEnglish": "Caster",
+      "element": "电磁",
+      "elementKey": "electric",
+      "elementEnglish": "Electric",
+      "portrait": "./assets/portraits/perlica.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/prelica.d0bbdb53.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.6546d3.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.f95544.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "chen",
+      "name": "陈千语",
+      "englishName": "Chen Qianyu",
+      "rarity": 5,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/chen.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/chen.b0afd1ba.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.ed8d5e.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.c3a71d.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "typhoea",
+      "name": "提弗洛斯",
+      "englishName": "Typhoeus",
+      "rarity": 6,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "自然",
+      "elementKey": "nature",
+      "elementEnglish": "Nature",
+      "portrait": "./assets/portraits/typhoea.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/typhoea.87cfb4cd.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.f77ca5.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.b4f2dd.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "purrche",
+      "name": "噗切娜",
+      "englishName": "Purrchena",
+      "rarity": 5,
+      "class": "重装",
+      "classKey": "shielder",
+      "classEnglish": "Defender",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/purrche.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/purrche.d6659019.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.5809fa.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.885f2f.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "lizhiyan",
+      "name": "诀",
+      "englishName": "Arcane",
+      "rarity": 6,
+      "class": "术师",
+      "classKey": "caster",
+      "classEnglish": "Caster",
+      "element": "自然",
+      "elementKey": "nature",
+      "elementEnglish": "Nature",
+      "portrait": "./assets/portraits/lizhiyan.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/lizhiyan.7ada7b83.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.49352f.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.da7be7.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "liino",
+      "name": "梨诺",
+      "englishName": "Liino",
+      "rarity": 6,
+      "class": "辅助",
+      "classKey": "support",
+      "classEnglish": "Supporter",
+      "element": "电磁",
+      "elementKey": "electric",
+      "elementEnglish": "Electric",
+      "portrait": "./assets/portraits/liino.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/liino.8d027d2a.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.88cbb6.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.cd38eb.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "mifu",
+      "name": "弭弗",
+      "englishName": "Mi Fu",
+      "rarity": 6,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/mifu.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/mifu.e1d79970.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.8a5a49.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.5864d8.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "camille",
+      "name": "卡缪",
+      "englishName": "Camille",
+      "rarity": 6,
+      "class": "先锋",
+      "classKey": "vanguard",
+      "classEnglish": "Vanguard",
+      "element": "灼热",
+      "elementKey": "fire",
+      "elementEnglish": "Heat",
+      "portrait": "./assets/portraits/camille.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/camille.a26b2443.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.378087.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.a0ab37.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "zhuangfy",
+      "name": "庄方宜",
+      "englishName": "Zhuang Fangyi",
+      "rarity": 6,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "电磁",
+      "elementKey": "electric",
+      "elementEnglish": "Electric",
+      "portrait": "./assets/portraits/zhuangfy.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/zhuangfy.50a608b8.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.418594.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.7168ff.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "tangtang",
+      "name": "汤汤",
+      "englishName": "Tangtang",
+      "rarity": 6,
+      "class": "术师",
+      "classKey": "caster",
+      "classEnglish": "Caster",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/tangtang.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/tangtang.b5cd99e9.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.29f069.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.1688c4.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "rossi",
+      "name": "洛茜",
+      "englishName": "Rossi",
+      "rarity": 6,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/rossi.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/rossi.c58b721b.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.b3fe92.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.a3c7a9.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "laevatain",
+      "name": "莱万汀",
+      "englishName": "Laevatain",
+      "rarity": 6,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "灼热",
+      "elementKey": "fire",
+      "elementEnglish": "Heat",
+      "portrait": "./assets/portraits/laevatain.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/laevatain.edd103d4.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.8c50d1.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.cb64d4.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "yvonne",
+      "name": "伊冯",
+      "englishName": "Yvonne",
+      "rarity": 6,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/yvonne.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/yvonne.9695c304.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.7be713.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.befed4.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "gilberta",
+      "name": "洁尔佩塔",
+      "englishName": "Gilberta",
+      "rarity": 6,
+      "class": "辅助",
+      "classKey": "support",
+      "classEnglish": "Supporter",
+      "element": "自然",
+      "elementKey": "nature",
+      "elementEnglish": "Nature",
+      "portrait": "./assets/portraits/gilberta.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/gilberta.724f3503.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.1180d2.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.1f28ab.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "ardelia",
+      "name": "艾尔黛拉",
+      "englishName": "Ardelia",
+      "rarity": 6,
+      "class": "辅助",
+      "classKey": "support",
+      "classEnglish": "Supporter",
+      "element": "自然",
+      "elementKey": "nature",
+      "elementEnglish": "Nature",
+      "portrait": "./assets/portraits/ardelia.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/ardelia.565c75af.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.c84d04.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.2e6c26.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "ember",
+      "name": "余烬",
+      "englishName": "Ember",
+      "rarity": 6,
+      "class": "重装",
+      "classKey": "shielder",
+      "classEnglish": "Defender",
+      "element": "灼热",
+      "elementKey": "fire",
+      "elementEnglish": "Heat",
+      "portrait": "./assets/portraits/ember.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/ember.6391acf9.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.949a3d.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.804e0a.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "lastrite",
+      "name": "别礼",
+      "englishName": "Last Rite",
+      "rarity": 6,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/lastrite.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/lastrite.3860f541.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.ed2da1.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.e6e3ed.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "lifeng",
+      "name": "黎风",
+      "englishName": "Lifeng",
+      "rarity": 6,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/lifeng.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/lifeng.ef41bc3a.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.3dc320.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.68bcf2.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "pogranichnik",
+      "name": "骏卫",
+      "englishName": "Pogranichnik",
+      "rarity": 6,
+      "class": "先锋",
+      "classKey": "vanguard",
+      "classEnglish": "Vanguard",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/pogranichnik.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/pogranichnik.80f2ddbb.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.4f53eb.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.0bdba0.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "alesh",
+      "name": "阿列什",
+      "englishName": "Alesh",
+      "rarity": 5,
+      "class": "先锋",
+      "classKey": "vanguard",
+      "classEnglish": "Vanguard",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/alesh.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/alesh.d7f457d2.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.bb0080.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.ce391f.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "arclight",
+      "name": "弧光",
+      "englishName": "Arclight",
+      "rarity": 5,
+      "class": "先锋",
+      "classKey": "vanguard",
+      "classEnglish": "Vanguard",
+      "element": "电磁",
+      "elementKey": "electric",
+      "elementEnglish": "Electric",
+      "portrait": "./assets/portraits/arclight.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/arclight.e31580d7.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.da7c54.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.4b776c.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "avywenna",
+      "name": "艾维文娜",
+      "englishName": "Avywenna",
+      "rarity": 5,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "电磁",
+      "elementKey": "electric",
+      "elementEnglish": "Electric",
+      "portrait": "./assets/portraits/avywenna.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/avywenna.2a592659.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.940700.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.b4df19.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "dapan",
+      "name": "大潘",
+      "englishName": "Da Pan",
+      "rarity": 5,
+      "class": "突击",
+      "classKey": "assault",
+      "classEnglish": "Striker",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/dapan.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/dapan.7cdb6a4e.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.bc2b7b.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.d01501.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "snowshine",
+      "name": "昼雪",
+      "englishName": "Snowshine",
+      "rarity": 5,
+      "class": "重装",
+      "classKey": "shielder",
+      "classEnglish": "Defender",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/snowshine.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/snowshine.bb2c0bdc.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.674f13.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.5460af.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "wulfgard",
+      "name": "狼卫",
+      "englishName": "Wulfgard",
+      "rarity": 5,
+      "class": "术师",
+      "classKey": "caster",
+      "classEnglish": "Caster",
+      "element": "灼热",
+      "elementKey": "fire",
+      "elementEnglish": "Heat",
+      "portrait": "./assets/portraits/wulfgard.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/wulfgard.609a252f.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.2e3172.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.24e819.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "xaihi",
+      "name": "赛希",
+      "englishName": "Xaihi",
+      "rarity": 5,
+      "class": "辅助",
+      "classKey": "support",
+      "classEnglish": "Supporter",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/xaihi.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/xaihi.9ba3eb36.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.d2a51a.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.7beb0c.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "akekuri",
+      "name": "秋栗",
+      "englishName": "Akekuri",
+      "rarity": 4,
+      "class": "先锋",
+      "classKey": "vanguard",
+      "classEnglish": "Vanguard",
+      "element": "灼热",
+      "elementKey": "fire",
+      "elementEnglish": "Heat",
+      "portrait": "./assets/portraits/akekuri.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/akekuri.3603d013.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.a66d56.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.5c433b.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "antal",
+      "name": "安塔尔",
+      "englishName": "Antal",
+      "rarity": 4,
+      "class": "辅助",
+      "classKey": "support",
+      "classEnglish": "Supporter",
+      "element": "电磁",
+      "elementKey": "electric",
+      "elementEnglish": "Electric",
+      "portrait": "./assets/portraits/antal.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/antal.763c87e4.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.7df9b2.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.4197d2.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "catcher",
+      "name": "卡契尔",
+      "englishName": "Catcher",
+      "rarity": 4,
+      "class": "重装",
+      "classKey": "shielder",
+      "classEnglish": "Defender",
+      "element": "物理",
+      "elementKey": "physic",
+      "elementEnglish": "Physical",
+      "portrait": "./assets/portraits/catcher.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/catcher.bc6bcfaa.png",
+      "portraitWidth": 281,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.7dce7b.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.c9b4aa.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "estella",
+      "name": "埃特拉",
+      "englishName": "Estella",
+      "rarity": 4,
+      "class": "近卫",
+      "classKey": "guard",
+      "classEnglish": "Guard",
+      "element": "寒冷",
+      "elementKey": "ice",
+      "elementEnglish": "Cryo",
+      "portrait": "./assets/portraits/estella.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/estella.38c423af.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.7100b5.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.77b33e.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    },
+    {
+      "id": "fluorite",
+      "name": "萤石",
+      "englishName": "Fluorite",
+      "rarity": 4,
+      "class": "术师",
+      "classKey": "caster",
+      "classEnglish": "Caster",
+      "element": "自然",
+      "elementKey": "nature",
+      "elementEnglish": "Nature",
+      "portrait": "./assets/portraits/fluorite.webp",
+      "portraitSource": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/fluorite.5a8add29.png",
+      "portraitWidth": 303,
+      "portraitHeight": 386,
+      "officialVideos": {
+        "enter": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/enter.eef9fe.mp4",
+        "idle": "https://web.hycdn.cn/endfield/official-v4/_next/static/media/video/idle.289409.mp4"
+      },
+      "source": "https://endfield.hypergryph.com/operator",
+      "released": true
+    }
+  ]
+}

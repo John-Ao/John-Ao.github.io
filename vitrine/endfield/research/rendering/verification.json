@@ -1,0 +1,1124 @@
+{
+  "verifiedAt": "2026-10-30T08:16:25.719Z",
+  "url": "http://127.0.0.1:5338/vitrine/endfield/",
+  "characters": [
+    {
+      "id": "jsspsi",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "face-sdf": 1,
+        "cloth": 11,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 16,
+        "efShadowLut": 4,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efSpecRamp": 8,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 178125,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 18,
+        "textures": 68
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "endministrator2",
+      "families": {
+        "skin": 1,
+        "cloth": 4,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 2,
+        "efSpecRamp": 6,
+        "efFaceMask": 1,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 146296,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 48
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "endministrator1",
+      "families": {
+        "skin": 1,
+        "cloth": 4,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 4,
+        "efSpecRamp": 6,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 133101,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 44
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "perlica",
+      "families": {
+        "skin": 1,
+        "cloth": 6,
+        "eye": 5,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efShadowLut": 5,
+        "efRamp": 12,
+        "efSpecRamp": 6,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 3,
+      "triangles": 168408,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 15,
+        "textures": 52
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "chen",
+      "families": {
+        "skin": 1,
+        "cloth": 3,
+        "hair": 3,
+        "eye": 4,
+        "face-sdf": 1
+      },
+      "mapCounts": {
+        "efRamp": 10,
+        "efShadowLut": 5,
+        "efSpecRamp": 3,
+        "efHairLine": 3,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 167658,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 13,
+        "textures": 42
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "typhoea",
+      "families": {
+        "skin": 1,
+        "face-sdf": 1,
+        "eye": 4,
+        "cloth": 11,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 14,
+        "efShadowLut": 5,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efFaceMask": 1,
+        "efSpecRamp": 8,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 8,
+      "eyeLayers": 2,
+      "triangles": 175587,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 16,
+        "textures": 52
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "purrche",
+      "families": {
+        "cloth": 20
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efSpecRamp": 1,
+        "efShadowLut": 1
+      },
+      "outlines": 5,
+      "eyeLayers": 0,
+      "triangles": 229523,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 27,
+        "textures": 44
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "lizhiyan",
+      "families": {
+        "skin": 1,
+        "cloth": 12,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efShadowLut": 4,
+        "efRamp": 16,
+        "efSpecRamp": 8,
+        "efFaceMask": 1,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 9,
+      "eyeLayers": 2,
+      "triangles": 185347,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 14,
+        "textures": 47
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "liino",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "face-sdf": 1,
+        "cloth": 13,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 19,
+        "efShadowLut": 9,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efSpecRamp": 10,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 15,
+      "eyeLayers": 2,
+      "triangles": 200841,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 20,
+        "textures": 61
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "mifu",
+      "families": {
+        "skin": 1,
+        "cloth": 6,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 3
+      },
+      "mapCounts": {
+        "efRamp": 13,
+        "efShadowLut": 8,
+        "efSpecRamp": 7,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 3,
+        "efHairNormal": 3,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 165410,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 47
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "camille",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 7,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 14,
+        "efShadowLut": 2,
+        "efSpecRamp": 7,
+        "efFaceMask": 1,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 9,
+      "eyeLayers": 2,
+      "triangles": 174439,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 15,
+        "textures": 52
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "zhuangfy",
+      "families": {
+        "skin": 1,
+        "cloth": 4,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 11,
+        "efShadowLut": 6,
+        "efSpecRamp": 4,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 4,
+      "eyeLayers": 2,
+      "triangles": 181524,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 10,
+        "textures": 37
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "tangtang",
+      "families": {
+        "skin": 1,
+        "cloth": 8,
+        "eye": 6,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efShadowLut": 9,
+        "efRamp": 16,
+        "efSpecRamp": 8,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 4
+      },
+      "outlines": 6,
+      "eyeLayers": 3,
+      "triangles": 190067,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 15,
+        "textures": 53
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "rossi",
+      "families": {
+        "skin": 1,
+        "cloth": 8,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 4
+      },
+      "mapCounts": {
+        "efRamp": 14,
+        "efShadowLut": 8,
+        "efSpecRamp": 8,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efFaceMask": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 9,
+      "eyeLayers": 2,
+      "triangles": 173219,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 16,
+        "textures": 53
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "laevatain",
+      "families": {
+        "skin": 1,
+        "cloth": 7,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 14,
+        "efShadowLut": 5,
+        "efSpecRamp": 8,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 198992,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 13,
+        "textures": 49
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "yvonne",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 11,
+        "efShadowLut": 9,
+        "efSpecRamp": 6,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 199821,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 43
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "gilberta",
+      "families": {
+        "skin": 1,
+        "cloth": 1,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 3
+      },
+      "mapCounts": {
+        "efRamp": 10,
+        "efShadowLut": 5,
+        "efSpecRamp": 4,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 3,
+        "efHairNormal": 3,
+        "efMatcap": 2
+      },
+      "outlines": 4,
+      "eyeLayers": 2,
+      "triangles": 190820,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 10,
+        "textures": 37
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "ardelia",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 8,
+        "face-sdf": 1,
+        "hair": 3
+      },
+      "mapCounts": {
+        "efRamp": 16,
+        "efShadowLut": 5,
+        "efSpecRamp": 5,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 3,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 8,
+      "eyeLayers": 2,
+      "triangles": 206363,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 17,
+        "textures": 63
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "ember",
+      "families": {
+        "skin": 1,
+        "cloth": 4,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 4,
+        "efSpecRamp": 6,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 150588,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 44
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "lastrite",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 5,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 5,
+        "efSpecRamp": 5,
+        "efFaceMask": 1,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 183388,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 13,
+        "textures": 45
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "lifeng",
+      "families": {
+        "skin": 1,
+        "cloth": 2,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 10,
+        "efSpecRamp": 4,
+        "efShadowLut": 1,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 188190,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 11,
+        "textures": 42
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "pogranichnik",
+      "families": {
+        "skin": 1,
+        "cloth": 7,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 3
+      },
+      "mapCounts": {
+        "efRamp": 13,
+        "efSpecRamp": 7,
+        "efShadowLut": 4,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 3,
+        "efMatcap": 2
+      },
+      "outlines": 6,
+      "eyeLayers": 2,
+      "triangles": 198070,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 14,
+        "textures": 47
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "alesh",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 7,
+        "face-sdf": 1,
+        "hair": 1
+      },
+      "mapCounts": {
+        "efRamp": 11,
+        "efSpecRamp": 5,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 1,
+        "efHairNormal": 1,
+        "efMatcap": 2,
+        "efShadowLut": 1
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 130730,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 13,
+        "textures": 44
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "arclight",
+      "families": {
+        "skin": 1,
+        "cloth": 1,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 1
+      },
+      "mapCounts": {
+        "efRamp": 8,
+        "efSpecRamp": 2,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 1,
+        "efHairNormal": 1,
+        "efMatcap": 2
+      },
+      "outlines": 4,
+      "eyeLayers": 2,
+      "triangles": 112870,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 10,
+        "textures": 36
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "avywenna",
+      "families": {
+        "skin": 1,
+        "cloth": 1,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 9,
+        "efShadowLut": 4,
+        "efSpecRamp": 3,
+        "efFaceMask": 1,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 4,
+      "eyeLayers": 2,
+      "triangles": 146278,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 9,
+        "textures": 33
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "dapan",
+      "families": {
+        "cloth": 13
+      },
+      "mapCounts": {
+        "efRamp": 11
+      },
+      "outlines": 9,
+      "eyeLayers": 0,
+      "triangles": 316320,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 19,
+        "textures": 32
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "snowshine",
+      "families": {
+        "skin": 1,
+        "cloth": 5,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 13,
+        "efShadowLut": 2,
+        "efSpecRamp": 6,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efFaceMask": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 162972,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 14,
+        "textures": 48
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "wulfgard",
+      "families": {
+        "skin": 1,
+        "cloth": 9,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 3
+      },
+      "mapCounts": {
+        "efRamp": 17,
+        "efSpecRamp": 4,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 10,
+      "eyeLayers": 2,
+      "triangles": 173383,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 16,
+        "textures": 58
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "xaihi",
+      "families": {
+        "skin": 1,
+        "cloth": 4,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 4,
+        "efSpecRamp": 4,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 122139,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 14,
+        "textures": 47
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "akekuri",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 6,
+        "efSpecRamp": 5,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 4,
+      "eyeLayers": 2,
+      "triangles": 154548,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 39
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "antal",
+      "families": {
+        "cloth": 5
+      },
+      "mapCounts": {
+        "efSpecRamp": 5,
+        "efRamp": 5
+      },
+      "outlines": 8,
+      "eyeLayers": 0,
+      "triangles": 96706,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 9,
+        "textures": 29
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "catcher",
+      "families": {
+        "skin": 1,
+        "cloth": 4,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 3
+      },
+      "mapCounts": {
+        "efRamp": 13,
+        "efSpecRamp": 6,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 3,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 132245,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 13,
+        "textures": 42
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "estella",
+      "families": {
+        "skin": 1,
+        "cloth": 3,
+        "eye": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 11,
+        "efShadowLut": 4,
+        "efFaceMask": 2,
+        "efSpecRamp": 5,
+        "efHighlight": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 5,
+      "eyeLayers": 2,
+      "triangles": 148688,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 12,
+        "textures": 40
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    },
+    {
+      "id": "fluorite",
+      "families": {
+        "skin": 1,
+        "eye": 4,
+        "cloth": 4,
+        "face-sdf": 1,
+        "hair": 2
+      },
+      "mapCounts": {
+        "efRamp": 12,
+        "efShadowLut": 8,
+        "efSpecRamp": 6,
+        "efHighlight": 1,
+        "efFaceMask": 1,
+        "efSdf": 1,
+        "efHairLine": 2,
+        "efHairNormal": 2,
+        "efMatcap": 2
+      },
+      "outlines": 7,
+      "eyeLayers": 2,
+      "triangles": 139717,
+      "stencil": true,
+      "invalidPrograms": 0,
+      "memory": {
+        "geometries": 13,
+        "textures": 43
+      },
+      "clearedMemory": {
+        "geometries": 1,
+        "textures": 2
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

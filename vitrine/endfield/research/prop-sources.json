@@ -1,0 +1,3786 @@
+{
+  "sourceBase": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd",
+  "retrievedAt": "2026-10-30",
+  "indices": [
+    {
+      "sourceId": "chr_0036_jsspsi",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/f573479faeaad949.json",
+      "bytes": 15612,
+      "sha256": "f573479faeaad9492847064f2b7f55393c1d2c740a8b07c950df19502cdb8578"
+    },
+    {
+      "sourceId": "chr_0004_pelica",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/d94c877fab3a299c.json",
+      "bytes": 5003,
+      "sha256": "d94c877fab3a299cd41dcd280db2ac23e70e5049361d52c878bf14a9ce47e835"
+    },
+    {
+      "sourceId": "chr_0005_chen",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/bcd714f0cfaaae13.json",
+      "bytes": 4903,
+      "sha256": "bcd714f0cfaaae13b6f714847483f3e1a8d806a2f14f2be0182fe41d74a1a7e9"
+    },
+    {
+      "sourceId": "chr_0034_typhoea",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/27fa8cd5f3b5000c.json",
+      "bytes": 12637,
+      "sha256": "27fa8cd5f3b5000c952dccf466ef53276100141127150d8ab5c81cc3e8718835"
+    },
+    {
+      "sourceId": "chr_0038_purrche",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/b23f35bb509165ae.json",
+      "bytes": 16598,
+      "sha256": "b23f35bb509165ae5273fecc737234063e6c2ce386d97ebae3156bdef529d3d3"
+    },
+    {
+      "sourceId": "chr_0032_lizhiyan",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/27ed2ab9e508b73a.json",
+      "bytes": 28279,
+      "sha256": "27ed2ab9e508b73a9afcb0da2c5273d7ed03eeaeb47250571abaa978c18a09a2"
+    },
+    {
+      "sourceId": "chr_0035_liino",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/1884590230c8f039.json",
+      "bytes": 41056,
+      "sha256": "1884590230c8f039be3eca31ca485d98278bee3537da7c53b42edc451a4addc4"
+    },
+    {
+      "sourceId": "chr_0031_mifu",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/0f91d6bbaac92364.json",
+      "bytes": 10447,
+      "sha256": "0f91d6bbaac9236414d737e1e2c4afea4da8cc0d50e99ae5eb946cca061aa9a0"
+    },
+    {
+      "sourceId": "chr_0033_camille",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/3c1b15997ec7463e.json",
+      "bytes": 9068,
+      "sha256": "3c1b15997ec7463e293e210b9ee1cf8074b7fac86b0435f9a6c187d061a96631"
+    },
+    {
+      "sourceId": "chr_0030_zhuangfy",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/17dfb3ea2aae67b6.json",
+      "bytes": 5774,
+      "sha256": "17dfb3ea2aae67b6a1aa8276f8f324506a6a3be244513934ea08ef847746210c"
+    },
+    {
+      "sourceId": "chr_0027_tangtang",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/d7ca66e9bee77625.json",
+      "bytes": 7835,
+      "sha256": "d7ca66e9bee776252f3d3e71a8e105e2a21fea127bac5c64a7dc186dd646dcb8"
+    },
+    {
+      "sourceId": "chr_0028_wulfa",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/41e86a3f32b00de3.json",
+      "bytes": 8747,
+      "sha256": "41e86a3f32b00de3926a3bb804efd800da6087f3f3a3ffeb41586c397b61cf79"
+    },
+    {
+      "sourceId": "chr_0016_laevat",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/4ebad0ab64d67285.json",
+      "bytes": 3346,
+      "sha256": "4ebad0ab64d6728524e1088c6fde1aaf31007e4bb09ad3986074b61996d8a6d5"
+    },
+    {
+      "sourceId": "chr_0017_yvonne",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/5232d5d32f2111ca.json",
+      "bytes": 9021,
+      "sha256": "5232d5d32f2111ca39d69ea5c0f8bd799874e9777bc9eaa281ea376b1714f7a3"
+    },
+    {
+      "sourceId": "chr_0013_aglina",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/16ac9de116b2e83a.json",
+      "bytes": 1734,
+      "sha256": "16ac9de116b2e83a40333558d493a8c821d7d22e0293eadd692e1ac06a886632"
+    },
+    {
+      "sourceId": "chr_0025_ardelia",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/582e9a9762b91625.json",
+      "bytes": 4610,
+      "sha256": "582e9a9762b91625eb7fbb3a4a445731da62216736361afd6349547b61bc58e4"
+    },
+    {
+      "sourceId": "chr_0029_pograni",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/388c43a00c1da433.json",
+      "bytes": 24997,
+      "sha256": "388c43a00c1da4332dabbb60bac787422c3b6c2c0741c56e7868adbd169064db"
+    },
+    {
+      "sourceId": "chr_0024_deepfin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/2be20fd8f54e8902.json",
+      "bytes": 6157,
+      "sha256": "2be20fd8f54e89025312a42f237c492a79d1bdcde35a08e366c0c413897f6f87"
+    },
+    {
+      "sourceId": "chr_0018_dapan",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/61e78bccc38fef6b.json",
+      "bytes": 3095,
+      "sha256": "61e78bccc38fef6b1f9559418c4fcad6d63eb97b5b3e3f6c9415a3d28af832e3"
+    },
+    {
+      "sourceId": "chr_0014_aurora",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/c2962e9d095bd179.json",
+      "bytes": 1344,
+      "sha256": "c2962e9d095bd17984227c97183a60e03a494d6ab0b48d90673f4a70502a9ca3"
+    },
+    {
+      "sourceId": "chr_0006_wolfgd",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/ebe423c9c91ef20e.json",
+      "bytes": 5703,
+      "sha256": "ebe423c9c91ef20e4a9687fcdaa3019659955f53e5488018d45306050394e0e5"
+    },
+    {
+      "sourceId": "chr_0011_seraph",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/751095a51a32e822.json",
+      "bytes": 1296,
+      "sha256": "751095a51a32e8229d36f78399679200ee027319aedda6ba8642dfc8c5f7f5cc"
+    },
+    {
+      "sourceId": "chr_0023_antal",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/data/e2aff2657eab5a43.json",
+      "bytes": 2328,
+      "sha256": "e2aff2657eab5a43698eaf4c6075f1bea958a0cf86dd9f2876b8dd3c5743a906"
+    }
+  ],
+  "files": [
+    {
+      "path": "assets/props/01c9292eb9a5fcb5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/01c9292eb9a5fcb5.bin",
+      "bytes": 3340,
+      "sha256": "01c9292eb9a5fcb58a6fd179eb85474fb3b88799fc9900bf921d9ac37c9f67b0",
+      "storedBytes": 1000
+    },
+    {
+      "path": "assets/props/01fc3e3aecfc437f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/01fc3e3aecfc437f.bin",
+      "bytes": 6848,
+      "sha256": "01fc3e3aecfc437f446e526a84033f65b70dd2e1b0f898818d5c69589aac9067",
+      "storedBytes": 2647
+    },
+    {
+      "path": "assets/props/022e3afea9f8a5d4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/022e3afea9f8a5d4.bin",
+      "bytes": 23928,
+      "sha256": "022e3afea9f8a5d43d917582bc88d074634af130ea4d4103ed03e7dbe6c749f5",
+      "storedBytes": 6267
+    },
+    {
+      "path": "assets/props/04893b178cc27840.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/04893b178cc27840.bin",
+      "bytes": 65848,
+      "sha256": "04893b178cc2784003f154c3f290931893570596c030ee1f0e31d140d350b1a2",
+      "storedBytes": 15970
+    },
+    {
+      "path": "assets/props/04be27623fee2a17.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/04be27623fee2a17.bin",
+      "bytes": 6792,
+      "sha256": "04be27623fee2a17dfdd7bff958c6c899e854c7adb51c5522e6bb9ca36a2050c",
+      "storedBytes": 2623
+    },
+    {
+      "path": "assets/props/07bb7f83450c318c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/07bb7f83450c318c.bin",
+      "bytes": 40396,
+      "sha256": "07bb7f83450c318c9b77a432708dab47d7c088a3e62bbc7e601fadc18afdf91c",
+      "storedBytes": 9103
+    },
+    {
+      "path": "assets/props/08ac80f9b8117f1a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/08ac80f9b8117f1a.bin",
+      "bytes": 83364,
+      "sha256": "08ac80f9b8117f1a6745d77a1b7f476905e2fefba64f804c02f7faa47a535f68",
+      "storedBytes": 14856
+    },
+    {
+      "path": "assets/props/0965bac8b63da116.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/0965bac8b63da116.bin",
+      "bytes": 7152,
+      "sha256": "0965bac8b63da11673ea3b0e472344e3eb4e950f2ce5aca5a4d74b2b55f8d423",
+      "storedBytes": 1516
+    },
+    {
+      "path": "assets/props/0d9061701c5c5415.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/0d9061701c5c5415.bin",
+      "bytes": 5944,
+      "sha256": "0d9061701c5c54152360c639d99c74f9e949cabfb05b42c3e259eb98a1ab32c8",
+      "storedBytes": 2327
+    },
+    {
+      "path": "assets/props/0e89d80540012a6b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/0e89d80540012a6b.bin",
+      "bytes": 37240,
+      "sha256": "0e89d80540012a6be5eaae25ac11b98192dbe9cceb8e06a04e2c95ce7534eaee",
+      "storedBytes": 6480
+    },
+    {
+      "path": "assets/props/0ea69286dc5b71a6.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/0ea69286dc5b71a6.bin",
+      "bytes": 1196784,
+      "sha256": "0ea69286dc5b71a6cea2047aa29c21331ff693f94ffef398e29ad8ff92eb4c70",
+      "storedBytes": 557707
+    },
+    {
+      "path": "assets/props/0f9246daacb360ae.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/0f9246daacb360ae.bin",
+      "bytes": 12984,
+      "sha256": "0f9246daacb360ae57b329bfc6d7f64f6b6025aba13aebfbc486c9d0239a3b9c",
+      "storedBytes": 3753
+    },
+    {
+      "path": "assets/props/1047bfe2b4b3c184.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1047bfe2b4b3c184.bin",
+      "bytes": 3172,
+      "sha256": "1047bfe2b4b3c184543912099e7e27afc20f3c94ac0f53ccac2615bd10afc699",
+      "storedBytes": 1199
+    },
+    {
+      "path": "assets/props/107315d6a9f5b2bd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/107315d6a9f5b2bd.bin",
+      "bytes": 11932,
+      "sha256": "107315d6a9f5b2bdf9186c46a02414a09a1fab126feee081fd6d7e46defade17",
+      "storedBytes": 2867
+    },
+    {
+      "path": "assets/props/111ef007c054fdc1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/111ef007c054fdc1.bin",
+      "bytes": 36364,
+      "sha256": "111ef007c054fdc1859749040fefd332e987898d1d8ff185c419dbff559ef630",
+      "storedBytes": 5989
+    },
+    {
+      "path": "assets/props/1149e4faabe05416.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1149e4faabe05416.bin",
+      "bytes": 63920,
+      "sha256": "1149e4faabe05416ea914a380b97c0b4141b47fd7c546e9e2cbe085a7cb16b10",
+      "storedBytes": 39538
+    },
+    {
+      "path": "assets/props/11c3c0d9b355f5bf.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/11c3c0d9b355f5bf.bin",
+      "bytes": 5248,
+      "sha256": "11c3c0d9b355f5bf72c94e2d9804e656bd59307d5e02bce6128d17a365cd0db5",
+      "storedBytes": 1541
+    },
+    {
+      "path": "assets/props/12d5630a4c803409.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/12d5630a4c803409.bin",
+      "bytes": 32376,
+      "sha256": "12d5630a4c803409e81e4690006d919427de2217fcb80a20e6fa65b70d7af4bc",
+      "storedBytes": 6439
+    },
+    {
+      "path": "assets/props/14dd5c5bbb8bb9c3.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/14dd5c5bbb8bb9c3.bin",
+      "bytes": 1550240,
+      "sha256": "14dd5c5bbb8bb9c33d1251bc9473f98d4353c90b582d35a1a2f69bab3137f097",
+      "storedBytes": 1168066
+    },
+    {
+      "path": "assets/props/1526fafa2ae7cd4f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/1526fafa2ae7cd4f.bin",
+      "bytes": 345732,
+      "sha256": "1526fafa2ae7cd4fdca91ba20eae66079457b40d87ee78816d0c152a90cf0126",
+      "storedBytes": 187208
+    },
+    {
+      "path": "assets/props/15f3570431045b5c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/15f3570431045b5c.bin",
+      "bytes": 3788,
+      "sha256": "15f3570431045b5c11da52b0f13d090a297b94a37142dab066a8ff07bbffc881",
+      "storedBytes": 1292
+    },
+    {
+      "path": "assets/props/16079c03bb99ca06.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/16079c03bb99ca06.bin",
+      "bytes": 125504,
+      "sha256": "16079c03bb99ca06f093bfa9e0f94a214cca31c031538c444bd5609a294ebda5",
+      "storedBytes": 39251
+    },
+    {
+      "path": "assets/props/176b3f43370eedc4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/176b3f43370eedc4.bin",
+      "bytes": 83188,
+      "sha256": "176b3f43370eedc411d423e3e81d73f8535af5123b75b595cb19916f61cdd8d2",
+      "storedBytes": 37099
+    },
+    {
+      "path": "assets/props/19e6f71b7304fcb1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/19e6f71b7304fcb1.bin",
+      "bytes": 1436016,
+      "sha256": "19e6f71b7304fcb15451feb49c743f76646e342fe4394ff43f5f40f721840931",
+      "storedBytes": 485954
+    },
+    {
+      "path": "assets/props/1a50ee385b17bbaf.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1a50ee385b17bbaf.bin",
+      "bytes": 38728,
+      "sha256": "1a50ee385b17bbafc7718703235b1c7fec917b2361cfec97394316322a734f01",
+      "storedBytes": 7381
+    },
+    {
+      "path": "assets/props/1af7aaabb52c51bd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1af7aaabb52c51bd.bin",
+      "bytes": 14588,
+      "sha256": "1af7aaabb52c51bd9b6e082f40aa869e3281da7dde3c55ee8048f7b56604ea7b",
+      "storedBytes": 3519
+    },
+    {
+      "path": "assets/props/1bdeb4b8003700c8.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1bdeb4b8003700c8.bin",
+      "bytes": 38104,
+      "sha256": "1bdeb4b8003700c89d97061257032b869e5873b9ff9e9cead1f35843ec59293d",
+      "storedBytes": 7764
+    },
+    {
+      "path": "assets/props/1be82e738e8c9125.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1be82e738e8c9125.bin",
+      "bytes": 2048388,
+      "sha256": "1be82e738e8c91254b0be046dc48a9108896308391da3718817a331fe88d2b98",
+      "storedBytes": 1138747
+    },
+    {
+      "path": "assets/props/1dac2a8171daae00.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/1dac2a8171daae00.bin",
+      "bytes": 393076,
+      "sha256": "1dac2a8171daae00505f21a9e46f9b0d9d5edb61126e52c85d1ce19236ee7853",
+      "storedBytes": 129047
+    },
+    {
+      "path": "assets/props/1f3d178162663ad5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1f3d178162663ad5.bin",
+      "bytes": 14584,
+      "sha256": "1f3d178162663ad55d158453255f9f73aee32576ea4ec91b0b9770cae4773cd5",
+      "storedBytes": 3518
+    },
+    {
+      "path": "assets/props/1f4853f59331eb02.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1f4853f59331eb02.bin",
+      "bytes": 37252,
+      "sha256": "1f4853f59331eb02ac2dbca9762713d0774567acb6690ff0d74ede2ff2c88b96",
+      "storedBytes": 7903
+    },
+    {
+      "path": "assets/props/1fc65ce0a9392799.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/1fc65ce0a9392799.bin",
+      "bytes": 13584,
+      "sha256": "1fc65ce0a93927998b27c6d930995b9390f998b63a4a1cc95f751c271e7b2e76",
+      "storedBytes": 2541
+    },
+    {
+      "path": "assets/props/20e0533eff996c82.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/20e0533eff996c82.bin",
+      "bytes": 64244,
+      "sha256": "20e0533eff996c82d10e6515c9531c0d7821998239cf03fb49706f8ea0d9ad1f",
+      "storedBytes": 41339
+    },
+    {
+      "path": "assets/props/20fd792865b6f794.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/20fd792865b6f794.bin",
+      "bytes": 16856,
+      "sha256": "20fd792865b6f794509373cc2cf9dcd69cab641812abc66eb4ef69a5e2fd0f12",
+      "storedBytes": 3243
+    },
+    {
+      "path": "assets/props/21dca8d677000256.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/21dca8d677000256.bin",
+      "bytes": 6720,
+      "sha256": "21dca8d67700025697a3a71613f13fb262d7ba40b3b5e53a63a91b609525cd51",
+      "storedBytes": 2769
+    },
+    {
+      "path": "assets/props/22c9fa145e2c1330.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/22c9fa145e2c1330.bin",
+      "bytes": 109648,
+      "sha256": "22c9fa145e2c13301173e39d1d45594b3e6c3505688d09e649c0a5164c02a2c2",
+      "storedBytes": 26352
+    },
+    {
+      "path": "assets/props/235e9b99ff6db260.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/235e9b99ff6db260.bin",
+      "bytes": 756060,
+      "sha256": "235e9b99ff6db2603201ae93fde4c874cf441301763254947c7d245673984545",
+      "storedBytes": 204194
+    },
+    {
+      "path": "assets/props/28810c0d514752d7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/28810c0d514752d7.bin",
+      "bytes": 36400,
+      "sha256": "28810c0d514752d79553dbf141ca4c64008ba49e11ca453ef90e81267f9e7510",
+      "storedBytes": 6295
+    },
+    {
+      "path": "assets/props/28b25ec0c24f7f07.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/28b25ec0c24f7f07.bin",
+      "bytes": 14588,
+      "sha256": "28b25ec0c24f7f07b28d8b6a4cbe6ad518b17126be4fa3e8b0ac0baef4ca4b95",
+      "storedBytes": 3519
+    },
+    {
+      "path": "assets/props/28f215264207fdcf.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/28f215264207fdcf.bin",
+      "bytes": 286300,
+      "sha256": "28f215264207fdcf758d1124db015140cf17d9e33847ff3791de87892f155884",
+      "storedBytes": 105132
+    },
+    {
+      "path": "assets/props/2a17cd27725d9ab4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2a17cd27725d9ab4.bin",
+      "bytes": 1327832,
+      "sha256": "2a17cd27725d9ab4723eda3e5d8914a799d9d70a27df3330364b5da1f7096fa3",
+      "storedBytes": 245970
+    },
+    {
+      "path": "assets/props/2a23ef2bbd9f5dd1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2a23ef2bbd9f5dd1.bin",
+      "bytes": 8476,
+      "sha256": "2a23ef2bbd9f5dd11a2220ad8f3530f3bfafc44a369016e60660631c8712d385",
+      "storedBytes": 1827
+    },
+    {
+      "path": "assets/props/2b16a58841b381da.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2b16a58841b381da.bin",
+      "bytes": 14156,
+      "sha256": "2b16a58841b381da811a6f6f406812f693930f821f7c0bfff6875a46b2c395b6",
+      "storedBytes": 3349
+    },
+    {
+      "path": "assets/props/2b56b56262210dc2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2b56b56262210dc2.bin",
+      "bytes": 36020,
+      "sha256": "2b56b56262210dc2148ccef740e474bcf4c6c8325e4d44a64905f834a27c7126",
+      "storedBytes": 22335
+    },
+    {
+      "path": "assets/props/2b83ba42c48eac1f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2b83ba42c48eac1f.bin",
+      "bytes": 565628,
+      "sha256": "2b83ba42c48eac1f26a9a1e13c90acdbd097c5553e105e27153854a93ceef8f6",
+      "storedBytes": 282807
+    },
+    {
+      "path": "assets/props/2c96f5ac83ed4fbd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2c96f5ac83ed4fbd.bin",
+      "bytes": 13140,
+      "sha256": "2c96f5ac83ed4fbd8eb63fb56d92c20083baee2bce2c28cf79a2b7bd03227dec",
+      "storedBytes": 3544
+    },
+    {
+      "path": "assets/props/2f69ec15ee18d59b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/2f69ec15ee18d59b.bin",
+      "bytes": 10564,
+      "sha256": "2f69ec15ee18d59be2fcf9e255127a6702759754c011fbcf5366160c7f2378f9",
+      "storedBytes": 4566
+    },
+    {
+      "path": "assets/props/2ff64763824f44dd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/2ff64763824f44dd.bin",
+      "bytes": 917044,
+      "sha256": "2ff64763824f44ddd14ad33cf042ee8086633d672612d0a9067e8a3648b1d6a6",
+      "storedBytes": 278144
+    },
+    {
+      "path": "assets/props/309ea2325c646250.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/309ea2325c646250.bin",
+      "bytes": 31368,
+      "sha256": "309ea2325c6462509774e7cb0d4d2908b1e42b8f384cf5447f785248cc066f12",
+      "storedBytes": 13690
+    },
+    {
+      "path": "assets/props/30f3335a4989d222.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/30f3335a4989d222.bin",
+      "bytes": 14580,
+      "sha256": "30f3335a4989d222b12414b8a956da69032e725f67d336370f639346dd5a1241",
+      "storedBytes": 3512
+    },
+    {
+      "path": "assets/props/31cc11ef5dba2dd6.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/31cc11ef5dba2dd6.bin",
+      "bytes": 144208,
+      "sha256": "31cc11ef5dba2dd6e23d2f8c2f08172e5a49bc417ee9094a9cc49d71cf04577b",
+      "storedBytes": 27896
+    },
+    {
+      "path": "assets/props/32eb027949a6a75b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/32eb027949a6a75b.bin",
+      "bytes": 3572,
+      "sha256": "32eb027949a6a75b574ad227691f0be86e9d4ea2d5d289d26a26dcb6078539ae",
+      "storedBytes": 930
+    },
+    {
+      "path": "assets/props/33e355bc6858397f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/33e355bc6858397f.bin",
+      "bytes": 38056,
+      "sha256": "33e355bc6858397fb446023b1b202037fa472e09361f3e5d5ca4362731962ed3",
+      "storedBytes": 11021
+    },
+    {
+      "path": "assets/props/345eabc7ecee357f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/345eabc7ecee357f.bin",
+      "bytes": 917044,
+      "sha256": "345eabc7ecee357fbf2d8c235303cde66bac79246057db270dfd827521a03c58",
+      "storedBytes": 278437
+    },
+    {
+      "path": "assets/props/34bb35fd9b0b221b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/34bb35fd9b0b221b.bin",
+      "bytes": 5584,
+      "sha256": "34bb35fd9b0b221bd050691670d6cac7b62df2677822b3f8b5d033b87a589b7d",
+      "storedBytes": 2253
+    },
+    {
+      "path": "assets/props/35af86ba63391d38.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/35af86ba63391d38.bin",
+      "bytes": 11964,
+      "sha256": "35af86ba63391d3847fd6edaf8de3b4aeab6d10e8e71a228ef2300359cc49dde",
+      "storedBytes": 2888
+    },
+    {
+      "path": "assets/props/35b7c01f71d98010.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/35b7c01f71d98010.bin",
+      "bytes": 187916,
+      "sha256": "35b7c01f71d9801046a9d7965ad87b059ce36212882caba26bb9b4617cfd53bf",
+      "storedBytes": 84421
+    },
+    {
+      "path": "assets/props/35cdcc30e4b7c033.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/35cdcc30e4b7c033.bin",
+      "bytes": 60196,
+      "sha256": "35cdcc30e4b7c03304d3967a4f42da32e25b8c4737e2f1e7ad2bd4212d7b3d6b",
+      "storedBytes": 8427
+    },
+    {
+      "path": "assets/props/386d838625fe633c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/386d838625fe633c.bin",
+      "bytes": 11972,
+      "sha256": "386d838625fe633c951ce0b910b5f18c19e1734075ad4f99e9d4a3cd2920b7da",
+      "storedBytes": 2895
+    },
+    {
+      "path": "assets/props/38b9cfcd9eaec30c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/38b9cfcd9eaec30c.bin",
+      "bytes": 873632,
+      "sha256": "38b9cfcd9eaec30cd25c5f7c24f06f50b03e56b1bad2755d0d891f2e9630c495",
+      "storedBytes": 405459
+    },
+    {
+      "path": "assets/props/3ea32397ef9b3a36.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/3ea32397ef9b3a36.bin",
+      "bytes": 352196,
+      "sha256": "3ea32397ef9b3a366838106932e0d54784b683a4b2bd046eb9eb3cac4b085aca",
+      "storedBytes": 207906
+    },
+    {
+      "path": "assets/props/3ece966e6cb66394.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/3ece966e6cb66394.bin",
+      "bytes": 128152,
+      "sha256": "3ece966e6cb66394af776b6b64fea67a41e196ebbafa401117d8c9a7e2c629f4",
+      "storedBytes": 45583
+    },
+    {
+      "path": "assets/props/3fc0732c11e8745b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/3fc0732c11e8745b.bin",
+      "bytes": 14588,
+      "sha256": "3fc0732c11e8745bba148a665b7529c0879c565dec45518e0bd88f55b0bb5790",
+      "storedBytes": 3519
+    },
+    {
+      "path": "assets/props/3fc501f39031cd13.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/3fc501f39031cd13.bin",
+      "bytes": 19564,
+      "sha256": "3fc501f39031cd134fb46dd052b7a172f7c37251b51e72f1d0ef45bbebc14619",
+      "storedBytes": 6133
+    },
+    {
+      "path": "assets/props/41419fed38fd5cb4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/41419fed38fd5cb4.bin",
+      "bytes": 5656,
+      "sha256": "41419fed38fd5cb4f191302e0759d9f23a1b71fdadbf3ce8ff6b0de232086938",
+      "storedBytes": 1860
+    },
+    {
+      "path": "assets/props/42899d4a25361fac.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/42899d4a25361fac.bin",
+      "bytes": 85172,
+      "sha256": "42899d4a25361fac1315c8dfecd64680d8a7fafff942cbdcb6d4a3474d5fb430",
+      "storedBytes": 16028
+    },
+    {
+      "path": "assets/props/437a966db421832b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/437a966db421832b.bin",
+      "bytes": 17388,
+      "sha256": "437a966db421832b5c5a898889f193074ca6e21679e35e235d4a706b940f5e24",
+      "storedBytes": 3542
+    },
+    {
+      "path": "assets/props/43e74de92ffa51b7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/43e74de92ffa51b7.bin",
+      "bytes": 32744,
+      "sha256": "43e74de92ffa51b72c8e5149e8a5656b6b4ae9a68b478d112c8528cb5d6fdfe3",
+      "storedBytes": 14997
+    },
+    {
+      "path": "assets/props/4505d10fabd637e2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/4505d10fabd637e2.bin",
+      "bytes": 917032,
+      "sha256": "4505d10fabd637e2103d6116b7f2c0b7acb85014962da3d48e693dd4185da09d",
+      "storedBytes": 277646
+    },
+    {
+      "path": "assets/props/4639bed4a9e42cef.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/4639bed4a9e42cef.bin",
+      "bytes": 19116,
+      "sha256": "4639bed4a9e42cef25e13271fdb25ab8bd7b3c987bb61d1040653283c8781fb7",
+      "storedBytes": 4798
+    },
+    {
+      "path": "assets/props/482d178ebae09517.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/482d178ebae09517.bin",
+      "bytes": 10236,
+      "sha256": "482d178ebae09517377cb9233c5f57f7e019ef828fe5de07c8a38bef86986113",
+      "storedBytes": 3866
+    },
+    {
+      "path": "assets/props/489ca60035ead704.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/489ca60035ead704.bin",
+      "bytes": 116544,
+      "sha256": "489ca60035ead704bf5359bc5e8a06843de48c3534ee97b7c60e55efce9747b3",
+      "storedBytes": 23514
+    },
+    {
+      "path": "assets/props/489f53296ed26a81.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/489f53296ed26a81.bin",
+      "bytes": 1705504,
+      "sha256": "489f53296ed26a81426a85d0e88add097ef978bda136e9ce7a2ccada26d28e4c",
+      "storedBytes": 224449
+    },
+    {
+      "path": "assets/props/4a6b690c5f64907c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/4a6b690c5f64907c.bin",
+      "bytes": 535032,
+      "sha256": "4a6b690c5f64907c87592f3012433b582d100624e0e0622d2253c366a1b496e0",
+      "storedBytes": 168939
+    },
+    {
+      "path": "assets/props/4b7e3f065d8efca8.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/4b7e3f065d8efca8.bin",
+      "bytes": 58796,
+      "sha256": "4b7e3f065d8efca82051c222e556f785dda73353732d1d014c770905c26c9790",
+      "storedBytes": 6828
+    },
+    {
+      "path": "assets/props/4d4ae013ce107900.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/4d4ae013ce107900.bin",
+      "bytes": 14592,
+      "sha256": "4d4ae013ce1079009eb36e0de8091921c13b781174cab96f54ab80d99b9ec850",
+      "storedBytes": 3526
+    },
+    {
+      "path": "assets/props/4d77b815ddefa903.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/4d77b815ddefa903.bin",
+      "bytes": 60848,
+      "sha256": "4d77b815ddefa9031bc7838ebb53c9a521fb46a90be31724fdcdd938c6934159",
+      "storedBytes": 25245
+    },
+    {
+      "path": "assets/props/4dfecbea2830aa74.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/4dfecbea2830aa74.bin",
+      "bytes": 594792,
+      "sha256": "4dfecbea2830aa74c8aba233268ced129da2cd2e1fe6add85a06b1c20f848765",
+      "storedBytes": 156123
+    },
+    {
+      "path": "assets/props/4dffa9241a90b9aa.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/4dffa9241a90b9aa.bin",
+      "bytes": 1426200,
+      "sha256": "4dffa9241a90b9aab67839af42fd909b3ca585a6c9dfc5b300878313796d0a8a",
+      "storedBytes": 427545
+    },
+    {
+      "path": "assets/props/4e60ea2f0f269304.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/4e60ea2f0f269304.bin",
+      "bytes": 5125188,
+      "sha256": "4e60ea2f0f2693040337d420e4b3329256107f2fab902bd23e28df344068548c",
+      "storedBytes": 1159970
+    },
+    {
+      "path": "assets/props/4f9a774660b5dbf5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/4f9a774660b5dbf5.bin",
+      "bytes": 298588,
+      "sha256": "4f9a774660b5dbf5baa96086a14ebbdd544b95cc88716f2275ae6c7bbe163747",
+      "storedBytes": 101107
+    },
+    {
+      "path": "assets/props/4fdc19709b575194.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/4fdc19709b575194.bin",
+      "bytes": 454144,
+      "sha256": "4fdc19709b575194252fa691957a3bd5f9b0395d14c0e7f40a44fa3316a20030",
+      "storedBytes": 375705
+    },
+    {
+      "path": "assets/props/503f397776c017a2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/503f397776c017a2.bin",
+      "bytes": 11976,
+      "sha256": "503f397776c017a28dd408d859c67ae129ac11bfb89149b3638706db2caacfcc",
+      "storedBytes": 2898
+    },
+    {
+      "path": "assets/props/5064f4621dd64a26.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/5064f4621dd64a26.bin",
+      "bytes": 76932,
+      "sha256": "5064f4621dd64a2608851c3e0855e430929063d75a9a40e085ac51e275331254",
+      "storedBytes": 35392
+    },
+    {
+      "path": "assets/props/50662fd980b4fbca.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/50662fd980b4fbca.bin",
+      "bytes": 34996,
+      "sha256": "50662fd980b4fbca166d7f5c6cb1e7a7fbef10be3f37596f3cc80a2992ece19a",
+      "storedBytes": 15873
+    },
+    {
+      "path": "assets/props/50cb229f099ec6ce.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/50cb229f099ec6ce.bin",
+      "bytes": 53836,
+      "sha256": "50cb229f099ec6ce9215acc88e2b179a4e5e3cf4565c3b992f74ecd7dca9f694",
+      "storedBytes": 15256
+    },
+    {
+      "path": "assets/props/5163665c96b747be.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5163665c96b747be.bin",
+      "bytes": 35808,
+      "sha256": "5163665c96b747be6cef06d26d07f303ff4b952e13d9541d8dfdd6340a4600be",
+      "storedBytes": 13726
+    },
+    {
+      "path": "assets/props/52220d773255cbd9.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/52220d773255cbd9.bin",
+      "bytes": 61044,
+      "sha256": "52220d773255cbd95f286354cc9ad2109e5e77186679c20f03439bd18af21267",
+      "storedBytes": 16079
+    },
+    {
+      "path": "assets/props/52483bbadc262c0b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/52483bbadc262c0b.bin",
+      "bytes": 121888,
+      "sha256": "52483bbadc262c0bd13f08d793bdc27776c851157008d9b3e3dde58c121c1bb9",
+      "storedBytes": 11143
+    },
+    {
+      "path": "assets/props/5278aac4338274e2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5278aac4338274e2.bin",
+      "bytes": 3776,
+      "sha256": "5278aac4338274e26d7acb6e5aecefd3e358ab6ee6677839d4ba3c65732475ef",
+      "storedBytes": 1272
+    },
+    {
+      "path": "assets/props/52f7a45925012655.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/52f7a45925012655.bin",
+      "bytes": 23560,
+      "sha256": "52f7a45925012655cadcc893571561213bc364a816ed7fdbdf61f23d860419b4",
+      "storedBytes": 3350
+    },
+    {
+      "path": "assets/props/530a2b1f37fdfb6c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/530a2b1f37fdfb6c.bin",
+      "bytes": 3604,
+      "sha256": "530a2b1f37fdfb6c98b92d85a93d2e5884252fb976405322e9f664062be724c2",
+      "storedBytes": 1183
+    },
+    {
+      "path": "assets/props/53c90eda9f57d5c2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/53c90eda9f57d5c2.bin",
+      "bytes": 61044,
+      "sha256": "53c90eda9f57d5c264db3bae5b8d9107679362c2348932a737ac81b0a39a06c4",
+      "storedBytes": 16095
+    },
+    {
+      "path": "assets/props/53e77ed6c4cc3f7f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/53e77ed6c4cc3f7f.bin",
+      "bytes": 191848,
+      "sha256": "53e77ed6c4cc3f7fc79025299fa54f1b084a64a273cdecc9d43c69076c5a14cb",
+      "storedBytes": 50009
+    },
+    {
+      "path": "assets/props/546a7f6bd28d1f85.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/546a7f6bd28d1f85.bin",
+      "bytes": 778684,
+      "sha256": "546a7f6bd28d1f85d8159ec3339073c04b6c4870d19702c6ab076fca644a5fff",
+      "storedBytes": 109717
+    },
+    {
+      "path": "assets/props/556da6f71a553767.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/556da6f71a553767.bin",
+      "bytes": 8664,
+      "sha256": "556da6f71a553767c96b10cca0a9e91242f1649dbd7f218ded8632b20743be5c",
+      "storedBytes": 2884
+    },
+    {
+      "path": "assets/props/55a5583b59c6a9d8.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/55a5583b59c6a9d8.bin",
+      "bytes": 299548,
+      "sha256": "55a5583b59c6a9d8c1e314171974becf133c4c7d32119c8d9543994657321f57",
+      "storedBytes": 84308
+    },
+    {
+      "path": "assets/props/564149c3378bc9fc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/564149c3378bc9fc.bin",
+      "bytes": 11096,
+      "sha256": "564149c3378bc9fc6cef73e2ad8c6f921b6f87caceca41b28ead8cd9f0695f33",
+      "storedBytes": 3324
+    },
+    {
+      "path": "assets/props/573f281f1991773a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/573f281f1991773a.bin",
+      "bytes": 41164,
+      "sha256": "573f281f1991773a0fabc21712def72e89122e69e66076ebcea6973813083c87",
+      "storedBytes": 19408
+    },
+    {
+      "path": "assets/props/579890b22d41e075.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/579890b22d41e075.bin",
+      "bytes": 3616,
+      "sha256": "579890b22d41e075b36020baa5b1e3f052f6553c9bbfe8a9c4b433120ad7c920",
+      "storedBytes": 1202
+    },
+    {
+      "path": "assets/props/57d6dce5d6da8c99.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/57d6dce5d6da8c99.bin",
+      "bytes": 3676,
+      "sha256": "57d6dce5d6da8c99a0318418109c2d499b46b965f93b81b598ab75a2dfc9da9f",
+      "storedBytes": 1005
+    },
+    {
+      "path": "assets/props/592bca7e1fe52088.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/592bca7e1fe52088.bin",
+      "bytes": 11912,
+      "sha256": "592bca7e1fe520882272d75d0a284155d65bbed982be5ece47964ba858745607",
+      "storedBytes": 2611
+    },
+    {
+      "path": "assets/props/59e330728dea0b2d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/59e330728dea0b2d.bin",
+      "bytes": 111844,
+      "sha256": "59e330728dea0b2d3c6d63ca66d342061a26a151b4cc3dc968b6de3e3d679dfd",
+      "storedBytes": 13042
+    },
+    {
+      "path": "assets/props/5ad283177f8ba6dd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5ad283177f8ba6dd.bin",
+      "bytes": 55408,
+      "sha256": "5ad283177f8ba6dd7abce25cfb6d7cd820986be1b432cca60901cfae6a7a9c77",
+      "storedBytes": 21651
+    },
+    {
+      "path": "assets/props/5b8c8b8776d65180.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5b8c8b8776d65180.bin",
+      "bytes": 5572,
+      "sha256": "5b8c8b8776d65180178f4a1829c62494c4428d8a722bc8d66834c3ce2083c2c6",
+      "storedBytes": 2230
+    },
+    {
+      "path": "assets/props/5cd5bae49917f35d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5cd5bae49917f35d.bin",
+      "bytes": 14592,
+      "sha256": "5cd5bae49917f35d5bc3da87cd78d04e2f578d44d54d7ac158de7393f086f2c2",
+      "storedBytes": 3526
+    },
+    {
+      "path": "assets/props/5d8cc5121ecf45f6.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5d8cc5121ecf45f6.bin",
+      "bytes": 17388,
+      "sha256": "5d8cc5121ecf45f66543906f898f3dd1b8476d40259089cfc804df107694b261",
+      "storedBytes": 3542
+    },
+    {
+      "path": "assets/props/5db3be1ad4320923.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5db3be1ad4320923.bin",
+      "bytes": 9748,
+      "sha256": "5db3be1ad4320923c56e64057ca576cbb887ab4bfc21c71374998b0bf6b72038",
+      "storedBytes": 2960
+    },
+    {
+      "path": "assets/props/5e16584e0fa08adf.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5e16584e0fa08adf.bin",
+      "bytes": 29936,
+      "sha256": "5e16584e0fa08adf7028328e012186fd3bf771bc5b0bb75cfca4247ff1e14586",
+      "storedBytes": 4874
+    },
+    {
+      "path": "assets/props/5e7a89be242ab3db.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/5e7a89be242ab3db.bin",
+      "bytes": 28432,
+      "sha256": "5e7a89be242ab3db9aa5d3f8ae34816658eabf7097394f483b20a4ab1a7d7c8b",
+      "storedBytes": 13338
+    },
+    {
+      "path": "assets/props/5ea04c719eed1daa.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5ea04c719eed1daa.bin",
+      "bytes": 3764,
+      "sha256": "5ea04c719eed1daacd8ea59a51474d5ed702b83f693ff6aec136aa7b973d538f",
+      "storedBytes": 1041
+    },
+    {
+      "path": "assets/props/5fe5a31f27696193.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/5fe5a31f27696193.bin",
+      "bytes": 59540,
+      "sha256": "5fe5a31f276961933f206307a21af0bd48b18f4e3633d058ae0860fa76644824",
+      "storedBytes": 12262
+    },
+    {
+      "path": "assets/props/603f187f117051e7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/603f187f117051e7.bin",
+      "bytes": 83364,
+      "sha256": "603f187f117051e771435546108ff1fce04634b7bdd74a7a884fb8331d1d3f35",
+      "storedBytes": 14856
+    },
+    {
+      "path": "assets/props/605d1ec95b59f5f1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/605d1ec95b59f5f1.bin",
+      "bytes": 50412,
+      "sha256": "605d1ec95b59f5f14cee899633520c067f6304cdb88aaeb48050bd338e4a9d04",
+      "storedBytes": 15810
+    },
+    {
+      "path": "assets/props/6123a2a0ab716ee5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6123a2a0ab716ee5.bin",
+      "bytes": 179676,
+      "sha256": "6123a2a0ab716ee5689c820f358800d2f22e6380317fcf5330fffe869917fe08",
+      "storedBytes": 85003
+    },
+    {
+      "path": "assets/props/61574c8321fe303f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/61574c8321fe303f.bin",
+      "bytes": 917032,
+      "sha256": "61574c8321fe303f81238a9a597e43ad9214719d858b1c0bb13ba81369ada007",
+      "storedBytes": 277648
+    },
+    {
+      "path": "assets/props/61794afa68b89b25.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/61794afa68b89b25.bin",
+      "bytes": 5148,
+      "sha256": "61794afa68b89b253b8880702dadf938318f5d9dd39875a7ea9561dadf68bf4f",
+      "storedBytes": 2205
+    },
+    {
+      "path": "assets/props/623626c5af403848.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/623626c5af403848.bin",
+      "bytes": 14492,
+      "sha256": "623626c5af403848ca8a87391dc59f70f1ec430cfdab8802ca31d75d23daaf26",
+      "storedBytes": 3449
+    },
+    {
+      "path": "assets/props/6412e771b7e8edac.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/6412e771b7e8edac.bin",
+      "bytes": 677828,
+      "sha256": "6412e771b7e8edacb4810d166a6e5ee124038dc51f130cc3222f49b68ae60bbd",
+      "storedBytes": 176760
+    },
+    {
+      "path": "assets/props/64e3072de010a038.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/64e3072de010a038.bin",
+      "bytes": 132460,
+      "sha256": "64e3072de010a038fb782b9eaca0169c1ab16873ef03c96af5e5d743cbde12d1",
+      "storedBytes": 40840
+    },
+    {
+      "path": "assets/props/66689a1fae30abb4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/66689a1fae30abb4.bin",
+      "bytes": 257368,
+      "sha256": "66689a1fae30abb4be67e6d22967aa4edd07f54b61d717e300a782ec3a24ca80",
+      "storedBytes": 78511
+    },
+    {
+      "path": "assets/props/66ae98fce929215a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/66ae98fce929215a.bin",
+      "bytes": 55084,
+      "sha256": "66ae98fce929215a1219b577157ec30bf1193b5d40bdc9aea3ee2aa64405b34f",
+      "storedBytes": 12734
+    },
+    {
+      "path": "assets/props/6738524875562183.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6738524875562183.bin",
+      "bytes": 740664,
+      "sha256": "67385248755621835c9c1f68818171f16593cd56e1bc804aee0beab9902f13ba",
+      "storedBytes": 363759
+    },
+    {
+      "path": "assets/props/67e5c913a908f7bb.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/67e5c913a908f7bb.bin",
+      "bytes": 3572,
+      "sha256": "67e5c913a908f7bbba3d7782fdb161f60d241ee6c69f19c48239f28d90e6cab8",
+      "storedBytes": 916
+    },
+    {
+      "path": "assets/props/680e33dca5535eea.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/680e33dca5535eea.bin",
+      "bytes": 704160,
+      "sha256": "680e33dca5535eeaf93ecb75caa8a971a362ebbe71c95c2a04bc97677e2613a1",
+      "storedBytes": 290122
+    },
+    {
+      "path": "assets/props/69650e863d929769.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/69650e863d929769.bin",
+      "bytes": 83364,
+      "sha256": "69650e863d929769cae4bbdba0c2d45caa580b71471aa6bbc7fad78cca300fee",
+      "storedBytes": 14856
+    },
+    {
+      "path": "assets/props/69beb72fa97de793.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/69beb72fa97de793.bin",
+      "bytes": 67060,
+      "sha256": "69beb72fa97de793213b90472b35ebb1526db933e0ebf7581ead86167115c80c",
+      "storedBytes": 9218
+    },
+    {
+      "path": "assets/props/69ddb2ed364d0fa1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/69ddb2ed364d0fa1.bin",
+      "bytes": 20792,
+      "sha256": "69ddb2ed364d0fa17de9b5de8d0afef3a81116b195416e9894d2b4ae88fe3104",
+      "storedBytes": 6749
+    },
+    {
+      "path": "assets/props/6ac893616aad1d44.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6ac893616aad1d44.bin",
+      "bytes": 89176,
+      "sha256": "6ac893616aad1d448cf69c2faf4e219210a5b15ede46d5bc959f3d76ce00b712",
+      "storedBytes": 51661
+    },
+    {
+      "path": "assets/props/6c38ecfcd5398b20.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6c38ecfcd5398b20.bin",
+      "bytes": 20828,
+      "sha256": "6c38ecfcd5398b20ddc1efba998825c1bdb58085018ae01e838473ac4f3ef6da",
+      "storedBytes": 4644
+    },
+    {
+      "path": "assets/props/6c4e37d988e60b3c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/6c4e37d988e60b3c.bin",
+      "bytes": 139100,
+      "sha256": "6c4e37d988e60b3c40e2314791b9119100e9aabcd522ec2c063622b0b883e3b7",
+      "storedBytes": 34784
+    },
+    {
+      "path": "assets/props/6cd63c15f6954099.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6cd63c15f6954099.bin",
+      "bytes": 20792,
+      "sha256": "6cd63c15f6954099dbe05fe7087afb113b9dd5ebdc2c66687ca74d168a2dc275",
+      "storedBytes": 6749
+    },
+    {
+      "path": "assets/props/6d88574b4eaa72f4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6d88574b4eaa72f4.bin",
+      "bytes": 15032,
+      "sha256": "6d88574b4eaa72f416707177b3d2bcae5a0b4a93fe730144b6b1c7db9d45e9e3",
+      "storedBytes": 4511
+    },
+    {
+      "path": "assets/props/6e666b9b70410288.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6e666b9b70410288.bin",
+      "bytes": 33580,
+      "sha256": "6e666b9b7041028861331a3d517138581a434acae68e4543442e25f2778e4ba1",
+      "storedBytes": 7072
+    },
+    {
+      "path": "assets/props/6e6822488b6b6150.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/6e6822488b6b6150.bin",
+      "bytes": 756060,
+      "sha256": "6e6822488b6b6150993a1f75f5e1359ece3791ba94b02ad7f109991a6c6948b2",
+      "storedBytes": 204194
+    },
+    {
+      "path": "assets/props/6f19c638091b8bb7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6f19c638091b8bb7.bin",
+      "bytes": 17672,
+      "sha256": "6f19c638091b8bb74d16fca032e741e742bec86cc2ed079fce4cb2280fccef87",
+      "storedBytes": 5163
+    },
+    {
+      "path": "assets/props/6f54a9db36eb1ba9.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/6f54a9db36eb1ba9.bin",
+      "bytes": 57996,
+      "sha256": "6f54a9db36eb1ba9b03563e0a796b5005f730b709694b26454f49e182acb6bb5",
+      "storedBytes": 5823
+    },
+    {
+      "path": "assets/props/70ce312cd4ae2cb5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/70ce312cd4ae2cb5.bin",
+      "bytes": 41848,
+      "sha256": "70ce312cd4ae2cb54f96006106c4f2e6538ce3064e771f8e345f21a966b02cf9",
+      "storedBytes": 9631
+    },
+    {
+      "path": "assets/props/70e4dbeab7a03484.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/70e4dbeab7a03484.bin",
+      "bytes": 143376,
+      "sha256": "70e4dbeab7a034841bfd510f5c650fb1eaae3849803ffa73bbd70fd6a6b2f53f",
+      "storedBytes": 42750
+    },
+    {
+      "path": "assets/props/725a4a57c8a4f92b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/725a4a57c8a4f92b.bin",
+      "bytes": 187320,
+      "sha256": "725a4a57c8a4f92b0ef08fa13cc7dd96d03a323d157cb53838121ad91affa374",
+      "storedBytes": 57629
+    },
+    {
+      "path": "assets/props/734d9dae5f2ea4b0.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/734d9dae5f2ea4b0.bin",
+      "bytes": 73168,
+      "sha256": "734d9dae5f2ea4b0df1664a3bb5f1a22e2eff8238b134539fe4598efb771f3ae",
+      "storedBytes": 23585
+    },
+    {
+      "path": "assets/props/7361ab805c8810a7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/7361ab805c8810a7.bin",
+      "bytes": 183244,
+      "sha256": "7361ab805c8810a72fcdf651f36f18208b3d2abccad6e2906cb5f4fe2917c52d",
+      "storedBytes": 48070
+    },
+    {
+      "path": "assets/props/73865a3952bf64bc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/73865a3952bf64bc.bin",
+      "bytes": 38764,
+      "sha256": "73865a3952bf64bc0af17b17f22c1e1cf800d949848cf03974b8d166163528a2",
+      "storedBytes": 7791
+    },
+    {
+      "path": "assets/props/747da08f636c53fd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/747da08f636c53fd.bin",
+      "bytes": 17672,
+      "sha256": "747da08f636c53fd2f2a6edc12f02636abdfe04508b71e95506e95fb76321466",
+      "storedBytes": 5163
+    },
+    {
+      "path": "assets/props/74b21f8bcc9208e7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/74b21f8bcc9208e7.bin",
+      "bytes": 405668,
+      "sha256": "74b21f8bcc9208e7eb928078d20997be7e8cf8dc54eeec513721e6ef77c100d3",
+      "storedBytes": 106128
+    },
+    {
+      "path": "assets/props/74d79e389da07ee5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/74d79e389da07ee5.bin",
+      "bytes": 35568,
+      "sha256": "74d79e389da07ee5e592da9e595070b796e5dc7b92f19f4b4ed9e0697ebea5ec",
+      "storedBytes": 5442
+    },
+    {
+      "path": "assets/props/7531b43d34f2d454.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/7531b43d34f2d454.bin",
+      "bytes": 51872,
+      "sha256": "7531b43d34f2d4547ac14389962ab939aa21c215456f14ce13e18044501426f1",
+      "storedBytes": 17591
+    },
+    {
+      "path": "assets/props/758bcf062107d5fb.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/758bcf062107d5fb.bin",
+      "bytes": 14492,
+      "sha256": "758bcf062107d5fb6bd48bfbc01179c4f1ef61075dca771eb3b041508a1c5b3b",
+      "storedBytes": 3449
+    },
+    {
+      "path": "assets/props/75a9206f698c00fd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/75a9206f698c00fd.bin",
+      "bytes": 62728,
+      "sha256": "75a9206f698c00fd2c6d32190524b41afe1aee363a6a530772d926a1eb8d9aa4",
+      "storedBytes": 14220
+    },
+    {
+      "path": "assets/props/7687f5be01ddcd46.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/7687f5be01ddcd46.bin",
+      "bytes": 726588,
+      "sha256": "7687f5be01ddcd46e55aa0f114f3cae6cd0f7916c76a0c2bf09268e5bb00b081",
+      "storedBytes": 216283
+    },
+    {
+      "path": "assets/props/780e07437d6fbb99.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/780e07437d6fbb99.bin",
+      "bytes": 185300,
+      "sha256": "780e07437d6fbb99f5c3a5547eb3b3509ed61d24d1f714ec554db0feca1e4f64",
+      "storedBytes": 53522
+    },
+    {
+      "path": "assets/props/786973880a7ce57b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/786973880a7ce57b.bin",
+      "bytes": 37564,
+      "sha256": "786973880a7ce57b1961f8566876b5bae0d2b46efcb581a5d7faa95114ce1447",
+      "storedBytes": 7385
+    },
+    {
+      "path": "assets/props/78d0cf4bec9f29cc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/78d0cf4bec9f29cc.bin",
+      "bytes": 448136,
+      "sha256": "78d0cf4bec9f29cc48c85d4c2d65050cfea9ad64a733b2ff525283005d0def9a",
+      "storedBytes": 272651
+    },
+    {
+      "path": "assets/props/793032447e36aaed.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/793032447e36aaed.bin",
+      "bytes": 14588,
+      "sha256": "793032447e36aaed9d212254e1a3516680617bdbce90ac13eb0ca4f84e32539c",
+      "storedBytes": 3521
+    },
+    {
+      "path": "assets/props/7a3b9790458570f3.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/7a3b9790458570f3.bin",
+      "bytes": 17204,
+      "sha256": "7a3b9790458570f3dcf091d14d48e99497b93d5e9fbc5093f118db224a952ecb",
+      "storedBytes": 3701
+    },
+    {
+      "path": "assets/props/7b5de7335128214a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/7b5de7335128214a.bin",
+      "bytes": 6336,
+      "sha256": "7b5de7335128214a1440604fed9491c3720173af74d76f598968d3b4e2f4e9cd",
+      "storedBytes": 2254
+    },
+    {
+      "path": "assets/props/7bf066468dc935d4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/7bf066468dc935d4.bin",
+      "bytes": 248936,
+      "sha256": "7bf066468dc935d4955c1940a3cdf7c3806c4ef7a016c198e531a16e8540c370",
+      "storedBytes": 126273
+    },
+    {
+      "path": "assets/props/7e2c14bd4b2bc3db.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/7e2c14bd4b2bc3db.bin",
+      "bytes": 20728,
+      "sha256": "7e2c14bd4b2bc3dbe27133116c0861bc8ae5f0d1ea628a90b2bda1e85f3bf155",
+      "storedBytes": 11491
+    },
+    {
+      "path": "assets/props/7f4003355b42c424.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/7f4003355b42c424.bin",
+      "bytes": 183272,
+      "sha256": "7f4003355b42c4245979f8ed2f8fb43a5652514efee53680fb2fe9f8fa44f951",
+      "storedBytes": 48129
+    },
+    {
+      "path": "assets/props/7ff2dc040fed7852.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/7ff2dc040fed7852.bin",
+      "bytes": 14560,
+      "sha256": "7ff2dc040fed7852ea4401dadbb807dc65960622a6a77707eddb010b345f00ab",
+      "storedBytes": 4137
+    },
+    {
+      "path": "assets/props/8013fc1b810fd23b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8013fc1b810fd23b.bin",
+      "bytes": 374404,
+      "sha256": "8013fc1b810fd23b9e6c4887909071a10c7cc520b277ce749c4aa5b5354e3440",
+      "storedBytes": 112151
+    },
+    {
+      "path": "assets/props/80fbc535549e4c7b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/80fbc535549e4c7b.bin",
+      "bytes": 9564,
+      "sha256": "80fbc535549e4c7bc01cd452008c1cf4412f4d9572e705c6970888344be5f473",
+      "storedBytes": 1598
+    },
+    {
+      "path": "assets/props/81c700c32fda4f68.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/81c700c32fda4f68.bin",
+      "bytes": 19564,
+      "sha256": "81c700c32fda4f6826925876a1514ceec316b00dd00a658724d0d2147c449686",
+      "storedBytes": 6133
+    },
+    {
+      "path": "assets/props/81fa9f1a649b07c8.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/81fa9f1a649b07c8.bin",
+      "bytes": 11628,
+      "sha256": "81fa9f1a649b07c86e921b8fe7a06ad8379a2a5a2529678e5566ca6a648c9a08",
+      "storedBytes": 5710
+    },
+    {
+      "path": "assets/props/83218310216b5552.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/83218310216b5552.bin",
+      "bytes": 16084,
+      "sha256": "83218310216b5552d10441f743c139ee6610f5d3515b55dbfb82d67f2814e49d",
+      "storedBytes": 5300
+    },
+    {
+      "path": "assets/props/83daf1903a027bf7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/83daf1903a027bf7.bin",
+      "bytes": 168556,
+      "sha256": "83daf1903a027bf7f07b19b4779047e9fbe9c31726d5c4a43b81adba13e5d6e0",
+      "storedBytes": 91151
+    },
+    {
+      "path": "assets/props/8477f97eac83d2dc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/8477f97eac83d2dc.bin",
+      "bytes": 277580,
+      "sha256": "8477f97eac83d2dcf263a3497f6bbfb85d12a41a43773c4fb593148b3cc19f20",
+      "storedBytes": 128964
+    },
+    {
+      "path": "assets/props/85480029d3cc5cae.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/85480029d3cc5cae.bin",
+      "bytes": 59108,
+      "sha256": "85480029d3cc5cae7cebe28a84e9d576327b8976735670ddf23ecf38c1c23e9d",
+      "storedBytes": 11943
+    },
+    {
+      "path": "assets/props/854d821e64f932be.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/854d821e64f932be.bin",
+      "bytes": 7856,
+      "sha256": "854d821e64f932be2aae61645ec51edf7071d26869b13c95e30a641899afa074",
+      "storedBytes": 3106
+    },
+    {
+      "path": "assets/props/863f5603c215e5e4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/863f5603c215e5e4.bin",
+      "bytes": 3608,
+      "sha256": "863f5603c215e5e498ccd134c8eed7b8f495d5a3cedbd78b3797586f1c478298",
+      "storedBytes": 1361
+    },
+    {
+      "path": "assets/props/8777bafdb521d7b5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8777bafdb521d7b5.bin",
+      "bytes": 4304,
+      "sha256": "8777bafdb521d7b59af52f15b60c1f4f230a7fc80dc406a5b4703165a1dc990c",
+      "storedBytes": 1435
+    },
+    {
+      "path": "assets/props/883f7ee68a137e9f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/883f7ee68a137e9f.bin",
+      "bytes": 52088,
+      "sha256": "883f7ee68a137e9f05a6565920fb94a71e14c73f9cfeb0dd1d79cb24b4da783f",
+      "storedBytes": 31039
+    },
+    {
+      "path": "assets/props/884934cf7b0df27e.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/884934cf7b0df27e.bin",
+      "bytes": 20792,
+      "sha256": "884934cf7b0df27ea48ebd7945c0bbc05a1ca718e06fc4007b9b1face04b8299",
+      "storedBytes": 6749
+    },
+    {
+      "path": "assets/props/884bf462eaef037d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/884bf462eaef037d.bin",
+      "bytes": 40344,
+      "sha256": "884bf462eaef037d4bd89d3aa118b7f3b0dc48e07bbfc2659be041d130056cef",
+      "storedBytes": 9085
+    },
+    {
+      "path": "assets/props/8852eb0d7d5cd81b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/8852eb0d7d5cd81b.bin",
+      "bytes": 25504,
+      "sha256": "8852eb0d7d5cd81b4756bf1dca51067ff51f2153ead57108d8f659865ac7ac9c",
+      "storedBytes": 7370
+    },
+    {
+      "path": "assets/props/893e2d2c047e70c4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/893e2d2c047e70c4.bin",
+      "bytes": 39980,
+      "sha256": "893e2d2c047e70c4e29ae7d62ad1ec7f956c2bfb4abea5e2da484ff0b91ec313",
+      "storedBytes": 8441
+    },
+    {
+      "path": "assets/props/8a626698adbfa798.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8a626698adbfa798.bin",
+      "bytes": 32336,
+      "sha256": "8a626698adbfa798f8cf4dc788967c5157c378dcdbac164e9835a7d87eeeb1ee",
+      "storedBytes": 14422
+    },
+    {
+      "path": "assets/props/8b71af706ba84768.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8b71af706ba84768.bin",
+      "bytes": 14580,
+      "sha256": "8b71af706ba84768e4b7fcbfa466fb175a6639be022524d974c5a0d0ff62f8d2",
+      "storedBytes": 3512
+    },
+    {
+      "path": "assets/props/8bb2e058190d01ca.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8bb2e058190d01ca.bin",
+      "bytes": 27564,
+      "sha256": "8bb2e058190d01ca54761fc3b38b9523eb87ddfaf039701c0eca8c3a1317b2c3",
+      "storedBytes": 10862
+    },
+    {
+      "path": "assets/props/8cc22185cd954e76.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8cc22185cd954e76.bin",
+      "bytes": 23340,
+      "sha256": "8cc22185cd954e76cf45047bdef7431a3866dbbcc5f70a2a35df3cdac6a9d5e2",
+      "storedBytes": 3384
+    },
+    {
+      "path": "assets/props/8e70c9f6a8060b8a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8e70c9f6a8060b8a.bin",
+      "bytes": 445328,
+      "sha256": "8e70c9f6a8060b8aa4763abbe9d2da5a1bd12668cedc23584cd4c93deaf841e2",
+      "storedBytes": 165763
+    },
+    {
+      "path": "assets/props/8e7c997d17176bb3.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/8e7c997d17176bb3.bin",
+      "bytes": 231948,
+      "sha256": "8e7c997d17176bb3b9c1b8d5d92c06d29d6fb0b46be216dded1aa0aa70fad382",
+      "storedBytes": 95376
+    },
+    {
+      "path": "assets/props/8fed06122de9db16.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/8fed06122de9db16.bin",
+      "bytes": 14584,
+      "sha256": "8fed06122de9db16cef43d567a7794fdc0af782df7e183cb862bcacb3b630bfa",
+      "storedBytes": 3518
+    },
+    {
+      "path": "assets/props/91e2f668323751bb.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/91e2f668323751bb.bin",
+      "bytes": 39056,
+      "sha256": "91e2f668323751bbe6886275b808be464e04101acc8573f490fc293f0191e60a",
+      "storedBytes": 7558
+    },
+    {
+      "path": "assets/props/91f5182398094e71.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/91f5182398094e71.bin",
+      "bytes": 54172,
+      "sha256": "91f5182398094e7124e954af8352300369208e492a01f0d248baef41d6dbbf33",
+      "storedBytes": 35526
+    },
+    {
+      "path": "assets/props/9358b57c740f1705.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9358b57c740f1705.bin",
+      "bytes": 5692,
+      "sha256": "9358b57c740f1705f718af1493accfa467acad0b3991e9f9bdf70d5bec2b62b0",
+      "storedBytes": 1308
+    },
+    {
+      "path": "assets/props/93dc6f8505bf5848.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/93dc6f8505bf5848.bin",
+      "bytes": 6036,
+      "sha256": "93dc6f8505bf5848cc10dd51dc267aeef8237c6995d53fcc17b6a6015a3db31a",
+      "storedBytes": 2375
+    },
+    {
+      "path": "assets/props/94f468fbc7a09f11.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/94f468fbc7a09f11.bin",
+      "bytes": 37036,
+      "sha256": "94f468fbc7a09f113dc12c96dd2e1937b173d498357b170caba215aacdd01e7a",
+      "storedBytes": 6732
+    },
+    {
+      "path": "assets/props/951612b53939b39c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/951612b53939b39c.bin",
+      "bytes": 4076,
+      "sha256": "951612b53939b39c5022efb1cd971b18ef95297f3fd0e6e314b753f364834d47",
+      "storedBytes": 1109
+    },
+    {
+      "path": "assets/props/96428e7df1098f97.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/96428e7df1098f97.bin",
+      "bytes": 407172,
+      "sha256": "96428e7df1098f970490fa8adbe01ba860657acf46719dc4e47ea0c6016f5430",
+      "storedBytes": 106510
+    },
+    {
+      "path": "assets/props/965d6f5448ca3a61.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/965d6f5448ca3a61.bin",
+      "bytes": 13996,
+      "sha256": "965d6f5448ca3a61592a676f2d3d29ff9bde7853e594e73f05323bd728812578",
+      "storedBytes": 2845
+    },
+    {
+      "path": "assets/props/96782279c3ed9c7c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/96782279c3ed9c7c.bin",
+      "bytes": 1891816,
+      "sha256": "96782279c3ed9c7cfe8d016429aa4edf3e9d19095f82189df2ab9c722dccf152",
+      "storedBytes": 540492
+    },
+    {
+      "path": "assets/props/9820c4dddffb5a73.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9820c4dddffb5a73.bin",
+      "bytes": 5284,
+      "sha256": "9820c4dddffb5a73c80a7d530aca4884ef3c03fc4254b59ae5d669a651873dc8",
+      "storedBytes": 996
+    },
+    {
+      "path": "assets/props/9836d22e9ae43b0a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9836d22e9ae43b0a.bin",
+      "bytes": 63152,
+      "sha256": "9836d22e9ae43b0acd0dbb4da9f19aa00c3972e3e75e141743a2f8602ca9b904",
+      "storedBytes": 28522
+    },
+    {
+      "path": "assets/props/996a9c815f01e331.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/996a9c815f01e331.bin",
+      "bytes": 39296,
+      "sha256": "996a9c815f01e331c650a8f3764f7a717bd738ccc9a2b75a5f506a077bd14915",
+      "storedBytes": 9150
+    },
+    {
+      "path": "assets/props/9a54d2b744e89ccb.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9a54d2b744e89ccb.bin",
+      "bytes": 996564,
+      "sha256": "9a54d2b744e89ccbc74f0f7bdb2d2d9e70b8db6a4007f4fe2baf809d4188e0d4",
+      "storedBytes": 382290
+    },
+    {
+      "path": "assets/props/9a7707db1d019a11.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/9a7707db1d019a11.bin",
+      "bytes": 271156,
+      "sha256": "9a7707db1d019a115bd112eb4bd1de0517fe2439736095ec6f77af584ecfd4be",
+      "storedBytes": 86643
+    },
+    {
+      "path": "assets/props/9bf346f78a61b41b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9bf346f78a61b41b.bin",
+      "bytes": 784308,
+      "sha256": "9bf346f78a61b41b6f530b95bed54a5f7a22822a292660f44612ec9f9a334260",
+      "storedBytes": 389114
+    },
+    {
+      "path": "assets/props/9c489bcb8c831652.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9c489bcb8c831652.bin",
+      "bytes": 4872,
+      "sha256": "9c489bcb8c831652e4a5adf7396b1304f9a56932e94cf1850077bbf938b775ae",
+      "storedBytes": 1499
+    },
+    {
+      "path": "assets/props/9cd47cf6e7214801.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9cd47cf6e7214801.bin",
+      "bytes": 16856,
+      "sha256": "9cd47cf6e721480157b695a56623c0519049fa3f144bf117eaa5e1cfd5b88d5a",
+      "storedBytes": 3243
+    },
+    {
+      "path": "assets/props/9cdae0c34489f62c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9cdae0c34489f62c.bin",
+      "bytes": 16600,
+      "sha256": "9cdae0c34489f62c5ef7ed82e0cab55fffd1f6ccb6d4dceb5a55467aeca17590",
+      "storedBytes": 4662
+    },
+    {
+      "path": "assets/props/9e930a99a05e75d1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9e930a99a05e75d1.bin",
+      "bytes": 8700,
+      "sha256": "9e930a99a05e75d1a46153f66362ede1cf29fce08ce1a1df43dc8c63ca426acf",
+      "storedBytes": 1405
+    },
+    {
+      "path": "assets/props/9f729f9863776533.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9f729f9863776533.bin",
+      "bytes": 39276,
+      "sha256": "9f729f9863776533cad5f8994b7508ba36b9228c98e6ee540ec5a6cad9b9c956",
+      "storedBytes": 9146
+    },
+    {
+      "path": "assets/props/9f8d11bda15ea479.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/9f8d11bda15ea479.bin",
+      "bytes": 17628,
+      "sha256": "9f8d11bda15ea4794c248895f7d87a45bf2440a0c719758b04cfe25ebd620b70",
+      "storedBytes": 4779
+    },
+    {
+      "path": "assets/props/a107fae52f5ea4cb.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a107fae52f5ea4cb.bin",
+      "bytes": 1179528,
+      "sha256": "a107fae52f5ea4cb4addd0352adfea6e25f5dcce09c238c84a1d19e75ea27078",
+      "storedBytes": 487555
+    },
+    {
+      "path": "assets/props/a201402f8f00fb64.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a201402f8f00fb64.bin",
+      "bytes": 19148,
+      "sha256": "a201402f8f00fb64e0c2608a359f0c9126d577e74fd72bf3cb8a4035dc893ea3",
+      "storedBytes": 3687
+    },
+    {
+      "path": "assets/props/a2d63d3bb064c8b6.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a2d63d3bb064c8b6.bin",
+      "bytes": 16040,
+      "sha256": "a2d63d3bb064c8b6760abeddb7a9bbfd3160a87e49fef92899afbf988c26da9d",
+      "storedBytes": 4410
+    },
+    {
+      "path": "assets/props/a2e48b5d31afff73.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a2e48b5d31afff73.bin",
+      "bytes": 83364,
+      "sha256": "a2e48b5d31afff73fa0e1b1c32cbac061b8bfc014ec6fcbf834439a0b51842e9",
+      "storedBytes": 14856
+    },
+    {
+      "path": "assets/props/a3580271d7427a66.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a3580271d7427a66.bin",
+      "bytes": 115744,
+      "sha256": "a3580271d7427a66abdbeab9c2e3b1e5bb9c8cc31975d51bf3ebab27b0829416",
+      "storedBytes": 68750
+    },
+    {
+      "path": "assets/props/a4e46759359d7c49.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a4e46759359d7c49.bin",
+      "bytes": 359424,
+      "sha256": "a4e46759359d7c4953a815681576ecb08d185091a5d2114a2dc45fc70715d9da",
+      "storedBytes": 144670
+    },
+    {
+      "path": "assets/props/a5f8088eec49984d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a5f8088eec49984d.bin",
+      "bytes": 16600,
+      "sha256": "a5f8088eec49984ded639d450561b44eb9a381591feebf856c8f5f8cb026c43e",
+      "storedBytes": 4662
+    },
+    {
+      "path": "assets/props/a6154e9b150c47ee.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/a6154e9b150c47ee.bin",
+      "bytes": 47880,
+      "sha256": "a6154e9b150c47ee869be45c545ad4fb8f2f56dc37e255fc50b89175ae11f88a",
+      "storedBytes": 17749
+    },
+    {
+      "path": "assets/props/a6d498f5ecd1d5be.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a6d498f5ecd1d5be.bin",
+      "bytes": 7196,
+      "sha256": "a6d498f5ecd1d5becaf0341b0a109770300c99f2747fd419891c43ac1710acc5",
+      "storedBytes": 2918
+    },
+    {
+      "path": "assets/props/a74b1134eb00c017.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a74b1134eb00c017.bin",
+      "bytes": 16908,
+      "sha256": "a74b1134eb00c017e9527223ef66a50425180051239db583b77cdddc4d2d2762",
+      "storedBytes": 3393
+    },
+    {
+      "path": "assets/props/a74b986bfd15455e.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a74b986bfd15455e.bin",
+      "bytes": 6044,
+      "sha256": "a74b986bfd15455ee426b752042484a1f0dcd5ae88f5a33ad35fc420305d5a7b",
+      "storedBytes": 1373
+    },
+    {
+      "path": "assets/props/a7982f831a5f0381.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a7982f831a5f0381.bin",
+      "bytes": 12400,
+      "sha256": "a7982f831a5f03815f03fa3d7985e3c5fc0352d7ccd48cb6bbcfae03011dd1cc",
+      "storedBytes": 2944
+    },
+    {
+      "path": "assets/props/a7bb34a4c10bc802.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a7bb34a4c10bc802.bin",
+      "bytes": 16600,
+      "sha256": "a7bb34a4c10bc8027a9e250ed08c6bc1870eb1d8c2ec917a6b49c08d3a2cb9c0",
+      "storedBytes": 4664
+    },
+    {
+      "path": "assets/props/a85215203eaf5b9d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a85215203eaf5b9d.bin",
+      "bytes": 14588,
+      "sha256": "a85215203eaf5b9dcd2c068da3751e9cd621fda6442539df9583c851cfb7b03e",
+      "storedBytes": 3521
+    },
+    {
+      "path": "assets/props/a92f7b96562601bf.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a92f7b96562601bf.bin",
+      "bytes": 13820,
+      "sha256": "a92f7b96562601bf0b8802f24ddbf131d30d2bd5356701f8f80503f14807db9e",
+      "storedBytes": 3131
+    },
+    {
+      "path": "assets/props/a9bd9b9332d5caea.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/a9bd9b9332d5caea.bin",
+      "bytes": 18524,
+      "sha256": "a9bd9b9332d5caeab4bcd95602c7e6e92894984e12d96923b8319097b01fe861",
+      "storedBytes": 3229
+    },
+    {
+      "path": "assets/props/aa72b4e89f69f62e.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/aa72b4e89f69f62e.bin",
+      "bytes": 14580,
+      "sha256": "aa72b4e89f69f62eeee8c1024562e96456abca8dad1f7918115e32f8e44ea3a9",
+      "storedBytes": 3512
+    },
+    {
+      "path": "assets/props/aa797f256620bfef.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/aa797f256620bfef.bin",
+      "bytes": 15300,
+      "sha256": "aa797f256620bfefa0b78d9d419552f160c4f72550a9b7e376dddb211ab7ee7e",
+      "storedBytes": 4000
+    },
+    {
+      "path": "assets/props/aa97f36364f3bd27.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/aa97f36364f3bd27.bin",
+      "bytes": 36316,
+      "sha256": "aa97f36364f3bd273a662ca1a3c2d1da09593014a3b78ad1d3c99fe064148b70",
+      "storedBytes": 16785
+    },
+    {
+      "path": "assets/props/aba5947161adfed4.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/aba5947161adfed4.bin",
+      "bytes": 130196,
+      "sha256": "aba5947161adfed474b96a083dd93d13906b524639d0acbc9f9dfff323a7b5dd",
+      "storedBytes": 25572
+    },
+    {
+      "path": "assets/props/ac7db4bdc09b8bda.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ac7db4bdc09b8bda.bin",
+      "bytes": 4580,
+      "sha256": "ac7db4bdc09b8bda30df9893b87cebab5ff77499b26d16e26223a1c5936286bc",
+      "storedBytes": 1465
+    },
+    {
+      "path": "assets/props/ad57ae91c3f56226.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ad57ae91c3f56226.bin",
+      "bytes": 5752,
+      "sha256": "ad57ae91c3f562262581da2ec378ddc099929c16df8c45b85aef3467f14812dc",
+      "storedBytes": 2328
+    },
+    {
+      "path": "assets/props/ada8fa6ae726cfa2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ada8fa6ae726cfa2.bin",
+      "bytes": 5056,
+      "sha256": "ada8fa6ae726cfa282ab60c2f95d59e5480f58167ec93d7c8422360822450eca",
+      "storedBytes": 2157
+    },
+    {
+      "path": "assets/props/afb9fa89c64c93ef.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/afb9fa89c64c93ef.bin",
+      "bytes": 16400,
+      "sha256": "afb9fa89c64c93efaf75d0e17327ae51f8b9d0503468508987510824cf3709f9",
+      "storedBytes": 3159
+    },
+    {
+      "path": "assets/props/afbd57614578b74a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/afbd57614578b74a.bin",
+      "bytes": 1657616,
+      "sha256": "afbd57614578b74a36550c178a9afd892d23d0b9535a2c2f8636b757711a4215",
+      "storedBytes": 821759
+    },
+    {
+      "path": "assets/props/b0dc45f8a38d9026.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/b0dc45f8a38d9026.bin",
+      "bytes": 71964,
+      "sha256": "b0dc45f8a38d90262fa8cc0caee5c26d1613ee6731638fe75eeecdd06487cbf2",
+      "storedBytes": 30838
+    },
+    {
+      "path": "assets/props/b2aea319ff9abd45.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b2aea319ff9abd45.bin",
+      "bytes": 70244,
+      "sha256": "b2aea319ff9abd45973081fc0b54d20b0c2b87661d9c165b5117edba7ca73cb7",
+      "storedBytes": 11214
+    },
+    {
+      "path": "assets/props/b2e9351bde2475ed.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/b2e9351bde2475ed.bin",
+      "bytes": 154192,
+      "sha256": "b2e9351bde2475ed028ed67ae345c39d177f42dccdfb86c424c3fb432cec2f76",
+      "storedBytes": 48394
+    },
+    {
+      "path": "assets/props/b314753ba56bc005.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b314753ba56bc005.bin",
+      "bytes": 26536,
+      "sha256": "b314753ba56bc0052948fc3215695f00a2c014a1d688dac48b15f364296a3054",
+      "storedBytes": 6477
+    },
+    {
+      "path": "assets/props/b3aa5d8a1a4bd976.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b3aa5d8a1a4bd976.bin",
+      "bytes": 7144,
+      "sha256": "b3aa5d8a1a4bd976962820b40cf619ef52eb13833190c10c40d4e26e2fc4d1aa",
+      "storedBytes": 2987
+    },
+    {
+      "path": "assets/props/b46f461821355747.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b46f461821355747.bin",
+      "bytes": 9960,
+      "sha256": "b46f46182135574731a383502c88e847a7be473dfbc99808681203be85ff6a15",
+      "storedBytes": 1878
+    },
+    {
+      "path": "assets/props/b4b48cd90839ef1f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b4b48cd90839ef1f.bin",
+      "bytes": 5188,
+      "sha256": "b4b48cd90839ef1f37ee028d2d7c88fda4fb68b141772e314a2596a5018bb40a",
+      "storedBytes": 2934
+    },
+    {
+      "path": "assets/props/b512bbaf8f9e8005.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b512bbaf8f9e8005.bin",
+      "bytes": 954676,
+      "sha256": "b512bbaf8f9e80051fa70a7a84ec686ca101d3fdaa47d9bdd44d7ece01fdb91e",
+      "storedBytes": 231197
+    },
+    {
+      "path": "assets/props/b5780eb51335c9df.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/b5780eb51335c9df.bin",
+      "bytes": 559384,
+      "sha256": "b5780eb51335c9df7acc832969cbf70ba8775f2224fd2b06fd618aa6bcf58bde",
+      "storedBytes": 245114
+    },
+    {
+      "path": "assets/props/b62c0cada4d9ce20.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b62c0cada4d9ce20.bin",
+      "bytes": 59632,
+      "sha256": "b62c0cada4d9ce206e002b1ab9961505734319b24bd49d98e6a6afe16f61cab9",
+      "storedBytes": 7933
+    },
+    {
+      "path": "assets/props/b6cc50f9a25abb7d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b6cc50f9a25abb7d.bin",
+      "bytes": 21488,
+      "sha256": "b6cc50f9a25abb7dbeae04bef8e9b7e0f9eabf68b8e0f06a91909d4689deef62",
+      "storedBytes": 5040
+    },
+    {
+      "path": "assets/props/b72c21fe4fbcd118.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b72c21fe4fbcd118.bin",
+      "bytes": 9400,
+      "sha256": "b72c21fe4fbcd118706257b67fb542e44c7cdc8676727920e1ac587e93879171",
+      "storedBytes": 1903
+    },
+    {
+      "path": "assets/props/b77a8f8e3e594584.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/b77a8f8e3e594584.bin",
+      "bytes": 63468,
+      "sha256": "b77a8f8e3e59458465bf898558251fd1e1a48b13c5f5056f4482dab832b5536a",
+      "storedBytes": 10408
+    },
+    {
+      "path": "assets/props/b9078c591810304e.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/b9078c591810304e.bin",
+      "bytes": 241060,
+      "sha256": "b9078c591810304eb7a4888c558af72bc272ab5b564332f02a674c71aea76cb4",
+      "storedBytes": 77541
+    },
+    {
+      "path": "assets/props/ba42e56f4c278698.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ba42e56f4c278698.bin",
+      "bytes": 4664,
+      "sha256": "ba42e56f4c278698b8b2474016d58c388f3f28c91f2209092e9348f9f6d39cd9",
+      "storedBytes": 1471
+    },
+    {
+      "path": "assets/props/ba64ab8db0ea49ab.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ba64ab8db0ea49ab.bin",
+      "bytes": 4256,
+      "sha256": "ba64ab8db0ea49ab95e5efb0603197100b14e8abc8b77898ea1d34956525da95",
+      "storedBytes": 1418
+    },
+    {
+      "path": "assets/props/bb07cde631bbd86f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bb07cde631bbd86f.bin",
+      "bytes": 645944,
+      "sha256": "bb07cde631bbd86f02010f512fd1cf808c9b3e9ce6586ac5c77d86e1668d0ab3",
+      "storedBytes": 221045
+    },
+    {
+      "path": "assets/props/bb4b373e40bf785d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/bb4b373e40bf785d.bin",
+      "bytes": 55780,
+      "sha256": "bb4b373e40bf785d6d6b17e75be0bf24664a9d14787d955ac9f2a7cb8dafa190",
+      "storedBytes": 9602
+    },
+    {
+      "path": "assets/props/bb88e4fc4921c034.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bb88e4fc4921c034.bin",
+      "bytes": 37572,
+      "sha256": "bb88e4fc4921c0341ab5abda06391a29601bdebe01aac8f6e4f92e43730500f3",
+      "storedBytes": 7385
+    },
+    {
+      "path": "assets/props/bba12a6e9994d3dc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bba12a6e9994d3dc.bin",
+      "bytes": 6044,
+      "sha256": "bba12a6e9994d3dcdc87bb96c567e1962145e23d7fc232970123e71625b99c15",
+      "storedBytes": 2125
+    },
+    {
+      "path": "assets/props/bba8bebf27cebe1b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bba8bebf27cebe1b.bin",
+      "bytes": 3616,
+      "sha256": "bba8bebf27cebe1b2e1da3d0d5ea0cd884dba385403e29bf372b55ee08e98558",
+      "storedBytes": 1204
+    },
+    {
+      "path": "assets/props/bbadffe782c6c07a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bbadffe782c6c07a.bin",
+      "bytes": 20004,
+      "sha256": "bbadffe782c6c07abcca391cdb15f67322412b48d84b172259cf57f779d47b1d",
+      "storedBytes": 4171
+    },
+    {
+      "path": "assets/props/bbc9fd77d9975635.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bbc9fd77d9975635.bin",
+      "bytes": 72140,
+      "sha256": "bbc9fd77d9975635a10907129eb047c82db820cb2427b36d6a264c52b8031d8a",
+      "storedBytes": 12314
+    },
+    {
+      "path": "assets/props/bdbba94085be152e.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bdbba94085be152e.bin",
+      "bytes": 11000,
+      "sha256": "bdbba94085be152efc40367ad36077362ba5e6e9e0c5bbeb95c57f3814c03a86",
+      "storedBytes": 5591
+    },
+    {
+      "path": "assets/props/bdd74473682ca91a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bdd74473682ca91a.bin",
+      "bytes": 16072,
+      "sha256": "bdd74473682ca91addc17daf2a6b7117fb935c5fcb03001c9bcf48054d1f4c05",
+      "storedBytes": 4011
+    },
+    {
+      "path": "assets/props/be6159198ee02afc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/be6159198ee02afc.bin",
+      "bytes": 230304,
+      "sha256": "be6159198ee02afcf92369b6456260e05e6c8f6bbed7817e903aa503b8d48b86",
+      "storedBytes": 95687
+    },
+    {
+      "path": "assets/props/becf4a2d9c453539.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/becf4a2d9c453539.bin",
+      "bytes": 677828,
+      "sha256": "becf4a2d9c453539a9aab9e6af3822d39daa5481bb05ffbe001116978e592d39",
+      "storedBytes": 176760
+    },
+    {
+      "path": "assets/props/bf0a52756e968f64.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/bf0a52756e968f64.bin",
+      "bytes": 12180,
+      "sha256": "bf0a52756e968f642d80b222a7fae759e48e3102a344586a0bb6e1a46bfd1687",
+      "storedBytes": 6045
+    },
+    {
+      "path": "assets/props/c07bcf616d980308.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/c07bcf616d980308.bin",
+      "bytes": 125512,
+      "sha256": "c07bcf616d9803086982eeed7a96361260503a7d51dced6de96562546c49bf1b",
+      "storedBytes": 39261
+    },
+    {
+      "path": "assets/props/c09028e59c67cdc2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/c09028e59c67cdc2.bin",
+      "bytes": 53112,
+      "sha256": "c09028e59c67cdc2d846f69bc747888fa3d71d6574052216c67cfe57020bcea3",
+      "storedBytes": 13948
+    },
+    {
+      "path": "assets/props/c0f4c6d4f983122d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c0f4c6d4f983122d.bin",
+      "bytes": 90492,
+      "sha256": "c0f4c6d4f983122d20935930d098f5a523d845fe1300afdcefff8ab325c0c09f",
+      "storedBytes": 38414
+    },
+    {
+      "path": "assets/props/c0f615814d5b1b3c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c0f615814d5b1b3c.bin",
+      "bytes": 17048,
+      "sha256": "c0f615814d5b1b3cd90a1eaa657b505e480727e4df5c46716a2b567c41713e33",
+      "storedBytes": 2480
+    },
+    {
+      "path": "assets/props/c2205dc5aadf6ebe.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c2205dc5aadf6ebe.bin",
+      "bytes": 11116,
+      "sha256": "c2205dc5aadf6ebeed15bc4227b7d5f255c5616ce6c8bd500a7ab9fa40dd9b06",
+      "storedBytes": 3332
+    },
+    {
+      "path": "assets/props/c339e18b4bfa0019.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c339e18b4bfa0019.bin",
+      "bytes": 14588,
+      "sha256": "c339e18b4bfa00196816c1c2b0bedef1708a405f328b17d9709c075dc55e44ba",
+      "storedBytes": 3521
+    },
+    {
+      "path": "assets/props/c41670aef160d78f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c41670aef160d78f.bin",
+      "bytes": 62064,
+      "sha256": "c41670aef160d78fa01fa34b5fe403cfe37e3ae9ad97efae2442368c47da40dd",
+      "storedBytes": 9639
+    },
+    {
+      "path": "assets/props/c46f004041c8a92d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/c46f004041c8a92d.bin",
+      "bytes": 238252,
+      "sha256": "c46f004041c8a92dcbe04f10f82cac78f1953268ba5a8f3d6a132f4a70484d04",
+      "storedBytes": 93553
+    },
+    {
+      "path": "assets/props/c47ed3e8a73a2d33.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c47ed3e8a73a2d33.bin",
+      "bytes": 6732,
+      "sha256": "c47ed3e8a73a2d33ea8fd210def4116a56684cd346aafc904ae56da6f982ae8c",
+      "storedBytes": 2788
+    },
+    {
+      "path": "assets/props/c5897a2daa64cbe3.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c5897a2daa64cbe3.bin",
+      "bytes": 5508,
+      "sha256": "c5897a2daa64cbe33bfc1d59c7ae1c699ab1db109568792ba4f5fc1bcd8be97a",
+      "storedBytes": 1839
+    },
+    {
+      "path": "assets/props/c5a64a05b0d99270.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c5a64a05b0d99270.bin",
+      "bytes": 43052,
+      "sha256": "c5a64a05b0d9927014deeb67cc28c0ba12700d547bdb468edc001875b907dee0",
+      "storedBytes": 11507
+    },
+    {
+      "path": "assets/props/c734233529a99ccd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c734233529a99ccd.bin",
+      "bytes": 168780,
+      "sha256": "c734233529a99ccd2634c3f77bc60c7fcf5d5b5881059e7ad0d1cde81f7e8649",
+      "storedBytes": 79234
+    },
+    {
+      "path": "assets/props/c73c969f7cdd8d95.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c73c969f7cdd8d95.bin",
+      "bytes": 5792,
+      "sha256": "c73c969f7cdd8d959e410dab42362ecfd7718e4eec6ee99a30d2e0f049a64a65",
+      "storedBytes": 2078
+    },
+    {
+      "path": "assets/props/c74ffe414b64bc85.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/c74ffe414b64bc85.bin",
+      "bytes": 12208,
+      "sha256": "c74ffe414b64bc85e9e0d5e5b5f55db86c15d1075d16760724926157828a0b69",
+      "storedBytes": 3677
+    },
+    {
+      "path": "assets/props/c7bb3dc06af0d974.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/c7bb3dc06af0d974.bin",
+      "bytes": 167780,
+      "sha256": "c7bb3dc06af0d9748829b3aa8ce8b03fb93ea00d3091834c28de41c24f6d76b7",
+      "storedBytes": 44966
+    },
+    {
+      "path": "assets/props/cb7008f2d84a5084.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/cb7008f2d84a5084.bin",
+      "bytes": 1306992,
+      "sha256": "cb7008f2d84a5084f16f0470379a275baea78863ac9332661bc3905b7a30f155",
+      "storedBytes": 321669
+    },
+    {
+      "path": "assets/props/cbe7fa106f65576c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/cbe7fa106f65576c.bin",
+      "bytes": 756060,
+      "sha256": "cbe7fa106f65576cd34a6f992c3aaa9404b1791643e8453603670ee8af9f47a4",
+      "storedBytes": 204194
+    },
+    {
+      "path": "assets/props/cc63c523579c3801.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/cc63c523579c3801.bin",
+      "bytes": 708268,
+      "sha256": "cc63c523579c3801c65441fa62cd89fb32e2c801e37761debbd71b338f6807ec",
+      "storedBytes": 350087
+    },
+    {
+      "path": "assets/props/ce46950baab163b2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ce46950baab163b2.bin",
+      "bytes": 7384,
+      "sha256": "ce46950baab163b21427255085c55bb1399227215e00475d9670e260a5913560",
+      "storedBytes": 2270
+    },
+    {
+      "path": "assets/props/d0d42f775aec1726.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d0d42f775aec1726.bin",
+      "bytes": 16204,
+      "sha256": "d0d42f775aec172628473368dc9996372abff480f6954f9959385489a113ea60",
+      "storedBytes": 2876
+    },
+    {
+      "path": "assets/props/d116dfa5f0bbdb0c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d116dfa5f0bbdb0c.bin",
+      "bytes": 30508,
+      "sha256": "d116dfa5f0bbdb0cda49e85bea64c5403d4079539c236e0d1c92dd38a2213aa1",
+      "storedBytes": 5315
+    },
+    {
+      "path": "assets/props/d2444bf6b55d28c7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d2444bf6b55d28c7.bin",
+      "bytes": 19564,
+      "sha256": "d2444bf6b55d28c7b18b7cfb4f0c1f51be71f1070e78b63413f5ce7fe6b9c901",
+      "storedBytes": 6133
+    },
+    {
+      "path": "assets/props/d2cad5c3c0355de1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/d2cad5c3c0355de1.bin",
+      "bytes": 312292,
+      "sha256": "d2cad5c3c0355de133c880428529b611fdc55552799a5ecba0dfe75ad1519e84",
+      "storedBytes": 97882
+    },
+    {
+      "path": "assets/props/d331676e4496908a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d331676e4496908a.bin",
+      "bytes": 20744,
+      "sha256": "d331676e4496908a3e7be4fbedd6998d4c62d1684bd781fda7a924a14bad1d08",
+      "storedBytes": 4047
+    },
+    {
+      "path": "assets/props/d4e7095a7287a9c2.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d4e7095a7287a9c2.bin",
+      "bytes": 2896,
+      "sha256": "d4e7095a7287a9c216d18cd7bdb3ac4c9c81adcff6dc2290d5ea08d0359dc160",
+      "storedBytes": 931
+    },
+    {
+      "path": "assets/props/d60031e5a5586884.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d60031e5a5586884.bin",
+      "bytes": 11972,
+      "sha256": "d60031e5a55868847283be0e4673c8a7bbb3638301d84dcbce0441d4bd49b4c2",
+      "storedBytes": 2893
+    },
+    {
+      "path": "assets/props/d623e16991d147f7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d623e16991d147f7.bin",
+      "bytes": 8160,
+      "sha256": "d623e16991d147f7c2be506a7ef888cc599241e774f8d2a791ec210ace101c05",
+      "storedBytes": 1906
+    },
+    {
+      "path": "assets/props/d72b9f16d17865cc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d72b9f16d17865cc.bin",
+      "bytes": 64828,
+      "sha256": "d72b9f16d17865cca8040d653fd53914d3336c9a29f20833c26ecd781f1817b3",
+      "storedBytes": 6974
+    },
+    {
+      "path": "assets/props/d73d3bbb99a3c9af.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d73d3bbb99a3c9af.bin",
+      "bytes": 14592,
+      "sha256": "d73d3bbb99a3c9af8dd57fbcf48d9378a6ecddf197e71f53ccc1383946a26528",
+      "storedBytes": 3526
+    },
+    {
+      "path": "assets/props/d78d52f33a3a73a7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/d78d52f33a3a73a7.bin",
+      "bytes": 338896,
+      "sha256": "d78d52f33a3a73a75ec0f46042019af7ec21cd610be28e680738930351a81bfb",
+      "storedBytes": 173078
+    },
+    {
+      "path": "assets/props/d7d5860c10b92574.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d7d5860c10b92574.bin",
+      "bytes": 154628,
+      "sha256": "d7d5860c10b9257492a99df7ef654d8c1060e9eb8136c1c6acec2f75d1fdebf1",
+      "storedBytes": 52237
+    },
+    {
+      "path": "assets/props/d95328da38072eea.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d95328da38072eea.bin",
+      "bytes": 578204,
+      "sha256": "d95328da38072eea862e04da3cee746792c3f6469df05ec8bf58f5645ff7b9da",
+      "storedBytes": 290753
+    },
+    {
+      "path": "assets/props/d9df7732338db1c8.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/d9df7732338db1c8.bin",
+      "bytes": 22752,
+      "sha256": "d9df7732338db1c899e8938331d486c355a8f8d09585a6bf01b0207cffe57c92",
+      "storedBytes": 5658
+    },
+    {
+      "path": "assets/props/da8aece428f8b859.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/da8aece428f8b859.bin",
+      "bytes": 220760,
+      "sha256": "da8aece428f8b859d710c4f36490cee1ee3d0ba8b1c73756b68c433cc547ddcf",
+      "storedBytes": 111947
+    },
+    {
+      "path": "assets/props/daedc4f71758ee26.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/daedc4f71758ee26.bin",
+      "bytes": 3608,
+      "sha256": "daedc4f71758ee26c5760748486e105f5d8e114db6b0f33073910ac5a0db7b66",
+      "storedBytes": 1197
+    },
+    {
+      "path": "assets/props/dbc9df1b3e30d438.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/dbc9df1b3e30d438.bin",
+      "bytes": 42272,
+      "sha256": "dbc9df1b3e30d438d71e5660a1ffb5f4fab2316bf043fa8f9a424bde33e9f997",
+      "storedBytes": 9170
+    },
+    {
+      "path": "assets/props/dcc74c26d269e73b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/dcc74c26d269e73b.bin",
+      "bytes": 31184,
+      "sha256": "dcc74c26d269e73b5a3ea3f3eb9106a86dfe9911de0683ab8f03f491cda5e75f",
+      "storedBytes": 8611
+    },
+    {
+      "path": "assets/props/dce3b6025ab6ed0a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/dce3b6025ab6ed0a.bin",
+      "bytes": 38180,
+      "sha256": "dce3b6025ab6ed0a164d22b51e009af257618bb626efcaeccaedbb55a9b1fcd5",
+      "storedBytes": 18884
+    },
+    {
+      "path": "assets/props/dec1c701063875ee.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/dec1c701063875ee.bin",
+      "bytes": 9564,
+      "sha256": "dec1c701063875ee861840a0fa67943e2219096d0c3ec893ed62e0ca9dae3564",
+      "storedBytes": 1598
+    },
+    {
+      "path": "assets/props/df87dec98c6be968.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/df87dec98c6be968.bin",
+      "bytes": 44224,
+      "sha256": "df87dec98c6be96831c4fd4b9eb6518a01a430e5da207fb866ac2224ea727bcd",
+      "storedBytes": 16681
+    },
+    {
+      "path": "assets/props/dfb5983fe16929a1.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/dfb5983fe16929a1.bin",
+      "bytes": 66628,
+      "sha256": "dfb5983fe16929a19e7c92d3d0017a43f1f3310d91d3e9e2a5536a3429916f23",
+      "storedBytes": 8847
+    },
+    {
+      "path": "assets/props/e006e3488d6dedfd.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e006e3488d6dedfd.bin",
+      "bytes": 3596,
+      "sha256": "e006e3488d6dedfda85e2c2b4d6a65be42c3099af23077a2f75f3b4e55dd71ed",
+      "storedBytes": 1176
+    },
+    {
+      "path": "assets/props/e0916168aa12fa4b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e0916168aa12fa4b.bin",
+      "bytes": 79712,
+      "sha256": "e0916168aa12fa4bb19282178d3fdeedb5d766e86cdbe82c66f529333ce143a2",
+      "storedBytes": 39192
+    },
+    {
+      "path": "assets/props/e0d9f681edfea8fc.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e0d9f681edfea8fc.bin",
+      "bytes": 142880,
+      "sha256": "e0d9f681edfea8fc474a4b79dcff4975b16d373c7a42b9b6d846fd917cb45f03",
+      "storedBytes": 28708
+    },
+    {
+      "path": "assets/props/e16ad8f77a8ac4aa.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e16ad8f77a8ac4aa.bin",
+      "bytes": 62344,
+      "sha256": "e16ad8f77a8ac4aa463cbd53c4afda3696ed1de5d31a1d12e3554f1647d490b6",
+      "storedBytes": 28367
+    },
+    {
+      "path": "assets/props/e19024c7cfbfd72b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e19024c7cfbfd72b.bin",
+      "bytes": 20272,
+      "sha256": "e19024c7cfbfd72b0f01bc593161b29676a1cb6c5fb65a5a175ab87c329bc1d9",
+      "storedBytes": 3200
+    },
+    {
+      "path": "assets/props/e1edfef000625f0c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e1edfef000625f0c.bin",
+      "bytes": 35568,
+      "sha256": "e1edfef000625f0ca929e439c41513eb02cbbbe9603b6316cde9f43b5e62f9c0",
+      "storedBytes": 5442
+    },
+    {
+      "path": "assets/props/e293436755eef771.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e293436755eef771.bin",
+      "bytes": 14492,
+      "sha256": "e293436755eef77104d305f64883720859d0ef9f2580b8fd21e55ec6cd84634b",
+      "storedBytes": 3449
+    },
+    {
+      "path": "assets/props/e2e4f9301e6e7081.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e2e4f9301e6e7081.bin",
+      "bytes": 7132,
+      "sha256": "e2e4f9301e6e708128d08c0bc76adf6fd649ee766ac9bd5e1cbe1d3148fe9599",
+      "storedBytes": 2968
+    },
+    {
+      "path": "assets/props/e62d48d4a3935241.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e62d48d4a3935241.bin",
+      "bytes": 693176,
+      "sha256": "e62d48d4a3935241d61c29013c077afe457ea9e186d413e002d129a4e148e6da",
+      "storedBytes": 428960
+    },
+    {
+      "path": "assets/props/e66612abbbf5b73f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/e66612abbbf5b73f.bin",
+      "bytes": 340244,
+      "sha256": "e66612abbbf5b73fa5d4e11506bc57072ead963fe5bf43bc2ae8c9942c9e93c2",
+      "storedBytes": 136861
+    },
+    {
+      "path": "assets/props/e76fb1c1e89093bb.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e76fb1c1e89093bb.bin",
+      "bytes": 53136,
+      "sha256": "e76fb1c1e89093bb1a1405d7af39f0ebb28b2360679bb0f03b6d77fc9db48aa8",
+      "storedBytes": 9447
+    },
+    {
+      "path": "assets/props/e7ab130a8d644a7e.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e7ab130a8d644a7e.bin",
+      "bytes": 39688,
+      "sha256": "e7ab130a8d644a7e1465eeba08d9dadb601bd6725826bda67715ed8aae4beed0",
+      "storedBytes": 7614
+    },
+    {
+      "path": "assets/props/e8a6ea28812ceb37.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e8a6ea28812ceb37.bin",
+      "bytes": 17672,
+      "sha256": "e8a6ea28812ceb3748fa628a18b3accdd5ab0c5f89073627a145f5854b209d84",
+      "storedBytes": 5163
+    },
+    {
+      "path": "assets/props/e90fa07e04174676.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/e90fa07e04174676.bin",
+      "bytes": 753292,
+      "sha256": "e90fa07e0417467656123df45d8cd099bcbf7ca458abc92ff1a5233927de9aac",
+      "storedBytes": 242273
+    },
+    {
+      "path": "assets/props/e9836ced2d573cad.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/e9836ced2d573cad.bin",
+      "bytes": 257924,
+      "sha256": "e9836ced2d573cad5222c05226643a7e9476dd309cb48f6a040747f61640fd5a",
+      "storedBytes": 73108
+    },
+    {
+      "path": "assets/props/e9989842268817fa.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e9989842268817fa.bin",
+      "bytes": 3524,
+      "sha256": "e9989842268817fa1313fbb30644c85ad0038c9adc991181d6d1f2c9bd7f0dcf",
+      "storedBytes": 1127
+    },
+    {
+      "path": "assets/props/e9ce0a3c30ea9d90.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/e9ce0a3c30ea9d90.bin",
+      "bytes": 2685828,
+      "sha256": "e9ce0a3c30ea9d90716e65f07a95059e282291c253286d0a7e5ade3f460101f0",
+      "storedBytes": 198018
+    },
+    {
+      "path": "assets/props/ea0c8c87d0bbd577.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ea0c8c87d0bbd577.bin",
+      "bytes": 18956,
+      "sha256": "ea0c8c87d0bbd57786e5fa54784c78aac2c536a81556dbd868022d3d5a040e56",
+      "storedBytes": 4710
+    },
+    {
+      "path": "assets/props/ea74d755669ba6ff.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ea74d755669ba6ff.bin",
+      "bytes": 226056,
+      "sha256": "ea74d755669ba6ff7739b95b667ebff649dc21552fad0da0c23c6039eb9debc7",
+      "storedBytes": 75526
+    },
+    {
+      "path": "assets/props/ed92b31906a6c816.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ed92b31906a6c816.bin",
+      "bytes": 51756,
+      "sha256": "ed92b31906a6c816eada73ed3a2526dfdd6921480e84e8811bd5cd99d387ff1f",
+      "storedBytes": 10123
+    },
+    {
+      "path": "assets/props/ee3cf0523f23baa3.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/ee3cf0523f23baa3.bin",
+      "bytes": 103424,
+      "sha256": "ee3cf0523f23baa3fd42ef8f9896d793d18146fbafc6132ccf43f69335b5ac9e",
+      "storedBytes": 39280
+    },
+    {
+      "path": "assets/props/ee68828f1df75226.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ee68828f1df75226.bin",
+      "bytes": 36608,
+      "sha256": "ee68828f1df752261c69b3f73088c06cb974035659945570a6b4b80cebe03d70",
+      "storedBytes": 7464
+    },
+    {
+      "path": "assets/props/ee95458458a5b69a.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ee95458458a5b69a.bin",
+      "bytes": 3536,
+      "sha256": "ee95458458a5b69ac467603b6ffb1d59642fdf68e02e8e73590c2fa452b9943c",
+      "storedBytes": 1146
+    },
+    {
+      "path": "assets/props/efd749a88a65fc56.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/efd749a88a65fc56.bin",
+      "bytes": 308248,
+      "sha256": "efd749a88a65fc56f5a827759f84cad65e2132ea0e73fc0d560ad620a59abee3",
+      "storedBytes": 131223
+    },
+    {
+      "path": "assets/props/f1dec4f7b0a112f5.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f1dec4f7b0a112f5.bin",
+      "bytes": 2900,
+      "sha256": "f1dec4f7b0a112f563500ffc5033e8e3649eaa515b6fc60e19cfd9c918bafc0d",
+      "storedBytes": 843
+    },
+    {
+      "path": "assets/props/f1e22385d514c20d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f1e22385d514c20d.bin",
+      "bytes": 7956,
+      "sha256": "f1e22385d514c20dfb9aeb12f593e86b5d516c941452f47e8b1414777e3558ee",
+      "storedBytes": 3154
+    },
+    {
+      "path": "assets/props/f2d5434a9077cbe9.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f2d5434a9077cbe9.bin",
+      "bytes": 31016,
+      "sha256": "f2d5434a9077cbe9d255a9e718bd4a1facdcc57928d433a1f7e5db7418d1e0f7",
+      "storedBytes": 5702
+    },
+    {
+      "path": "assets/props/f3212b8e990552ec.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f3212b8e990552ec.bin",
+      "bytes": 72584,
+      "sha256": "f3212b8e990552ec2e4b54690786239f22e748c2de83f73f5823735c0eb0b4e9",
+      "storedBytes": 19650
+    },
+    {
+      "path": "assets/props/f61f31057163997f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f61f31057163997f.bin",
+      "bytes": 8796,
+      "sha256": "f61f31057163997f8db48a6f963d583c133d2807344d96435ffb2596801f28ea",
+      "storedBytes": 1462
+    },
+    {
+      "path": "assets/props/f72bb871b205c15b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/props/f72bb871b205c15b.bin",
+      "bytes": 84940,
+      "sha256": "f72bb871b205c15ba663f71d3ac291edf55b0c1b5a54c2d91461a4de1a97f10b",
+      "storedBytes": 21415
+    },
+    {
+      "path": "assets/props/f96e97f03e74904b.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f96e97f03e74904b.bin",
+      "bytes": 14584,
+      "sha256": "f96e97f03e74904b0a34af4327eafa8d303e9ea2ca39733c986f5f32a99d2b49",
+      "storedBytes": 3518
+    },
+    {
+      "path": "assets/props/f97a557f0ffb72ce.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/f97a557f0ffb72ce.bin",
+      "bytes": 226056,
+      "sha256": "f97a557f0ffb72ce15998b236ca4db6136637319f1bffb700a5b03ff51747678",
+      "storedBytes": 67627
+    },
+    {
+      "path": "assets/props/fa558c64b9ba3e46.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/fa558c64b9ba3e46.bin",
+      "bytes": 17252,
+      "sha256": "fa558c64b9ba3e46ba22ab75b456531c850b9c4cb9994a983419e341e24cda8d",
+      "storedBytes": 3722
+    },
+    {
+      "path": "assets/props/faab935907b03a4d.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/faab935907b03a4d.bin",
+      "bytes": 717696,
+      "sha256": "faab935907b03a4d56e7c3a84ddb6d8b99a7ea307ab00fe97c8504e6212a6d39",
+      "storedBytes": 274077
+    },
+    {
+      "path": "assets/props/faee9ca49e131f26.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/faee9ca49e131f26.bin",
+      "bytes": 123740,
+      "sha256": "faee9ca49e131f260658cbe528bf060e4ef43cdfd6fddf014da2a2aa6c9f0274",
+      "storedBytes": 31081
+    },
+    {
+      "path": "assets/props/fb5e9828ef2b605c.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/fb5e9828ef2b605c.bin",
+      "bytes": 16204,
+      "sha256": "fb5e9828ef2b605c135f0af7644064161c61f010b2e2dc9478581d7ac5bbf7a0",
+      "storedBytes": 2876
+    },
+    {
+      "path": "assets/props/fb70979d2185b386.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/fb70979d2185b386.bin",
+      "bytes": 3604,
+      "sha256": "fb70979d2185b386893810e47c7335da043eef7966a7f7bdd22c197e1905dff5",
+      "storedBytes": 1183
+    },
+    {
+      "path": "assets/props/fe086561f3e7b6c7.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/fe086561f3e7b6c7.bin",
+      "bytes": 9076,
+      "sha256": "fe086561f3e7b6c77167e4cc06d0209a2d1c64b6a0afd417d9e4ef674829d487",
+      "storedBytes": 2242
+    },
+    {
+      "path": "assets/props/fe1f5abb6ccb9379.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/fe1f5abb6ccb9379.bin",
+      "bytes": 5740,
+      "sha256": "fe1f5abb6ccb93796eec1eb7d515c6db5db89c440f51a60b888c4c8c6a78107a",
+      "storedBytes": 2306
+    },
+    {
+      "path": "assets/props/ff6b13bf7152342f.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ff6b13bf7152342f.bin",
+      "bytes": 35232,
+      "sha256": "ff6b13bf7152342feaf93646580334c8eaaa657a05ae1ede61ab31fb950b33b4",
+      "storedBytes": 7887
+    },
+    {
+      "path": "assets/props/ff77d5b23dfc9125.bin.gz",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/clips/ff77d5b23dfc9125.bin",
+      "bytes": 3980,
+      "sha256": "ff77d5b23dfc9125e65db2dfa94952ea5dace30191d756cd6b0adf84c294b2f1",
+      "storedBytes": 1021
+    },
+    {
+      "path": "assets/textures/003977235abd48ef.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/003977235abd48ef.bin",
+      "bytes": 86,
+      "sha256": "003977235abd48ef6c47d8fbfc9dce928b2cc5212afbd44e2eb73d7a177c6ae9",
+      "storedBytes": 86
+    },
+    {
+      "path": "assets/textures/00e383e3b62bb5da.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/00e383e3b62bb5da.bin",
+      "bytes": 37960,
+      "sha256": "00e383e3b62bb5da4d3f74ce0e023cb7f84eec4bdcd9453569a2b074b8fb00c5",
+      "storedBytes": 37960
+    },
+    {
+      "path": "assets/textures/027332514df7de72.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/027332514df7de72.bin",
+      "bytes": 471568,
+      "sha256": "027332514df7de726c31e6fd4a4ee04428759d53bff5a5ab644be7904269dbad",
+      "storedBytes": 471568
+    },
+    {
+      "path": "assets/textures/02949d54f2ceed94.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/02949d54f2ceed94.bin",
+      "bytes": 91904,
+      "sha256": "02949d54f2ceed9463a943e44b32081773aadbc7f83f2af6c3cb1bc057a8cb69",
+      "storedBytes": 91904
+    },
+    {
+      "path": "assets/textures/029eea3161b4d60e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/029eea3161b4d60e.bin",
+      "bytes": 924444,
+      "sha256": "029eea3161b4d60eee719e11b29aef5d47c24701bc70add962f2922814fd2cc6",
+      "storedBytes": 924444
+    },
+    {
+      "path": "assets/textures/04600ab934a6b9d3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/04600ab934a6b9d3.bin",
+      "bytes": 8324,
+      "sha256": "04600ab934a6b9d33778cddcb2a85fe1b9d80b34ca36dbd2ade2abb25663d437",
+      "storedBytes": 8324
+    },
+    {
+      "path": "assets/textures/073850987fd6614a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/073850987fd6614a.bin",
+      "bytes": 30760,
+      "sha256": "073850987fd6614acff5ef100c46ce0dec9de49141678a3d9df39ddb6a2ace9a",
+      "storedBytes": 30760
+    },
+    {
+      "path": "assets/textures/0b81dbe9897ef8e8.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/0b81dbe9897ef8e8.bin",
+      "bytes": 13248,
+      "sha256": "0b81dbe9897ef8e8fd8d70b19480c111336c70bbd683829c007164952af0da65",
+      "storedBytes": 13248
+    },
+    {
+      "path": "assets/textures/0d08a216920e7055.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/0d08a216920e7055.bin",
+      "bytes": 846360,
+      "sha256": "0d08a216920e7055d18d77f7f6814618b5c0ef8ae95edf13d3495a6cd3cc2a66",
+      "storedBytes": 846360
+    },
+    {
+      "path": "assets/textures/0ff7b40cf62b95c4.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/0ff7b40cf62b95c4.bin",
+      "bytes": 436388,
+      "sha256": "0ff7b40cf62b95c40f6f818eb079db9d3190250ff286c94937fe45d8f242c5f8",
+      "storedBytes": 436388
+    },
+    {
+      "path": "assets/textures/10d6af4fd6749683.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/10d6af4fd6749683.bin",
+      "bytes": 225662,
+      "sha256": "10d6af4fd6749683640666381fc201fd500c80e667ce90afae892b07c9593eb1",
+      "storedBytes": 225662
+    },
+    {
+      "path": "assets/textures/1432cc6d465723c1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/1432cc6d465723c1.bin",
+      "bytes": 15040,
+      "sha256": "1432cc6d465723c11bd6009bfe711434afa770f0a82a31a9d77d92f22581d73c",
+      "storedBytes": 15040
+    },
+    {
+      "path": "assets/textures/166c53db3186c6aa.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/166c53db3186c6aa.bin",
+      "bytes": 4244,
+      "sha256": "166c53db3186c6aab954c078a3d761083665cedff2d71fb1eaeb532d48cf6d3f",
+      "storedBytes": 4244
+    },
+    {
+      "path": "assets/textures/178f2fd4bd4decf0.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/178f2fd4bd4decf0.bin",
+      "bytes": 115426,
+      "sha256": "178f2fd4bd4decf092f2d73afd747a7d832f6cd43ee55c76b6b43d282dd998bc",
+      "storedBytes": 115426
+    },
+    {
+      "path": "assets/textures/1890a4d75aee3482.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/1890a4d75aee3482.bin",
+      "bytes": 76230,
+      "sha256": "1890a4d75aee34823dd38b585cd092a4accc6d61bbd6d02ba5c7cc5ffc8a086e",
+      "storedBytes": 76230
+    },
+    {
+      "path": "assets/textures/193a44882d41c0cc.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/193a44882d41c0cc.bin",
+      "bytes": 4794,
+      "sha256": "193a44882d41c0cc7dec5f405f5701269194b444f2d493619a0ab2922e94916a",
+      "storedBytes": 4794
+    },
+    {
+      "path": "assets/textures/19f650a23fcd4b96.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/19f650a23fcd4b96.bin",
+      "bytes": 84784,
+      "sha256": "19f650a23fcd4b96c3c71cf7c622263f84cf7003220a555dd8f37aefc9c39bb7",
+      "storedBytes": 84784
+    },
+    {
+      "path": "assets/textures/1c3792129ae8219d.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/1c3792129ae8219d.bin",
+      "bytes": 339194,
+      "sha256": "1c3792129ae8219de152b91aef3fcec46933b2c5b8bdb4129ea4243f7a4cc7c2",
+      "storedBytes": 339194
+    },
+    {
+      "path": "assets/textures/1d2f4a5d6a58ad2b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/1d2f4a5d6a58ad2b.bin",
+      "bytes": 154,
+      "sha256": "1d2f4a5d6a58ad2b744c736c3fbd46a66c57f908902bd0787804cdc2b0d0cf4b",
+      "storedBytes": 154
+    },
+    {
+      "path": "assets/textures/1e7a29a1869182a3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/1e7a29a1869182a3.bin",
+      "bytes": 3514882,
+      "sha256": "1e7a29a1869182a3333d66972e29f7a41a807570bf08fe1e330b58c38dbc8fbe",
+      "storedBytes": 3514882
+    },
+    {
+      "path": "assets/textures/20f84f22b903a7b1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/20f84f22b903a7b1.bin",
+      "bytes": 57462,
+      "sha256": "20f84f22b903a7b13d899a5b076b52cc2ab24ba3d9eab6fd3c88fc93877a59d0",
+      "storedBytes": 57462
+    },
+    {
+      "path": "assets/textures/21463ab7002f33bd.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/21463ab7002f33bd.bin",
+      "bytes": 294,
+      "sha256": "21463ab7002f33bdac3e9e72d9a4f19f5681265a2bf71c5cd50b3f003834424d",
+      "storedBytes": 294
+    },
+    {
+      "path": "assets/textures/235a8b352e2231ce.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/235a8b352e2231ce.bin",
+      "bytes": 86882,
+      "sha256": "235a8b352e2231cee607a4a8d9ece0d5f2cb1aa9cf93fb9ef733c9444b0cbe44",
+      "storedBytes": 86882
+    },
+    {
+      "path": "assets/textures/23dfb9e51ffd15b4.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/23dfb9e51ffd15b4.bin",
+      "bytes": 82978,
+      "sha256": "23dfb9e51ffd15b4cef6d393ea34d69d930af9b206f2cde8845a4817c0754e6e",
+      "storedBytes": 82978
+    },
+    {
+      "path": "assets/textures/24d4e0a14fbf46ee.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/24d4e0a14fbf46ee.bin",
+      "bytes": 8016,
+      "sha256": "24d4e0a14fbf46ee68e76e33887b662d5dc551b0412bf66bd71a4bf1c574d3b4",
+      "storedBytes": 8016
+    },
+    {
+      "path": "assets/textures/25af6f4dcdb99069.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/25af6f4dcdb99069.bin",
+      "bytes": 45568,
+      "sha256": "25af6f4dcdb990697c366735762d536de0ea6fbe6bd2da3d644006039a72cc5e",
+      "storedBytes": 45568
+    },
+    {
+      "path": "assets/textures/27c118bde4d92226.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/27c118bde4d92226.bin",
+      "bytes": 27946,
+      "sha256": "27c118bde4d92226cbfee2916cfbcefc4cca07b78b1c5bd2db6e427a84148a0f",
+      "storedBytes": 27946
+    },
+    {
+      "path": "assets/textures/2a176106f0521b4a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2a176106f0521b4a.bin",
+      "bytes": 15912,
+      "sha256": "2a176106f0521b4a17b2f13c4535f7c6b3271bb6d697d11c3e848ac3636f459c",
+      "storedBytes": 15912
+    },
+    {
+      "path": "assets/textures/2a44b8524edefc00.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2a44b8524edefc00.bin",
+      "bytes": 21024,
+      "sha256": "2a44b8524edefc00270bfa7c4a1ad59f6338a3028c2d099de852980fb6ee193c",
+      "storedBytes": 21024
+    },
+    {
+      "path": "assets/textures/2b3b8154325519f0.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2b3b8154325519f0.bin",
+      "bytes": 289274,
+      "sha256": "2b3b8154325519f0ec6eabaf65efbb522a638bcbc3df8d278817162873a16661",
+      "storedBytes": 289274
+    },
+    {
+      "path": "assets/textures/2b5ceaa23df639c1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2b5ceaa23df639c1.bin",
+      "bytes": 86944,
+      "sha256": "2b5ceaa23df639c132d6cdbdb19e8126e2741b2ed81dd47c6e612d35a93b1559",
+      "storedBytes": 86944
+    },
+    {
+      "path": "assets/textures/2cf06bfbd5d84e40.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2cf06bfbd5d84e40.bin",
+      "bytes": 124200,
+      "sha256": "2cf06bfbd5d84e4065a697ad79448c49f46c24a7352ace4a9896c7015540bc9b",
+      "storedBytes": 124200
+    },
+    {
+      "path": "assets/textures/2e07f0e19604fd8c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2e07f0e19604fd8c.bin",
+      "bytes": 9926,
+      "sha256": "2e07f0e19604fd8c3912ced49cdf4182b14cd0dbf5bb854993ad2e89801b43d1",
+      "storedBytes": 9926
+    },
+    {
+      "path": "assets/textures/2e2d49730471081c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/2e2d49730471081c.bin",
+      "bytes": 132430,
+      "sha256": "2e2d49730471081c7d2b4a4c634e1b7a873ca72935d3a857c1a1177fabc5b442",
+      "storedBytes": 132430
+    },
+    {
+      "path": "assets/textures/3086f4065dc3f3fe.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3086f4065dc3f3fe.bin",
+      "bytes": 493878,
+      "sha256": "3086f4065dc3f3fe8bd6351c3e277514832b743ec25fc3c6fc76a8420c87669e",
+      "storedBytes": 493878
+    },
+    {
+      "path": "assets/textures/30ada338cb2e86c3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/30ada338cb2e86c3.bin",
+      "bytes": 12008,
+      "sha256": "30ada338cb2e86c3e7e8045cfd7fd2e053a79ec81aedcd8e2bd7442a564f683f",
+      "storedBytes": 12008
+    },
+    {
+      "path": "assets/textures/316693c19a3c7917.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/316693c19a3c7917.bin",
+      "bytes": 30596,
+      "sha256": "316693c19a3c7917d4c7d9d07698eb53eb6095d78d15115ca39ba2789ebf1c48",
+      "storedBytes": 30596
+    },
+    {
+      "path": "assets/textures/3306e78570c6955f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3306e78570c6955f.bin",
+      "bytes": 10570,
+      "sha256": "3306e78570c6955fe26cc34d955476db34c9b4823f25839a5f5df6d477a3c827",
+      "storedBytes": 10570
+    },
+    {
+      "path": "assets/textures/34de45252f0263d3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/34de45252f0263d3.bin",
+      "bytes": 33202,
+      "sha256": "34de45252f0263d39346f36720780c0190e21bd110638571de27c1a27b70532c",
+      "storedBytes": 33202
+    },
+    {
+      "path": "assets/textures/35fe3fd17b31e02a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/35fe3fd17b31e02a.bin",
+      "bytes": 98768,
+      "sha256": "35fe3fd17b31e02ab46c76794030641ec01acc0bfe934d28f15bf4d57fad5a46",
+      "storedBytes": 98768
+    },
+    {
+      "path": "assets/textures/385b81bf55689958.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/385b81bf55689958.bin",
+      "bytes": 166824,
+      "sha256": "385b81bf5568995819a09027d1421eab40b0e01210181cc503c693688a6d515d",
+      "storedBytes": 166824
+    },
+    {
+      "path": "assets/textures/39c0e0d0fda59a73.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/39c0e0d0fda59a73.bin",
+      "bytes": 25496,
+      "sha256": "39c0e0d0fda59a733d0878499b1141b5cf3ac1c1d8bc5b0560c284463946cde9",
+      "storedBytes": 25496
+    },
+    {
+      "path": "assets/textures/39d29640683df4e2.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/39d29640683df4e2.bin",
+      "bytes": 1258,
+      "sha256": "39d29640683df4e2aca359c4145ed90a56662c114a5d7046faeda9ff21912c66",
+      "storedBytes": 1258
+    },
+    {
+      "path": "assets/textures/3a419772e355b2be.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3a419772e355b2be.bin",
+      "bytes": 14678,
+      "sha256": "3a419772e355b2bebb5a39a904b293e73bb19a488e5cc2d00064ecaa5fa404e9",
+      "storedBytes": 14678
+    },
+    {
+      "path": "assets/textures/3acb75b9e29187e9.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3acb75b9e29187e9.bin",
+      "bytes": 896922,
+      "sha256": "3acb75b9e29187e997918472c77582b8aa170a0abddd58eabc2125ce70da162d",
+      "storedBytes": 896922
+    },
+    {
+      "path": "assets/textures/3ad93b3939c3ccc3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3ad93b3939c3ccc3.bin",
+      "bytes": 21562,
+      "sha256": "3ad93b3939c3ccc35d9737268042a818d4594c800b1de8d8b136b4b88c87ceed",
+      "storedBytes": 21562
+    },
+    {
+      "path": "assets/textures/3c08e815bfed7583.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3c08e815bfed7583.bin",
+      "bytes": 864540,
+      "sha256": "3c08e815bfed7583eedd4534650fb168376c2cc12c290012334b99c1b5cacfd1",
+      "storedBytes": 864540
+    },
+    {
+      "path": "assets/textures/3c3c6951dbf44468.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3c3c6951dbf44468.bin",
+      "bytes": 131498,
+      "sha256": "3c3c6951dbf44468feb9f559c64b24ff4c210360ef4927e596ff26d809655083",
+      "storedBytes": 131498
+    },
+    {
+      "path": "assets/textures/3ca56e048793fa3b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3ca56e048793fa3b.bin",
+      "bytes": 166,
+      "sha256": "3ca56e048793fa3b9d8d5756c781ef8bca9ea0ea6d01925e214359ec3975b731",
+      "storedBytes": 166
+    },
+    {
+      "path": "assets/textures/3cad393e2a9aaa8f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3cad393e2a9aaa8f.bin",
+      "bytes": 30930,
+      "sha256": "3cad393e2a9aaa8fe172432db03b3e6d9d0a4d9c06fc276784e7989ccb3f9e96",
+      "storedBytes": 30930
+    },
+    {
+      "path": "assets/textures/3eee788eff6f38cc.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3eee788eff6f38cc.bin",
+      "bytes": 1317800,
+      "sha256": "3eee788eff6f38cc46506fab0f64640d9d2f2c224113eeeded64bd5b9b5f7313",
+      "storedBytes": 1317800
+    },
+    {
+      "path": "assets/textures/3feca2f69aa87072.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/3feca2f69aa87072.bin",
+      "bytes": 3568140,
+      "sha256": "3feca2f69aa870729c19babe8967fcdd7eaf5c0eed66ed6b2c209061ab81f79a",
+      "storedBytes": 3568140
+    },
+    {
+      "path": "assets/textures/409b0687e499d753.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/409b0687e499d753.bin",
+      "bytes": 146,
+      "sha256": "409b0687e499d75360a4bfaea0f61304455ea8737e913440e19b091a7ec863a0",
+      "storedBytes": 146
+    },
+    {
+      "path": "assets/textures/4118dd1a505c991f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4118dd1a505c991f.bin",
+      "bytes": 372924,
+      "sha256": "4118dd1a505c991f503d55ec6869a72193ae55c2003b979e6acbb4b0fc87e84a",
+      "storedBytes": 372924
+    },
+    {
+      "path": "assets/textures/4490a7f56f1e4081.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4490a7f56f1e4081.bin",
+      "bytes": 619892,
+      "sha256": "4490a7f56f1e4081a89d78f2662d9594fa9fc5996eae5a43e941cd6100cd5675",
+      "storedBytes": 619892
+    },
+    {
+      "path": "assets/textures/472ef503bf200bb5.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/472ef503bf200bb5.bin",
+      "bytes": 9238,
+      "sha256": "472ef503bf200bb5881f86fd5cb85fbe8bf58d99860140a43eae4d4ee8ffaba0",
+      "storedBytes": 9238
+    },
+    {
+      "path": "assets/textures/4844e1baa63866d1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4844e1baa63866d1.bin",
+      "bytes": 85686,
+      "sha256": "4844e1baa63866d18e7b2e8856775d45b4ff65cab95deb3f85b180cd0e2a07ec",
+      "storedBytes": 85686
+    },
+    {
+      "path": "assets/textures/485a2d84d6eef4c1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/485a2d84d6eef4c1.bin",
+      "bytes": 4530,
+      "sha256": "485a2d84d6eef4c1c78f5de6fade2b201f030a1117e93252a6a88515728c9ed1",
+      "storedBytes": 4530
+    },
+    {
+      "path": "assets/textures/4a0f4335ac88db07.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4a0f4335ac88db07.bin",
+      "bytes": 1092950,
+      "sha256": "4a0f4335ac88db074142845f02aaf6457c504b816269f1e6d26877e8c5642531",
+      "storedBytes": 1092950
+    },
+    {
+      "path": "assets/textures/4b0ec9e92694610e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4b0ec9e92694610e.bin",
+      "bytes": 438962,
+      "sha256": "4b0ec9e92694610e96420d37b0b6fa6150277be76eb130ef2fb790da8c2f09bd",
+      "storedBytes": 438962
+    },
+    {
+      "path": "assets/textures/4c3397d43376025d.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4c3397d43376025d.bin",
+      "bytes": 3478,
+      "sha256": "4c3397d43376025d52c4f549979139e483101bb6784efb6ddee138cae2caff7e",
+      "storedBytes": 3478
+    },
+    {
+      "path": "assets/textures/4f83352b46cf2210.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/4f83352b46cf2210.bin",
+      "bytes": 132864,
+      "sha256": "4f83352b46cf221080dfc9c3654b082c4c1cbc24c5cd30b0ce74e0a4b6e67ceb",
+      "storedBytes": 132864
+    },
+    {
+      "path": "assets/textures/52e866e95f321f63.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/52e866e95f321f63.bin",
+      "bytes": 16656,
+      "sha256": "52e866e95f321f633535ec8533b23ef8141484fc5334a10dba8be731319314c5",
+      "storedBytes": 16656
+    },
+    {
+      "path": "assets/textures/535e13fbb15699f0.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/535e13fbb15699f0.bin",
+      "bytes": 226,
+      "sha256": "535e13fbb15699f010e5709bd91450da7d067f0617e907fa7011032b3f82aa57",
+      "storedBytes": 226
+    },
+    {
+      "path": "assets/textures/5877987a177c08ee.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/5877987a177c08ee.bin",
+      "bytes": 18016,
+      "sha256": "5877987a177c08eead4ed85f58f4ac5107ca62f7426eded29dddf925cddd1834",
+      "storedBytes": 18016
+    },
+    {
+      "path": "assets/textures/5afe3a5848bbb8a8.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/5afe3a5848bbb8a8.bin",
+      "bytes": 3645406,
+      "sha256": "5afe3a5848bbb8a8334cfebf3d66703c51440227362e72924cebc52a12c1ed88",
+      "storedBytes": 3645406
+    },
+    {
+      "path": "assets/textures/5c0274034067605c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/5c0274034067605c.bin",
+      "bytes": 79042,
+      "sha256": "5c0274034067605c86220c4a1f1722ed9682389add3820f55f2e7375b0d552af",
+      "storedBytes": 79042
+    },
+    {
+      "path": "assets/textures/5ea0747161219e98.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/5ea0747161219e98.bin",
+      "bytes": 2954,
+      "sha256": "5ea0747161219e98cd7f0ce6d1496367937f6b6d6cfbfcdddb3095f25574bc94",
+      "storedBytes": 2954
+    },
+    {
+      "path": "assets/textures/634a200993d3a893.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/634a200993d3a893.bin",
+      "bytes": 31458,
+      "sha256": "634a200993d3a893faf92b15364e9c83e3baba3bb9619a7585c754861892c218",
+      "storedBytes": 31458
+    },
+    {
+      "path": "assets/textures/63f2b54633e152b0.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/63f2b54633e152b0.bin",
+      "bytes": 1116,
+      "sha256": "63f2b54633e152b01141b1b90a51f042c5b0bb9923095c0463351e0cdaff73fb",
+      "storedBytes": 1116
+    },
+    {
+      "path": "assets/textures/6547729687e2fa0d.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/6547729687e2fa0d.bin",
+      "bytes": 7636,
+      "sha256": "6547729687e2fa0da8b13b5e1f0cd15826573f40a9e43ee76161247edb2da0ca",
+      "storedBytes": 7636
+    },
+    {
+      "path": "assets/textures/65898e1effe953d9.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/65898e1effe953d9.bin",
+      "bytes": 76988,
+      "sha256": "65898e1effe953d9b63bcacfbfcabd4f8797e715306d061b40de83596925c1e9",
+      "storedBytes": 76988
+    },
+    {
+      "path": "assets/textures/65d46ad5fda502c4.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/65d46ad5fda502c4.bin",
+      "bytes": 43342,
+      "sha256": "65d46ad5fda502c4052df599cce2eba1522fe2cd8704934b057ae5b229fd3641",
+      "storedBytes": 43342
+    },
+    {
+      "path": "assets/textures/686936603b99234d.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/686936603b99234d.bin",
+      "bytes": 146316,
+      "sha256": "686936603b99234d44e9d34769978fc8312c48475141da5f0f7820b6721fa260",
+      "storedBytes": 146316
+    },
+    {
+      "path": "assets/textures/69dee25949ac6e6c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/69dee25949ac6e6c.bin",
+      "bytes": 12294,
+      "sha256": "69dee25949ac6e6cced2fb58eec77279025c5f45d013fe0c1d867e375215c821",
+      "storedBytes": 12294
+    },
+    {
+      "path": "assets/textures/6a2840b3882e7e63.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/6a2840b3882e7e63.bin",
+      "bytes": 104692,
+      "sha256": "6a2840b3882e7e637b5accd1c7ecd8dc1606f5195bacf7928c862c62835a668b",
+      "storedBytes": 104692
+    },
+    {
+      "path": "assets/textures/6a678d096c538b7e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/6a678d096c538b7e.bin",
+      "bytes": 142,
+      "sha256": "6a678d096c538b7e64ba2a2e0f984c55ad163c3ba2512139bb4fa8e9de78dd9c",
+      "storedBytes": 142
+    },
+    {
+      "path": "assets/textures/6ae4698a896e317c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/6ae4698a896e317c.bin",
+      "bytes": 1580440,
+      "sha256": "6ae4698a896e317c14c48144d085c76845f2e3316d63b009f03e0b4ae1539799",
+      "storedBytes": 1580440
+    },
+    {
+      "path": "assets/textures/6b2ab1c9b5d5f6cc.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/6b2ab1c9b5d5f6cc.bin",
+      "bytes": 145842,
+      "sha256": "6b2ab1c9b5d5f6cc9f7760ab18bab9e7cba3124ad6db907ec3004df4871fb247",
+      "storedBytes": 145842
+    },
+    {
+      "path": "assets/textures/6ef5233f58cae268.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/6ef5233f58cae268.bin",
+      "bytes": 382336,
+      "sha256": "6ef5233f58cae26878bcc5ab566c990e215db275e09f9e48d19f0e483feb2299",
+      "storedBytes": 382336
+    },
+    {
+      "path": "assets/textures/70d4bc4f871d04dc.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/70d4bc4f871d04dc.bin",
+      "bytes": 317568,
+      "sha256": "70d4bc4f871d04dc99edb04837d50884d551bebd162eb2b5b59e7009c6c2d40f",
+      "storedBytes": 317568
+    },
+    {
+      "path": "assets/textures/76047ee0a0d740cc.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/76047ee0a0d740cc.bin",
+      "bytes": 388678,
+      "sha256": "76047ee0a0d740cca14c7588457b61564411f49b006a5ad03d0a1b809bee7b00",
+      "storedBytes": 388678
+    },
+    {
+      "path": "assets/textures/76642c5b3e44f320.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/76642c5b3e44f320.bin",
+      "bytes": 1228,
+      "sha256": "76642c5b3e44f320f4121fe9623e5c90f3a3bb2d2d3f50e961b20ad7f93a3824",
+      "storedBytes": 1228
+    },
+    {
+      "path": "assets/textures/793d7e6940537e10.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/793d7e6940537e10.bin",
+      "bytes": 16692,
+      "sha256": "793d7e6940537e103f0533b3f50eae0af69e77433735625eed2ff637a61de7d4",
+      "storedBytes": 16692
+    },
+    {
+      "path": "assets/textures/7bc7a3e52934b18c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/7bc7a3e52934b18c.bin",
+      "bytes": 134,
+      "sha256": "7bc7a3e52934b18c8543171f02cc4d93afb845b3d95946b2631519cd6ca4d742",
+      "storedBytes": 134
+    },
+    {
+      "path": "assets/textures/7c42d04c4190e629.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/7c42d04c4190e629.bin",
+      "bytes": 13592,
+      "sha256": "7c42d04c4190e6297f779729889a52190a511968fc12f7ca34b2687d95b4bf38",
+      "storedBytes": 13592
+    },
+    {
+      "path": "assets/textures/7d5914708c641e7a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/7d5914708c641e7a.bin",
+      "bytes": 2171930,
+      "sha256": "7d5914708c641e7a50eb71a7df5569324cf37dc6efae8d8d69e71b14e699d967",
+      "storedBytes": 2171930
+    },
+    {
+      "path": "assets/textures/7eb16a8aafe64cd3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/7eb16a8aafe64cd3.bin",
+      "bytes": 497102,
+      "sha256": "7eb16a8aafe64cd38002718a794fe24caefbd920d809f0369a22832184f424b3",
+      "storedBytes": 497102
+    },
+    {
+      "path": "assets/textures/80905682f241ecb6.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/80905682f241ecb6.bin",
+      "bytes": 16054,
+      "sha256": "80905682f241ecb6878182c02139655b7965a295221981832134ad264335abf6",
+      "storedBytes": 16054
+    },
+    {
+      "path": "assets/textures/825ea55f5229e6f8.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/825ea55f5229e6f8.bin",
+      "bytes": 30950,
+      "sha256": "825ea55f5229e6f8c4963bdbef576706571a011329d61b43acd42659a7ee56ab",
+      "storedBytes": 30950
+    },
+    {
+      "path": "assets/textures/83b35e55a0bb9aef.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/83b35e55a0bb9aef.bin",
+      "bytes": 1004,
+      "sha256": "83b35e55a0bb9aef4b69fef8ff34cfd4d54d03d02863528a3e5203e2dd9dffa5",
+      "storedBytes": 1004
+    },
+    {
+      "path": "assets/textures/84f5b4fd4947d8ee.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/84f5b4fd4947d8ee.bin",
+      "bytes": 197834,
+      "sha256": "84f5b4fd4947d8ee362737f7175ece0d42e4ce802e5954261b528fbe94dc8f38",
+      "storedBytes": 197834
+    },
+    {
+      "path": "assets/textures/86a5e835395f724e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/86a5e835395f724e.bin",
+      "bytes": 89676,
+      "sha256": "86a5e835395f724e55de1e49f61be2f56538d0f6e14d1db196dbc1c3ab2417e8",
+      "storedBytes": 89676
+    },
+    {
+      "path": "assets/textures/87e2d424b75c8307.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/87e2d424b75c8307.bin",
+      "bytes": 3168,
+      "sha256": "87e2d424b75c8307d5d621e6bd36adac38a86afa06ec22a33e5e9e611807ba27",
+      "storedBytes": 3168
+    },
+    {
+      "path": "assets/textures/881b690535e76349.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/881b690535e76349.bin",
+      "bytes": 132424,
+      "sha256": "881b690535e763490e4e29e3d77c9f0028df5205fa84a6f32c350e933b5055ae",
+      "storedBytes": 132424
+    },
+    {
+      "path": "assets/textures/8846bf157cc39572.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/8846bf157cc39572.bin",
+      "bytes": 9074,
+      "sha256": "8846bf157cc39572788c79d718290985a053a2ae387161cedec04442e750006e",
+      "storedBytes": 9074
+    },
+    {
+      "path": "assets/textures/894d95847851955c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/894d95847851955c.bin",
+      "bytes": 4492932,
+      "sha256": "894d95847851955c40141e6f8cc772428d638a4f19e5fc43a10849a56b7ea8cd",
+      "storedBytes": 4492932
+    },
+    {
+      "path": "assets/textures/8ad091cc375d039e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/8ad091cc375d039e.bin",
+      "bytes": 337146,
+      "sha256": "8ad091cc375d039ef6a1cd47e1644a605ea544d2b1a1c149073e5ddca17f3803",
+      "storedBytes": 337146
+    },
+    {
+      "path": "assets/textures/8ebf1d1d4e52506d.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/8ebf1d1d4e52506d.bin",
+      "bytes": 91244,
+      "sha256": "8ebf1d1d4e52506d6383b0cc02bcfe1f4c2007f7bedf45ed009297221463971c",
+      "storedBytes": 91244
+    },
+    {
+      "path": "assets/textures/920dff8b8dbcae4b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/920dff8b8dbcae4b.bin",
+      "bytes": 169292,
+      "sha256": "920dff8b8dbcae4b6995c26b4991318c8bdea04b5fb9862e8101cea3b73d1e29",
+      "storedBytes": 169292
+    },
+    {
+      "path": "assets/textures/946d152a76d97b86.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/946d152a76d97b86.bin",
+      "bytes": 688222,
+      "sha256": "946d152a76d97b86bb7dcd498518fb2e538e265e9a32a6f94ff9b8287902fd47",
+      "storedBytes": 688222
+    },
+    {
+      "path": "assets/textures/946d4f018a5c1b68.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/946d4f018a5c1b68.bin",
+      "bytes": 132,
+      "sha256": "946d4f018a5c1b684f204762e29ed5f4b18e4641a65260709b581da3dce90e68",
+      "storedBytes": 132
+    },
+    {
+      "path": "assets/textures/9740996782d43c70.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/9740996782d43c70.bin",
+      "bytes": 3670338,
+      "sha256": "9740996782d43c70a814fbbdb9182e843b63ed9154ada47902e77f7b1797e2b1",
+      "storedBytes": 3670338
+    },
+    {
+      "path": "assets/textures/9760d78327a1cc7a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/9760d78327a1cc7a.bin",
+      "bytes": 464350,
+      "sha256": "9760d78327a1cc7a3d32ebbbb11309297a0581977900ae4f689b21ac47a316d0",
+      "storedBytes": 464350
+    },
+    {
+      "path": "assets/textures/982f608e0689148b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/982f608e0689148b.bin",
+      "bytes": 4017434,
+      "sha256": "982f608e0689148b11642369cc97a959e95118457682aec2b8e3a1abe5f50ee8",
+      "storedBytes": 4017434
+    },
+    {
+      "path": "assets/textures/9a1e710b8ec1013e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/9a1e710b8ec1013e.bin",
+      "bytes": 186566,
+      "sha256": "9a1e710b8ec1013efb2b8547e2eeb0eecd5731d474c70ee1a41d8022ee85bb63",
+      "storedBytes": 186566
+    },
+    {
+      "path": "assets/textures/9b422241ac4125e5.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/9b422241ac4125e5.bin",
+      "bytes": 33258,
+      "sha256": "9b422241ac4125e52983302cb6ef7173c784a95ac03c896e16c64b8bc5347bd0",
+      "storedBytes": 33258
+    },
+    {
+      "path": "assets/textures/9c0290b59b11605f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/9c0290b59b11605f.bin",
+      "bytes": 19338,
+      "sha256": "9c0290b59b11605fbb7bfd29e8c58ffb66f8e6f2d581c0a6c9b95319043c2bef",
+      "storedBytes": 19338
+    },
+    {
+      "path": "assets/textures/9c64d72f05bbdfbb.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/9c64d72f05bbdfbb.bin",
+      "bytes": 79138,
+      "sha256": "9c64d72f05bbdfbb439c0d9bdf08b850bc72cdabe57367781af65a788b2cab04",
+      "storedBytes": 79138
+    },
+    {
+      "path": "assets/textures/a17451516cd23e8f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a17451516cd23e8f.bin",
+      "bytes": 172,
+      "sha256": "a17451516cd23e8fe838412e949ca44791a46e9fdfa198dfc8fe578025633fd3",
+      "storedBytes": 172
+    },
+    {
+      "path": "assets/textures/a1e6a7bebf047201.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a1e6a7bebf047201.bin",
+      "bytes": 17956,
+      "sha256": "a1e6a7bebf0472011ca2437c5360413caf7780b1881716e180d7f65268ba0d3a",
+      "storedBytes": 17956
+    },
+    {
+      "path": "assets/textures/a1fdd915a661a662.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a1fdd915a661a662.bin",
+      "bytes": 2618,
+      "sha256": "a1fdd915a661a6621b77b7af280cc201013abd6a1c2935228361771d5a704936",
+      "storedBytes": 2618
+    },
+    {
+      "path": "assets/textures/a2e787510e93614a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a2e787510e93614a.bin",
+      "bytes": 3447594,
+      "sha256": "a2e787510e93614a6afa54179b78f4c0fdb97e4e6cba50bba681079cff18de6a",
+      "storedBytes": 3447594
+    },
+    {
+      "path": "assets/textures/a4c69c4cc918d7ef.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a4c69c4cc918d7ef.bin",
+      "bytes": 2572134,
+      "sha256": "a4c69c4cc918d7ef4be80e09e3e6dd9dd5f64c284f4c5e05c5f94c6c8ba47bb4",
+      "storedBytes": 2572134
+    },
+    {
+      "path": "assets/textures/a6885e6531e99348.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a6885e6531e99348.bin",
+      "bytes": 6920,
+      "sha256": "a6885e6531e99348d9ba1a271eef7f8a31e7c6473f18a2f03fcd64677cd45ab8",
+      "storedBytes": 6920
+    },
+    {
+      "path": "assets/textures/a6e0bd30e35107a0.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/a6e0bd30e35107a0.bin",
+      "bytes": 189678,
+      "sha256": "a6e0bd30e35107a0b2b9b5fda1226df2b6bc8079956bdc1641694ec27a241a88",
+      "storedBytes": 189678
+    },
+    {
+      "path": "assets/textures/aed4eb0b7b9bc6ad.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/aed4eb0b7b9bc6ad.bin",
+      "bytes": 150,
+      "sha256": "aed4eb0b7b9bc6adf76d1f98669e917634939fbc1e5c9870f03e927869d6ec22",
+      "storedBytes": 150
+    },
+    {
+      "path": "assets/textures/b2cab3d160d43de3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b2cab3d160d43de3.bin",
+      "bytes": 51960,
+      "sha256": "b2cab3d160d43de30512103ca07b4eaaf9f617bfbfab6dc023a2d2c42d73accf",
+      "storedBytes": 51960
+    },
+    {
+      "path": "assets/textures/b30f216120a6114c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b30f216120a6114c.bin",
+      "bytes": 185256,
+      "sha256": "b30f216120a6114c5766d71a4cb6bbee9c33d601d22daa5bc758ae53fafd9d2f",
+      "storedBytes": 185256
+    },
+    {
+      "path": "assets/textures/b3d4c128960c4c27.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b3d4c128960c4c27.bin",
+      "bytes": 94536,
+      "sha256": "b3d4c128960c4c277be39f33e60e153fcd3ee49a85dca97f60cd06c82b471563",
+      "storedBytes": 94536
+    },
+    {
+      "path": "assets/textures/b3fcd0c501bfb971.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b3fcd0c501bfb971.bin",
+      "bytes": 298,
+      "sha256": "b3fcd0c501bfb9710b9f2b4f8555b3ef3574e5c92e97ce1f791d43176a91b3ca",
+      "storedBytes": 298
+    },
+    {
+      "path": "assets/textures/b44d7c9ac81e8724.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b44d7c9ac81e8724.bin",
+      "bytes": 790532,
+      "sha256": "b44d7c9ac81e8724251d21c8b4ef7be2ce7ed089a7f935e5786d14933f81d3e7",
+      "storedBytes": 790532
+    },
+    {
+      "path": "assets/textures/b455dc91290f731a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b455dc91290f731a.bin",
+      "bytes": 4430038,
+      "sha256": "b455dc91290f731a75a05b03b69fe1c01908f027d85437186fd509afe0aaaec2",
+      "storedBytes": 4430038
+    },
+    {
+      "path": "assets/textures/b45ca839602571c3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b45ca839602571c3.bin",
+      "bytes": 8138,
+      "sha256": "b45ca839602571c305819f3adb88a3f430008d17e5147486edc3c3a6bd5bd9a4",
+      "storedBytes": 8138
+    },
+    {
+      "path": "assets/textures/b4bec013d8805fd5.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b4bec013d8805fd5.bin",
+      "bytes": 3608,
+      "sha256": "b4bec013d8805fd5bcb206529c84d7ffaa433dcaaf73c104e48c7abc1ea40c13",
+      "storedBytes": 3608
+    },
+    {
+      "path": "assets/textures/b4e44c9e196af45b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b4e44c9e196af45b.bin",
+      "bytes": 814458,
+      "sha256": "b4e44c9e196af45b717e2886f2c24e776cce8cd28a42ba0d60705227719a9101",
+      "storedBytes": 814458
+    },
+    {
+      "path": "assets/textures/b4e5fc986e963612.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b4e5fc986e963612.bin",
+      "bytes": 4504,
+      "sha256": "b4e5fc986e963612e6c1db33868d631f20fcaee6901a14a8bf7835dd9e9c7309",
+      "storedBytes": 4504
+    },
+    {
+      "path": "assets/textures/b4f555ff87e5a6a9.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b4f555ff87e5a6a9.bin",
+      "bytes": 70434,
+      "sha256": "b4f555ff87e5a6a9b5af93d706dabbd831ab134efb3dbde0542d1ea118a4713f",
+      "storedBytes": 70434
+    },
+    {
+      "path": "assets/textures/b54c3c3c428b2f7a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b54c3c3c428b2f7a.bin",
+      "bytes": 67734,
+      "sha256": "b54c3c3c428b2f7ae3ec0e48f05cb64670c9ab03594bdeef9e71fbd7483a5c37",
+      "storedBytes": 67734
+    },
+    {
+      "path": "assets/textures/b7175d35e7d0cee1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b7175d35e7d0cee1.bin",
+      "bytes": 172,
+      "sha256": "b7175d35e7d0cee1cbaef3df4b106fc69f7106757d973afae41c7a1075a90fbd",
+      "storedBytes": 172
+    },
+    {
+      "path": "assets/textures/b71b59e836f7ab1c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/b71b59e836f7ab1c.bin",
+      "bytes": 904732,
+      "sha256": "b71b59e836f7ab1c866168f85798a2bd1fc3f2c3f2535b1babd3f9ee6cebf006",
+      "storedBytes": 904732
+    },
+    {
+      "path": "assets/textures/ba03a6a3505959a7.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/ba03a6a3505959a7.bin",
+      "bytes": 42094,
+      "sha256": "ba03a6a3505959a7ab661595fdfc419c5032ac5e5a63ed9a48ec82cc0083a148",
+      "storedBytes": 42094
+    },
+    {
+      "path": "assets/textures/ba51eeb1819cdc22.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/ba51eeb1819cdc22.bin",
+      "bytes": 3048,
+      "sha256": "ba51eeb1819cdc22a468d60f322d484871bb53b90e39dca8b5b2dbd6ca9407f1",
+      "storedBytes": 3048
+    },
+    {
+      "path": "assets/textures/ba5c8f445b4206e2.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/ba5c8f445b4206e2.bin",
+      "bytes": 2718,
+      "sha256": "ba5c8f445b4206e22e53f36fd66cdefb74c8411e867e9038a3222022c7552c42",
+      "storedBytes": 2718
+    },
+    {
+      "path": "assets/textures/bd3191950e80f1d5.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/bd3191950e80f1d5.bin",
+      "bytes": 4884,
+      "sha256": "bd3191950e80f1d57e80cab8e2d733e328e737aee6be3ce8bd48ad678f0bfb26",
+      "storedBytes": 4884
+    },
+    {
+      "path": "assets/textures/be50fe78fbda79c1.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/be50fe78fbda79c1.bin",
+      "bytes": 76676,
+      "sha256": "be50fe78fbda79c163a2cba2ccb279a388db370e3951ec8891da45726400dff1",
+      "storedBytes": 76676
+    },
+    {
+      "path": "assets/textures/c4a833d43cfbc3ed.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/c4a833d43cfbc3ed.bin",
+      "bytes": 141102,
+      "sha256": "c4a833d43cfbc3ed9033c58ef39d5a74703493ce125474231ae5d1df1d94bc5b",
+      "storedBytes": 141102
+    },
+    {
+      "path": "assets/textures/c6a984f76b7d65c2.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/c6a984f76b7d65c2.bin",
+      "bytes": 2285500,
+      "sha256": "c6a984f76b7d65c21d49d08078adfee0f0207a13012492a885c20aaf507ddbf1",
+      "storedBytes": 2285500
+    },
+    {
+      "path": "assets/textures/c9416857db140660.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/c9416857db140660.bin",
+      "bytes": 25686,
+      "sha256": "c9416857db14066038eda5bda29e1b187a2fa6285fc4c8000f12518b6fbbf264",
+      "storedBytes": 25686
+    },
+    {
+      "path": "assets/textures/c9503683fbda384b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/c9503683fbda384b.bin",
+      "bytes": 2476,
+      "sha256": "c9503683fbda384bd9f8bc7dfc66f4d546e9ea80adc18808a20720e7d9359191",
+      "storedBytes": 2476
+    },
+    {
+      "path": "assets/textures/c9c1c00fc5cdc0f7.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/c9c1c00fc5cdc0f7.bin",
+      "bytes": 5339550,
+      "sha256": "c9c1c00fc5cdc0f7c464b7955c6c6a4a28e6292277243e62c73c541204ecbfcc",
+      "storedBytes": 5339550
+    },
+    {
+      "path": "assets/textures/cbff9167d7cf6aab.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/cbff9167d7cf6aab.bin",
+      "bytes": 120,
+      "sha256": "cbff9167d7cf6aabad9abf79a20a1c9b4ef056b102278cd123d0cfee2aca4a0d",
+      "storedBytes": 120
+    },
+    {
+      "path": "assets/textures/cd7f3f738675d90b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/cd7f3f738675d90b.bin",
+      "bytes": 478,
+      "sha256": "cd7f3f738675d90b37c1e2be5a9ccd1e288fdb4ba384da047ae0f37cb2b556be",
+      "storedBytes": 478
+    },
+    {
+      "path": "assets/textures/cdf45d3e63061773.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/cdf45d3e63061773.bin",
+      "bytes": 673714,
+      "sha256": "cdf45d3e630617739568d23ed8639d47122a96d54fb9825293bd047335201183",
+      "storedBytes": 673714
+    },
+    {
+      "path": "assets/textures/d04ca0a8cbd060bf.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d04ca0a8cbd060bf.bin",
+      "bytes": 421962,
+      "sha256": "d04ca0a8cbd060bf86e081f20b4b85b16f720f33bc33958af8c16b372517ce15",
+      "storedBytes": 421962
+    },
+    {
+      "path": "assets/textures/d0ab118be57cfbae.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d0ab118be57cfbae.bin",
+      "bytes": 1170664,
+      "sha256": "d0ab118be57cfbaea690ab0fe5d9d810110f8a4523cfa4b292eda8c5061a2cb9",
+      "storedBytes": 1170664
+    },
+    {
+      "path": "assets/textures/d0e82d5bf8803490.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d0e82d5bf8803490.bin",
+      "bytes": 550570,
+      "sha256": "d0e82d5bf88034900aba59a7b6f0e706739cae55e5867f1f6ed5c3d6b39a8d9f",
+      "storedBytes": 550570
+    },
+    {
+      "path": "assets/textures/d11e3126d670694f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d11e3126d670694f.bin",
+      "bytes": 215206,
+      "sha256": "d11e3126d670694fde9284efd31c20afd252b5eaec0b93c27a26432a903a0cc4",
+      "storedBytes": 215206
+    },
+    {
+      "path": "assets/textures/d13980d68f374478.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d13980d68f374478.bin",
+      "bytes": 748,
+      "sha256": "d13980d68f374478b61eb5f4461bd59368a4430629603d7f7c13f3c9221dd5b7",
+      "storedBytes": 748
+    },
+    {
+      "path": "assets/textures/d2371b8d6a78fe79.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d2371b8d6a78fe79.bin",
+      "bytes": 651908,
+      "sha256": "d2371b8d6a78fe793be641347aa2634b05cf8309d4580e325ef2864694db3e86",
+      "storedBytes": 651908
+    },
+    {
+      "path": "assets/textures/d23dc6621ec076be.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d23dc6621ec076be.bin",
+      "bytes": 474094,
+      "sha256": "d23dc6621ec076bea4ff414c47e1f416a3c7d2c307925d467e107562a2bdeba7",
+      "storedBytes": 474094
+    },
+    {
+      "path": "assets/textures/d25d057609bbf0f6.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d25d057609bbf0f6.bin",
+      "bytes": 10614,
+      "sha256": "d25d057609bbf0f64e5f9d9f02ed5c33fe0300fc79002a8a312e1f294511c402",
+      "storedBytes": 10614
+    },
+    {
+      "path": "assets/textures/d2b03b84df886218.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d2b03b84df886218.bin",
+      "bytes": 103236,
+      "sha256": "d2b03b84df8862183127d65170b7afcda9c154e784948e609b048c6546e0cab2",
+      "storedBytes": 103236
+    },
+    {
+      "path": "assets/textures/d323d736fe61fd9a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d323d736fe61fd9a.bin",
+      "bytes": 2654226,
+      "sha256": "d323d736fe61fd9ab891457f8c2f5f9d86ae139a6082364ddc72e345f754b757",
+      "storedBytes": 2654226
+    },
+    {
+      "path": "assets/textures/d39d7467e029bc22.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d39d7467e029bc22.bin",
+      "bytes": 524236,
+      "sha256": "d39d7467e029bc220948a105504b796a1efd4a30549d8080cc210a4dc16c01bb",
+      "storedBytes": 524236
+    },
+    {
+      "path": "assets/textures/d3b8bfefebc8cd7e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d3b8bfefebc8cd7e.bin",
+      "bytes": 451754,
+      "sha256": "d3b8bfefebc8cd7e7bee25a24c0306107189ec8e730ef77e781f5ac6f1b57acb",
+      "storedBytes": 451754
+    },
+    {
+      "path": "assets/textures/d4e45888848e623e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d4e45888848e623e.bin",
+      "bytes": 3754230,
+      "sha256": "d4e45888848e623e2e49f1657b9532ea7ae1b16d85e6a6341a24f1f438613923",
+      "storedBytes": 3754230
+    },
+    {
+      "path": "assets/textures/d7c479636fe26e71.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/d7c479636fe26e71.bin",
+      "bytes": 98992,
+      "sha256": "d7c479636fe26e71c484f31a5f68af0c7d4620bc28dd2dadd105dcbb2423840a",
+      "storedBytes": 98992
+    },
+    {
+      "path": "assets/textures/dd0c3be58abf34b3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/dd0c3be58abf34b3.bin",
+      "bytes": 62096,
+      "sha256": "dd0c3be58abf34b37a29f596148806118b267efcc51696b5a6bb039522360b1d",
+      "storedBytes": 62096
+    },
+    {
+      "path": "assets/textures/dd3c0a2bff3a5570.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/dd3c0a2bff3a5570.bin",
+      "bytes": 150,
+      "sha256": "dd3c0a2bff3a5570696a0a8c277dd35114635dad26cb37a47554b7da4bc45ece",
+      "storedBytes": 150
+    },
+    {
+      "path": "assets/textures/de1bf6ab1600f5ee.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/de1bf6ab1600f5ee.bin",
+      "bytes": 554,
+      "sha256": "de1bf6ab1600f5ee0e9cb0dd769cee72a615a13874f6bd31544bf4098c6fcb2e",
+      "storedBytes": 554
+    },
+    {
+      "path": "assets/textures/e044e7f29f30992f.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e044e7f29f30992f.bin",
+      "bytes": 436322,
+      "sha256": "e044e7f29f30992f1877c989f008a88b3129a5e7d447fdbfc1042e1c30d7cecf",
+      "storedBytes": 436322
+    },
+    {
+      "path": "assets/textures/e33eb5dc0da7e572.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e33eb5dc0da7e572.bin",
+      "bytes": 170,
+      "sha256": "e33eb5dc0da7e572645d006818c6f3d7466eec8e36e5ad3a1d3710a3ab8fc8b5",
+      "storedBytes": 170
+    },
+    {
+      "path": "assets/textures/e35e53fad90e96f6.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e35e53fad90e96f6.bin",
+      "bytes": 170,
+      "sha256": "e35e53fad90e96f61b43e944cf71fd9ac236f4574bd81ff06e5e6942186b6524",
+      "storedBytes": 170
+    },
+    {
+      "path": "assets/textures/e5b238c4d950277a.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e5b238c4d950277a.bin",
+      "bytes": 706854,
+      "sha256": "e5b238c4d950277aa810c58b46d544c822498e02057e31137f84fd8be68c4f9a",
+      "storedBytes": 706854
+    },
+    {
+      "path": "assets/textures/e60bf0797305dcce.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e60bf0797305dcce.bin",
+      "bytes": 1904,
+      "sha256": "e60bf0797305dccee097ff421594fecffab2f352042aff12888b9ec0fdfef436",
+      "storedBytes": 1904
+    },
+    {
+      "path": "assets/textures/e6bf7711074283ae.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e6bf7711074283ae.bin",
+      "bytes": 4220,
+      "sha256": "e6bf7711074283ae01c1360cac1d181b707bd5721f2acb46b5b7a90e1b1095a4",
+      "storedBytes": 4220
+    },
+    {
+      "path": "assets/textures/e6fb2f8a4858e8d9.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e6fb2f8a4858e8d9.bin",
+      "bytes": 2074,
+      "sha256": "e6fb2f8a4858e8d938c718980ae91c3d241e7d2e13f773ffc522cfe21eb29cd3",
+      "storedBytes": 2074
+    },
+    {
+      "path": "assets/textures/e87d91fd2384a9b2.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e87d91fd2384a9b2.bin",
+      "bytes": 36584,
+      "sha256": "e87d91fd2384a9b294ecf24499ca33d35775e393b65848db0716e5b95d414d42",
+      "storedBytes": 36584
+    },
+    {
+      "path": "assets/textures/e975baf963cafe53.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/e975baf963cafe53.bin",
+      "bytes": 303296,
+      "sha256": "e975baf963cafe53059e4de0b88e90a1735329b5ec5174e38c9e2239d820c002",
+      "storedBytes": 303296
+    },
+    {
+      "path": "assets/textures/ec18992ee5d896c8.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/ec18992ee5d896c8.bin",
+      "bytes": 1033776,
+      "sha256": "ec18992ee5d896c89061a1984740c6b849dadb5911838a08858618ef6930fc7d",
+      "storedBytes": 1033776
+    },
+    {
+      "path": "assets/textures/ec3eef4bee9d8743.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/ec3eef4bee9d8743.bin",
+      "bytes": 577140,
+      "sha256": "ec3eef4bee9d874320d4eed5d60dec00b75d0026ab855ba27d1076aaced323c4",
+      "storedBytes": 577140
+    },
+    {
+      "path": "assets/textures/ee0fd23abd4a196e.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/ee0fd23abd4a196e.bin",
+      "bytes": 273766,
+      "sha256": "ee0fd23abd4a196e47cda11feac8a025b88790d05e0a89895c43aa0f835f91fd",
+      "storedBytes": 273766
+    },
+    {
+      "path": "assets/textures/f1d1091a45db5ec3.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/f1d1091a45db5ec3.bin",
+      "bytes": 139048,
+      "sha256": "f1d1091a45db5ec3876995a240ae74b8e81e1b1831ce89f37ed00792b9f4c3f8",
+      "storedBytes": 139048
+    },
+    {
+      "path": "assets/textures/f4bb1f4e82a4de6c.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/f4bb1f4e82a4de6c.bin",
+      "bytes": 270514,
+      "sha256": "f4bb1f4e82a4de6cd797ddeb9e101ab93d754b53f0d23218771c2a82f752b2a6",
+      "storedBytes": 270514
+    },
+    {
+      "path": "assets/textures/f5b3e2a2d6de5181.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/f5b3e2a2d6de5181.bin",
+      "bytes": 25076,
+      "sha256": "f5b3e2a2d6de51811991eddbc7d05a6bb48429fc779bb057356dd987b30be019",
+      "storedBytes": 25076
+    },
+    {
+      "path": "assets/textures/f74d384b936cc521.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/f74d384b936cc521.bin",
+      "bytes": 572472,
+      "sha256": "f74d384b936cc521b0c0613dc4fc84eee3bce778624c413162c8fea2c6884cdb",
+      "storedBytes": 572472
+    },
+    {
+      "path": "assets/textures/f980d5b0583fb268.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/f980d5b0583fb268.bin",
+      "bytes": 62800,
+      "sha256": "f980d5b0583fb268da25f7622d4f0ebebdae31da1cb2ff03eae5b13d4e494df0",
+      "storedBytes": 62800
+    },
+    {
+      "path": "assets/textures/fa96f5acdcdbfcc0.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/fa96f5acdcdbfcc0.bin",
+      "bytes": 30318,
+      "sha256": "fa96f5acdcdbfcc0fcd6565d3bdd83d96184e873729ef37270a3e546c0e6848e",
+      "storedBytes": 30318
+    },
+    {
+      "path": "assets/textures/fbbb15520657434b.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/fbbb15520657434b.bin",
+      "bytes": 425282,
+      "sha256": "fbbb15520657434b1241b548be85669065b6e3f576be2b92f74981b19c11f076",
+      "storedBytes": 425282
+    },
+    {
+      "path": "assets/textures/fd72aa153bb69601.bin",
+      "source": "https://assets.warfarin.wiki/studio/c0727135872664fd4c33eabd73c925dd/textures/fd72aa153bb69601.bin",
+      "bytes": 43284,
+      "sha256": "fd72aa153bb69601018d800e245b82476eaa428393f158bffb03f9a2015e9cdd",
+      "storedBytes": 43284
+    }
+  ]
+}

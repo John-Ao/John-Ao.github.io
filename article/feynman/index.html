@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="从问题、实验与推导出发的中文物理学习讲义：力学、波与热、电磁学、量子物理。支持手机阅读、章节目录与夜间模式。">
+<title>物理学讲义 · 中文学习笔记</title>
+<script src="theme.js"></script><link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script>
+<script defer src="vendor/auto-render.min.js"></script><script defer src="reader.js"></script>
+</head>
+<body>
+<a class="skip" href="#reading">跳到正文</a>
+<button class="reader-control" id="menu-button" aria-label="打开章节目录" aria-controls="contents" aria-expanded="false" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="control-label">目录</span></button>
+<button class="reader-control" id="theme-button" aria-label="切换至夜间模式" aria-pressed="false"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg><span class="control-label">夜间</span></button>
+<dialog id="contents" aria-labelledby="contents-title">
+<div class="drawer-top"><h2 id="contents-title">章节目录</h2><button class="close" id="close-menu" aria-label="关闭目录">×</button></div>
+<label class="sr-only" for="chapter-search">搜索章节名称</label><input type="search" id="chapter-search" placeholder="搜索章节名称" autocomplete="off">
+<p id="search-status" role="status">33 章 · 点击跳转</p><nav aria-label="章节目录"><div class="toc-group"><h3>观察、运动与守恒</h3>
+<a href="#atoms"><span>01</span>从一滴墨水看见原子</a>
+<a href="#measurement"><span>02</span>测量、误差与数量级</a>
+<a href="#motion"><span>03</span>把运动拆成小段</a>
+<a href="#newton"><span>04</span>力改变的究竟是什么</a>
+<a href="#energy"><span>05</span>能量：绕过复杂轨迹</a>
+<a href="#momentum"><span>06</span>碰撞、动量与质心</a>
+<a href="#rotation"><span>07</span>转动为何不只看质量</a>
+<a href="#gravity"><span>08</span>引力与轨道：不断落下</a>
+<a href="#relativity"><span>09</span>相对论：同时并非绝对</a>
+</div>
+<div class="toc-group"><h3>波、物质与热</h3>
+<a href="#oscillation"><span>10</span>振动：平衡附近的共同语言</a>
+<a href="#waves"><span>11</span>波传播什么</a>
+<a href="#sound"><span>12</span>声、叠加与频谱</a>
+<a href="#optics"><span>13</span>光路、成像与干涉</a>
+<a href="#temperature"><span>14</span>温度如何来自分子运动</a>
+<a href="#entropy"><span>15</span>热机、熵与不可逆性</a>
+<a href="#matter"><span>16</span>流体、弹性与连续介质</a>
+</div>
+<div class="toc-group"><h3>场、电磁与光</h3>
+<a href="#electric-field"><span>17</span>电场：把作用分配到空间</a>
+<a href="#potential"><span>18</span>势、梯度与边界条件</a>
+<a href="#capacitance"><span>19</span>电容、电介质与场能</a>
+<a href="#circuits"><span>20</span>电流、电阻与电路</a>
+<a href="#magnetism"><span>21</span>磁场与运动电荷</a>
+<a href="#induction"><span>22</span>感应：变化的磁通产生环流</a>
+<a href="#maxwell"><span>23</span>麦克斯韦方程与电磁波</a>
+<a href="#radiation"><span>24</span>辐射、能流与光的动量</a>
+</div>
+<div class="toc-group"><h3>量子、原子与统计</h3>
+<a href="#amplitudes"><span>25</span>先加振幅，再求概率</a>
+<a href="#states"><span>26</span>状态、测量与不确定性</a>
+<a href="#spin"><span>27</span>自旋与两能级系统</a>
+<a href="#schrodinger"><span>28</span>薛定谔方程让状态演化</a>
+<a href="#tunneling"><span>29</span>束缚态与隧穿</a>
+<a href="#atoms-quantum"><span>30</span>原子、角动量与光谱</a>
+<a href="#statistics"><span>31</span>相同粒子与量子统计</a>
+<a href="#solids"><span>32</span>从原子到固体</a>
+<a href="#nuclei"><span>33</span>核、粒子与理论的边界</a>
+</div></nav>
+<p class="drawer-source"><a href="#sources" id="sources-link">原书与延伸阅读</a></p>
+</dialog>
+<main id="reading" tabindex="-1"><article>
+<h1>物理学讲义</h1>
+<p class="intro">独立编写的中文学习笔记，从问题、实验和推导理解物理。共 33 章；并非《费恩曼物理学讲义》的翻译或完整缩编。<a href="#sources">原书与延伸阅读</a></p>
+<section class="lesson" id="atoms" tabindex="-1" aria-labelledby="heading-atoms">
+<p class="part">观察、运动与守恒 · 01</p>
+<h2 id="heading-atoms">从一滴墨水看见原子</h2>
+<p>把墨水轻轻滴进静水，为什么颜色最后会散开？如果水完全静止，这件事似乎不该发生。宏观看来不动的水，微观上仍有大量分子在无规则运动；碰撞不断改变墨水分子的方向。我们看到的是许多看不见的运动叠加后的结果。</p><p>先建立一个可以计算的模型：粒子每隔时间 τ 随机走一步，每步长度为 ℓ，各步方向互不相关。走 N 步后，平均位移为零，但位移的平方不会互相抵消。在一维，均方位移为 Nℓ²。于是典型扩散距离随时间的平方根增长，而不是随时间增长。</p>
+<div class="formula">$$\langle x^2\rangle=2Dt,\qquad D=\frac{\ell^2}{2\tau}$$</div>
+<p>D 是一维模型对应的扩散系数，单位为 m²/s。这个模型省略了真实液体中的关联和复杂碰撞，却抓住了扩散的时间规律。模型的价值在于给出可检验的预测，而不在于把每个细节都画得像真的。</p>
+<div class="example"><strong>算一算，想一想</strong><p>扩散到原来两倍远，典型需要四倍时间。所以搅拌能大大加快混合：流动先把不同颜色搬到邻近位置，扩散只需完成最后一小段路。</p></div>
+<details class="exercise"><summary>平均位移为零，是否表示粒子没有移动？</summary><p>不是。向左和向右的位移在平均时抵消；均方位移却随时间增加。平均值和波动描述的是不同信息。</p></details>
+</section>
+<section class="lesson" id="measurement" tabindex="-1" aria-labelledby="heading-measurement">
+<p class="part">观察、运动与守恒 · 02</p>
+<h2 id="heading-measurement">测量、误差与数量级</h2>
+<p>怎样测量一张纸的厚度？用普通尺子量一张很困难，量一百张再除以一百就容易得多。实验并不总靠更精密的仪器，也可以靠重新组织测量，让要找的效应变得显著。</p><p>任何读数都伴随分辨率、随机波动与可能的系统偏差。独立重复测量能减小随机误差，却不能修好一把刻度错误的尺子。报告结果时，数字的位数应与不确定度相称。推导公式时则要先检查量纲：距离不能等于速度，也不能把温度与能量直接相加。</p>
+<div class="formula">$$[ v ]=LT^{-1},\qquad [ F ]=MLT^{-2},\qquad \sigma_{\bar x}=\frac{\sigma}{\sqrt N}$$</div>
+<p>最后一个式子只适用于具有相同有限方差、相互独立的测量。数量级估算是另一种检查：小幅摆动的单摆若只由长度 L 和重力加速度 g 决定周期，时间量纲只能由 √(L/g) 给出，具体无量纲系数还需动力学计算。</p>
+<div class="example"><strong>算一算，想一想</strong><p>摆长增加到四倍，周期应增加到两倍，而不是四倍。这样的比例预测在尚未解出微分方程时就能完成。</p></div>
+<details class="exercise"><summary>连续测量一百次，能消除尺子的零点偏差吗？</summary><p>不能。独立随机误差的标准差可以降为原来的十分之一，但固定的零点偏差仍保留。</p></details>
+</section>
+<section class="lesson" id="motion" tabindex="-1" aria-labelledby="heading-motion">
+<p class="part">观察、运动与守恒 · 03</p>
+<h2 id="heading-motion">把运动拆成小段</h2>
+<p>车的里程表告诉你一共走了多远，速度表告诉你此刻走得多快。要从其中一种描述得到另一种，就要把时间切成小段。每段足够短时，可以把速度看成不变；所有小段位移相加，就是积分的含义。</p><p>反过来，位置在很短时间内的变化除以时间，就是平均速度；时间间隔趋近零，得到瞬时速度。加速度描述速度如何改变。速度是向量，因此即使速率不变，转弯仍需要加速度。</p>
+<div class="formula">$$\mathbf v=\frac{d\mathbf r}{dt},\qquad \mathbf a=\frac{d\mathbf v}{dt},\qquad \Delta\mathbf r=\int\mathbf v\,dt$$</div>
+<p>匀加速直线运动中，v=v₀+at，位移为 v₀t+at²/2。这里的 t² 不是需要背诵的巧合：速度随时间线性增长，位移便是速度—时间图下的梯形面积。分量方法让二维运动分解成两个这样的独立计算。</p>
+<div class="example"><strong>算一算，想一想</strong><p>忽略空气阻力，从同一高度同时水平抛出与静止释放两个小球，两者竖直初速度相同、竖直加速度相同，因此同时落地。</p></div>
+<details class="exercise"><summary>物体沿圆周匀速运动，加速度是否为零？</summary><p>不是。速度方向不断改变；向心加速度大小为 v²/r，指向圆心。</p></details>
+</section>
+<section class="lesson" id="newton" tabindex="-1" aria-labelledby="heading-newton">
+<p class="part">观察、运动与守恒 · 04</p>
+<h2 id="heading-newton">力改变的究竟是什么</h2>
+<p>在很光滑的地面上推一辆小车，松手后它还能滑行。这提示我们：持续运动并不需要持续的推力。日常生活中必须不断用力，是因为摩擦一直在改变运动。</p><p>牛顿定律把受力和运动变化联系起来。在惯性参考系中，合外力等于动量的变化率。质量恒定时才简化为 F=ma。实际解题要先选研究对象，把其他物体对它的作用画出，再沿方便的方向分解；不要把惯性、速度或运动趋势额外画成一种力。</p>
+<div class="formula">$$\sum\mathbf F_{\rm ext}=\frac{d\mathbf p}{dt},\qquad \mathbf p=m\mathbf v$$</div>
+<p>作用力与反作用力作用在不同物体上，不能在单个物体的受力图里互相抵消。静摩擦力也不是始终等于 μₛN，而是在不滑动的条件下调整，直到其最大值。定律规定变化，初始位置与速度则决定具体的运动。</p>
+<div class="example"><strong>算一算，想一想</strong><p>电梯向上加速时，秤的支持力满足 N−mg=ma，读数比静止时大。电梯向上匀速时 a=0，读数又回到 mg。</p></div>
+<details class="exercise"><summary>物体此刻速度为零，能否断言合力为零？</summary><p>不能。竖直上抛物体到最高点时速度为零，仍受重力，下一瞬间便开始下落。</p></details>
+</section>
+<section class="lesson" id="energy" tabindex="-1" aria-labelledby="heading-energy">
+<p class="part">观察、运动与守恒 · 05</p>
+<h2 id="heading-energy">能量：绕过复杂轨迹</h2>
+<p>想知道滑块从弯曲轨道滑到底部有多快，是否必须先求出每一瞬间的加速度？如果没有摩擦，答案是否定的。把力对位移的作用累加，牛顿定律就能变成一个只比较起点与终点的关系。</p><p>沿路径积分 F·dr 得到功，净功等于动能变化。保守力的功只取决于端点，可以引入势能 U，使这部分功等于 −ΔU。于是动能与势能之和保持不变。势能属于相互作用系统，零点可自由选取，有物理意义的是势能差。</p>
+<div class="formula">$$W_{\rm net}=\Delta K,\qquad K=\frac12mv^2,\qquad \mathbf F=-\nabla U$$</div>
+<p>摩擦存在时，机械能可以减少，能量却没有消失：它转移到微观运动、形变、声等自由度。使用守恒前应明确系统边界，检查是否有能量穿过边界。功率 P=dW/dt 则回答能量转移有多快。</p>
+<div class="example"><strong>算一算，想一想</strong><p>从高度 h 静止滑下，若忽略摩擦且只有重力做功，mgh=mv²/2，因此 v=√(2gh)。轨道形状影响到达时间，却不影响同一高度处的速率。</p></div>
+<details class="exercise"><summary>坡道更长，是否必然让物体到底部更快？</summary><p>不必然。无摩擦时同一落差给出相同末速；有摩擦时还需计算沿程能量损失。</p></details>
+</section>
+<section class="lesson" id="momentum" tabindex="-1" aria-labelledby="heading-momentum">
+<p class="part">观察、运动与守恒 · 06</p>
+<h2 id="heading-momentum">碰撞、动量与质心</h2>
+<p>两个小车相撞，接触力变化很快，通常难以测量。可是对两辆车组成的系统，内部相互作用力成对出现；把它们的运动方程相加，这些力便消去。复杂的内部过程因此留下简单的整体规律。</p><p>系统总动量的变化由合外力决定。碰撞时间很短时，只要外力冲量可以忽略，就可以用动量守恒。弹性碰撞还满足总动能守恒；粘在一起的碰撞一般不满足。不要把这两个守恒条件混为一谈。</p>
+<div class="formula">$$\mathbf P=\sum_i m_i\mathbf v_i,\qquad M\ddot{\mathbf R}=\mathbf F_{\rm ext},\qquad \mathbf R=\frac{\sum_i m_i\mathbf r_i}{M}$$</div>
+<p>质心 R 是按质量加权的位置。即使各部分运动得很复杂，质心仍像一个承受总外力的质点。在爆炸问题中，碎片的速度各不相同；若忽略空气阻力，整个系统的质心仍沿原来的抛物线运动。</p>
+<div class="example"><strong>算一算，想一想</strong><p>质量相同的两车，一辆以 v 运动，另一辆静止，碰后粘在一起。动量守恒给出共同速度 v/2；末动能只有初动能的一半，差额进入形变和内能。</p></div>
+<details class="exercise"><summary>碰撞时动能不守恒，是否意味着动量也不守恒？</summary><p>不意味着。动量由外力冲量决定，动能能否保持则取决于碰撞过程，两者条件不同。</p></details>
+</section>
+<section class="lesson" id="rotation" tabindex="-1" aria-labelledby="heading-rotation">
+<p class="part">观察、运动与守恒 · 07</p>
+<h2 id="heading-rotation">转动为何不只看质量</h2>
+<p>两根总质量相同的杆，若一根把质量集中在轴附近，另一根集中在两端，哪根更难转起来？推动离轴较远的质量需要更大的线加速度，也产生更大的动能。因此转动的惯性还取决于质量分布。</p><p>对固定轴转动的刚体，把各小块动能相加便得到转动惯量 I=Σmᵢrᵢ²。力矩是力改变转动的效果；同样的力，作用线离轴越远，力矩越大。一般情况下角动量是向量，不一定与角速度平行，简单的 L=Iω 需在适当的转轴条件下使用。</p>
+<div class="formula">$$I=\int r_\perp^2\,dm,\qquad K_{\rm rot}=\frac12I\omega^2,\qquad \boldsymbol\tau_{\rm ext}=\frac{d\mathbf L}{dt}$$</div>
+<p>没有外力矩时角动量守恒。把质量收向转轴会减小 I，因此旋转加快。转动动能却可以增大，因为收拢动作需要内部肌肉做功。守恒量不是“所有熟悉的量都不变化”。</p>
+<div class="example"><strong>算一算，想一想</strong><p>在转椅上手持重物，伸展双臂后再收回。忽略摩擦，若转动惯量减半，角速度加倍，转动动能变为原来的两倍。</p></div>
+<details class="exercise"><summary>收拢双臂后动能增加，能量从哪里来？</summary><p>来自身体的化学能。肌肉克服转动状态下的作用完成收拢，向机械运动输入能量。</p></details>
+</section>
+<section class="lesson" id="gravity" tabindex="-1" aria-labelledby="heading-gravity">
+<p class="part">观察、运动与守恒 · 08</p>
+<h2 id="heading-gravity">引力与轨道：不断落下</h2>
+<p>卫星没有支撑，为什么不掉到地面？它确实一直在下落，但同时具有横向速度。在下落的过程中，地球表面也因曲率向下退去；合适的初速度就让卫星不断错过地面。</p><p>球对称天体外部的引力等效于质量集中在球心。圆轨道上，引力提供向心加速度。把两者相等便得到轨道速度与周期。真实轨道还可以是椭圆、抛物线或双曲线，取决于能量与角动量；圆只是其中一种特殊情形。</p>
+<div class="formula">$$F=\frac{GMm}{r^2},\qquad v_{\rm circ}=\sqrt{\frac{GM}{r}},\qquad T^2=\frac{4\pi^2r^3}{GM}$$</div>
+<p>把引力势能的无穷远零点选好，得到 U=−GMm/r。逃逸所需的最低初速度由总机械能恰为零给出，为 √(2GM/r)。这些结果忽略大气阻力、其他天体和相对论修正；近地表的 mgh 只是势能在小高度范围内的近似。</p>
+<div class="example"><strong>算一算，想一想</strong><p>相同中心天体附近，圆轨道半径增加到四倍，轨道速度变成一半，周期增加到八倍。更高的圆轨道并不是转得更快。</p></div>
+<details class="exercise"><summary>空间站内的失重是否意味着引力几乎为零？</summary><p>不是。空间站与内部物体都在共同自由落体，通常缺少支撑力；地球引力仍然很强。</p></details>
+</section>
+<section class="lesson" id="relativity" tabindex="-1" aria-labelledby="heading-relativity">
+<p class="part">观察、运动与守恒 · 09</p>
+<h2 id="heading-relativity">相对论：同时并非绝对</h2>
+<p>在匀速行驶的车厢中做封闭实验，能否测出车厢的“绝对速度”？相对性原理说，不存在这种优先的惯性系。若真空光速又对各惯性系相同，时间与空间就不能继续按日常直觉独立变换。</p><p>设想一束光在车厢内上下往返。车厢内的人看到竖直路径，地面上的人看到斜路径。两者都测得同一光速，较长的光路必须对应较长的时间间隔。结果不是钟坏了，而是不同参考系对事件的时空间隔作不同分解。</p>
+<div class="formula">$$\gamma=\frac1{\sqrt{1-v^2/c^2}},\qquad \Delta t=\gamma\Delta\tau,\qquad E^2=p^2c^2+m^2c^4$$</div>
+<p>Δτ 是同一只钟沿其世界线测得的固有时间；上述简单时间膨胀式用于匀速运动。两个分离事件在一个参考系同时，在另一个参考系一般不同时。长度收缩也必须在观察者的参考系内同时测量两端。能量—动量关系在 p=0 时给出静能 mc²。</p>
+<div class="example"><strong>算一算，想一想</strong><p>当 v=0.6c 时 γ=1.25。某匀速运动的钟自身经过 4 秒，在所选实验室系中对应 5 秒；比较时必须说明是哪两个事件。</p></div>
+<details class="exercise"><summary>“双方都认为对方的钟慢”是否矛盾？</summary><p>不矛盾。不同惯性系采用不同的远处时钟同步与同时面；若最后把钟带回同一地点，必须比较完整世界线的固有时间。</p></details>
+</section>
+<section class="lesson" id="oscillation" tabindex="-1" aria-labelledby="heading-oscillation">
+<p class="part">波、物质与热 · 10</p>
+<h2 id="heading-oscillation">振动：平衡附近的共同语言</h2>
+<p>弹簧、摆和分子为什么会出现相似的振动？原因往往藏在平衡点附近。把光滑势能曲线放大来看，稳定平衡处的一阶导数为零，最低阶的变化通常是二次项。因此回复力近似正比于位移。</p><p>以 x 表示偏离平衡的位置，U≈U₀+kx²/2 就给出 mẍ=−kx。它的解是正弦和余弦，角频率 ω₀=√(k/m)。这不是所有振动都精确服从的定律，而是小振幅近似。振幅大到能感到势能曲线的非抛物线部分时，频率可能随振幅变化。</p>
+<div class="formula">$$\ddot x+\omega_0^2x=0,\qquad x=A\cos(\omega_0t+\phi),\qquad \omega_0=\sqrt{k/m}$$</div>
+<p>加入阻尼，机械能会不断转移到环境；加入周期驱动力，振动幅度与驱动频率有关，接近固有频率时可能出现共振。共振幅度还受阻尼限制，不能把“频率接近”理解为振幅一定无限增大。</p>
+<div class="example"><strong>算一算，想一想</strong><p>给秋千推力，关键是时机：每次在有利的相位做正功，小推力也能逐步积累能量；时机相反则会把振动压下去。</p></div>
+<details class="exercise"><summary>在理想简谐振动中，振幅加倍后周期怎样变化？</summary><p>周期不变，能量变为四倍。这是线性回复力模型的性质，非线性振动不一定成立。</p></details>
+</section>
+<section class="lesson" id="waves" tabindex="-1" aria-labelledby="heading-waves">
+<p class="part">波、物质与热 · 11</p>
+<h2 id="heading-waves">波传播什么</h2>
+<p>拉动长绳的一端，一个隆起沿绳传播，但绳上的标记主要在原处上下移动。传播的不是同一团物质，而是邻近部分依次影响彼此形成的扰动。局部耦合把振动变成波。</p><p>对张紧而横向位移很小的均匀绳，微小线段的受力给出波动方程。张力越大，恢复作用越强；单位长度质量越大，惯性越大。因此波速为 √(T/μ)。正弦波的相位 kx−ωt 保持不变的点以 ω/k 前进。</p>
+<div class="formula">$$\frac{\partial^2y}{\partial t^2}=v^2\frac{\partial^2y}{\partial x^2},\qquad v=\sqrt{T/\mu}=\frac\omega k=f\lambda$$</div>
+<p>在线性范围内，两列波相遇时位移相加。相向传播的同频波可形成驻波，固定端要求位移为零，从而筛选出允许波长。色散介质中不同频率的相速度不同，波包的形状可能改变，群速度 dω/dk 通常描述窄带波包包络的传播。</p>
+<div class="example"><strong>算一算，想一想</strong><p>两端固定、长度 L 的绳，其最低频模式具有半个波长，因此 f₁=v/(2L)。把绳长减半而保持张力与线密度不变，基频加倍。</p></div>
+<details class="exercise"><summary>绳上的一个点是否以波速沿着绳前进？</summary><p>不是。该点主要做横向振动；波速描述相位或扰动沿绳的传播。</p></details>
+</section>
+<section class="lesson" id="sound" tabindex="-1" aria-labelledby="heading-sound">
+<p class="part">波、物质与热 · 12</p>
+<h2 id="heading-sound">声、叠加与频谱</h2>
+<p>同样音高的笛子和小提琴为什么听起来不同？音高大致由重复周期决定，音色还取决于一个周期内部的形状。复杂的周期波形可以分解成基频与整数倍频率的正弦成分。</p><p>声波在流体中表现为压强和密度的纵向扰动。微小体积的压缩提供恢复作用，质量密度提供惯性。在适当的绝热近似下，声速由绝热体积模量 B 与密度 ρ 决定。它不是声源振动得越快就一定传播得越快。</p>
+<div class="formula">$$v=\sqrt{B/\rho},\qquad y(t)=\sum_{n=1}^{\infty}A_n\cos(n\omega_0t+\phi_n)$$</div>
+<p>两个相近频率相加会产生拍：快振动的振幅缓慢起伏，拍频为两频率之差。声源和接收者相对介质运动时，接收到波峰的时间间隔会改变，形成多普勒效应。声音需要介质，不能将声波的参考系规则直接搬到真空光波上。</p>
+<div class="example"><strong>算一算，想一想</strong><p>440 Hz 与 442 Hz 两个纯音同时播放，每秒出现约两次强弱起伏。调音时可通过减慢拍的变化来接近同频。</p></div>
+<details class="exercise"><summary>把音量加大是否会让音高升高？</summary><p>在线性声学范围内，主要增加振幅与强度，不改变频率；音高通常保持不变。</p></details>
+</section>
+<section class="lesson" id="optics" tabindex="-1" aria-labelledby="heading-optics">
+<p class="part">波、物质与热 · 13</p>
+<h2 id="heading-optics">光路、成像与干涉</h2>
+<p>一束光通过两条狭缝，为什么某些位置反而比只开一条缝更暗？如果只把光看成亮度相加的细流，就解释不了。波有相位；两个振动可能相互增强，也可能相互抵消。</p><p>几何光学追踪光线，适合波长远小于系统尺度的情形。折射率 n=c/v 描述相速度，界面上的相位连续给出折射定律。当孔径或障碍物与波长相关时，衍射变得重要，必须把不同路径的复振幅相加，再求强度。</p>
+<div class="formula">$$n_1\sin\theta_1=n_2\sin\theta_2,\qquad I\propto|A_1+A_2|^2$$</div>
+<p>双缝间距 d、观察角 θ 对应的远场光程差近似为 d sinθ；光程差为整数个波长时形成亮纹。稳定条纹要求适当的相干性。透镜能将来自一个物点的波重新汇聚，但有限口径带来的衍射限制了成像分辨率。</p>
+<div class="example"><strong>算一算，想一想</strong><p>在小角度、屏距 L 远大于缝距的条件下，相邻亮纹间距约为 λL/d。红光波长更长，在同样装置中条纹更宽。</p></div>
+<details class="exercise"><summary>某处相消干涉，能量消失了吗？</summary><p>没有。整个空间的能量分布改变，暗处的减少伴随其他位置的增强；还应把源和边界条件纳入完整能量账目。</p></details>
+</section>
+<section class="lesson" id="temperature" tabindex="-1" aria-labelledby="heading-temperature">
+<p class="part">波、物质与热 · 14</p>
+<h2 id="heading-temperature">温度如何来自分子运动</h2>
+<p>气体为什么能顶住活塞？把压强归因于分子撞击器壁，就能把宏观的力与微观的动量交换联系起来。一次碰撞很微弱，大量碰撞的平均效果却稳定可测。</p><p>对经典、稀薄、热平衡的理想气体，忽略分子间势能，把碰壁的动量转移相加可得 pV=Nm⟨v²⟩/3。再与理想气体状态方程比较，温度便与平均平动动能联系起来。这不是说每个分子都有同一速度，而是速度具有统计分布。</p>
+<div class="formula">$$pV=Nk_BT,\qquad \frac12m\langle v^2\rangle=\frac32k_BT$$</div>
+<p>温度必须使用绝对温标。内能是系统的微观能量，热则是因温差而发生的能量传递，不是物体内部存放的一种物质。多原子分子还具有转动、振动等自由度；量子效应会使某些自由度在低温下难以被激发。</p>
+<div class="example"><strong>算一算，想一想</strong><p>相同温度下，氦原子和较重气体分子的平均平动动能相同，但氦原子的均方根速率更大，因为 vᵣₘₛ∝1/√m。</p></div>
+<details class="exercise"><summary>温度相同的两杯水，内能一定相同吗？</summary><p>不一定。内能还取决于物质量、物态及其他条件；温度相同只说明它们达到热接触时没有由温差驱动的净热流。</p></details>
+</section>
+<section class="lesson" id="entropy" tabindex="-1" aria-labelledby="heading-entropy">
+<p class="part">波、物质与热 · 15</p>
+<h2 id="heading-entropy">热机、熵与不可逆性</h2>
+<p>热茶会自然变凉，但凉茶不会自发地把周围空气的能量收集起来变热。两种过程都可以不违反能量守恒，因此只记能量账还不够。还需要判断哪些宏观变化具有自然的方向。</p><p>第一定律写成 ΔU=Q−W，这里 Q 是系统吸收的热，W 是系统对外做的功。第二定律用熵描述方向：孤立系统的总熵不减少。熵是状态量；用可逆路径上的 δQ/T 积分计算熵变，并不要求真实过程本身可逆。</p>
+<div class="formula">$$dS=\frac{\delta Q_{\rm rev}}T,\qquad \Delta S_{\rm total}\ge0,\qquad \eta\le1-\frac{T_c}{T_h}$$</div>
+<p>热机在高温热源与低温热源之间循环工作。上述效率上限适用于这两个恒温热源，且温度取开尔文；达到上限需要可逆过程。微观上，平衡宏观状态通常对应极大量的微观排列，孤立系统趋向这些宏观状态具有压倒性的统计优势。</p>
+<div class="example"><strong>算一算，想一想</strong><p>从 400 K 热源吸热、向 300 K 冷源放热的循环热机，效率最多为 25%。其余能量并非丢失，而是必须向冷源排出。</p></div>
+<details class="exercise"><summary>冰箱让内部变冷，是否违反熵增？</summary><p>不违反。冰箱消耗外界做功并向室内排热；把冰箱、房间和供能过程一起考虑，总熵仍不减少。</p></details>
+</section>
+<section class="lesson" id="matter" tabindex="-1" aria-labelledby="heading-matter">
+<p class="part">波、物质与热 · 16</p>
+<h2 id="heading-matter">流体、弹性与连续介质</h2>
+<p>为什么水管变细处的水常常流得更快？取一段管内的水，如果没有积累，单位时间流入的质量必须等于流出的质量。这是守恒定律在连续介质中的表达，而不是水“偏爱”细管。</p><p>对于稳态不可压缩流，Av 沿流管不变。若流动还可忽略黏性，沿流线可以写出伯努利方程，把压强功、动能和重力势能联系起来。条件缺一不可：长细管中的黏性压降不能由理想伯努利方程单独解释。</p>
+<div class="formula">$$Av=\text{常量},\qquad p+\frac12\rho v^2+\rho gh=\text{常量},\qquad \sigma=Y\varepsilon$$</div>
+<p>固体的相邻部分则能支撑剪切。小形变时，拉伸应力 σ 与相对伸长 ε 近似成正比，比例系数 Y 为杨氏模量。超过线性或弹性范围后，会出现非线性、塑性与断裂。连续介质模型把原子细节平均掉，适用于尺度足够大的变化。</p>
+<div class="example"><strong>算一算，想一想</strong><p>同高度、稳态、理想流体的管道中，截面积减半使流速加倍，同时动压增大、静压降低；若有泵或明显黏性损耗，需另加相应能量项。</p></div>
+<details class="exercise"><summary>伯努利方程是否说明所有地方“流速越大压强越小”？</summary><p>不是。它是在特定条件下沿流线成立的关系，不能任意比较不同流动、不同高度或受外部做功的两点。</p></details>
+</section>
+<section class="lesson" id="electric-field" tabindex="-1" aria-labelledby="heading-electric-field">
+<p class="part">场、电磁与光 · 17</p>
+<h2 id="heading-electric-field">电场：把作用分配到空间</h2>
+<p>移走用来测量的试探电荷后，电场还在吗？电场的定义虽然借助试探电荷受力，却并不依赖这一个电荷的存在。它描述给定源与边界条件下，空间每一点对电荷的作用规律。</p><p>静止点电荷产生的场随距离平方衰减，多个源的场按向量叠加。场线是方向与强弱的可视化工具，不是空间中实际存在的细绳。把场在一个闭合曲面上的法向分量积分，得到通量；高斯定律将它与包围的净电荷联系起来。</p>
+<div class="formula">$$\mathbf F=q\mathbf E,\qquad \oint\mathbf E\cdot d\mathbf A=\frac{Q_{\rm enc}}{\varepsilon_0}$$</div>
+<p>高斯定律总是成立，但只有对称性足够强时，才能直接用它算场。静电平衡导体内部电场为零，否则自由电荷会继续移动；多余电荷分布在表面，使边界条件成立。这里说的是静电平衡，不是所有通电导体。</p>
+<div class="example"><strong>算一算，想一想</strong><p>球对称电荷分布外，球面上 E 的大小相同且沿径向，因此 E·4πr²=Q/ε₀，重新得到平方反比规律。</p></div>
+<details class="exercise"><summary>闭合曲面包围的净电荷为零，面上电场一定处处为零吗？</summary><p>不一定。它只意味着总通量为零；外部电荷可以产生穿入又穿出的电场。</p></details>
+</section>
+<section class="lesson" id="potential" tabindex="-1" aria-labelledby="heading-potential">
+<p class="part">场、电磁与光 · 18</p>
+<h2 id="heading-potential">势、梯度与边界条件</h2>
+<p>把一个电荷从 A 搬到 B，为什么有时只需知道两点电势差？在静电场中，沿闭合路径做功为零，因此可以用一个标量函数记录每单位电荷的势能，而不用为每条路径重新算功。</p><p>电场等于电势下降最快方向上的变化率，即 E=−∇φ。梯度把标量的空间变化变成向量；散度测量局部净流出，旋度测量局部环流。它们分别帮助描述势、源与旋转结构，不能仅把它们当作形式符号。</p>
+<div class="formula">$$\mathbf E=-\nabla\phi,\qquad \nabla\cdot\mathbf E=\frac\rho{\varepsilon_0},\qquad \nabla^2\phi=-\frac\rho{\varepsilon_0}$$</div>
+<p>最后一个式子是泊松方程。在没有电荷的区域，它变成拉普拉斯方程，但电势不一定为零：边界上的导体与外部电荷仍决定内部解。电势加上一个常数不改变电场，所以必须区分电势的数值与电势差。</p>
+<div class="example"><strong>算一算，想一想</strong><p>两块大平行导体板相距 d、电势差为 V，忽略边缘效应，板间电势线性变化，电场大小约为 V/d。</p></div>
+<details class="exercise"><summary>电势为零的位置，电场也必为零吗？</summary><p>不必。电势零点可以任意选；电场由电势的空间变化率决定，不由其绝对数值决定。</p></details>
+</section>
+<section class="lesson" id="capacitance" tabindex="-1" aria-labelledby="heading-capacitance">
+<p class="part">场、电磁与光 · 19</p>
+<h2 id="heading-capacitance">电容、电介质与场能</h2>
+<p>给两块金属板分别送入等量异号电荷，需要做功。它们之间产生越来越强的电场，继续搬运电荷就越来越费力。这些功储存为系统的电场能量，放电时又能转移出去。</p><p>线性电容器中 Q=CV，C 由几何形状与介质决定。给电容器充入微小电荷 dq，需要做功 V dq；从零积分到 Q，得到能量 Q²/(2C)。电介质在场中极化，束缚电荷改变总场，使给定电荷下的电势差通常减小，电容增加。</p>
+<div class="formula">$$C=\frac QV,\qquad U=\frac12CV^2,\qquad u_E=\frac12\varepsilon_0E^2$$</div>
+<p>最后一个式子是真空中的电场能量密度。理想均匀线性介质可用 ε 替代 ε₀，但复杂介质还需更谨慎地处理材料能量。讨论插入介质时一定要说明电容器是否仍接着电源：固定电荷与固定电压对应不同的能量变化。</p>
+<div class="example"><strong>算一算，想一想</strong><p>断开电源后插入介质，Q 不变、C 增大，场能 Q²/(2C) 减小；若保持电压不变，电源还会输送电荷和能量。</p></div>
+<details class="exercise"><summary>为什么不能只用“电容增大，能量必增大”来判断？</summary><p>因为 U=CV²/2 与 U=Q²/(2C) 等价，但变化时固定的量不同；还必须记入电源与机械功。</p></details>
+</section>
+<section class="lesson" id="circuits" tabindex="-1" aria-labelledby="heading-circuits">
+<p class="part">场、电磁与光 · 20</p>
+<h2 id="heading-circuits">电流、电阻与电路</h2>
+<p>按下开关，灯很快亮起，是否意味着电池里的电子瞬间跑到了灯泡？导线中早已有可移动电荷。电磁扰动沿电路传播并建立电场，局部电荷开始响应；电子漂移速度与信号传播速度不是一回事。</p><p>电流是单位时间通过截面的电荷量。在简单欧姆材料的适用范围内，电流密度 J=σE；均匀导线由此得到 R=ℓ/(σA)。结点的流入与流出电流平衡来自电荷守恒，低频集总电路的回路电压关系则要包括电源及感应电动势。</p>
+<div class="formula">$$I=\frac{dQ}{dt},\qquad V=IR,\qquad P=VI=I^2R$$</div>
+<p>电阻把有序的电能转成热运动，电荷本身并没有被“消耗”。RC 充电不是匀速过程：随着电容电压上升，电阻上的电压减小，电流按指数衰减，特征时间为 RC。高频或大尺度电路必须考虑传播延迟，不能把所有导线都视为理想等势连接。</p>
+<div class="example"><strong>算一算，想一想</strong><p>电压源经 R 给初始不带电的电容 C 充电，电容电压为 V₀(1−e^(−t/RC))；经过一个 RC，约达到最终值的 63%。</p></div>
+<details class="exercise"><summary>两个相同电阻并联，等效电阻为什么减半？</summary><p>同一电压下，每条支路通过 V/R，合电流为 2V/R，因此等效电阻 V/I=R/2。</p></details>
+</section>
+<section class="lesson" id="magnetism" tabindex="-1" aria-labelledby="heading-magnetism">
+<p class="part">场、电磁与光 · 21</p>
+<h2 id="heading-magnetism">磁场与运动电荷</h2>
+<p>电子进入均匀磁场后可以转弯，却不一定变快。原因在于磁力总与速度垂直，瞬时功率为零。力可以改变方向而不改变速率，这与圆周运动的向心力相同。</p><p>电荷受到的电磁力由洛伦兹力给出。直导线中的大量运动电荷共同受力，表现为载流导线在磁场中的力；电流环则像磁偶极子，受到趋向对齐磁场的力矩。电与磁是统一电磁场的不同方面，观察者运动状态改变时，二者的分解也改变。</p>
+<div class="formula">$$\mathbf F=q(\mathbf E+\mathbf v\times\mathbf B),\qquad r=\frac{mv_\perp}{|q|B},\qquad \boldsymbol\tau=\boldsymbol\mu\times\mathbf B$$</div>
+<p>回旋半径公式使用非相对论动量，且假定均匀磁场、无其他力。速度若还有沿场分量，轨迹是螺旋线。磁性材料的响应涉及电子轨道与自旋；不能把所有磁性都解释成宏观小电流环的简单排列。</p>
+<div class="example"><strong>算一算，想一想</strong><p>把带电粒子的垂直入射速度加倍，其他条件不变，非相对论回旋半径加倍；回旋角频率 |q|B/m 则不变。</p></div>
+<details class="exercise"><summary>磁力不做功，电动机怎么输出机械功？</summary><p>电动机是完整的电磁系统，电源通过电场供能，载流导体的约束与相互作用实现能量转移；不能只看单个自由电荷的磁力项。</p></details>
+</section>
+<section class="lesson" id="induction" tabindex="-1" aria-labelledby="heading-induction">
+<p class="part">场、电磁与光 · 22</p>
+<h2 id="heading-induction">感应：变化的磁通产生环流</h2>
+<p>磁铁静止在线圈旁不产生持续感应电流，移动它却会。关键不是单纯“有没有磁场”，而是穿过回路的磁通是否变化。磁通同时取决于场强、面积与方向。</p><p>法拉第定律规定感应电动势等于磁通变化率的负值。负号表达楞次定律：感应响应趋向反抗造成它的磁通变化。对固定回路，变化磁场产生的电场可以沿闭合路径有非零环流，因此不能只用一个静电势描述。</p>
+<div class="formula">$$\mathcal E=-\frac{d\Phi_B}{dt},\qquad \Phi_B=\int\mathbf B\cdot d\mathbf A,\qquad U_L=\frac12LI^2$$</div>
+<p>导线回路自身电流变化也会改变磁通，形成自感。理想线性电感中的能量为 LI²/2。电容与电感连接时，电场能与磁场能来回交换；加入电阻则振荡衰减，外部周期驱动又会产生频率响应与共振。</p>
+<div class="example"><strong>算一算，想一想</strong><p>将磁铁向闭合线圈靠近时，维持运动通常需要克服阻力；机械功可转成电阻热。这是能量守恒对感应方向的检查。</p></div>
+<details class="exercise"><summary>磁通为零的瞬间，感应电动势一定为零吗？</summary><p>不一定。电动势取决于磁通的变化率；一个正穿过零点、快速变化的磁通可以产生很大的电动势。</p></details>
+</section>
+<section class="lesson" id="maxwell" tabindex="-1" aria-labelledby="heading-maxwell">
+<p class="part">场、电磁与光 · 23</p>
+<h2 id="heading-maxwell">麦克斯韦方程与电磁波</h2>
+<p>正在充电的电容器，两板之间没有普通导电电流，为什么周围仍有磁场？如果只把磁场与导电电流相连，选不同积分曲面会产生矛盾。变化的电场也必须进入磁场的源项，这就是位移电流的作用。</p><p>麦克斯韦方程把电荷、导电电流以及电场和磁场的变化统一起来。在无源真空中，对旋度方程继续求导并结合散度关系，可以得到电磁场的波动方程，传播速度为 1/√(μ₀ε₀)。这个速度与光速相符，提示光就是电磁波。</p>
+<div class="formula">$$\begin{aligned}\nabla\cdot\mathbf E&amp;=\rho/\varepsilon_0,&amp;\nabla\cdot\mathbf B&amp;=0,\\\nabla\times\mathbf E&amp;=-\partial_t\mathbf B,&amp;\nabla\times\mathbf B&amp;=\mu_0\mathbf J+\mu_0\varepsilon_0\partial_t\mathbf E.\end{aligned}$$</div>
+<p>平面电磁波的电场、磁场与传播方向相互垂直，且 E=cB。偏振描述电场振动方向的规律；它可以是线偏振、圆偏振或更一般的椭圆偏振。物质中的传播还取决于介质响应，可能出现色散和吸收。</p>
+<div class="example"><strong>算一算，想一想</strong><p>转动两片理想线偏振片之间的夹角 θ，对于入射到第二片的线偏振光，透射强度为 I₀cos²θ；正交时理想透射为零。</p></div>
+<details class="exercise"><summary>真空中没有电荷，是否意味着不可能存在电场？</summary><p>不意味着。没有电荷只规定电场散度为零；电磁波可以在无源区域传播。</p></details>
+</section>
+<section class="lesson" id="radiation" tabindex="-1" aria-labelledby="heading-radiation">
+<p class="part">场、电磁与光 · 24</p>
+<h2 id="heading-radiation">辐射、能流与光的动量</h2>
+<p>太阳与地球之间大部分是真空，能量如何跨过这段空间？电磁场本身能够携带能量与动量。它不是仅仅用来算力的记号，也有可测量的动力学作用。</p><p>电磁能流密度由坡印廷矢量给出。对于真空平面波，它沿传播方向，时间平均值就是光强。加速电荷可以产生向远处传播的辐射场；要区分随距离快速衰减的近场和把能量运走的远场，不能把电荷附近的全部电场都称为辐射。</p>
+<div class="formula">$$\mathbf S=\frac1{\mu_0}\mathbf E\times\mathbf B,\qquad p_{\rm abs}=\frac Ic,\qquad p_{\rm refl}=\frac{2I}c$$</div>
+<p>后两个式子描述真空中垂直入射到理想吸收面或反射面的辐射压。反射时动量变化更大，所以压力加倍。微观上，受驱动的束缚电荷能散射和吸收光；材料的折射率、颜色与透明窗口都与这些响应有关。</p>
+<div class="example"><strong>算一算，想一想</strong><p>光强为 1000 W/m² 时，理想吸收面的辐射压约为 3.3 微帕。数值虽小，长期作用于质量很轻的薄膜仍能产生可积累的速度变化。</p></div>
+<details class="exercise"><summary>只有带质量的物体才能携带动量吗？</summary><p>不是。光在真空中满足 E=pc，虽然静质量为零，仍有能量和动量。</p></details>
+</section>
+<section class="lesson" id="amplitudes" tabindex="-1" aria-labelledby="heading-amplitudes">
+<p class="part">量子、原子与统计 · 25</p>
+<h2 id="heading-amplitudes">先加振幅，再求概率</h2>
+<p>把电子一个一个送向双缝，每次只留下一个局部记录，许多次累积却可出现条纹。单次探测是离散事件，整体统计又表现出干涉。经典粒子的“走左边或右边”概率相加规则，不能直接套用到未被区分的量子过程。</p><p>量子理论为可替代过程分配复概率振幅。无法区分的路径先相加振幅，再取模平方；如果路径信息被可靠记录，必须把记录装置也纳入状态，干涉项可能消失。关键是物理相互作用留下了什么信息，并不需要人的意识参与。</p>
+<div class="formula">$$P=|a_1+a_2|^2=|a_1|^2+|a_2|^2+2\operatorname{Re}(a_1^*a_2)$$</div>
+<p>交叉项由相对相位决定，可以为正、负或零。整体乘同一个相位不改变可观测概率，改变两条路径的相对相位却会移动条纹。这套计算规则保留统计预测，却不要求把每次事件硬解释为一条未被测量的经典轨迹。</p>
+<div class="example"><strong>算一算，想一想</strong><p>在一个归一化的两路径干涉装置中，同一输出口的两个路径贡献若各为 1/2，则同相时概率为 1，反相时为 0；另一个输出口补足总概率。</p></div>
+<details class="exercise"><summary>记录了路径但没人查看，干涉一定保留吗？</summary><p>不一定。路径与环境或探测器的可区分状态发生纠缠，就可能使电子单独的干涉消失，是否有人读取记录不是关键。</p></details>
+</section>
+<section class="lesson" id="states" tabindex="-1" aria-labelledby="heading-states">
+<p class="part">量子、原子与统计 · 26</p>
+<h2 id="heading-states">状态、测量与不确定性</h2>
+<p>一束粒子的“状态”究竟是什么？它不是每个经典属性都有一个藏好的数值，而是用来预测各种测量结果概率的数学对象。选择一组测量基，就能用各结果对应的振幅展开同一个状态。</p><p>对归一化态，某结果的概率是相应投影振幅的模平方。可观测量由厄米算符表示，其本征值是理想测量可能得到的数值。不同算符一般不对易，因此不能要求一个状态同时把所有测量结果都确定下来。</p>
+<div class="formula">$$|\psi\rangle=\sum_n c_n|n\rangle,\qquad \sum_n|c_n|^2=1,\qquad \Delta x\,\Delta p\ge\frac\hbar2$$</div>
+<p>不确定关系说的是同一量子态中重复测量的统计分散度，不仅是仪器不够精密。位置局域化需要叠加更宽的波数范围，而动量 p=ℏk，因此位置分布越窄，动量分布通常越宽。量子态的叠加也不同于我们不知道系统处于哪个状态的经典混合。</p>
+<div class="example"><strong>算一算，想一想</strong><p>若两个正交基态的振幅分别为 √3/2 与 1/2，沿这组基测量得到两种结果的概率为 3/4 与 1/4；振幅本身不是概率。</p></div>
+<details class="exercise"><summary>不确定关系是否表示每次测得的位置都是错误的？</summary><p>不是。单次测量可以有明确记录；关系约束的是在同样制备条件下，位置和动量概率分布的标准差。</p></details>
+</section>
+<section class="lesson" id="spin" tabindex="-1" aria-labelledby="heading-spin">
+<p class="part">量子、原子与统计 · 27</p>
+<h2 id="heading-spin">自旋与两能级系统</h2>
+<p>把带磁矩的粒子束通过非均匀磁场，可以观察到离散分束。对自旋 1/2 粒子，沿任一指定方向测量自旋分量，只有两个可能结果。不能把它简单理解为一个小球以任意角速度自转。</p><p>用两个正交态描述两能级系统，任意纯态都是它们的归一化复线性组合。沿 z 方向结果确定的态，沿 x 方向测量却可能各有一半概率。更换测量方向相当于更换基底，同一个物理状态的展开系数随之改变。</p>
+<div class="formula">$$|\psi\rangle=\alpha|+z\rangle+\beta|-z\rangle,\qquad |\alpha|^2+|\beta|^2=1$$</div>
+<p>自旋磁矩在磁场中具有能量差，状态的相对相位随时间变化，形成进动。适当频率的外场可在两个能级之间驱动跃迁。两能级模型也适用于原子选出的两个能级等许多系统，并非只属于电子自旋。</p>
+<div class="example"><strong>算一算，想一想</strong><p>先筛选 +z 粒子，再测 x 方向，会得到 ±x 各半；若随后只保留 +x 再测 z，又会得到 ±z 各半。中间测量改变了后续预测。</p></div>
+<details class="exercise"><summary>已经得到 +z，是否意味着沿所有方向自旋都为正？</summary><p>不是。结果依赖测量方向，不同自旋分量不能同时确定。</p></details>
+</section>
+<section class="lesson" id="schrodinger" tabindex="-1" aria-labelledby="heading-schrodinger">
+<p class="part">量子、原子与统计 · 28</p>
+<h2 id="heading-schrodinger">薛定谔方程让状态演化</h2>
+<p>知道此刻的量子态，怎样预测下一刻？量子理论并非只给测量概率，也给状态的动力学。非相对论孤立系统中，哈密顿算符决定态随时间怎样变化。</p><p>在位置表象下，单粒子的动能对应二阶空间导数，势能对应位置函数。由此得到薛定谔方程。若势能不随时间变化，可以先求能量本征态；每个本征态随时间只获得一个相位，多个本征态叠加时相对相位变化，便能出现随时间变化的概率分布。</p>
+<div class="formula">$$i\hbar\frac{\partial\psi}{\partial t}=\left[-\frac{\hbar^2}{2m}\nabla^2+V\right]\psi,\qquad \psi_n(t)=\phi_n e^{-iE_nt/\hbar}$$</div>
+<p>波函数模平方是位置概率密度，积分为 1。边界条件与归一化不是事后装饰，它们参与决定哪些解可接受。该方程有适用范围：高速粒子、粒子数改变和电磁场的完整量子过程需要更一般的理论。</p>
+<div class="example"><strong>算一算，想一想</strong><p>两个能量分别为 E₁、E₂ 的态叠加时，相对相位以 (E₂−E₁)/ℏ 的角频率变化；可观测量能否随之振荡，还取决于相关矩阵元。</p></div>
+<details class="exercise"><summary>能量本征态随时间有相位变化，为什么位置概率密度仍不变？</summary><p>因为相位因子的模为 1，|φₙe^(−iEₙt/ℏ)|²=|φₙ|²。这种态称为定态。</p></details>
+</section>
+<section class="lesson" id="tunneling" tabindex="-1" aria-labelledby="heading-tunneling">
+<p class="part">量子、原子与统计 · 29</p>
+<h2 id="heading-tunneling">束缚态与隧穿</h2>
+<p>把粒子限制在一个盒子里，为什么能量不能连续取值？波函数既要满足动力学，又要符合边界条件。就像固定两端的弦只允许某些驻波，量子束缚态也会被这些条件筛选。</p><p>一维无限深势阱中，波函数在两端为零，阱内可容纳整数个半波长，得到离散能级。最低能量不是零：若位置限制在有限范围，动量不可能完全确定为零。有限高势垒则不同，波函数可以延伸到经典禁区，并在另一侧留下非零透射概率。</p>
+<div class="formula">$$E_n=\frac{n^2\pi^2\hbar^2}{2mL^2},\qquad \kappa=\frac{\sqrt{2m(V_0-E)}}\hbar$$</div>
+<p>对 E&lt;V₀ 的矩形势垒，禁区内波函数有指数变化；足够厚的势垒，其透射率的主要宽度依赖为 e^(−2κa)，其中 a 是势垒宽度，精确系数取决于边界匹配。隧穿并不需要粒子临时“借来能量”，静态势垒的散射过程仍可守恒能量。</p>
+<div class="example"><strong>算一算，想一想</strong><p>阱宽 L 缩小一半，无限深势阱所有能级升为四倍。隧穿扫描仪则利用电流对间隙宽度的强烈依赖，感知非常细小的高度变化。</p></div>
+<details class="exercise"><summary>隧穿意味着粒子穿过势垒后能量变大吗？</summary><p>不是。对静态势垒，透射粒子总能量与入射时相同；透射概率来自波函数及其边界条件。</p></details>
+</section>
+<section class="lesson" id="atoms-quantum" tabindex="-1" aria-labelledby="heading-atoms-quantum">
+<p class="part">量子、原子与统计 · 30</p>
+<h2 id="heading-atoms-quantum">原子、角动量与光谱</h2>
+<p>经典电子若绕核运动并持续辐射，原子似乎会塌缩。量子理论改用束缚态描述电子：定态不是一条发射着电磁波的经典轨道，原子的稳定性需要从量子动力学理解。</p><p>氢样原子的库仑势给出离散能级与空间概率分布。量子数区分能量、轨道角动量及其沿指定轴的分量；自旋再增加一组自由度。轨道图显示概率分布或波函数结构，不是电子绕行的路线。</p>
+<div class="formula">$$E_n\simeq-\frac{13.6\,Z^2}{n^2}\ \mathrm{eV},\qquad h\nu=E_i-E_f$$</div>
+<p>能级公式适用于单电子氢样离子、忽略约化质量和精细修正的近似。辐射频率由能量差决定，但并非每两个能级间都有同样强的跃迁；耦合矩阵元与对称性产生选择定则。多电子原子还需考虑电子间相互作用及泡利原理。</p>
+<div class="example"><strong>算一算，想一想</strong><p>氢原子从 n=3 跃迁到 n=2，发射光子的能量约为 1.89 eV，对应约 656 nm 的红光。这条线测量的是能级差。</p></div>
+<details class="exercise"><summary>负的束缚态能量是否不合理？</summary><p>不是。把电子与核相距无穷远且静止时的能量设为零，束缚态能量为负，表示需要输入能量才能使它们分离。</p></details>
+</section>
+<section class="lesson" id="statistics" tabindex="-1" aria-labelledby="heading-statistics">
+<p class="part">量子、原子与统计 · 31</p>
+<h2 id="heading-statistics">相同粒子与量子统计</h2>
+<p>两个电子完全相同，交换它们后是否得到一个新的物理状态？在量子理论中，不能给相同粒子贴上可观测的永久编号。交换对多粒子态的要求，深刻改变了物质能占据哪些状态。</p><p>玻色子的总波函数在交换下对称，费米子的总波函数在交换下反对称。两个相同费米子若试图占据同一个单粒子态，反对称组合为零，这就是泡利不相容原理。这里的“同态”包括自旋，不能只看空间轨道。</p>
+<div class="formula">$$\bar n_{\rm B,F}(E)=\frac1{\exp[(E-\mu)/(k_BT)]\mp1}$$</div>
+<p>上式是非相互作用或适当准粒子近似下，热平衡的平均占据数；玻色子取减号，费米子取加号。稀薄、非简并极限下，两者趋向经典玻尔兹曼统计。泡利原理解释电子壳层填充与费米压，玻色统计则允许同一态出现大量占据。</p>
+<div class="example"><strong>算一算，想一想</strong><p>一个空间轨道可以容纳自旋相反的两个电子，因为它们的完整单粒子态不同；第三个电子不能再占据其中任何一个已占满的自旋轨道。</p></div>
+<details class="exercise"><summary>泡利原理是否意味着两个电子不能出现在同一空间区域？</summary><p>不是。它禁止占据完全相同的单粒子量子态，不是简单的空间排斥规则。</p></details>
+</section>
+<section class="lesson" id="solids" tabindex="-1" aria-labelledby="heading-solids">
+<p class="part">量子、原子与统计 · 32</p>
+<h2 id="heading-solids">从原子到固体</h2>
+<p>把许多原子放到一起，它们各自的离散能级会怎样？相邻原子的电子态相互耦合，原本相同的能级分裂成大量非常接近的状态。在宏观晶体中，它们形成能带，能带之间可能存在禁带。</p><p>导电不仅取决于有没有电子，还取决于已占据态附近有没有可响应电场的空态。部分填充的能带可形成金属；满带与空带之间若隔着较大能隙，低温下导电困难。半导体的热激发、掺杂和空穴描述，使我们能够控制载流子数量。</p>
+<div class="formula">$$\mathbf v_g=\frac1\hbar\nabla_{\mathbf k}E(\mathbf k),\qquad \sigma\approx ne\mu_e+pe\mu_h$$</div>
+<p>群速度由能带色散决定，电子在晶体中的响应不必像真空自由粒子。电导近似式中的 n、p 是电子与空穴浓度，μₑ、μₕ 是迁移率。超导又不同于普通的低电阻：它具有宏观量子相干与迈斯纳效应，不能仅靠完美导体的经典模型解释。</p>
+<div class="example"><strong>算一算，想一想</strong><p>给硅加入适量施主杂质，可以提供容易进入导带的电子；改变载流子与结区电场，便能做出整流和开关器件。器件的功能来自可控制的能带与占据。</p></div>
+<details class="exercise"><summary>绝缘体没有电子，所以不导电，对吗？</summary><p>不对。绝缘体有大量电子，但通常缺乏在所给温度与电场下容易参与输运的可用态和载流子。</p></details>
+</section>
+<section class="lesson" id="nuclei" tabindex="-1" aria-labelledby="heading-nuclei">
+<p class="part">量子、原子与统计 · 33</p>
+<h2 id="heading-nuclei">核、粒子与理论的边界</h2>
+<p>原子核把带同号电荷的质子束缚在很小的区域，单靠电磁力显然无法解释。核子之间的残余强相互作用在短距离内产生吸引，电磁排斥与量子效应共同决定哪些核稳定。</p><p>束缚核的静质量小于分离核子的质量之和，差额乘 c² 就是结合能。聚变与裂变能否放能，要比较初态和末态的总质量，不能简单归结为“把核拆开就释放能量”。放射性衰变对单个原子核具有随机性，大量核则遵循稳定的统计规律。</p>
+<div class="formula">$$E_b=\Delta mc^2,\qquad N(t)=N_0e^{-\lambda t},\qquad t_{1/2}=\frac{\ln2}{\lambda}$$</div>
+<p>指数衰变来自单位时间内近似恒定的衰变概率，不代表每个核都有一个倒数计时器。描述更高能量过程时，需要相对论与量子场论；粒子产生、湮灭仍受能量、动量、电荷等守恒规律约束。每种理论都有适用尺度，越过尺度时应检查近似，而不是把旧公式机械外推。</p>
+<div class="example"><strong>算一算，想一想</strong><p>经过两个半衰期，大量同种放射性核平均剩下四分之一；单独某个核则可能更早或更晚衰变，半衰期不是个体寿命上限。</p></div>
+<details class="exercise"><summary>测量一套理论符合很多实验，是否证明它在所有尺度都精确成立？</summary><p>不能。实验支持的是在已检验条件下的预测。新的尺度、更高精度或不同环境，可能揭示原有近似的边界。</p></details>
+</section>
+<section class="references" id="sources" tabindex="-1" aria-labelledby="sources-title">
+<h2 id="sources-title">原书与延伸阅读</h2>
+<p>《费恩曼物理学讲义》的官方在线版由 Caltech 提供，作者为 Richard P. Feynman、Robert B. Leighton 与 Matthew Sands。以下入口可阅读三卷原书；本站正文是另行组织、独立撰写的概念讲解，未收录原书全文、全部例子或完整论证。</p>
+<ul><li><a href="https://www.feynmanlectures.caltech.edu/I_toc.html">原书第一卷：力学、辐射与热</a></li><li><a href="https://www.feynmanlectures.caltech.edu/II_toc.html">原书第二卷：电磁学与物质</a></li><li><a href="https://www.feynmanlectures.caltech.edu/III_toc.html">原书第三卷：量子力学</a></li></ul>
+<p>需要更多标准推导与练习，可查阅 OpenStax 的 <a href="https://openstax.org/details/books/university-physics-volume-1">University Physics 第一卷</a>、<a href="https://openstax.org/details/books/university-physics-volume-2">第二卷</a>和<a href="https://openstax.org/details/books/university-physics-volume-3">第三卷</a>。这些是延伸阅读来源，本站未转载教材正文或插图。</p>
+<p><a href="#reading">回到开头 ↑</a></p>
+</section>
+</article></main>
+<noscript><p class="no-script">正文可直接阅读；目录按钮、夜间模式与公式排版需要启用 JavaScript。</p></noscript>
+</body></html>

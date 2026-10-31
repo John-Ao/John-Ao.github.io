@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图像相似度优化实验</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="vendor/tf.min.js"></script>
+<script defer src="metrics.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<main>
+<section class="controls" aria-label="实验设置">
+<div class="input-row">
+<label class="upload">参考图像<input id="upload" type="file" accept="image/*"></label>
+<label>计算长边<select id="size"><option value="64">64 px</option><option value="96" selected>96 px</option><option value="128">128 px</option><option value="192">192 px</option><option value="256">256 px</option></select></label>
+<label>随机种子<div class="joined"><input id="seed" type="number" min="0" max="4294967295" step="1" value="42"><button id="random" type="button" title="随机种子">随机</button></div></label>
+<label>学习率<input id="rate" type="number" min="0.0001" max="0.2" step="any" value="0.03"></label>
+<label>总步数<input id="steps" type="number" min="1" max="10000" step="1" value="300"></label>
+</div>
+<div class="weight-row"><label for="weight">优化目标</label><span>SSIM</span><input id="weight" type="range" min="0" max="100" value="50"><span>LPIPS</span><output id="weights">50% / 50%</output></div>
+<p id="formula" class="muted">损失 = 0.50 × (1 − SSIM) + 0.50 × LPIPS</p>
+<div class="actions"><button id="start" class="primary" disabled>开始优化</button><button id="pause" disabled>暂停</button><button id="reset" disabled>重置噪声</button><button id="download" disabled>保存结果</button><span id="status" role="status" aria-live="polite">正在初始化计算引擎…</span></div>
+</section>
+<section class="images" aria-label="图像对比">
+<figure><figcaption>参考图像 <span id="dimensions"></span></figcaption><div class="canvas-wrap"><canvas id="reference" width="256" height="256" aria-label="参考图像"></canvas><span id="empty">选择一张图像</span></div></figure>
+<figure><figcaption>初始噪声 <span id="seed-label"></span></figcaption><div class="canvas-wrap"><canvas id="initial" width="256" height="256" aria-label="初始随机噪声"></canvas></div></figure>
+<figure><figcaption>优化结果 <span id="step-label">第 0 步</span></figcaption><div class="canvas-wrap"><canvas id="result" width="256" height="256" aria-label="当前优化结果"></canvas></div></figure>
+</section>
+<section class="results" aria-label="指标和曲线">
+<div class="scores"><div><span>SSIM ↑</span><strong id="ssim">—</strong></div><div><span>LPIPS ↓</span><strong id="lpips">—</strong></div><div><span>加权损失 ↓</span><strong id="loss">—</strong></div><div><span>已完成步数</span><strong id="count">0</strong></div></div>
+<div class="chart-title"><span>指标随步数变化</span><div class="legend"><span class="s">SSIM · 左轴</span><span class="l">LPIPS · 右轴</span><span class="v">损失 · 右轴</span></div></div>
+<canvas id="chart" role="img" aria-label="SSIM、LPIPS 和加权损失随优化步数变化曲线"></canvas>
+</section>
+<details><summary>计算设置与指标说明</summary><p>图像在浏览器本地处理。保持宽高比缩小至所选长边；过窄的图像使用白色边缘补至最短边 32 px，透明区域合成到白色背景。所有指标针对这里显示的计算图像。</p><p>LPIPS：官方 v0.1 SqueezeNet 1.1 特征网络及学习校准权重，距离越低越相似，不是百分比。SSIM：RGB 三通道平均，11 × 11 高斯窗口（σ = 1.5），valid 边界，像素范围 [0, 1]，C₁ = 0.01²、C₂ = 0.03²。</p><p>Adam 直接更新浮点 RGB 像素，每步截断到 [0, 1]；两个损失未经数值尺度归一化。权重固定于每次实验，修改设置会重置。种子固定初始噪声，不保证不同设备的浮点优化结果完全一致。曲线记录浮点图像指标，保存 PNG 的 8 位量化会产生微小差异。</p><p>为完整比较，每次显示结果时都会计算两个指标；纯 SSIM 的梯度更新不经过 LPIPS 网络。<a href="https://github.com/richzhang/PerceptualSimilarity">LPIPS 实现与权重来源</a>。</p></details>
+</main>
+</body></html>

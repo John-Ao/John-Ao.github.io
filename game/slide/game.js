@@ -13,7 +13,7 @@ function pathToBlank(index){
 }
 function turn(index){const path=pathToBlank(index);let blank=beads.indexOf(0);for(const i of path.reverse()){beads[blank]=beads[i];blank=i;}beads[blank]=0;}
 function solved(){return beads.every((v,i)=>v===(i+1)%beads.length);}
-function report(){status.textContent=timerPaused()?'已暂停 · 在菜单中继续计时':moved&&solved()?`已完成 · ${moves} 步`:`${mode==='click'?'点击或拖动经过空白相邻格子':'拖动同一行或列的数字到空白处'}${moves?' · '+moves+' 步':''}`;}
+function report(){status.textContent=timerPaused()?'已暂停 · 在菜单中继续计时':moved&&solved()?`已完成 · ${moves} 步`:`${mode==='click'?'点击或拖动经过与空白同一行或列的数字':'拖动同一行或列的数字到空白处'}${moves?' · '+moves+' 步':''}`;}
 function draw(){
  board.style.setProperty('--cols',cols);
  const area=board.parentElement,style=getComputedStyle(area),gap=parseFloat(getComputedStyle(board).gap)||0;
@@ -70,6 +70,14 @@ function updateSlide(e){
  drag.progress=Math.max(0,Math.min(drag.pitch,distance*1.6));
  for(const b of drag.tiles)b.style.transform=`translate${drag.axis.toUpperCase()}(${drag.progress*drag.sign}px)`;
 }
+function commitSlide(){
+ const {index,axis,progress,sign,tiles}=drag,property=axis==='x'?'left':'top';
+ // Preserve the release position as the layout origin before enabling transitions.
+ // draw() reads layout, so clearing the transform alone would expose the old cell.
+ for(const b of tiles){b.style[property]=parseFloat(b.style[property])+progress*sign+'px';b.style.transform='';}
+ void board.offsetWidth;
+ stopDrag();move(index);
+}
 board.addEventListener('pointerdown',e=>{
  const cell=e.target.closest('.cell');
  if(drag||e.button!==0||!e.isPrimary||timerPaused()||!cell)return;
@@ -87,7 +95,7 @@ board.addEventListener('pointerdown',e=>{
  }
 });
 board.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();if(mode==='slide')updateSlide(e);else{const events=e.getCoalescedEvents?.();for(const point of events?.length?events:[e])tracePointer(point);}});
-board.addEventListener('pointerup',e=>{if(drag?.id!==e.pointerId)return;if(mode==='slide'){updateSlide(e);const index=drag.index,commit=drag.progress>=drag.pitch*.35;stopDrag();if(commit)move(index);}else{tracePointer(e);stopDrag();}});
+board.addEventListener('pointerup',e=>{if(drag?.id!==e.pointerId)return;if(mode==='slide'){updateSlide(e);if(drag.progress>=drag.pitch*.35)commitSlide();else stopDrag();}else{tracePointer(e);stopDrag();}});
 for(const name of ['pointercancel','lostpointercapture'])board.addEventListener(name,e=>{if(drag?.id===e.pointerId)stopDrag();});
 window.addEventListener('blur',stopDrag);
 const $=selector=>document.querySelector(selector);
@@ -111,7 +119,7 @@ function save(){
  try{localStorage.setItem(storageKey,JSON.stringify({version:1,beads,rows,cols,mode,dark,lowBrightness,moved,moves,clock:{...clock,elapsed:elapsed(),savedAt:Date.now()}}));}catch{status.textContent='浏览器无法保存状态';}
 }
 function move(index){
- if(timerPaused()||!pathToBlank(index).length||(mode==='click'&&pathToBlank(index).length!==1))return;
+ if(timerPaused()||!pathToBlank(index).length)return;
  if(clock.enabled&&clock.phase==='ready'){clock.phase='running';runningSince=Date.now();}
  turn(index);moved=true;moves++;finishMove();report();draw();save();
 }

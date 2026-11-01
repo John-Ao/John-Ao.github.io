@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:,">
+<title>Q版泡泡堂</title>
+<link rel="stylesheet" href="./player.css">
+<body>
+<main id="game" aria-label="Q版泡泡堂">
+  <div id="stage"><div id="player"></div><p id="status" role="status">正在加载游戏…</p></div>
+  <div id="controls">
+    <select id="version" aria-label="游戏版本">
+      <option value="1">初代</option>
+      <option value="2">二代中文版</option>
+      <option value="3">三代升级版</option>
+    </select>
+    <button id="pause" disabled>暂停</button>
+    <button id="sound" disabled aria-pressed="false">静音</button>
+    <button id="fullscreen">全屏</button>
+    <button id="help">操作</button>
+    <button id="restart">重新开始</button>
+  </div>
+  <div id="touch" aria-label="触屏操作">
+    <div class="dpad">
+      <button data-key="ArrowUp" aria-label="向上">↑</button>
+      <button data-key="ArrowLeft" aria-label="向左">←</button>
+      <button data-key="ArrowDown" aria-label="向下">↓</button>
+      <button data-key="ArrowRight" aria-label="向右">→</button>
+    </div>
+    <button class="bomb" data-key="Space">放炸弹</button>
+  </div>
+</main>
+<dialog id="instructions"><h2>操作</h2>
+<p>单人：方向键移动，空格放炸弹。</p>
+<p id="two-player"></p>
+<p>触屏按钮用于单人游戏。菜单直接点画面；选人可用方向键和放炸弹键确认。</p>
+<form method="dialog"><button>返回游戏</button></form></dialog>
+<dialog id="confirm-restart"><p>重新开始会结束当前对局。</p><form method="dialog"><button value="cancel">继续游戏</button><button value="restart">重新开始</button></form></dialog>
+<dialog id="confirm-version"><p>切换版本会结束当前对局。</p><form method="dialog"><button value="cancel">继续游戏</button><button value="switch">切换版本</button></form></dialog>
+<noscript>请启用 JavaScript 以运行游戏。</noscript>
+<script src="./vendor/ruffle/ruffle.js"></script>
+<script type="module" src="./player.js"></script>
+</body></html>

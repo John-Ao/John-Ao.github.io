@@ -1,0 +1,32 @@
+:root { color-scheme: dark; font-family: system-ui, sans-serif; background: #151820; color: #edf0f5; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+#game { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+#stage { position: relative; width: min(100%, calc((100svh - 76px) * var(--ratio, 1.333333))); aspect-ratio: var(--ratio, 1.333333); background: #080a10; }
+#player, ruffle-player { display: block; width: 100%; height: 100%; }
+#status { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; background: #151820; padding: 24px; text-align: center; }
+[hidden], #status[hidden] { display: none !important; }
+#controls { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+button, select { min-height: 44px; padding: 8px 14px; border: 1px solid #485163; border-radius: 8px; background: #242b38; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
+button:hover { background: #344055; }
+button:focus-visible, select:focus-visible { outline: 2px solid #99cbff; outline-offset: 3px; }
+button:disabled { opacity: .5; cursor: wait; }
+button[aria-pressed="true"],button.held { background: #435d82; }
+#touch { display: none; width: 100%; justify-content: space-between; align-items: center; max-width: 600px; gap: 16px; }
+.dpad { display: grid; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(2, 44px); gap: 4px; }
+.dpad [data-key="ArrowUp"] { grid-column: 2; }
+.dpad [data-key="ArrowLeft"] { grid-column: 1; }
+#touch button { touch-action: none; user-select: none; -webkit-user-select: none; }
+.bomb { min-width: 90px; min-height: 70px; }
+dialog { width: min(440px, calc(100% - 24px)); max-height: calc(100svh - 24px); border: 1px solid #485163; border-radius: 12px; padding: 24px; background: #202633; color: inherit; line-height: 1.7; }
+dialog::backdrop { background: #0009; }
+dialog h2 { margin: 0; font-size: 20px; }
+dialog form { display: flex; justify-content: flex-end; gap: 8px; }
+#game:fullscreen { background: #151820; }
+@media (pointer: coarse) { #touch { display: flex; } #stage { width: min(100%, calc((100svh - 180px) * var(--ratio, 1.333333))); } }
+@media (pointer: coarse) and (orientation: landscape) { #game { padding-left: 156px; padding-right: 104px; } #stage { width: min(100%, calc((100svh - 76px) * var(--ratio, 1.333333))); } #touch { position: fixed; bottom: max(12px, env(safe-area-inset-bottom)); left: 6px; right: 6px; width: auto; max-width: none; pointer-events: none; } #touch button { pointer-events: auto; } }
+@media (max-width: 360px) { #controls { gap: 4px; } #controls button { padding: 8px; font-size: 14px; } }
+
+@media (max-width: 580px) { #controls { max-width: 340px; } #stage { width: min(100%, calc((100svh - 126px) * var(--ratio, 1.333333))); } }
+@media (pointer: coarse) and (orientation: portrait) { #stage { width: min(100%, calc((100svh - 230px) * var(--ratio, 1.333333))); } }
+@media (pointer: coarse) and (orientation: landscape) { #controls { max-width: 340px; } #stage { width: min(100%, calc((100svh - 126px) * var(--ratio, 1.333333))); } }

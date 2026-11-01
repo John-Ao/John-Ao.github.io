@@ -1,0 +1,36 @@
+{
+  "retrieved": "2026-11-01",
+  "ruffle": {
+    "version": "0.7.1",
+    "source": "https://registry.npmjs.org/@ruffle-rs/ruffle/-/ruffle-0.7.1.tgz"
+  },
+  "games": [
+    {
+      "game": "bomb1",
+      "sourcePage": "https://jamesland.org/flash/bomb-it-1",
+      "sourceAsset": "https://jamesland.org/flash/SWF/Q版泡泡堂zh.swf",
+      "originalBytes": 2167060,
+      "originalSHA256": "a2b4cc65115e4b6eb813962d80e91f1e65746a91f27e91d5e86fa1963ed5b54d",
+      "localBytes": 2167060,
+      "localSHA256": "a2b4cc65115e4b6eb813962d80e91f1e65746a91f27e91d5e86fa1963ed5b54d"
+    },
+    {
+      "game": "bomb2",
+      "sourcePage": "https://www.4399.com/flash/124754.htm",
+      "sourceAsset": "https://sda.4399.com/4399swf/upload_swf/ftp12/linqinson/20131014/lxycj3.swf",
+      "originalBytes": 5160533,
+      "originalSHA256": "074da1a33a2c9c0d91e41857554136f1e5ed478f0950e63d951fd1b9edb44e1d",
+      "localBytes": 5161901,
+      "localSHA256": "1963e3daebcbc681e0c1b145b5e6392797c08d1d8c1d87e2dd020b3c94a035ca"
+    },
+    {
+      "game": "bomb3",
+      "sourcePage": "https://www.4399.com/flash/86250.htm",
+      "sourceAsset": "https://sda.4399.com/4399swf/upload_swf/ftp8/weijianp/20120419/7.swf",
+      "originalBytes": 5847583,
+      "originalSHA256": "c95fff15b4137b40810b63b2041f1232b7aef99c1c3d6428a87af939774b4be0",
+      "localBytes": 5847275,
+      "localSHA256": "13095f3a6f4ca197a6910d97a79644f5e7cb0031b13a9349472526d9c713054c"
+    }
+  ]
+}

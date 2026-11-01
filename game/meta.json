@@ -231,5 +231,15 @@
         "title": "花砖物语"
       }
     ]
+  },
+  {
+    "id": "arcade",
+    "title": "休闲对战",
+    "games": [
+      {
+        "game": "bomb",
+        "title": "Q版泡泡堂"
+      }
+    ]
   }
 ]

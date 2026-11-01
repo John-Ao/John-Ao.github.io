@@ -47,7 +47,7 @@ button[aria-pressed="true"] {
   align-items: center;
 }
 .controls select {
-  min-width: 110px;
+  min-width: 170px;
   flex: 1;
 }
 button:focus-visible,
@@ -227,7 +227,7 @@ svg {
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 24px;
+  font-size: clamp(10px, 2vw, 24px);
   pointer-events: none;
 }
 .box.on-goal {

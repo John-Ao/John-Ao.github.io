@@ -1,32 +1,22 @@
-import { levels } from "./levels.mjs";
+import { levels, groups, defaultLevel } from "./catalog.mjs";
 import * as model from "./model.mjs";
-const $ = (id) => document.getElementById(id),
-  KEY = "sokoban" + "-v1";
-let store = {};
-try {
-  store = JSON.parse(localStorage.getItem(KEY)) || {};
-} catch {}
-if (typeof store !== "object" || Array.isArray(store)) store = {};
-let current =
-  Number.isInteger(store.current) &&
-  store.current >= 0 &&
-  store.current < levels.length
-    ? store.current
-    : 0;
+import { STORAGE_KEY, readStore } from "./storage.mjs";
+const $ = (id) => document.getElementById(id), KEY = STORAGE_KEY;
+const store = readStore(localStorage);
+const savedIndex = levels.findIndex(l => l.id === store.current);
+let current = savedIndex >= 0 ? savedIndex : defaultLevel;
 let state,
   history = [],
-  won = false,
-  mode = 1;
-const groups = [...new Set(levels.map((l) => l.n))];
+  won = false;
 $("group").innerHTML = groups
-  .map((n) => `<option value="${n}">${n}×${n} · 20 题</option>`)
+  .map((group) => `<option value="${group}">${group} · ${levels.filter((l) => l.group === group).length} 题</option>`)
   .join("");
 function picker() {
-  const n = levels[current].n;
-  $("group").value = n;
+  const group = levels[current].group;
+  $("group").value = group;
   $("level").innerHTML = levels
     .flatMap((l, i) =>
-      l.n === n ? [`<option value="${i}">第 ${(i % 20) + 1} 题</option>`] : [],
+      l.group === group ? [`<option value="${i}">第 ${l.sourceNumber} 关</option>`] : [],
     )
     .join("");
   $("level").value = current;
@@ -35,15 +25,15 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 function save() {
-  store.current = current;
-  store[current] = state;
+  store.current = levels[current].id;
+  store[levels[current].id] = state;
   try {
     localStorage.setItem(KEY, JSON.stringify(store));
   } catch {}
 }
 function load() {
   history = [];
-  state = validState(store[current]) ? clone(store[current]) : blank();
+  state = validState(store[levels[current].id]) ? clone(store[levels[current].id]) : blank();
   render();
   save();
 }
@@ -56,14 +46,21 @@ function commit(next) {
 }
 function updateStatus(text, complete) {
   won = complete;
-  $("status").textContent = won ? "已完成 ✓ 可以选择下一关" : text;
+  $("status").textContent = won ? "已完成 ✓ 可选择其他关卡" : text;
   $("undo").disabled = !history.length;
 }
 function announce(text) {
   $("status").textContent = text;
 }
 $("group").onchange = () => {
-  current = levels.findIndex((l) => l.n === +$("group").value);
+  current = levels.findIndex((l) => l.group === $("group").value);
+  picker();
+  load();
+};
+$("next").onclick = () => {
+  const next = levels.findIndex((l, i) => i > current && l.group === levels[current].group);
+  if (next < 0) return;
+  current = next;
   picker();
   load();
 };
@@ -166,6 +163,7 @@ function render() {
     active = document.activeElement?.dataset.index;
   let html = `<div class="cells" style="--n:${l.n}" role="group" aria-label="推箱子棋盘">`;
   html += l.walls
+    .slice(0, l.rows.length * l.n)
     .map((wall, i) => {
       const box = state.boxes.includes(i),
         goal = l.goals.includes(i),
@@ -178,6 +176,7 @@ function render() {
     `${state.moves} 步 · ${state.pushes} 次推动 · 已归位 ${state.boxes.filter((i) => l.goals.includes(i)).length} / ${l.goals.length}`,
     model.solved(l, state),
   );
+  $("next").disabled = !levels.some((other, i) => i > current && other.group === l.group);
   restoreFocus(active);
 }
 function act(dir) {

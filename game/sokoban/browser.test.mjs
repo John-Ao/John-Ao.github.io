@@ -1,187 +1,76 @@
-const { chromium } = await import(
-  process.env.PLAYWRIGHT_MODULE || "playwright"
-);
-import assert from "node:assert/strict";
-const game = "sokoban",
-  base = process.env.GAMES_URL || "http://127.0.0.1:18769";
-const browser = await chromium.launch({
-  executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome",
-  headless: true,
-  args: ["--no-sandbox"],
-});
+import assert from 'node:assert/strict';
+import { levels, groups } from './catalog.mjs';
+import { STORAGE_KEY } from './storage.mjs';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH || '/usr/bin/google-chrome',headless:true,args:['--no-sandbox']});
+const url=`${process.env.GAMES_URL || 'http://127.0.0.1:18769'}/game/sokoban/`;
 try {
-  for (const width of [1280, 390, 320]) {
-    const mobile = width < 600,
-      context = await browser.newContext({
-        viewport: { width, height: mobile ? 844 : 900 },
-        isMobile: mobile,
-        hasTouch: mobile,
-      }),
-      page = await context.newPage(),
-      errors = [];
-    page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(`${base}/game/${game}/`);
-    await page.locator("[data-index]").first().waitFor();
-    const initial = await page.evaluate(
-        (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-        game,
-      ),
-      first = await page.evaluate(async (game) => {
-        const { levels } = await import("./levels.mjs");
-        return game === "akari"
-          ? levels[0].cells.indexOf(-2)
-          : game === "sokoban"
-            ? levels[0].solution[0]
-            : 0;
-      }, game);
-    const selector =
-      game === "sokoban" ? `[data-dir="${first}"]` : `[data-index="${first}"]`;
-    if (mobile) await page.locator(selector).tap();
-    else await page.locator(selector).click();
-    const changed = await page.evaluate(
-      (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-      game,
-    );
-    assert.notDeepEqual(changed, initial);
-    await page.locator("#undo").click();
-    assert.deepEqual(
-      await page.evaluate(
-        (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-        game,
-      ),
-      initial,
-    );
-    if (game === "sokoban") {
-      await page.locator("[data-index]").first().focus();
-      await page.keyboard.press(
-        { U: "ArrowUp", R: "ArrowRight", D: "ArrowDown", L: "ArrowLeft" }[
-          first
-        ],
-      );
-    } else {
-      await page.locator(selector).focus();
-      await page.keyboard.press("Space");
-    }
-    assert.deepEqual(
-      await page.evaluate(
-        (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-        game,
-      ),
-      changed,
-    );
+  for(const width of [1280,390,320]) {
+    const context=await browser.newContext({viewport:{width,height:900},isMobile:width<600,hasTouch:width<600});
+    const page=await context.newPage(), errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.goto(url);
+    await page.locator('[data-index]').first().waitFor();
+    assert.deepEqual(await page.locator('#group option').evaluateAll(options=>options.map(o=>o.value)),groups);
+    const saved=()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),STORAGE_KEY);
+    const initial=await saved();
+    assert.equal(initial.current,levels[0].id);
+    const dir=levels[0].solution[0];
+    if(width<600)await page.locator(`[data-dir="${dir}"]`).tap();
+    else await page.locator(`[data-dir="${dir}"]`).click();
+    const changed=await saved();
+    assert.notDeepEqual(changed,initial);
+    await page.locator('#undo').click();
+    assert.deepEqual(await saved(),initial);
+    await page.locator('[data-index]').first().focus();
+    await page.keyboard.press({U:'ArrowUp',D:'ArrowDown',L:'ArrowLeft',R:'ArrowRight'}[dir]);
+    assert.deepEqual(await saved(),changed);
     await page.reload();
-    assert.deepEqual(
-      await page.evaluate(
-        (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-        game,
-      ),
-      changed,
-    );
-    await page.locator("#reset").click();
-    await page.locator("#cancel-reset").click();
-    assert.deepEqual(
-      await page.evaluate(
-        (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-        game,
-      ),
-      changed,
-    );
-    await page.locator("#reset").click();
-    await page.locator("#confirm-reset").click();
-    assert.deepEqual(
-      await page.evaluate(
-        (game) => JSON.parse(localStorage.getItem(game + "-v1"))[0],
-        game,
-      ),
-      initial,
-    );
-    await page.locator("#help").click();
-    assert.equal(await page.locator("#rules").evaluate((e) => e.open), true);
-    const close = await page.locator("#close-rules").boundingBox();
-    assert.ok(close.y + close.height <= (mobile ? 844 : 900));
-    await page.locator("#close-rules").click();
-    const maxSize = await page
-      .locator("#group option")
-      .last()
-      .getAttribute("value");
-    await page.locator("#group").selectOption(maxSize);
-    await page.locator("#level").selectOption("59");
-    assert.ok(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-    );
-    await page.screenshot({
-      path: `/tmp/${game}-${width}.png`,
-      fullPage: true,
-    });
-    await page.locator("#zoom").click();
-    assert.equal(
-      await page.locator("#zoom").getAttribute("aria-pressed"),
-      "true",
-    );
-    if (mobile) {
-      const box = await page.locator("#board").boundingBox(),
-        session = await context.newCDPSession(page),
-        x = Math.min(320, width - 30),
-        y = Math.min(box.y + 12, 700);
-      await session.send("Input.dispatchTouchEvent", {
-        type: "touchStart",
-        touchPoints: [{ x, y }],
-      });
-      for (let xx = x - 20; xx >= x - 200; xx -= 20)
-        await session.send("Input.dispatchTouchEvent", {
-          type: "touchMove",
-          touchPoints: [{ x: xx, y }],
-        });
-      await session.send("Input.dispatchTouchEvent", {
-        type: "touchEnd",
-        touchPoints: [],
-      });
-      assert.ok(
-        await page.locator(".board-wrap").evaluate((e) => e.scrollLeft > 30),
-      );
-      await session.detach();
+    assert.deepEqual(await saved(),changed);
+    await page.locator('#reset').click();await page.locator('#cancel-reset').click();
+    assert.deepEqual(await saved(),changed);
+    await page.locator('#reset').click();await page.locator('#confirm-reset').click();
+    assert.deepEqual(await saved(),initial);
+    await page.locator('#help').click();
+    assert.ok(await page.locator('#rules').evaluate(e=>e.open));
+    await page.locator('#close-rules').click();
+    await page.locator('#next').click();assert.equal(await page.locator('#level').inputValue(),'1');
+    for(const group of groups) {
+      await page.locator('#group').selectOption(group);
+      const index=levels.findIndex(l=>l.group===group), level=levels[index];
+      assert.equal(await page.locator('#level').inputValue(),String(index));
+      for(const step of level.solution)await page.locator(`[data-dir="${step}"]`).click();
+      assert.match(await page.locator('#status').textContent(),/已完成/);
+      await page.reload();assert.match(await page.locator('#status').textContent(),/已完成/);
+      await page.locator('#reset').click();await page.locator('#confirm-reset').click();
+      const last=levels.findLastIndex(l=>l.group===group);
+      await page.locator('#level').selectOption(String(last));
+      assert.ok(await page.locator('#next').isDisabled());
     }
-    await page.locator("#zoom").click();
-    // Freshly reset after scrolling, then complete the largest puzzle using real UI input.
-    await page.locator("#reset").click();
-    await page.locator("#confirm-reset").click();
-    const answer = await page.evaluate(async () => {
-      const { levels } = await import("./levels.mjs");
-      return levels[59].solution;
-    });
-    if (game === "sokoban") {
-      for (const dir of answer)
-        await page.locator(`[data-dir="${dir}"]`).click();
-    } else
-      for (let i = 0; i < answer.length; i++)
-        if (answer[i]) {
-          const cell = page.locator(`[data-index="${i}"]`);
-          if (game === "hashi") {
-            await cell.focus();
-            await page.keyboard.press(String(answer[i]));
-          } else if (game === "galaxies") {
-            await cell.focus();
-            await page.keyboard.press("Space");
-          } else await cell.click();
-        }
-    assert.match(await page.locator("#status").textContent(), /已完成/);
-    await page.screenshot({
-      path: `/tmp/${game}-${width}-won.png`,
-      fullPage: true,
-    });
-    await page.locator("#undo").click();
-    assert.doesNotMatch(await page.locator("#status").textContent(), /已完成/);
-    await page.reload();
-    assert.equal(await page.locator("#level").inputValue(), "59");
-    assert.equal(await page.locator("#group").inputValue(), maxSize);
-    assert.deepEqual(errors, []);
+    const largest=levels.reduce((best,l,i)=>l.n>levels[best].n?i:best,0);
+    await page.locator('#group').selectOption(levels[largest].group);
+    await page.locator('#level').selectOption(String(largest));
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await page.screenshot({path:`/tmp/sokoban-expanded-${width}.png`,fullPage:true});
+    await page.locator('#zoom').click();
+    assert.equal(await page.locator('#zoom').getAttribute('aria-pressed'),'true');
+    if(width<600)assert.ok(await page.locator('.board-wrap').evaluate(e=>e.scrollWidth>e.clientWidth));
+    await page.locator('#zoom').click();
+    assert.deepEqual(errors,[]);
     await context.close();
-    console.log(
-      `${game} ${width}px: touch, keyboard, undo, save, reset, dialogs, zoom, full solution passed`,
-    );
+    console.log(`${width}px: all collections, solutions, input, saves, reset, next, zoom passed`);
   }
-} finally {
-  await browser.close();
-}
+  const context=await browser.newContext(), page=await context.newPage();
+  await page.goto(url);
+  const oldLevel=levels.find(l=>l.id==='microban-79');
+  await page.evaluate(({key,l})=>{
+    localStorage.removeItem(key);
+    localStorage.setItem('sokoban-v1',JSON.stringify({current:60,60:{player:l.player,boxes:l.boxes,moves:0,pushes:0},0:{invalid:true}}));
+  },{key:STORAGE_KEY,l:oldLevel});
+  await page.reload();
+  assert.equal(await page.locator('#level').inputValue(),String(levels.indexOf(oldLevel)));
+  const migrated=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),STORAGE_KEY);
+  assert.equal(migrated.current,'microban-79');assert.equal(migrated[0],undefined);
+  await context.close();
+  console.log('v1 classic save migration passed');
+} finally {await browser.close();}

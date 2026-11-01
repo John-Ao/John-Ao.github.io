@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {parseLevel,passable,advance,replay} from './engine.mjs';
+const read=p=>readFileSync(new URL(p,import.meta.url));
+test('70688 collision cases executed by original Java bytecode',()=>{const oracle=read('reference/collision.txt').toString();let i=0;for(let k=0;k<8;k++)for(let f=0;f<47;f++)for(let t=0;t<47;t++)for(let d=0;d<4;d++)assert.equal(passable(f,t,d,[k&1,(k>>1)&1,(k>>2)&1]),oracle[i++]==='1',`${k}/${f}/${t}/${d}`);assert.equal(i,70688);});
+test('all 74 original resources have matching hashes; all 50 maps parse',()=>{const hashes=JSON.parse(read('reference/assets.sha256.json'));for(const [name,hash]of Object.entries(hashes)){const bytes=read(`assets/${name}`);assert.equal(createHash('sha256').update(bytes).digest('hex'),hash,name);if(name.endsWith('.blm'))assert.ok(parseLevel(bytes).remaining>0);}assert.equal(Object.keys(hashes).length,74);});
+function board(entries){const s={tiles:Array(256).fill(18),x:3,y:3,keys:[0,0,0],remaining:1,facing:3,carried:false,turns:0,steps:0,status:'playing'};for(const[x,y,t]of entries)s.tiles[y*16+x]=t;return s;}
+test('eggs form on leaving; spikes activate on leaving and kill on return',()=>{let s=board([[3,3,45]]);s=advance(s,1);assert.equal(s.tiles[51],46);assert.equal(s.remaining,0);assert.equal(advance(s,0),null);s=advance(board([[3,3,30]]),1);assert.equal(s.tiles[51],31);assert.equal(advance(s,0).status,'dead');});
+test('conveyor first forces travel, then permits perpendicular exit',()=>{let s=board([[3,3,41],[4,3,41],[5,3,41]]);s=advance(s,2);assert.equal(s.x,4);assert.equal(s.y,3);s=advance(s,2);assert.equal(s.y,2);assert.equal(s.carried,false);});
+test('switches rotate all gates; keys consumed; exit waits for completion',()=>{let s=advance(board([[4,3,22],[5,3,24]]),1);assert.equal(s.tiles[53],25);assert.equal(s.tiles[52],23);s=advance(board([[4,3,32],[5,3,33]]),1);assert.equal(s.keys[0],1);s=advance(s,1);assert.equal(s.keys[0],0);assert.equal(s.tiles[53],18);assert.equal(advance(board([[4,3,44]]),1).status,'playing');});
+// Find and replay a solution to both original opening levels, using the same rules as the player.
+for(const mode of ['egg','normal'])test(`${mode} original first level solvable and replayable`,()=>{const initial=parseLevel(read(`assets/${mode}01.blm`)), queue=[[initial,[]]],seen=new Set();let found;for(let i=0;i<queue.length&&i<300000;i++){const[s,path]=queue[i];if(s.status==='won'){found=path;break;}for(let d=0;d<4;d++){const n=advance(s,d);if(!n||n.status==='dead')continue;const key=[n.x,n.y,n.carried,n.keys.join(','),n.tiles.join(',')].join('|');if(seen.has(key))continue;seen.add(key);queue.push([n,[...path,n.facing]]);}}assert.ok(found,'opening map has a solution');assert.equal(replay(initial,found).status,'won');console.log(mode,'solution',found.join(''));});

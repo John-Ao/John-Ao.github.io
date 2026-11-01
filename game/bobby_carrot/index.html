@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f0e7">
+<title>Bobby Carrot</title>
+<link rel="icon" href="assets/BobbyCarrot.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main aria-label="Bobby Carrot">
+  <div class="playbar">  <div class="stats"><span id="remaining">载入原版关卡…</span><span id="keys"></span><span id="turns">转向 0</span></div>
+<button id="undo" disabled>撤销</button><button id="restart" disabled>重玩</button><button id="menu-button" aria-haspopup="dialog" aria-controls="menu">菜单</button></div>
+  <div id="stage">
+  <div class="screen" id="screen">
+    <canvas id="game" width="128" height="144" tabindex="0" aria-label="游戏地图，使用方向键或 WASD 移动" aria-describedby="status"></canvas>
+    <div class="result" id="result" hidden><div><img id="result-art" alt=""><h2 id="result-title"></h2><p id="result-detail"></p><button id="continue">下一关</button></div></div>
+  </div>
+  </div>
+  <div class="dpad" aria-label="触屏方向键">
+    <button data-dir="2" aria-label="向上">▲</button>
+    <button data-dir="0" aria-label="向左">◀</button><span aria-hidden="true">·</span><button data-dir="1" aria-label="向右">▶</button>
+    <button data-dir="3" aria-label="向下">▼</button>
+  </div>
+</main>
+<dialog id="menu"><div class="dialog-heading"><h2>菜单</h2><button data-close aria-label="返回游戏">×</button></div>
+  <div class="toolbar">
+    <label class="sr-only" for="mode">游戏模式</label>
+    <select id="mode"><option value="egg">彩蛋 · Easter Eggs</option><option value="normal">胡萝卜 · Carrot Harvest</option></select>
+    <button id="levels" disabled>第 1 / 20 关</button>
+    <button id="help" aria-label="规则与操作">规则与操作</button>
+  </div>
+  <p id="status" role="status" aria-live="polite">正在载入…</p>
+  <div class="actions"><button id="overview" aria-pressed="true" disabled>跟随</button><button id="sound" aria-pressed="false">声音：关</button></div>
+  <p class="keyboard-hint">方向键 / WASD 移动 · 空格看全图 · R 重玩 · Z 撤销</p>
+</dialog>
+<dialog id="restart-dialog" aria-labelledby="restart-title" aria-describedby="restart-description">
+  <h2 id="restart-title">重玩本关？</h2>
+  <p id="restart-description">将从本关起点重新开始，当前进度会被清除。</p>
+  <div class="actions"><button data-close autofocus>继续游戏</button><button id="confirm-restart">重新开始</button></div>
+</dialog>
+<dialog id="picker"><div class="dialog-heading"><h2>选择关卡</h2><button data-close aria-label="关闭选关">×</button></div><p id="progress"></p><div id="level-grid"></div></dialog>
+<dialog id="rules"><div class="dialog-heading"><h2>规则与操作</h2><button data-close aria-label="关闭规则">×</button></div>
+<p>彩蛋模式：走过所有草窝，离开时留下彩蛋。彩蛋格不能再次进入。胡萝卜模式：走过并收齐所有胡萝卜。完成目标后走到红白终点。</p>
+<div id="legend"></div>
+<p>电脑使用方向键、WASD 或数字键 2 / 4 / 6 / 8，R 重玩，Z 撤销。手机使用下方方向键（可长按），也可在地图上滑动。全图按钮切换视野，不改变关卡。</p>
+<p>撤销可回到上一步，恢复位置、地图和计数。自动保存当前进度；重玩会从本关起点重新开始。选关中的 ✓ 表示已完成。</p>
+<details><summary>版本与来源</summary><p>根据 FDGSoft《BobbyCarrot》1.0 原始 JAR 移植，直接读取原包 30 个胡萝卜关卡、20 个彩蛋关卡及像素图片，按原程序还原机关。中文操作区、全图和触屏按键为网页适配。MIDI 使用浏览器合成器，音色可能与旧手机不同。</p><p>原作：FDG · 美术：Florian Freisleder · 音乐：Thomas Polaschek · 程序：Bernhard Prischl。</p><a href="https://www.butkaj.com/go/java/file.php?id=136" target="_blank" rel="noreferrer">原版安装包来源</a></details>
+</dialog>
+<script src="vendor/webaudio-tinysynth.js"></script>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

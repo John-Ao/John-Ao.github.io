@@ -1,0 +1,9 @@
+.nearby-pairing{box-sizing:border-box;width:min(480px,calc(100% - 24px));max-height:calc(100dvh - 24px);padding:20px;border:1px solid var(--line,#ccc);border-radius:12px;color:var(--ink,#222);background:var(--paper,#fff);overflow:auto}
+.nearby-pairing [hidden]{display:none!important}
+.nearby-pairing h2{font-size:20px;margin:8px 0 12px}.nearby-pairing p{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.nearby-pairing button{font:inherit;min-height:44px;padding:8px 12px;border:1px solid var(--line,#ccc);border-radius:8px;color:inherit;background:var(--surface,#fafafa);cursor:pointer}
+.nearby-pairing .nearby-close{float:right;font-size:24px;border:0}.nearby-pairing::backdrop{background:#0009}
+.nearby-choices,.nearby-buttons{display:flex;flex-wrap:wrap;gap:8px}.nearby-code{text-align:center}
+.nearby-code canvas{display:block;width:100%;max-width:340px;height:auto;margin:0 auto;image-rendering:pixelated;background:#fff}
+.nearby-buttons{justify-content:center}.nearby-page{margin:8px 0}.nearby-input{margin:16px 0}.nearby-input video{display:block;width:100%;max-height:240px;margin:12px 0;background:#000;object-fit:contain}
+.nearby-file{display:block;font-size:13px;margin-top:12px}.nearby-file input{display:block;width:100%;margin-top:8px;font:inherit}.nearby-status{min-height:21px}

@@ -4,6 +4,10 @@
     "title": "单人解谜",
     "games": [
       {
+        "game": "bobby_carrot",
+        "title": "Bobby Carrot"
+      },
+      {
         "game": "cube",
         "title": "魔方"
       },

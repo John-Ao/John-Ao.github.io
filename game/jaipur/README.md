@@ -78,3 +78,12 @@ node portal/tests/jaipur-browser.mjs
 浏览器测试复用 Portal 的 Playwright / Miniflare 依赖，默认使用 `/usr/bin/google-chrome`，可通过 `CHROME_PATH` 指定。使用独立本地服务，不连接生产房间。
 
 不显示或保存累计局数与局号，由玩家自行记录；读取本地旧存档时移除旧的局号字段。
+
+
+### 面对面扫码配对
+
+「联网 → 面对面扫码配对」使用与 Tacta 相同的 WebRTC 直连组件，无需 Portal 登录。双方连接同一 Wi-Fi／手机热点，互扫房主码与应答码，也可导入二维码图片。玩法、席位保密、协商悔棋／重开／下一局沿用现有联网协议。
+
+面对面房间不会调用 Portal 邀请、访客重置或关闭 API，也不会记为可刷新恢复的 Portal 房间。刷新、关闭或退出后需重新配对；返回本地时恢复原存档。需要 HTTPS／localhost，受本地网络权限、网络隔离和后台断连影响。正常界面隐藏手牌，完整牌局仍可从共享日志重建，仅用于诚信对战。实体手机和热点尚待验证。
+
+验证：`node portal/tests/boards-nearby-browser.mjs`（包含六款游戏真实二维码与 WebRTC 测试）。

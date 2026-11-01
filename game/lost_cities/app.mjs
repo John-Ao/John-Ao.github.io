@@ -1,3 +1,6 @@
+import {setupNetwork} from '../board_shared/network.mjs';
+import {adapter} from './online-adapter.mjs';
+let net=null;
 import {
   colors,
   fresh,
@@ -23,11 +26,13 @@ let selected = null,
 const name = (p) => (s.mode === "ai" ? (p ? "电脑" : "你") : `玩家 ${p + 1}`);
 const value = (c) => c.v || "投资";
 function save() {
+  if(net?.active)return;
   try {
     localStorage.setItem("lost-cities-v1", JSON.stringify(s));
   } catch {}
 }
 function render() {
+  if(net?.active)locked=s.player!==net.seat||net.blocked;
   save();
   const human = !(s.mode === "ai" && s.player === 1),
     ended = ["round", "end"].includes(s.phase);
@@ -74,7 +79,7 @@ function render() {
         : s.phase === "draw"
           ? "已出牌：选择牌堆或可用弃牌堆抽一张。"
           : "选择手牌，再加入远征或弃牌。";
-  $("gate").hidden = !locked || ended || !human;
+  $("gate").hidden = !!net?.active || !locked || ended || !human;
   $("gateText").textContent =
     `轮到${name(s.player)}。确认其他玩家看不到屏幕后再查看。`;
   $("play").hidden = locked || ended || !human;
@@ -118,7 +123,8 @@ function render() {
         .join("") +
       "</tbody></table>";
   }
-  if (!human && !ended && !timer) {
+  if(net?.active&&!net.canAct())for(const b of document.querySelectorAll("#hand button,#draw,#discards button,#expedition,#discard"))b.disabled=true;
+  if (!net?.active && !human && !ended && !timer) {
     timer = setTimeout(() => {
       timer = null;
       if (
@@ -137,12 +143,14 @@ function render() {
   }
 }
 function commit(discard) {
+  if(net?.active){net.action({name:"play",args:[selected,discard]});return;}
   undo = structuredClone(s);
   play(s, selected, discard);
   selected = null;
   render();
 }
 function take(source) {
+  if(net?.active){net.action({name:"draw",args:[source]});return;}
   draw(s, source);
   undo = null;
   selected = null;
@@ -153,6 +161,7 @@ $("expedition").onclick = () => commit(false);
 $("discard").onclick = () => commit(true);
 $("draw").onclick = () => take(-1);
 $("undo").onclick = () => {
+  if(net?.active){net.propose("undo");return;}
   s = undo;
   undo = null;
   selected = null;
@@ -167,6 +176,7 @@ $("reveal").onclick = () => {
   render();
 };
 $("next").onclick = () => {
+  if(net?.active){net.propose("next");return;}
   nextRound(s);
   locked = s.mode === "local";
   selected = null;
@@ -179,6 +189,7 @@ $("new").onclick = () => {
 };
 $("cancelNew").onclick = () => $("setup").close();
 $("start").onclick = () => {
+  if(net?.active){net.propose("restart");$("setup").close();return;}
   clearTimeout(timer);
   timer = null;
   s = fresh($("mode").value);
@@ -189,3 +200,5 @@ $("start").onclick = () => {
   render();
 };
 render();
+
+net=setupNetwork(adapter,{options:()=>({}),snapshot:()=>structuredClone({s,locked}),prepare:()=>{clearTimeout(timer);timer=null;},restore:x=>{s=x.s;locked=x.locked;selected=null;undo=null;},setState:(board,reset)=>{s=board;if(reset){selected=null;undo=null;}},render});

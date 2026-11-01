@@ -1,15 +1,17 @@
 'use strict';
+let net=null;
 const $=id=>document.getElementById(id),T=Toy,key='toy-battle-all-v2';let s,selected=null,inspect=false,hidden=true;
 try{s=JSON.parse(localStorage.getItem(key));if(!s||!s.board||!Array.isArray(s.pending))s=T.create();}catch{s=T.create();}
 let opposite=false;try{opposite=localStorage.getItem(key+'-rotate')==='true';}catch{}
 $('opposite').checked=opposite;
 const name=p=>p===0?'蓝方 ●':'红方 ◆';
-function save(){try{localStorage.setItem(key,JSON.stringify(s));}catch{}}
+function save(){if(net?.active)return;try{localStorage.setItem(key,JSON.stringify(s));}catch{}}
 function modal(html){$('dialogContent').innerHTML=html;$('dialog').showModal();}
 function cardText(t){return `${t.v===0?'★':t.v} ${T.troops[t.v][1]} ${T.troops[t.v][0]}`;}
 function transition(fn){const before=s.turn;if(!fn())return;selected=null;inspect=false;save();if(s.turn!==before)hidden=true;render();}
 const icons={retreat:'↩',draw:'＋',push:'⇢',resurrect:'♻',suppress:'⊘',freeze:'❄'};
 function render(){
+ if(net?.active){hidden=s.turn!==net.seat||net.blocked;}
 const map=T.map(s);$('mapName').textContent=map.name+(s.basic?' · 入门':'');$('board').setAttribute('aria-label',map.name);$('mapNote').textContent=s.basic?'入门模式：忽略特殊基地效果与部署限制。':map.description;
 $('redScore').textContent=`${s.medals[1]} / ${map.goal} ★`;$('blueScore').textContent=`${s.medals[0]} / ${map.goal} ★`;
 for(const [p,c] of [[0,'blue'],[1,'red']])$(c+'Info').textContent=`手牌 ${s.hands[p].length} · 后备 ${s.decks[p].length}`;
@@ -26,12 +28,19 @@ $('drawBtn').disabled=s.winner!==null||s.phase!=='place'||!s.decks[s.turn].lengt
 $('effectBtn').hidden=!['effect','baseDraw'].includes(s.phase)||s.winner!==null;$('skipBtn').hidden=s.phase==='place'||s.winner!==null;
 $('choices').innerHTML='';if(!hidden&&s.winner===null){const choice=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=()=>transition(fn);$('choices').append(b);};if(s.phase==='bases')s.pending.forEach((p,i)=>choice(p.origin+' '+icons[p.kind],()=>T.base(s,i)));if(s.phase==='resurrect')s.discard.forEach((t,i)=>{if(t.p===s.turn&&s.hands[s.turn].length<8)choice(cardText(t),()=>T.select(s,i));});if(s.phase==='freeze')s.hands[1-s.turn].forEach((t,i)=>{if(!s.frozen[1-s.turn].includes(t.id))choice('▧ 手牌 '+(i+1),()=>T.select(s,i));});}
 $('inspectBtn').textContent=inspect?'退出叠层查看':'查看叠层';
-$('curtain').hidden=!hidden||s.winner!==null;document.querySelector('main').inert=hidden&&s.winner===null;$('curtainTitle').textContent=`${name(s.turn)} 的回合`;$('turnSymbol').textContent=s.turn===0?'●':'◆';$('turnSymbol').style.color=s.turn===0?'var(--blue)':'var(--red)';
+$('curtain').hidden=!!net?.active||!hidden||s.winner!==null;document.querySelector('main').inert=!net?.active&&hidden&&s.winner===null;$('curtainTitle').textContent=`${name(s.turn)} 的回合`;$('turnSymbol').textContent=s.turn===0?'●':'◆';$('turnSymbol').style.color=s.turn===0?'var(--blue)':'var(--red)';
+if(net?.active&&!net.canAct())for(const b of document.querySelectorAll('#drawBtn,#effectBtn,#skipBtn,#hand button,#choices button'))b.disabled=true;
 document.querySelector('.control').classList.toggle('rotate',opposite&&s.turn===1);$('curtain').firstElementChild.classList.toggle('rotate',opposite&&s.turn===1);
 }
 $('readyBtn').onclick=()=>{hidden=false;render();};$('hideBtn').onclick=()=>{hidden=true;selected=null;render();};$('drawBtn').onclick=()=>transition(()=>T.recruit(s));$('effectBtn').onclick=()=>transition(()=>T.effect(s));$('skipBtn').onclick=()=>transition(()=>T.skip(s));$('inspectBtn').onclick=()=>{inspect=!inspect;selected=null;render();};$('opposite').onchange=e=>{opposite=e.target.checked;try{localStorage.setItem(key+'-rotate',String(opposite));}catch{}render();};
-function setup(){modal(`<h2>新对局</h2><label>地图<select id="mapSelect">${T.maps.map(m=>`<option value="${m.id}" ${m.id===s.mapId?'selected':''}>${m.name} · ${m.goal} 枚勋章</option>`).join('')}</select></label><p id="setupNote"></p><label><input type="checkbox" id="basicMode" ${s.basic?'checked':''}> 入门模式（忽略特殊基地效果及限制）</label><p>随机先手；先手 3 张、后手 4 张。开始后替换当前对局。</p><button id="confirmNew">开始对局</button>`);const note=()=>{$('setupNote').textContent=T.maps.find(m=>m.id===$('mapSelect').value).description;};$('mapSelect').onchange=note;note();$('confirmNew').onclick=()=>{s=T.create({mapId:$('mapSelect').value,basic:$('basicMode').checked});selected=null;hidden=true;save();$('dialog').close();render();};}
+function setup(){modal(`<h2>新对局</h2><label>地图<select id="mapSelect">${T.maps.map(m=>`<option value="${m.id}" ${m.id===s.mapId?'selected':''}>${m.name} · ${m.goal} 枚勋章</option>`).join('')}</select></label><p id="setupNote"></p><label><input type="checkbox" id="basicMode" ${s.basic?'checked':''}> 入门模式（忽略特殊基地效果及限制）</label><p>随机先手；先手 3 张、后手 4 张。开始后替换当前对局。</p><button id="confirmNew">开始对局</button>`);const note=()=>{$('setupNote').textContent=T.maps.find(m=>m.id===$('mapSelect').value).description;};$('mapSelect').onchange=note;note();$('confirmNew').onclick=()=>{if(net?.active){net.propose('restart',null,{mapId:$('mapSelect').value,basic:$('basicMode').checked});$('dialog').close();return;}s=T.create({mapId:$('mapSelect').value,basic:$('basicMode').checked});selected=null;hidden=true;save();$('dialog').close();render();};}
 $('newBtn').onclick=setup;
 $('historyBtn').onclick=()=>modal(`<h2>对局记录</h2>${s.log.slice(0,60).map(x=>`<p>${x}</p>`).join('')||'<p>尚无行动</p>'}<h3>公开弃牌 · ${s.discard.length}</h3><p>${s.discard.map(t=>name(t.p)+' '+cardText(t)).join('；')||'无'}</p>`);
 $('rulesBtn').onclick=()=>modal(`<h2>Toy Battle · 规则</h2><p>当前地图：${T.map(s).name}，目标 ${T.map(s).goal} 枚勋章。</p><ul><li>每方八种兵各三枚，随机移除四枚。先手抽三枚，后手抽四枚；手牌上限八枚。</li><li>每回合抽两枚，或部署一枚；不足时仅抽一枚。</li><li>部署须经己方顶层棋子连通己方任一总部。可占空基地、覆盖己方棋子，或覆盖战力严格更低的敌兵。不能进入己方总部。</li><li>占领区域周围全部基地，立即领取其勋章并永久保留；总部不属于基地。攻占任一敌方总部或达成地图勋章目标，立即获胜。</li><li>当前玩家既不能抽兵也不能部署时比较勋章；平局时当前玩家落败。</li><li>所有效果均可跳过。Cap’n 连锁中先处理全部兵种效果，再处理特殊基地效果。仅可作用于顶层棋子。</li></ul><h3>兵种</h3>${T.troops.map((t,i)=>`<p><b>${i===0?'★':i} ${t[1]} ${t[0]}</b>：${t[2]}。</p>`).join('')}<h3>地形</h3>${T.maps.map(m=>`<p><b>${m.name} · ${m.goal} 枚</b>：${m.description}</p>`).join('')}<p>Hook 攻占总部仍需连通，且不能绕过战力限制。移兵不会触发目的地或兵种效果。换手自动隐藏手牌；可查看公开叠层。存档保存在当前浏览器。</p><p><a href="https://www.rprod.com/en/games/toy-battle" target="_blank" rel="noopener">官方游戏页面</a> · <a href="rules-zh.pdf" target="_blank">中文规则</a> · <a href="player-aid-zh.pdf" target="_blank">中文速查表</a> · <a href="croisette-zh.pdf" target="_blank">扩展中文规则</a></p>`);
 $('closeDialog').onclick=()=>$('dialog').close();$('curtainNew').onclick=setup;$('curtainRules').onclick=()=>$('rulesBtn').onclick();save();render();
+
+Promise.all([import('../board_shared/network.mjs'),import('../board_shared/adapters.mjs')]).then(([{setupNetwork},{objectAdapter}])=>{
+ const adapter=objectAdapter('toy_battle',T);
+ for(const name of adapter.names){const original=T[name];T[name]=function(board,...args){if(net?.active&&board===s)return net.action({name,args});return original(board,...args);};}
+ net=setupNetwork(adapter,{options:()=>({mapId:s.mapId,basic:s.basic}),snapshot:()=>structuredClone({s,hidden}),restore:x=>{s=x.s;hidden=x.hidden;selected=null;inspect=false;},setState:(board,reset)=>{s=board;if(reset){selected=null;inspect=false;}},render});
+}).catch(e=>console.error('联网组件加载失败',e));

@@ -1,4 +1,5 @@
 "use strict";
+let net=null;
 const { C, labels, pools } = RadCards,
   { Game } = RadGame,
   KEY = "radlands-save-v1";
@@ -41,6 +42,7 @@ const $ = (s) => document.querySelector(s),
         })[c],
     );
 function save() {
+  if(net?.active)return;
   try {
     localStorage.setItem(KEY, JSON.stringify(game.s));
   } catch {
@@ -134,6 +136,7 @@ function playerHTML(p) {
     )}</div></div><div class="handrow">${button(revealed[p] ? "隐藏<br>手牌" : `查看<br>${x.hand.length} 张`, "reveal:" + p, !active)}<div class="hand">${revealed[p] ? x.hand.map((c) => cardHTML(c, `hand:${p}:${c.uid}`)).join("") : `<div class="hiddenhand">${Array.from({ length: Math.min(x.hand.length, 6) }, () => '<div class="handback" style="height:59px"></div>').join("")}<span>${x.hand.length ? x.hand.length + " 张手牌已隐藏" : "暂无手牌"}</span></div>`}</div></div><div class="controls">${button("抽牌 · 2 水", `buy:${p}:draw`, !allowed || x.water < 2)}${button("储水塔 · 1 水", `buy:${p}:silo`, !allowed || x.water < 1 || x.hand.some((c) => c.id === "silo"))}${button("结束回合", `end:${p}`, !allowed, "primary")}</div></section>`;
 }
 function render() {
+  if(net?.active){revealed=[net.seat===0,net.seat===1];gate=false;opposed=false;}
   const handScroll = [...document.querySelectorAll(".player")].map(el => [el.dataset.p, el.querySelector(".hand")?.scrollLeft || 0]);
   document.body.classList.toggle("opposed", opposed);
   const s = game.s;
@@ -146,6 +149,7 @@ function render() {
     if (hand) hand.scrollLeft = left;
   }
   renderOverlay();
+  if(net?.active&&!net.canAct())for(const b of document.querySelectorAll('[data-act^="buy:"],[data-act^="end:"],[data-act^="play:"],[data-act^="junk:"],[data-act^="use:"],[data-act="confirmDraft"],[data-act^="choose:"]'))b.disabled=true;
 }
 let dialogReturnAction = null;
 function dialog(content, p = null) {
@@ -175,6 +179,9 @@ function renderOverlay() {
       `<div class="gate"><h1>${s.winner === "draw" ? "平局" : `玩家 ${s.winner + 1} 获胜`}</h1><p>${esc(s.reason || (s.winner === "draw" ? "牌堆耗尽。" : "对手的三座营地已被摧毁。"))} 共 ${s.turn} 回合。</p><div class="actions">${button("查看记录", "log")}${button("再来一局", "new", false, "primary")}</div></div>`,
     );
     return;
+  }
+  if(net?.active && (p!==net.seat||net.blocked)) {
+    $("#overlay").innerHTML="";$("#app").inert=false;return;
   }
   if (gate) {
     dialog(
@@ -301,6 +308,11 @@ document.addEventListener("click", (e) => {
   if (!b || b.disabled) return;
   const [act, ...args] = b.dataset.act.split(":");
   const n = args.map(Number);
+  if(net?.active){
+    if(act==='restart'){net.propose('restart',null,{mode:args[0]||'complete',setup:args[1]||'draft'});modal=null;render();return;}
+    if(['ready','draft','confirmDraft','choose','peek'].includes(act)&&(!net.canAct()))return;
+    if(['hand','reveal'].includes(act)&&n[0]!==net.seat)return;
+  }
   let ok = true;
   switch (act) {
     case "ready":
@@ -417,3 +429,9 @@ window.addEventListener("keydown", (e) => {
   }
 });
 render();
+
+Promise.all([import('../board_shared/network.mjs'),import('../board_shared/adapters.mjs')]).then(([{setupNetwork},{radlandsAdapter}])=>{
+ const adapter=radlandsAdapter(Game);
+ for(const name of adapter.names){const original=Game.prototype[name];Game.prototype[name]=function(...args){if(net?.active&&this===game)return net.action({name,args});return original.apply(this,args);};}
+ net=setupNetwork(adapter,{options:()=>({mode:game.s.mode,setup:'draft'}),snapshot:()=>structuredClone({s:game.s,opposed}),prepare:()=>{modal=null;gate=false;},restore:x=>{game=new Game(x.s);opposed=x.opposed;modal=null;gate=true;revealed=[false,false];selected=[];},setState:(board,reset)=>{game=new Game(board);if(reset){modal=null;selected=[];lastActor=null;}},render});
+}).catch(e=>console.error('联网组件加载失败',e));

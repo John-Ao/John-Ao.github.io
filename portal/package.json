@@ -10,7 +10,9 @@
     "check:deploy": "wrangler deploy --dry-run --config worker/wrangler.jsonc",
     "test:browser": "node tests/browser.mjs",
     "test:tacta": "node tests/tacta-browser.mjs",
-    "test:quarto": "node tests/quarto-browser.mjs"
+    "test:quarto": "node tests/quarto-browser.mjs",
+    "test:boards-nearby": "node tests/boards-nearby-browser.mjs",
+    "test:boards-portal": "node tests/boards-portal-browser.mjs"
   },
   "devDependencies": {
     "esbuild": "0.17.19",

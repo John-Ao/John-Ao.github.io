@@ -72,13 +72,15 @@ $('eventDialog').addEventListener('cancel',()=>{$('eventDialog').returnValue='';
 for(const button of document.querySelectorAll('[data-close]'))button.onclick=()=>$(button.dataset.close).close('cancel');
 $('proposal').addEventListener('close',()=>queueMicrotask(pumpDialogs));
 function renderNetwork(){
+ const nearby=online?.kind==='nearby';
+ $('nearbyRoom').hidden=!!online||invitationEntry;
  document.body.classList.toggle('online',!!online);
  $('turnStatus').hidden=!online;
  $('turnStatus').textContent=online?document.getElementById('status').textContent:'';
  $('networkStatus').hidden=!online;
  if(online){
    const who=online.seat===0?'你是玩家一':online.seat===1?'你是玩家二':'正在确认席位';
-   $('networkStatus').textContent=networkError?`对局已暂停：${networkError}`:`${who} · ${connectionStatus}${!peerJoined?' · 等待对手加入':!peerOnline?' · 对手离线':''}${online.pending?' · 等待操作确认':''}`;
+   $('networkStatus').textContent=networkError?`对局已暂停：${networkError}`:`${nearby?'面对面 · ':''}${who} · ${connectionStatus}${!peerJoined?' · 等待对手加入':!peerOnline?' · 对手离线':''}${online.pending?' · 等待操作确认':''}`;
  }
  const p=onlineModel?.proposal;
  $('reviewProposal').hidden=!online||!p||!!networkError;
@@ -95,7 +97,7 @@ function renderNetwork(){
  if(online)$('undo').disabled=!online.ready||!peerOnline||!!online.pending||!!networkError||!onlineModel?.history.length||!!p;
  $('reset').disabled=!!online&&(!onlineModel||!online.ready||!peerOnline||!!online.pending||!!networkError||!!p);
  $('roomControls').hidden=!online;
- const host=online?.seat===0;
+ const host=online?.seat===0&&!nearby;
  $('inviteControls').hidden=!host;
  if(!host||peerJoined||!online.ready||(shareExpires&&shareExpires<=Date.now()))clearInviteLink();
  for(const id of ['inviteRoom','resetGuest','closeRoom'])$(id).hidden=!host;
@@ -107,7 +109,7 @@ function renderNetwork(){
  $('closeRoom').disabled=!online?.ready;
  $('syncRoom').disabled=!online||connectionStatus==='连接中';
  $('inviteRoom').textContent=$('shareLink').value?'重新生成邀请':'生成邀请';
- $('loginAgain').hidden=online?.seat===1||invitationEntry;
+ $('loginAgain').hidden=nearby||online?.seat===1||invitationEntry;
  $('createRoom').hidden=!!online||invitationEntry;
  $('createRoom').disabled=!portal;
  $('resumeRoom').hidden=!!online||!!invitation||(invitationEntry&&sessionStorage.getItem(recentRoomKey)!==sessionStorage.getItem('jaipur.invitationRoom'))||!(sessionStorage.getItem(activeRoomKey)||sessionStorage.getItem(recentRoomKey));
@@ -127,7 +129,7 @@ function leaveOnline(room,{remember=false,message='已返回本地对局'}={}){
  roomIntent++;online=null;room.disconnect();clearTimeout(peerLeaveTimer);peerLeaveNotified=false;
  clearDialogs();onlineModel=null;networkError='';peerJoined=false;peerOnline=false;seenProposal=null;connectionStatus='';
  sessionStorage.removeItem(activeRoomKey);
- if(remember)sessionStorage.setItem(recentRoomKey,room.id);else if(sessionStorage.getItem(recentRoomKey)===room.id)sessionStorage.removeItem(recentRoomKey);
+ if(remember&&room.kind!=='nearby')sessionStorage.setItem(recentRoomKey,room.id);else if(sessionStorage.getItem(recentRoomKey)===room.id)sessionStorage.removeItem(recentRoomKey);
  sessionStorage.removeItem('jaipur.invitation');invitation=null;$('joinRoom').hidden=true;
  clearInviteLink();$('networkMessage').textContent=message;
  if(localSnapshot){restoreLocal(localSnapshot);localSnapshot=null;}
@@ -139,7 +141,7 @@ async function attachRoom(room){
  sessionStorage.removeItem(recentRoomKey);
  clearTimeout(peerLeaveTimer);peerLeaveNotified=false;seenProposal=null;
  online?.disconnect();online=room;onlineModel=null;networkError='';peerJoined=false;peerOnline=false;
- sessionStorage.setItem(activeRoomKey,room.id);$('networkMessage').textContent='正在连接房间…';
+ if(room.kind==='nearby')sessionStorage.removeItem(activeRoomKey);else sessionStorage.setItem(activeRoomKey,room.id);$('networkMessage').textContent='正在连接房间…';
  room.on('sync',data=>{
    if(online!==room)return;
    try{if(data.seq!==data.events.length)throw Error('房间或消息记录不匹配');const model=replay(E,data.events);networkError='';updateModel(model);
@@ -179,7 +181,7 @@ async function attachRoom(room){
  let lastConnectionError=null;
  room.on('status',status=>{
    if(online!==room)return;
-   connectionStatus=({connecting:'连接中',connected:'已连接',disconnected:'已断线，正在重连',closed:'连接已关闭'})[status];
+   connectionStatus=({connecting:'连接中',connected:'已连接',disconnected:room.kind==='nearby'?'直连中断，请重新同步或重新配对':'已断线，正在重连',closed:'连接已关闭'})[status];
    $('networkMessage').textContent=connectionStatus;
    if(status==='connected')$('networkDialog').close();
    if(status!=='connected')clearTimeout(peerLeaveTimer);
@@ -206,6 +208,16 @@ async function networkTask(button,fn){
  }finally{busyButtons.delete(button);button.disabled=false;renderNetwork();}
 }
 $('network').onclick=async()=>{openDialog('networkDialog');try{await loadPortal();renderNetwork();}catch(e){$('networkMessage').textContent=e.message;$('createRoom').disabled=true;}};
+$('nearbyRoom').onclick=e=>networkTask(e.target,async()=>{
+ if(online||invitationEntry)return;
+ const intent=++roomIntent;
+ const [{pairNearby}]=await Promise.all([import('../../portal/nearby/pairing.js'),loadPortal()]);
+ if(intent!==roomIntent||online||invitationEntry)return;
+ $('networkDialog').close();
+ const room=await pairNearby({gameId:'jaipur'});
+ if(intent!==roomIntent||online||invitationEntry){room?.disconnect();return;}
+ if(room)await attachRoom(room);else openDialog('networkDialog');
+});
 $('createRoom').onclick=e=>networkTask(e.target,async()=>{if(invitationEntry||online)return;const intent=++roomIntent;try{await portal.credentials();}catch(error){if(error.status===401){sessionStorage.setItem('jaipur.createAfterLogin','1');await portal.login();return;}throw error;}if(intent!==roomIntent||invitationEntry||online)return;const room=await portal.createRoom();if(intent!==roomIntent||invitationEntry||online){room.disconnect();return;}await attachRoom(room);});
 $('resumeRoom').onclick=e=>networkTask(e.target,async()=>{const intent=++roomIntent,id=sessionStorage.getItem(activeRoomKey)||sessionStorage.getItem(recentRoomKey);if(!id)return;try{await portal.credentials(id);}catch(error){if(intent!==roomIntent)return;if(error.status===401&&error.scope!=='guest'&&!invitationEntry){sessionStorage.setItem('jaipur.resumeAfterLogin',id);await portal.login();return;}throw error;}if(intent!==roomIntent||online)return;await attachRoom(portal.room(id));});
 $('inviteRoom').onclick=e=>networkTask(e.target,async()=>{const room=online;if(!room?.ready||peerJoined)return;clearInviteLink();renderNetwork();const invite=await portal.createInvite(room.id);if(online!==room||!room.ready||peerJoined)return;$('shareLink').value=invite.url;shareExpires=invite.expires;inviteExpiryTimer=setTimeout(()=>{if(online===room){clearInviteLink();renderNetwork();$('networkMessage').textContent='邀请已过期，可重新生成。';}},Math.max(0,invite.expires-Date.now()));$('networkMessage').textContent='分享链接 24 小时内有效；访客连续 8 小时无操作后需重新分享。';});

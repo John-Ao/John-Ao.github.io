@@ -1,14 +1,16 @@
 'use strict';
+let net=null;
 const $=id=>document.getElementById(id),colors=['#ba4948','#b96124','#927819','#36805d','#3975a2','#8a58a2'],symbols=['●','◆','★','♣','▲','✦'],names=['红','橙','黄','绿','蓝','紫'],ranks=['','散牌','顺子','同花','同点数组','同花顺'],key='schotten-totten-v2';
 let s,selected=null,source=null,hidden=true,opposed=false,fresh=false;
 try{s=JSON.parse(localStorage.getItem(key));if(!s||s.version!==2||s.stones.length!==9)throw Error();}catch{s=Game.create({tactics:true});fresh=true;}
-function save(){try{localStorage.setItem(key,JSON.stringify(s));}catch{$('message').textContent='浏览器无法保存进度，请勿关闭页面。';}}
+function save(){if(net?.active)return;try{localStorage.setItem(key,JSON.stringify(s));}catch{$('message').textContent='浏览器无法保存进度，请勿关闭页面。';}}
 const cardName=c=>c.type?Game.INFO[c.type][0]+(c.n?'（'+names[c.c]+' '+c.n+'）':''):names[c.c]+' '+c.n;
 function mini(c,attrs=''){return `<button class="mini ${c.type?'elite':''}" ${attrs} style="--color:${c.type?'#63566f':colors[c.c]}" aria-label="${cardName(c)}"><span>${c.type?Game.INFO[c.type][0]:symbols[c.c]+' '+names[c.c]}</span>${c.type?(c.n?`${symbols[c.c]}${c.n}`:c.type==='spy'?'7':c.type==='shield'?'1–3':'1–9'):c.n}</button>`;}
 function selectedCard(){return s.hands[s.player].find(c=>c.id===selected);}
 function commit(){save();render();}
 function message(text){$('message').textContent=text;}
 function render(){
+ if(net?.active){hidden=s.player!==net.seat||net.blocked;}
  document.body.classList.toggle('opposed',opposed);document.body.classList.toggle('face2',opposed&&s.player===1);$('rotate').setAttribute('aria-pressed',String(opposed));$('rotate').textContent=opposed?'同向模式':'对坐模式';
  $('edition').textContent=`${s.options.tactics?'战术版':'基础版'}${s.options.expert?' · 专家时机':''} · 第 ${s.round} / ${s.options.rounds} 局`;
  $('deck').textContent=`氏族 ${s.deck.length} · 战术 ${s.tactics.length} · 回合 ${s.turn}`;
@@ -35,7 +37,8 @@ function render(){
  }
  if(Game.finished(s)&&s.round<s.options.rounds)$('next').hidden=false;
  $('log').innerHTML=s.log.slice(0,100).map(x=>`<li>${x}</li>`).join('');$('discard').innerHTML=s.discard.map(c=>mini(c,'disabled')).join('')||'<span>暂无弃牌</span>';
- $('curtain').hidden=!hidden||Game.finished(s);$('handoff-title').textContent=`请玩家 ${s.player+1} 接手`;
+ if(net?.active&&!net.canAct())for(const b of document.querySelectorAll('#hand button,#finish,#draw-clan,#draw-tactic,#pass,#activate,#discard-selected'))b.disabled=true;
+ $('curtain').hidden=!!net?.active||!hidden||Game.finished(s);$('handoff-title').textContent=`请玩家 ${s.player+1} 接手`;
 }
 function perform(i,arg={}){if(!Game.play(s,selected,i,arg)){message('无法出牌：检查目标、容量、战术使用次数，以及是否已用过百变者。');return;}selected=null;source=null;message('');commit();}
 $('reveal').onclick=()=>{hidden=false;render();};
@@ -48,9 +51,15 @@ $('draw-clan').onclick=()=>draw('deck');$('draw-tactic').onclick=()=>draw('tacti
 $('finish').onclick=()=>{if(hidden)return;if(s.phase==='preclaim'){if(Game.beginPlay(s))commit();}else draw('deck');};
 $('pass').onclick=()=>{if(Game.pass(s)){selected=null;source=null;commit();}};
 $('activate').onclick=()=>perform(-1);$('discard-selected').onclick=()=>perform(-1,{...source,discard:true});
-$('agree-draw').onclick=()=>$('draw-dialog').showModal();$('confirm-draw').onclick=()=>{if(Game.agreeDraw(s)){$('draw-dialog').close();commit();}};
+$('agree-draw').onclick=()=>$('draw-dialog').showModal();$('confirm-draw').onclick=()=>{if(net?.active){net.propose('draw');$('draw-dialog').close();return;}if(Game.agreeDraw(s)){$('draw-dialog').close();commit();}};
 $('rules').onclick=()=>$('rules-dialog').showModal();$('rotate').onclick=()=>{opposed=!opposed;render();};
 $('restart').onclick=()=>{$('opt-tactics').checked=s.options.tactics;$('opt-expert').checked=s.options.expert;$('opt-rounds').value=s.options.rounds;$('opt-first').value=s.options.first;$('new-dialog').showModal();};
-$('confirm-new').onclick=()=>{const rounds=Number($('opt-rounds').value);if(!Number.isInteger(rounds)||rounds<1||rounds>99){$('opt-rounds').reportValidity();return;}s=Game.create({tactics:$('opt-tactics').checked,expert:$('opt-expert').checked,rounds,first:Number($('opt-first').value)});hidden=true;selected=null;source=null;$('new-dialog').close();message('');commit();};
-$('next').onclick=()=>$('round-dialog').showModal();$('confirm-round').onclick=()=>{const next=Game.nextRound(s,Number($('round-first').value));if(next){s=next;hidden=true;selected=null;source=null;$('round-dialog').close();message('');commit();}};
+$('confirm-new').onclick=()=>{const rounds=Number($('opt-rounds').value);if(!Number.isInteger(rounds)||rounds<1||rounds>99){$('opt-rounds').reportValidity();return;}if(net?.active){net.propose('restart',null,{tactics:$('opt-tactics').checked,expert:$('opt-expert').checked,rounds,first:Number($('opt-first').value)});$('new-dialog').close();return;}s=Game.create({tactics:$('opt-tactics').checked,expert:$('opt-expert').checked,rounds,first:Number($('opt-first').value)});hidden=true;selected=null;source=null;$('new-dialog').close();message('');commit();};
+$('next').onclick=()=>$('round-dialog').showModal();$('confirm-round').onclick=()=>{if(net?.active){net.propose('next',{first:Number($('round-first').value)});$('round-dialog').close();return;}const next=Game.nextRound(s,Number($('round-first').value));if(next){s=next;hidden=true;selected=null;source=null;$('round-dialog').close();message('');commit();}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&!Game.finished(s)){hidden=true;selected=null;source=null;render();}});save();render();if(fresh)$('new-dialog').showModal();
+
+Promise.all([import('../board_shared/network.mjs'),import('../board_shared/adapters.mjs')]).then(([{setupNetwork},{objectAdapter}])=>{
+ const adapter=objectAdapter('schotten_totten',Game);
+ for(const name of adapter.names){const original=Game[name];Game[name]=function(board,...args){if(net?.active&&board===s)return net.action({name,args});return original(board,...args);};}
+ net=setupNetwork(adapter,{options:()=>({...s.options}),snapshot:()=>structuredClone({s,hidden}),restore:x=>{s=x.s;hidden=x.hidden;selected=null;source=null;},setState:(board,reset)=>{s=board;if(reset){selected=null;source=null;}},render});
+}).catch(e=>console.error('联网组件加载失败',e));

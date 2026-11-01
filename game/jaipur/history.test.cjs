@@ -28,5 +28,5 @@ const untouched=copy(s);assert.throws(()=>J.act(s,{type:'exchange',market:[0]}))
 // Refill order and end-of-round results are retained.
 s=J.round([0,0],0);s.market=['cloth','camel','camel','camel','camel'];s.deck=['gold'];
 s=J.act(s,{type:'camels'});event=s.history.events[0];assert.deepEqual(event.public.refill,['gold']);assert.equal(s.ended,true);assert.deepEqual(event.result,s.result);
-let next=J.nextRound(s);assert.equal(next.previousRounds.length,1);assert.deepEqual(next.previousRounds[0].final.result,s.result);assert.deepEqual(next.previousRounds[0].history,s.history);assert.equal(next.history.events.length,0);assert.equal(next.number,2);
+let next=J.nextRound(s);assert.equal(next.previousRounds.length,1);assert.deepEqual(next.previousRounds[0].final.result,s.result);assert.deepEqual(next.previousRounds[0].history,s.history);assert.equal(next.history.events.length,0);assert.equal(next.number,undefined);assert.equal(next.previousRounds[0].number,undefined);assert.equal(event.round,undefined);
 console.log('Passed: structured actions, awards, snapshots, replay, persistence, full history, invalid action isolation, refill, settlement and round archive.');

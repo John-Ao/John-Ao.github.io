@@ -4,7 +4,7 @@ const TYPES=['diamond','gold','silver','cloth','spice','leather'];
 const NAMES={diamond:'钻石',gold:'黄金',silver:'白银',cloth:'布料',spice:'香料',leather:'皮革',camel:'骆驼'};
 function describeCards(cards){return [...TYPES,'camel'].flatMap(t=>{const n=cards.filter(c=>c===t).length;return n?[`${n} 张${NAMES[t]}`]:[];}).join('、');}
 const VALUES={diamond:[7,7,5,5,5],gold:[6,6,5,5,5],silver:[5,5,5,5,5],cloth:[5,3,3,2,2,1,1],spice:[5,3,3,2,2,1,1],leather:[4,3,2,1,1,1,1,1,1]};
-const shuffle=a=>{for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const shuffle=(a,rng=Math.random)=>{for(let i=a.length-1;i>0;i--){let j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 function publicStats(p){return p.publicStats;}
 function estimateScore(stats){
 let low=stats.goodsScore,high=stats.goodsScore,mean=stats.goodsScore;
@@ -19,18 +19,19 @@ s.history={version:1,initial:snapshot(s),events:[]};
 s.previousRounds=[];
 return s;
 }
-function nextRound(previous){
+function nextRound(previous,rng=Math.random){
 if(!previous.ended)throw Error('本局尚未结束');
 if(previous.wins.some(n=>n>=2))throw Error('本场对战已结束');
 const old=previous;
-const next=round([...old.wins],old.result.winner<0?1-old.starter:1-old.result.winner,old.number+1);
-next.previousRounds=[...old.previousRounds,{number:old.number,history:old.history,final:snapshot(old)}];
+const next=round([...old.wins],old.result.winner<0?1-old.starter:1-old.result.winner,rng);
+next.previousRounds=[...old.previousRounds,{history:old.history,final:snapshot(old)}];
 return next;
 }
-function round(wins=[0,0],starter=Math.floor(Math.random()*2),number=1){
-const deck=shuffle(Object.entries({diamond:6,gold:6,silver:6,cloth:8,spice:8,leather:10,camel:8}).flatMap(([t,n])=>Array(n).fill(t)));
+function round(wins=[0,0],starter,rng=Math.random){
+if(starter===undefined)starter=Math.floor(rng()*2);
+const deck=shuffle(Object.entries({diamond:6,gold:6,silver:6,cloth:8,spice:8,leather:10,camel:8}).flatMap(([t,n])=>Array(n).fill(t)),rng);
 const players=[0,1].map(()=>{const cards=deck.splice(0,5);return {hand:cards.filter(t=>t!=='camel'),camels:cards.filter(t=>t==='camel').length,goods:[],bonus:[],publicStats:{goodsScore:0,goodsCounts:Object.fromEntries(TYPES.map(t=>[t,0])),bonusCounts:{3:0,4:0,5:0}}};});
-const state={version:2,deck,market:['camel','camel','camel',...deck.splice(0,2)],players,tokens:JSON.parse(JSON.stringify(VALUES)),bonuses:{3:shuffle([1,1,2,2,2,3,3]),4:shuffle([4,4,5,5,6,6]),5:shuffle([8,8,9,10,10])},discard:[],wins,turn:starter,starter,number,log:[],ended:false};return initializeHistory(state);}
+const state={version:2,deck,market:['camel','camel','camel',...deck.splice(0,2)],players,tokens:JSON.parse(JSON.stringify(VALUES)),bonuses:{3:shuffle([1,1,2,2,2,3,3],rng),4:shuffle([4,4,5,5,6,6],rng),5:shuffle([8,8,9,10,10],rng)},discard:[],wins,turn:starter,starter,log:[],ended:false};return initializeHistory(state);}
 const sum=a=>a.reduce((a,b)=>a+b,0);
 function finish(s,reason){s.ended=true;const [a,b]=s.players;const camel=a.camels===b.camels?-1:a.camels>b.camels?0:1;
 const scores=s.players.map((p,i)=>sum(p.goods)+sum(p.bonus)+(camel===i?5:0));let winner=-1;
@@ -49,7 +50,7 @@ else throw Error('未知操作');
 s.log.unshift(`玩家 ${s.turn+1}：${message}`);s.log=s.log.slice(0,8);
 const refill=[];while(s.market.length<5&&s.deck.length){const card=s.deck.pop();s.market.push(card);refill.push(card);}
 if(s.market.length<5)finish(s,'牌库不足以补满市场');else if(TYPES.filter(t=>!s.tokens[t].length).length>=3)finish(s,'三种货物筹码已售罄');else s.turn=1-s.turn;
-s.history.events.push({sequence:s.history.events.length+1,round:s.number,player:actor,
+s.history.events.push({sequence:s.history.events.length+1,player:actor,
 action:{type:action.type,market:[...mi],hand:[...hi],camels:action.type==='exchange'?(action.camels||0):0},
 public:{message:s.log[0],taken:action.type==='camels'?before.market.filter(t=>t==='camel'):action.type==='take'||action.type==='exchange'?taken:[],returned:action.type==='exchange'?given.concat(Array(action.camels||0).fill('camel')):[],sold:action.type==='sell'?given:[],goodsTokens,bonusTypes:bonusTokens.map(token=>token.type),refill},
 private:{bonusTokens},before,after:snapshot(s),result:s.ended?clone(s.result):null});
